@@ -18,6 +18,7 @@
   },
   "include": [
     "src/main/remotion/**/*",
+    "src/main/edit-styles/shared/brand.ts",
     "remotion.config.ts"
   ]
 }
