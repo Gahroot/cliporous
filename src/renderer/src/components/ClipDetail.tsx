@@ -28,10 +28,12 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Check, Sparkles, X } from 'lucide-react'
+import { AlertTriangle, Check, FileVideo, Sparkles, X } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -138,6 +140,8 @@ export function ClipDetail({
   const [hookText, setHookText] = useState('')
   const [captionsMode, setCaptionsMode] = useState<CaptionsMode>('emphasis')
   const [isRegenerating, setIsRegenerating] = useState(false)
+  const [regenerateError, setRegenerateError] = useState<string | null>(null)
+  const addError = useStore((s) => s.addError)
 
   // Sync local state whenever the active clip changes.
   useEffect(() => {
@@ -147,6 +151,7 @@ export function ClipDetail({
     // Captions mode has no persisted field on ClipCandidate yet — reset to
     // the default each time so the UI remains coherent.
     setCaptionsMode('emphasis')
+    setRegenerateError(null)
   }, [clip?.id, clip?.startTime, clip?.endTime, clip?.hookText])
 
   // ---- Video preview ------------------------------------------------------
@@ -207,6 +212,7 @@ export function ClipDetail({
   const handleRegenerate = async (): Promise<void> => {
     if (!clip || isRegenerating) return
     setIsRegenerating(true)
+    setRegenerateError(null)
     try {
       const result = await window.api.regenerateClipEditPlan(clip.id)
       if (result && 'ok' in result && result.ok) {
@@ -214,11 +220,15 @@ export function ClipDetail({
       } else {
         const msg =
           result && 'error' in result ? result.error : 'Regenerate failed'
+        setRegenerateError(msg)
         toast.error(msg)
+        addError({ source: 'pipeline', message: `Regenerate edit plan: ${msg}` })
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
+      setRegenerateError(msg)
       toast.error(`Regenerate failed: ${msg}`)
+      addError({ source: 'pipeline', message: `Regenerate edit plan: ${msg}` })
     } finally {
       setIsRegenerating(false)
     }
@@ -247,6 +257,29 @@ export function ClipDetail({
 
         {/* Scrollable body ----------------------------------------------- */}
         <div className="min-h-0 flex-1 overflow-y-auto">
+          {/* No-clip empty state — the Sheet can be opened without a
+              selection (e.g. while the underlying list is mutating).
+              Render a centered Card so the body is never blank. */}
+          {!clip && (
+            <div className="flex h-full w-full items-center justify-center p-6">
+              <Card className="flex w-full max-w-sm flex-col items-center gap-3 px-6 py-10 text-center">
+                <FileVideo
+                  className="text-muted-foreground h-10 w-10"
+                  strokeWidth={1.5}
+                  aria-hidden
+                />
+                <p className="text-foreground text-sm font-medium">
+                  No clip selected
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  Pick a clip from the grid to edit it here.
+                </p>
+              </Card>
+            </div>
+          )}
+
+          {clip && (
+          <>
           {/* Video preview ------------------------------------------------ */}
           <div className="bg-black">
             <div className="mx-auto aspect-[9/16] w-full max-w-[260px]">
@@ -449,8 +482,19 @@ export function ClipDetail({
                 <Sparkles className={cn(isRegenerating && 'animate-pulse')} />
                 {isRegenerating ? 'Regenerating…' : 'Regenerate edit plan'}
               </Button>
+              {regenerateError && (
+                <Alert variant="destructive" className="mt-1">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertTitle>Regenerate failed</AlertTitle>
+                  <AlertDescription className="break-words">
+                    {regenerateError}
+                  </AlertDescription>
+                </Alert>
+              )}
             </section>
           </div>
+          </>
+          )}
         </div>
 
         {/* Footer --------------------------------------------------------- */}

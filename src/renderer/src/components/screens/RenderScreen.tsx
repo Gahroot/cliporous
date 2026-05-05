@@ -27,9 +27,18 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
-import { AlertCircle, Check, Folder, Loader2, Play } from 'lucide-react'
+import {
+  AlertCircle,
+  AlertTriangle,
+  Check,
+  FileVideo,
+  Folder,
+  Loader2,
+  Play,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -205,6 +214,7 @@ export function RenderScreen(): React.JSX.Element {
   const setRenderError = useStore((s) => s.setRenderError)
   const clearRenderErrors = useStore((s) => s.clearRenderErrors)
   const setPipeline = useStore((s) => s.setPipeline)
+  const addError = useStore((s) => s.addError)
 
   // ── Local state ────────────────────────────────────────────────────────
   // Tracks whether the most recent batch has finished — controls the
@@ -287,6 +297,12 @@ export function RenderScreen(): React.JSX.Element {
         status: 'error',
         error: data.error
       })
+      // Mirror render failures into the global error log so the bottom
+      // <ErrorLog> panel reflects everything the main process reports.
+      addError({
+        source: 'render',
+        message: `Clip ${data.clipId} failed: ${data.error}`,
+      })
     })
 
     const offBatchDone = window.api.onRenderBatchDone((data) => {
@@ -315,7 +331,7 @@ export function RenderScreen(): React.JSX.Element {
       offBatchDone()
       offCancelled()
     }
-  }, [setRenderProgress, setRenderError, setIsRendering, setPipeline])
+  }, [setRenderProgress, setRenderError, setIsRendering, setPipeline, addError])
 
   // ── Action: Render All ────────────────────────────────────────────────
   const handleRenderAll = async (): Promise<void> => {
@@ -379,6 +395,7 @@ export function RenderScreen(): React.JSX.Element {
       setIsRendering(false)
       setPipeline({ stage: 'error', message: msg, percent: 0 })
       toast.error(`Couldn't start render: ${msg}`)
+      addError({ source: 'render', message: `Couldn't start render: ${msg}` })
     }
   }
 
@@ -449,12 +466,38 @@ export function RenderScreen(): React.JSX.Element {
         )}
       </div>
 
+      {/* ── Inline batch error — surfaces the most recent failure even
+           when the bottom <ErrorLog> is collapsed. ───────────────────── */}
+      {failedCount > 0 && (
+        <Alert variant="destructive" className="mb-3">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>
+            {failedCount} clip{failedCount === 1 ? '' : 's'} failed to render
+          </AlertTitle>
+          <AlertDescription className="break-words">
+            See the error log at the bottom of the window for details.
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* ── Clip list ───────────────────────────────────────────────── */}
       <div className="-mx-1 flex-1 space-y-2 overflow-y-auto px-1">
         {approvedClips.length === 0 ? (
-          <Card className="text-muted-foreground flex h-32 items-center justify-center text-sm">
-            No approved clips to render.
-          </Card>
+          <div className="flex h-full w-full items-center justify-center p-6">
+            <Card className="flex w-full max-w-sm flex-col items-center gap-3 px-6 py-10 text-center">
+              <FileVideo
+                className="text-muted-foreground h-10 w-10"
+                strokeWidth={1.5}
+                aria-hidden
+              />
+              <p className="text-foreground text-sm font-medium">
+                No approved clips
+              </p>
+              <p className="text-muted-foreground text-xs">
+                Approve clips on the previous screen, then come back to render.
+              </p>
+            </Card>
+          </div>
         ) : (
           approvedClips.map((clip) => {
             const p = progressMap.get(clip.id) ?? { status: 'queued' as const, percent: 0 }

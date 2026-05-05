@@ -16,6 +16,7 @@
 import { useMemo } from 'react'
 import {
   AlertCircle,
+  AlertTriangle,
   Check,
   Download,
   FileText,
@@ -24,6 +25,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -193,6 +195,8 @@ export function ProcessingScreen(): React.JSX.Element {
   const completed = useStore((s) => s.completedPipelineStages)
   const activeSource = useStore((s) => s.getActiveSource())
 
+  const isError = stage === 'error'
+
   const setPipeline = useStore((s) => s.setPipeline)
   const setActiveSource = useStore((s) => s.setActiveSource)
   const clearPipelineCache = useStore((s) => s.clearPipelineCache)
@@ -231,6 +235,19 @@ export function ProcessingScreen(): React.JSX.Element {
 
         <Separator className="my-3" />
 
+        {/* Inline screen-specific error — the bottom <ErrorLog> panel still
+            carries the full history; this Alert surfaces the active failure
+            so the user doesn't have to expand the log to see what broke. */}
+        {isError && (
+          <Alert variant="destructive" className="mb-3">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Processing failed</AlertTitle>
+            <AlertDescription className="break-words">
+              {message || 'An error interrupted the pipeline.'}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="flex flex-col">
           {visibleStages.map((row, idx) => {
             const status = deriveStatus(row.key, stage, failedStage, completed)
@@ -252,7 +269,7 @@ export function ProcessingScreen(): React.JSX.Element {
 
         <div className="flex justify-end">
           <Button variant="ghost" size="sm" onClick={handleCancel}>
-            Cancel
+            {isError ? 'Back' : 'Cancel'}
           </Button>
         </div>
       </Card>

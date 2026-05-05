@@ -15,9 +15,17 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { FileVideo, FolderOpen, Link as LinkIcon, Upload } from 'lucide-react'
+import {
+  AlertTriangle,
+  FileVideo,
+  FolderOpen,
+  Inbox,
+  Link as LinkIcon,
+  Upload,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -96,6 +104,7 @@ export function DropScreen(): React.JSX.Element {
   const [isDragOver, setIsDragOver] = useState(false)
   const [isStarting, setIsStarting] = useState(false)
   const [recents, setRecents] = useState<RecentProjectEntry[]>([])
+  const [ingestError, setIngestError] = useState<string | null>(null)
   const dragDepth = useRef(0)
 
   // Detect input mode from the current value (URL vs file path vs neutral).
@@ -158,6 +167,7 @@ export function DropScreen(): React.JSX.Element {
         const message = err instanceof Error ? err.message : String(err)
         toast.error(`Couldn't read video: ${message}`)
         addError({ source: 'pipeline', message: `Failed to ingest ${filePath}: ${message}` })
+        setIngestError(`Couldn't read ${basename(filePath)}: ${message}`)
         setIsStarting(false)
       }
     },
@@ -241,15 +251,20 @@ export function DropScreen(): React.JSX.Element {
       }
 
       if (!isVideoFilename(file.name)) {
-        toast.error(`Unsupported file type: ${file.name}`)
+        const msg = `Unsupported file type: ${file.name}`
+        toast.error(msg)
+        setIngestError(msg)
         return
       }
 
       const path = window.api.getPathForFile(file)
       if (!path) {
-        toast.error("Couldn't resolve file path")
+        const msg = "Couldn't resolve file path"
+        toast.error(msg)
+        setIngestError(msg)
         return
       }
+      setIngestError(null)
       void startFromFilePath(path)
     },
     [refreshRecents, startFromFilePath]
@@ -259,19 +274,30 @@ export function DropScreen(): React.JSX.Element {
   const handleBrowse = useCallback(async (): Promise<void> => {
     try {
       const paths = await window.api.openFiles()
-      if (paths.length > 0) void startFromFilePath(paths[0])
+      if (paths.length > 0) {
+        setIngestError(null)
+        void startFromFilePath(paths[0])
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       toast.error(`Couldn't open file: ${message}`)
+      setIngestError(`Couldn't open file: ${message}`)
+      addError({ source: 'pipeline', message: `Open file dialog: ${message}` })
     }
-  }, [startFromFilePath])
+  }, [addError, startFromFilePath])
 
   // ── Recent projects ────────────────────────────────────────────────────
   const handleOpenRecent = useCallback(
     async (entry: RecentProjectEntry): Promise<void> => {
       const ok = await loadProjectFromPath(entry.path)
-      if (ok) toast.success(`Loaded ${entry.name}`)
-      else toast.error(`Couldn't open ${entry.name}`)
+      if (ok) {
+        toast.success(`Loaded ${entry.name}`)
+        setIngestError(null)
+      } else {
+        const msg = `Couldn't open ${entry.name}`
+        toast.error(msg)
+        setIngestError(msg)
+      }
     },
     []
   )
@@ -288,6 +314,18 @@ export function DropScreen(): React.JSX.Element {
   return (
     <div className="flex h-full w-full items-center justify-center overflow-y-auto p-8">
       <div className="flex w-full max-w-2xl flex-col gap-8">
+        {/* Inline error — surfaces ingest / open failures so the user
+            doesn't have to expand the bottom log to see what went wrong. */}
+        {ingestError && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Couldn&apos;t open that file</AlertTitle>
+            <AlertDescription className="break-words">
+              {ingestError}
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Drop zone — single shadcn Card with dashed border */}
         <Card
           role="button"
@@ -380,9 +418,19 @@ export function DropScreen(): React.JSX.Element {
           </div>
 
           {recents.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
-              Recent projects appear here.
-            </p>
+            <Card className="flex flex-col items-center gap-2 px-6 py-8 text-center">
+              <Inbox
+                className="text-muted-foreground h-8 w-8"
+                strokeWidth={1.5}
+                aria-hidden
+              />
+              <p className="text-foreground text-sm font-medium">
+                No recent projects
+              </p>
+              <p className="text-muted-foreground text-xs">
+                Drop a video to begin — saved projects will appear here.
+              </p>
+            </Card>
           ) : (
             <ScrollArea className="max-h-[280px]">
               <ul className="flex flex-col gap-2">
