@@ -1,0 +1,94 @@
+/*
+ * BatchClip brand theme — dark only.
+ *
+ * Brand seeds:
+ *   background  #23100c  (deep warm brown)   → 10.4 48.9% 9.2%
+ *   foreground  #f6ecd9  (warm cream)        → 39.3 61.7% 90.8%
+ *   accent      #9f75ff  (violet)            → 258.3 100% 72.9%
+ *
+ * All shadcn tokens below are derived from these three seeds — surfaces step
+ * up in lightness from the background, mutes step down from the foreground,
+ * and the violet accent is reused for primary + ring focus.
+ *
+ * NOTE: PRESTYJ caption fonts in /home/groot/batchcontent/resources/fonts will
+ * be copied into resources/fonts/ later; this file only loads the UI font.
+ */
+
+/* UI font — Inter via @fontsource (self-hosted, offline-friendly for Electron) */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Surfaces — warm brown ramp built up from the brand background */
+    --background: 10.4 48.9% 9.2%;          /* #23100c — brand bg */
+    --foreground: 39.3 61.7% 90.8%;         /* #f6ecd9 — brand cream */
+
+    --card: 12.9 43.8% 12.5%;               /* #2e1812 — one step up */
+    --card-foreground: 39.3 61.7% 90.8%;
+
+    --popover: 13.7 43.2% 15.9%;            /* #3a1f17 — two steps up */
+    --popover-foreground: 39.3 61.7% 90.8%;
+
+    /* Primary — the violet accent doubles as the main interactive color */
+    --primary: 258.3 100% 72.9%;            /* #9f75ff — brand accent */
+    --primary-foreground: 10.4 48.9% 9.2%;  /* brand bg, for max contrast on violet */
+
+    /* Secondary — muted warm-brown surface for low-emphasis controls */
+    --secondary: 14.7 43.7% 20.2%;          /* #4a281d */
+    --secondary-foreground: 39.3 61.7% 90.8%;
+
+    /* Accent — same violet, used for hover/highlight tints */
+    --accent: 258.3 100% 72.9%;
+    --accent-foreground: 10.4 48.9% 9.2%;
+
+    /* Muted — dim brown surface + dim cream text */
+    --muted: 13.1 41.4% 26.1%;              /* #5e3327 */
+    --muted-foreground: 36.0 24.0% 59.2%;   /* #b09c7e — desaturated cream */
+
+    /* Borders / inputs / focus ring */
+    --border: 12.0 40.2% 34.1%;             /* #7a4234 — visible on bg + card */
+    --input: 14.7 43.7% 20.2%;              /* matches secondary */
+    --ring: 258.3 100% 72.9%;               /* violet focus ring */
+
+    /* Destructive — standard shadcn red, kept distinct from the warm palette */
+    --destructive: 0 84.2% 60.2%;           /* #ef4444 */
+    --destructive-foreground: 39.3 61.7% 90.8%;
+
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family:
+      'Inter',
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      sans-serif;
+    font-feature-settings:
+      'cv11',
+      'ss01',
+      'ss03';
+  }
+}
