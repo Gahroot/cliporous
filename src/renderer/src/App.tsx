@@ -1,8 +1,18 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { FolderOpen, Save, Settings } from 'lucide-react'
+import { FolderOpen, Save, Settings, ShieldAlert } from 'lucide-react'
 import { toast } from 'sonner'
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -11,7 +21,6 @@ import { Toaster } from '@/components/ui/sonner'
 import { AiUsageIndicator } from '@/components/AiUsageIndicator'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ErrorLog } from '@/components/ErrorLog'
-import { RecoveryDialog } from '@/components/RecoveryDialog'
 import { DropScreen } from '@/components/screens/DropScreen'
 import { ProcessingScreen } from '@/components/screens/ProcessingScreen'
 import { ClipGrid } from '@/components/screens/ClipGrid'
@@ -20,7 +29,7 @@ import { RenderScreen } from '@/components/screens/RenderScreen'
 import { useAutosave } from '@/hooks'
 import { useStore } from '@/store'
 import { selectScreen } from '@/store/selectors'
-import { saveProject, loadProject } from '@/services'
+import { saveProject, loadProject, loadRecovery, clearRecovery } from '@/services'
 
 // ---------------------------------------------------------------------------
 // Autosave toast — small bottom-right card that fades in when useAutosave
@@ -145,6 +154,114 @@ function ScreenFrame({
 }
 
 // ---------------------------------------------------------------------------
+// Recovery prompt — on first paint, check for an auto-saved payload from a
+// previous session that wasn't shut down cleanly. Deferred 400ms (V1
+// behavior) so the initial screen render isn't blocked by the modal.
+// Only shown when the payload contains at least one clip.
+// ---------------------------------------------------------------------------
+
+function RecoveryPrompt(): React.JSX.Element | null {
+  const acknowledgedRecovery = useStore((s) => s.acknowledgedRecovery)
+  const acknowledgeRecovery = useStore((s) => s.acknowledgeRecovery)
+  const [payload, setPayload] = useState<string | null>(null)
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (acknowledgedRecovery) return
+    let cancelled = false
+    const timer = setTimeout(async () => {
+      const data = await loadRecovery()
+      if (cancelled) return
+      if (!data) {
+        acknowledgeRecovery()
+        return
+      }
+      try {
+        const project = JSON.parse(data) as { clips?: Record<string, unknown[]> }
+        const clips = project.clips ?? {}
+        const hasClips = Object.values(clips).some(
+          (arr) => Array.isArray(arr) && arr.length > 0
+        )
+        if (!hasClips) {
+          await clearRecovery()
+          acknowledgeRecovery()
+          return
+        }
+        setPayload(data)
+        setOpen(true)
+      } catch {
+        await clearRecovery()
+        acknowledgeRecovery()
+      }
+    }, 400)
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [acknowledgedRecovery, acknowledgeRecovery])
+
+  const handleRestore = async (): Promise<void> => {
+    if (!payload) return
+    try {
+      const project = JSON.parse(payload)
+      const sources = project.sources ?? []
+      const clips = project.clips ?? {}
+      const hasClips = Object.values(clips).some(
+        (arr) => Array.isArray(arr) && arr.length > 0
+      )
+      const activeSourceId = hasClips && sources.length > 0 ? sources[0].id : null
+      useStore.setState({
+        sources,
+        transcriptions: project.transcriptions ?? {},
+        clips,
+        activeSourceId,
+        pipeline: hasClips
+          ? { stage: 'ready', message: '', percent: 100 }
+          : { stage: 'idle', message: '', percent: 0 },
+        isDirty: false,
+      })
+      toast.success('Recovered your last session')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      toast.error(`Recovery failed: ${msg}`)
+    } finally {
+      await clearRecovery()
+      acknowledgeRecovery()
+      setOpen(false)
+    }
+  }
+
+  const handleDiscard = async (): Promise<void> => {
+    await clearRecovery()
+    acknowledgeRecovery()
+    setOpen(false)
+  }
+
+  if (!payload) return null
+
+  return (
+    <AlertDialog open={open}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="flex items-center gap-2">
+            <ShieldAlert className="text-amber-500" aria-hidden="true" />
+            Recover unsaved work
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            BatchClip didn&apos;t shut down cleanly last time. We saved your
+            project — restore it now, or discard and start fresh.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={handleDiscard}>Discard</AlertDialogCancel>
+          <AlertDialogAction onClick={handleRestore}>Restore</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // App
 // ---------------------------------------------------------------------------
 
@@ -175,7 +292,7 @@ export default function App(): React.JSX.Element {
       </div>
       <AutosaveToast />
       <Toaster />
-      <RecoveryDialog />
+      <RecoveryPrompt />
     </ErrorBoundary>
   )
 }
