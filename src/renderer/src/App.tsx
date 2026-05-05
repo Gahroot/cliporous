@@ -1,19 +1,23 @@
 import { useMemo } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { FolderOpen, Save, Settings, Sparkles } from 'lucide-react'
+import { FolderOpen, Save, Settings } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Toaster } from '@/components/ui/sonner'
 
+import { AiUsageIndicator } from '@/components/AiUsageIndicator'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { ErrorLog } from '@/components/ErrorLog'
 import { RecoveryDialog } from '@/components/RecoveryDialog'
 import { DropScreen } from '@/components/screens/DropScreen'
 import { ProcessingScreen } from '@/components/screens/ProcessingScreen'
 import { ClipGrid } from '@/components/screens/ClipGrid'
 import { RenderScreen } from '@/components/screens/RenderScreen'
 
+import { useAutosave } from '@/hooks'
 import { useStore } from '@/store'
 import { saveProject, loadProject } from '@/services'
 import type { PipelineStage } from '@/store/types'
@@ -44,24 +48,40 @@ function selectScreen(stage: PipelineStage, hasActiveSource: boolean): ScreenNam
 }
 
 // ---------------------------------------------------------------------------
-// Header — wordmark + actions
+// Autosave toast — small bottom-right card that fades in when useAutosave
+// reports a fresh save (justSaved=true for ~2s).
 // ---------------------------------------------------------------------------
 
-function AiUsageIndicator(): React.JSX.Element {
-  const totalPromptTokens = useStore((s) => s.aiUsage.totalPromptTokens)
-  const totalCompletionTokens = useStore((s) => s.aiUsage.totalCompletionTokens)
-  const total = totalPromptTokens + totalCompletionTokens
-  const display = total >= 1000 ? `${(total / 1000).toFixed(1)}k` : `${total}`
+function AutosaveToast(): React.JSX.Element {
+  const { justSaved } = useAutosave()
+  const reduceMotion = useReducedMotion()
   return (
-    <div
-      className="text-muted-foreground flex items-center gap-1.5 text-xs tabular-nums"
-      title={`AI tokens this session — ${total.toLocaleString()} total (${totalPromptTokens.toLocaleString()} in / ${totalCompletionTokens.toLocaleString()} out)`}
-    >
-      <Sparkles className="h-3.5 w-3.5" />
-      <span>{display}</span>
-    </div>
+    <AnimatePresence>
+      {justSaved && (
+        <motion.div
+          key="autosave-toast"
+          initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
+          transition={{ duration: 0.15, ease: 'easeOut' }}
+          className="pointer-events-none fixed right-4 bottom-4 z-50"
+        >
+          <Card className="flex items-center gap-2 px-3 py-1.5 text-xs shadow-md">
+            <span
+              className="h-2 w-2 rounded-full bg-emerald-500"
+              aria-hidden="true"
+            />
+            <span className="text-muted-foreground">Autosaved</span>
+          </Card>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
+
+// ---------------------------------------------------------------------------
+// Header — wordmark + actions
+// ---------------------------------------------------------------------------
 
 function Header(): React.JSX.Element {
   const isDirty = useStore((s) => s.isDirty)
@@ -176,7 +196,9 @@ export default function App(): React.JSX.Element {
             </ScreenFrame>
           </AnimatePresence>
         </main>
+        <ErrorLog />
       </div>
+      <AutosaveToast />
       <Toaster />
       <RecoveryDialog />
     </ErrorBoundary>
