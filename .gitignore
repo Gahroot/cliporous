@@ -39,3 +39,8 @@ python/__pycache__/
 .ezcoder/plans/frames/
 .ezcoder/plans/renders/
 scripts/verify-archetypes/*.bundle.cjs
+
+# E2E smoke validation artifacts (regenerable via scripts/e2e-smoke/run.sh)
+.ezcoder/plans/e2e-output/
+.ezcoder/plans/e2e-frames/
+scripts/e2e-smoke/*.bundle.cjs

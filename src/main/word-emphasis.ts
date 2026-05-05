@@ -259,6 +259,41 @@ export function analyzeEmphasisHeuristic(words: WordTimestamp[]): EmphasizedWord
     }
   }
 
+  // --- Step 3.5: Guarantee at least one flagged word per multi-word segment ---
+  //
+  // Without this, segments whose words don't match any of the curated lists
+  // (no power words, no superlatives, no `?`/`!`, no numbers, no ALL-CAPS)
+  // produce zero emphasis, which makes the `emphasis` and `emphasis_highlight`
+  // caption modes render identically to `standard` (cream-only). The visual
+  // spec requires at least one emphasised word so the accent color is visible
+  // wherever it should be — this fallback picks the longest non-stop content
+  // word in the segment so the accent always lights up.
+  if (supersizeSet.size === 0 && emphasisSet.size === 0) {
+    let bestIdx = -1
+    let bestLen = 0
+    for (let i = 0; i < totalWords; i++) {
+      const cleaned = cleanWord(words[i].text)
+      if (cleaned.length === 0) continue
+      if (isStopWord(words[i].text)) continue
+      if (cleaned.length > bestLen) {
+        bestLen = cleaned.length
+        bestIdx = i
+      }
+    }
+    if (bestIdx === -1) {
+      // All words are stop words — fall back to picking the longest word overall
+      // so multi-word groups still receive the accent treatment.
+      for (let i = 0; i < totalWords; i++) {
+        const cleaned = cleanWord(words[i].text)
+        if (cleaned.length > bestLen) {
+          bestLen = cleaned.length
+          bestIdx = i
+        }
+      }
+    }
+    if (bestIdx >= 0) emphasisSet.add(bestIdx)
+  }
+
   // --- Step 4: Rate-limit emphasis to ≤25% ---
   const maxEmphasis = Math.max(1, Math.floor(totalWords * 0.25))
   if (emphasisSet.size > maxEmphasis) {
