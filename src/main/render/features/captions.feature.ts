@@ -93,7 +93,7 @@ export function createCaptionsFeature(): RenderFeature {
 
       const localWords = localWordsBase.map((w, i) => ({
         ...w,
-        emphasis: (emphasized as Array<{ emphasis?: string }>)[i]?.emphasis ?? ('normal' as const) as 'normal' | 'emphasis' | 'supersize'
+        emphasis: ((emphasized as Array<{ emphasis?: string }>)[i]?.emphasis ?? 'normal') as 'normal' | 'emphasis' | 'supersize' | 'box'
       }))
 
       // If upstream word-emphasis feature didn't provide keyframes, compute them here as fallback

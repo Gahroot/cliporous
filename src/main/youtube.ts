@@ -108,7 +108,7 @@ export async function downloadYouTube(
 
   if (errorMessage) {
     // Strip ANSI escape codes and truncate long error messages
-    const cleaned = errorMessage.replace(/\x1b\[[0-9;]*m/g, '').trim()
+    const cleaned = (errorMessage as string).replace(/\x1b\[[0-9;]*m/g, '').trim()
     const truncated = cleaned.length > 500 ? cleaned.slice(0, 500) + '…' : cleaned
     throw new Error(`YouTube download failed: ${truncated}`)
   }

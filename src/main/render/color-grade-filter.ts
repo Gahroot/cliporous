@@ -6,7 +6,7 @@
  */
 
 interface ColorGradeConfig {
-  preset: string
+  preset?: string
   brightness?: number
   contrast?: number
   saturation?: number
@@ -41,7 +41,7 @@ const PRESETS: Record<string, GradeParams> = {
  * Returns `null` when the config produces no visible change (preset "none" + no overrides).
  */
 export function buildEditStyleColorGradeFilter(config: ColorGradeConfig): string | null {
-  const base = PRESETS[config.preset] ?? PRESETS.none
+  const base = config.preset ? (PRESETS[config.preset] ?? PRESETS.none) : PRESETS.none
 
   const brightness = config.brightness ?? base.brightness
   const contrast = config.contrast ?? base.contrast

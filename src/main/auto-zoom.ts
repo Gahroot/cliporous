@@ -57,8 +57,8 @@ export interface EmphasisKeyframe {
   time: number
   /** End of the emphasised word in seconds (clip-relative) */
   end: number
-  /** Whether this is a regular emphasis hit or the supersize (loudest) word */
-  level: 'emphasis' | 'supersize'
+  /** Whether this is a regular emphasis hit, the supersize (loudest) word, or a boxed emphasis. */
+  level: 'emphasis' | 'supersize' | 'box'
 }
 
 // ---------------------------------------------------------------------------

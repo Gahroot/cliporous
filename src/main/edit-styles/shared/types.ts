@@ -29,6 +29,11 @@ export interface EditStyleTemplate {
     overlayText?: string
     textColor?: string
     accentColor?: string
+    /**
+     * Solid background color for layouts that paint a backdrop (e.g.
+     * fullscreen-quote, fullscreen-headline — "no-broll" archetypes).
+     */
+    backgroundColor?: string
     captionBgOpacity?: number
     fontSize?: number
   }

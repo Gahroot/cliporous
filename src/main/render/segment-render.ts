@@ -773,10 +773,10 @@ async function encodeLayoutSegment(
 
       // Add image as input for image-based layouts (looped for duration)
       const needsImageInput =
-        seg.imagePath &&
+        !!seg.imagePath &&
         (category === 'main-video-images' || category === 'fullscreen-image')
 
-      if (needsImageInput) {
+      if (needsImageInput && seg.imagePath) {
         cmd.input(toFFmpegPath(seg.imagePath))
         cmd.inputOptions(['-loop', '1'])
       }

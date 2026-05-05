@@ -1,6 +1,6 @@
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
 import { join, basename } from 'path'
-import type { RenderClipJob, RenderBatchOptions } from './render-pipeline'
+import type { RenderClipJob, RenderBatchOptions } from './render/types'
 import type { ClipDescription } from './ai/description-generator'
 
 // ---------------------------------------------------------------------------

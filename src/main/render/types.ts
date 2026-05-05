@@ -11,7 +11,19 @@ import type { ClipDescription } from '../ai/description-generator'
 import type { BRollPlacement, BRollDisplayMode, BRollTransition } from '../broll-placement'
 import type { FillerDetectionSettings } from '../filler-detection'
 import type { CaptionStyleInput } from '../captions'
-import type { SegmentRole } from '../ai/clip-stitcher'
+// SegmentRole — inlined from the legacy clip-stitcher module (feature dropped
+// in this build but the type is still referenced by the stitched-render path).
+export type SegmentRole =
+  | 'hook'
+  | 'rehook'
+  | 'context'
+  | 'why'
+  | 'what'
+  | 'how'
+  | 'mini-payoff'
+  | 'main-payoff'
+  | 'bonus-payoff'
+  | 'bridge'
 import type { EmphasizedWord, ShotStyleConfig, ColorGradeConfig, ShotTransitionConfig, SegmentStyleVariant } from '@shared/types'
 
 // Re-export pass-through types so consumers can import from one place
@@ -75,6 +87,20 @@ export interface RenderClipJob {
     width: number
     height: number
     faceDetected: boolean
+  }>
+  /**
+   * Frame-accurate face-tracking timeline in clip-relative seconds. When >=2
+   * entries are present the render pipeline emits an animated crop filter
+   * that follows the face across the clip duration.
+   */
+  faceTimeline?: Array<{
+    /** Time in clip-relative seconds. */
+    t: number
+    /** Face bounding box in source pixels. */
+    x: number
+    y: number
+    w: number
+    h: number
   }>
   /** Path to a pre-generated .ass subtitle file to burn in */
   assFilePath?: string

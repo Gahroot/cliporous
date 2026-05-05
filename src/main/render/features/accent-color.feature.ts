@@ -45,7 +45,7 @@ export const accentColorFeature: RenderFeature = {
     if (!accent) {
       // No accent color for this clip — clear any snapshot from a previous clip
       // to prevent an accidental restore of stale values.
-      delete (job as Record<string, unknown>).__accentSnapshot
+      delete (job as unknown as Record<string, unknown>).__accentSnapshot
       return { tempFiles: [], modified: false }
     }
 
@@ -70,7 +70,7 @@ export const accentColorFeature: RenderFeature = {
         snapshot.hookTitleOverlay = { ...batchOptions.hookTitleOverlay }
       }
       // Stash on the job so postProcess can find it (per-clip state).
-      ;(job as Record<string, unknown>).__accentSnapshot = snapshot
+      ;(job as unknown as Record<string, unknown>).__accentSnapshot = snapshot
 
       const supersizeColor = lightenColor(accent, 0.4)
 
@@ -133,14 +133,14 @@ export const accentColorFeature: RenderFeature = {
     _renderedPath: string,
     _context: PostProcessContext
   ): Promise<string> {
-    const snapshot = (job as Record<string, unknown>).__accentSnapshot as BatchSnapshot | undefined
+    const snapshot = (job as unknown as Record<string, unknown>).__accentSnapshot as BatchSnapshot | undefined
     if (!snapshot) return _renderedPath
 
     // Restore is called from the pipeline which holds the same batchOptions ref
     // We need to get batchOptions back — but postProcess doesn't receive it.
     // Instead, the pipeline will call a dedicated restore method.
     // Clean up the snapshot from the job to avoid memory leaks.
-    delete (job as Record<string, unknown>).__accentSnapshot
+    delete (job as unknown as Record<string, unknown>).__accentSnapshot
     return _renderedPath
   }
 }
@@ -156,7 +156,7 @@ export function restoreBatchOptions(
   job: RenderClipJob,
   batchOptions: RenderBatchOptions
 ): void {
-  const snapshot = (job as Record<string, unknown>).__accentSnapshot as BatchSnapshot | undefined
+  const snapshot = (job as unknown as Record<string, unknown>).__accentSnapshot as BatchSnapshot | undefined
   if (!snapshot) return
 
   if (snapshot.captionStyle) {
@@ -167,5 +167,5 @@ export function restoreBatchOptions(
   }
 
   // Clean up the snapshot from the job
-  delete (job as Record<string, unknown>).__accentSnapshot
+  delete (job as unknown as Record<string, unknown>).__accentSnapshot
 }

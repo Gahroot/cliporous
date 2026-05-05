@@ -5,6 +5,7 @@
 import { join, basename, extname } from 'path'
 import { sanitizeFilename } from './helpers'
 import type { RenderClipJob } from './types'
+import { DEFAULT_FILENAME_TEMPLATE } from '@shared/constants'
 
 /**
  * Slugify a string for use inside a filename:

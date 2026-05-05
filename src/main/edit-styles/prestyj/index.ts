@@ -2,6 +2,7 @@ import { createEditStyle } from '../shared/base'
 import type { Archetype } from '../shared/archetypes'
 import type { EditStyleTemplate } from '../shared/types'
 import { T_PRESTYJ } from '../shared/transitions'
+import { BRAND_ACCENT } from '../shared/brand'
 
 import { talkingHead } from './templates/talking-head'
 import { tightPunch } from './templates/tight-punch'
@@ -16,7 +17,7 @@ export const prestyjEditStyle: EditStyle = createEditStyle({
   id: 'prestyj',
   name: 'PRESTYJ',
   energy: 'high',
-  accentColor: '#7058E3',
+  accentColor: BRAND_ACCENT,
   letterbox: 'none',
   defaultZoomStyle: 'drift',
   defaultZoomIntensity: 1.10,
@@ -28,9 +29,9 @@ export const prestyjEditStyle: EditStyle = createEditStyle({
     fontName: 'Geist',
     fontSize: 0.065,
     primaryColor: '#FFFFFF',
-    highlightColor: '#7058E3',
-    emphasisColor: '#7058E3',
-    supersizeColor: '#7058E3',
+    highlightColor: BRAND_ACCENT,
+    emphasisColor: BRAND_ACCENT,
+    supersizeColor: BRAND_ACCENT,
     outlineColor: '#FFFFFF',
     outline: 2,
     shadow: 0,

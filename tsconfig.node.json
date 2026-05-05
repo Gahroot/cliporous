@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
     "composite": true,
+    "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "lib": ["ES2022"],
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "outDir": "./out",
@@ -25,6 +27,8 @@
     "src/main/remotion/Root.tsx",
     "src/main/remotion/index.ts",
     "src/main/remotion/compositions/**",
-    "src/main/remotion/shared/**"
+    "src/main/remotion/shared/**",
+    "src/main/**/__tests__/**",
+    "src/main/**/*.test.ts"
   ]
 }

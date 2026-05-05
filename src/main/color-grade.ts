@@ -50,6 +50,7 @@ export function buildColorGradeFilter(
   startTime: number,
   endTime: number
 ): string {
+  if (!config.preset) return ''
   const presetDef = PRESET_PARAMS[config.preset]
   if (!presetDef) return ''
 

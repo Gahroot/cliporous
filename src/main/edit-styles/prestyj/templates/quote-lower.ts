@@ -1,4 +1,5 @@
 import type { EditStyleTemplate } from '../../shared/types'
+import { BRAND_ACCENT } from '../../shared/brand'
 
 export const quoteLower: EditStyleTemplate = {
   archetype: 'quote-lower',
@@ -8,6 +9,6 @@ export const quoteLower: EditStyleTemplate = {
   captionMarginV: 480,
   layoutParamOverrides: {
     textColor: '#FFFFFF',
-    accentColor: '#7058E3'
+    accentColor: BRAND_ACCENT
   }
 }

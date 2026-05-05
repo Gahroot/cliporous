@@ -120,25 +120,28 @@ function Header(): React.JSX.Element {
 }
 
 // ---------------------------------------------------------------------------
-// Screen transition — single shared wrapper (fade + 8px y, 150ms)
+// Screen transition — the ENTIRE animation budget for the app.
+// Single shared wrapper: fade + 8px y-shift, 150ms, easeOut.
+// Keyed by pipeline.stage so transitions fire on stage change.
+// No stagger, no parallax, no springs, no other framer-motion usage.
 // ---------------------------------------------------------------------------
 
 function ScreenFrame({
-  screen,
+  motionKey,
   children,
 }: {
-  screen: ScreenName
+  motionKey: string
   children: React.ReactNode
 }): React.JSX.Element {
   const reduceMotion = useReducedMotion()
   const yOffset = reduceMotion ? 0 : 8
   return (
     <motion.div
-      key={screen}
+      key={motionKey}
       initial={{ opacity: 0, y: yOffset }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -yOffset }}
-      transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
+      transition={{ duration: 0.15, ease: 'easeOut' }}
       className="flex h-full w-full flex-col"
     >
       {children}
@@ -165,7 +168,7 @@ export default function App(): React.JSX.Element {
         <Header />
         <main className="relative flex-1 overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
-            <ScreenFrame key={screen} screen={screen}>
+            <ScreenFrame key={stage} motionKey={stage}>
               {screen === 'drop' && <DropScreen />}
               {screen === 'processing' && <ProcessingScreen />}
               {screen === 'clips' && <ClipGrid />}

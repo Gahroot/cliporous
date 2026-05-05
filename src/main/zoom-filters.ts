@@ -34,6 +34,8 @@ export interface ZoomFilterParams {
   startTime?: number
   /** Emphasis timestamps for snap zoom / word pulse */
   emphasisTimestamps?: { time: number; duration: number }[]
+  /** Full word pulse timestamps (segment-local, in seconds) for word-pulse zoom modes that need every word. */
+  allWordTimestamps?: { time: number; duration: number }[]
   /** Pan direction for drift zoom */
   panDirection?: 'left-right' | 'right-left' | 'center'
   /** Normalised Y position of face centre (0–1). Default 0.38. */
