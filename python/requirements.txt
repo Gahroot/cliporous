@@ -1,0 +1,10 @@
+# For GPU-accelerated transcription (10-50x faster), install CUDA PyTorch first:
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# Then install the rest of the requirements.
+nemo_toolkit[asr]
+mediapipe
+opencv-python-headless
+numpy
+scikit-learn
+scenedetect
+yt-dlp
