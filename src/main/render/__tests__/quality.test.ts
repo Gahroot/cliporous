@@ -14,7 +14,7 @@ describe('resolveQualityParams', () => {
     const result = resolveQualityParams({
       preset: 'normal',
       customCrf: 10,
-      outputResolution: '1080x1920',
+      outputResolution: '720x1280',
       outputFormat: 'mp4',
       encodingPreset: 'slow'
     })
@@ -25,7 +25,7 @@ describe('resolveQualityParams', () => {
     const result = resolveQualityParams({
       preset: 'draft',
       customCrf: 10,
-      outputResolution: '1080x1920',
+      outputResolution: '720x1280',
       outputFormat: 'mp4',
       encodingPreset: 'slow'
     })
@@ -36,7 +36,7 @@ describe('resolveQualityParams', () => {
     const result = resolveQualityParams({
       preset: 'high',
       customCrf: 10,
-      outputResolution: '1080x1920',
+      outputResolution: '720x1280',
       outputFormat: 'mp4',
       encodingPreset: 'slow'
     })
@@ -47,7 +47,7 @@ describe('resolveQualityParams', () => {
     const result = resolveQualityParams({
       preset: 'custom',
       customCrf: 15,
-      outputResolution: '1080x1920',
+      outputResolution: '720x1280',
       outputFormat: 'mp4',
       encodingPreset: 'slow'
     })
@@ -58,7 +58,7 @@ describe('resolveQualityParams', () => {
     const result = resolveQualityParams({
       preset: 'unknown' as any,
       customCrf: 10,
-      outputResolution: '1080x1920',
+      outputResolution: '720x1280',
       outputFormat: 'mp4',
       encodingPreset: 'slow'
     })
@@ -67,23 +67,14 @@ describe('resolveQualityParams', () => {
 })
 
 // ---------------------------------------------------------------------------
-// parseResolution
+// parseResolution — locked to 720×1280 (9:16 vertical)
 // ---------------------------------------------------------------------------
 
-describe('parseResolution', () => {
-  it('parses 1080x1920', () => {
-    expect(parseResolution('1080x1920')).toEqual({ width: 1080, height: 1920 })
-  })
-
-  it('parses 720x1280', () => {
+describe('parseResolution (locked to 720×1280)', () => {
+  it('always returns 720×1280 regardless of input', () => {
     expect(parseResolution('720x1280')).toEqual({ width: 720, height: 1280 })
-  })
-
-  it('defaults to 1080x1920 for invalid input', () => {
-    expect(parseResolution('invalid')).toEqual({ width: 1080, height: 1920 })
-  })
-
-  it('defaults dimensions for partial input', () => {
-    expect(parseResolution('720x')).toEqual({ width: 720, height: 1920 })
+    expect(parseResolution('1080x1920')).toEqual({ width: 720, height: 1280 })
+    expect(parseResolution('invalid')).toEqual({ width: 720, height: 1280 })
+    expect(parseResolution('720x')).toEqual({ width: 720, height: 1280 })
   })
 })

@@ -13,7 +13,7 @@ import { basename, dirname, extname } from 'path'
 import { existsSync, mkdirSync, unlinkSync } from 'fs'
 import type { FfmpegCommand } from '../ffmpeg'
 import { getEncoder, getVideoMetadata } from '../ffmpeg'
-import { ASPECT_RATIO_CONFIGS } from '../aspect-ratios'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../aspect-ratios'
 import type { OutputAspectRatio } from '../aspect-ratios'
 import { writeDescriptionFile } from '../ai/description-generator'
 import {
@@ -30,7 +30,7 @@ import { renderSegmentedClip } from './segment-render'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import type { SegmentRenderConfig, ResolvedSegment } from './segment-render'
-import { resolveQualityParams, parseResolution } from './quality'
+import { resolveQualityParams } from './quality'
 import { buildOutputPath } from './filename'
 import { getVariantById } from '../segment-styles'
 import { getEditStyleById, resolveTemplate, DEFAULT_EDIT_STYLE_ID } from './../edit-styles/index'
@@ -201,23 +201,14 @@ export async function startBatchRender(
   const qualityParams = resolveQualityParams(options.renderQuality)
   const outputFormat = options.renderQuality?.outputFormat ?? 'mp4'
 
-  const effectiveAspectRatio: OutputAspectRatio = options.outputAspectRatio ?? '9:16'
-  const aspectRatioDimensions = ASPECT_RATIO_CONFIGS[effectiveAspectRatio]
-
-  const targetResolution: { width: number; height: number } = options.renderQuality?.outputResolution
-    ? parseResolution(options.renderQuality.outputResolution)
-    : { width: aspectRatioDimensions.width, height: aspectRatioDimensions.height }
-
-  // For 'draft' quality preset, scale the resolution down to ~50%
-  const effectiveResolution: { width: number; height: number } = (() => {
-    if (options.renderQuality?.preset === 'draft' && !options.renderQuality?.outputResolution) {
-      return {
-        width: Math.round(targetResolution.width * 0.5),
-        height: Math.round(targetResolution.height * 0.5)
-      }
-    }
-    return targetResolution
-  })()
+  // Output is hard-locked to 720×1280 © 30fps (9:16 vertical).
+  // outputAspectRatio and outputResolution are accepted for backward compat
+  // but ignored — every clip renders at the locked dimensions.
+  const effectiveAspectRatio: OutputAspectRatio = '9:16'
+  const effectiveResolution: { width: number; height: number } = {
+    width: OUTPUT_WIDTH,
+    height: OUTPUT_HEIGHT
+  }
 
   // ── Determine effective concurrency ───────────────────────────────────────
   const currentEncoder = getEncoder(qualityParams)
@@ -374,7 +365,7 @@ export async function startBatchRender(
         job.sourceVideoPath = assembledPath
         job.startTime = 0
         job.endTime = totalDuration
-        // Assembled video is already 1080x1920 — no further crop needed.
+        // Assembled video is already at the locked 720×1280 — no further crop needed.
         job.cropRegion = undefined
         // Clear the stitched marker so we don't re-enter this block.
         job.stitchedSegments = undefined
@@ -436,7 +427,7 @@ export async function startBatchRender(
           editStyle,
           width: effectiveResolution.width,
           height: effectiveResolution.height,
-          fps: segMeta.fps ?? 30,
+          fps: OUTPUT_FPS,
           sourceWidth: segMeta.width,
           sourceHeight: segMeta.height,
           defaultCropRect: job.cropRegion,

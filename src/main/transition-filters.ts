@@ -27,9 +27,9 @@ export interface TransitionFilterParams {
   offsetTime: number
   /** Video fps for frame calculations */
   fps: number
-  /** Output width (e.g. 1080) */
+  /** Output width — locked to 720 (9:16 vertical) */
   width: number
-  /** Output height (e.g. 1920) */
+  /** Output height — locked to 1280 (9:16 vertical) */
   height: number
 }
 

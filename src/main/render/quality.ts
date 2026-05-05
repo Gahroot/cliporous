@@ -4,6 +4,7 @@
 
 import type { QualityParams } from '../ffmpeg'
 import type { RenderBatchOptions } from './types'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT } from '../aspect-ratios'
 
 /**
  * Resolve the effective CRF and preset from a renderQuality block.
@@ -20,8 +21,10 @@ export function resolveQualityParams(rq?: RenderBatchOptions['renderQuality']): 
   }
 }
 
-/** Parse '1080x1920' → { width: 1080, height: 1920 } */
-export function parseResolution(res: string): { width: number; height: number } {
-  const [w, h] = res.split('x').map(Number)
-  return { width: w || 1080, height: h || 1920 }
+/**
+ * Output resolution is hard-locked to 720×1280 (9:16 vertical).
+ * The string argument is ignored — kept for backward-compat call sites.
+ */
+export function parseResolution(_res: string): { width: number; height: number } {
+  return { width: OUTPUT_WIDTH, height: OUTPUT_HEIGHT }
 }

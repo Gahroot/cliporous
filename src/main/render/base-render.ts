@@ -25,7 +25,7 @@ import {
   hasScaleCuda,
   type QualityParams
 } from '../ffmpeg'
-import { computeCenterCropForRatio } from '../aspect-ratios'
+import { computeCenterCropForRatio, OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../aspect-ratios'
 import type { OutputAspectRatio } from '../aspect-ratios'
 import type { RenderClipJob, BrandKitRenderOptions } from './types'
 import { toFFmpegPath } from './helpers'
@@ -65,12 +65,14 @@ export function buildVideoFilter(
   outputAspectRatio?: OutputAspectRatio,
   sourceFps?: number
 ): string {
-  const outW = targetResolution?.width ?? 1080
-  const outH = targetResolution?.height ?? 1920
+  // Output is hard-locked to 720×1280 (9:16). Inputs are ignored.
+  void targetResolution
+  void outputAspectRatio
+  const outW = OUTPUT_WIDTH
+  const outH = OUTPUT_HEIGHT
 
-  // Determine the target aspect ratio for center-crop fallback.
-  // When an explicit aspect ratio is given, use it; otherwise derive from outW/outH.
-  const aspectRatioForCrop: OutputAspectRatio = outputAspectRatio ?? '9:16'
+  // Center-crop fallback always targets the locked 9:16 ratio.
+  const aspectRatioForCrop: OutputAspectRatio = '9:16'
 
   // Face-tracking animated crop: takes precedence over static cropRegion when ≥2 entries.
   if (job.faceTimeline && job.faceTimeline.length >= 2) {
@@ -119,13 +121,17 @@ export function buildVideoFilter(
   //   crop (CPU) → hwupload_cuda → scale_cuda (GPU) → hwdownload → format=nv12
   const useGpuScale = hasScaleCuda()
 
+  // Always force the locked output framerate after scaling so downstream
+  // concat / overlay passes see consistent timing.
+  const fpsLock = `fps=${OUTPUT_FPS}`
+
   if (useGpuScale) {
     // Hybrid pipeline: CPU crop → upload to GPU → GPU scale → download back
     const scaleFilter = `hwupload_cuda,scale_cuda=${outW}:${outH}:interp_algo=lanczos,hwdownload,format=nv12`
-    return `${cropFilter},${scaleFilter}`
+    return `${cropFilter},${scaleFilter},${fpsLock}`
   } else {
     const scaleFilter = `scale=${outW}:${outH}`
-    return `${cropFilter},${scaleFilter}`
+    return `${cropFilter},${scaleFilter},${fpsLock}`
   }
 }
 

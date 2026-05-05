@@ -100,11 +100,11 @@ export interface ShotCaptionOverride {
 }
 
 // ---------------------------------------------------------------------------
-// Default canvas constants — 9:16 vertical frame
+// Default canvas constants — locked 9:16 vertical frame (720×1280)
 // ---------------------------------------------------------------------------
 
-const DEFAULT_FRAME_WIDTH = 1080
-const DEFAULT_FRAME_HEIGHT = 1920
+const DEFAULT_FRAME_WIDTH = 720
+const DEFAULT_FRAME_HEIGHT = 1280
 
 // ---------------------------------------------------------------------------
 // Color conversion helpers
@@ -1425,8 +1425,8 @@ function buildDialogueLinesForGroup(
  * @param words       Word-level timestamps (relative to clip start, i.e. first word near 0)
  * @param style       Caption style configuration
  * @param outputPath  Where to write the .ass file. If omitted, writes to a temp file.
- * @param frameWidth  Canvas width in pixels (default: 1080). Must match the output video width.
- * @param frameHeight Canvas height in pixels (default: 1920). Must match the output video height.
+ * @param frameWidth  Canvas width in pixels (default: 720). Must match the locked 9:16 output width.
+ * @param frameHeight Canvas height in pixels (default: 1280). Must match the locked 9:16 output height.
  * @param marginVOverride  Optional override for vertical margin in pixels.
  * @param shotOverrides    Optional per-shot caption style overrides.
  * @param backgroundOpacity  Optional 0–1 opacity for an opaque box behind each subtitle line.

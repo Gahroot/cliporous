@@ -10,13 +10,15 @@ import type { RenderClipJob, RenderBatchOptions } from '../types'
 import type { BRollPlacement, BRollDisplayMode, BRollTransition } from '../../broll-placement'
 import { toFFmpegPath } from '../helpers'
 import { ffmpeg as createFfmpeg, getSoftwareEncoder } from '../../ffmpeg'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../../aspect-ratios'
 
 // ---------------------------------------------------------------------------
-// Canvas constants
+// Canvas constants — locked to 720×1280 @ 30fps (9:16 vertical)
 // ---------------------------------------------------------------------------
 
-const CANVAS_W = 1080
-const CANVAS_H = 1920
+const CANVAS_W = OUTPUT_WIDTH
+const CANVAS_H = OUTPUT_HEIGHT
+const CANVAS_FPS = OUTPUT_FPS
 
 // ---------------------------------------------------------------------------
 // Feature export
@@ -178,7 +180,7 @@ function pipXY(
  * Apply B-Roll overlays to a rendered clip using a single FFmpeg filter_complex.
  *
  * Each placement specifies its display mode and transition type. The filter
- * builder composes each B-Roll segment as a full 1080×1920 frame (combining
+ * builder composes each B-Roll segment as a full 720×1280 frame (combining
  * the B-Roll footage with a scaled copy of the speaker when needed for split
  * or PiP modes), then overlays it onto the main video with the chosen
  * transition effect.
@@ -307,7 +309,7 @@ function applyBRollOverlay(
 // ---------------------------------------------------------------------------
 
 /**
- * Fullscreen: B-Roll fills the entire 1080×1920 canvas.
+ * Fullscreen: B-Roll fills the entire 720×1280 canvas.
  */
 function buildFullscreenComposed(
   parts: string[],
@@ -321,14 +323,14 @@ function buildFullscreenComposed(
   const start = p.startTime
   const fadeOutSt = start + p.duration - tDur
 
-  // Trim → shift PTS → scale/crop to 1080×1920 → fps → format
+  // Trim → shift PTS → scale/crop to 720×1280 → fps → format
   let chain =
     `[${inputIdx}:v]` +
     `trim=0:${p.duration.toFixed(3)},` +
     `setpts=PTS-STARTPTS+${start.toFixed(3)}/TB,` +
     `scale=${CANVAS_W}:${CANVAS_H}:force_original_aspect_ratio=increase,` +
     `crop=${CANVAS_W}:${CANVAS_H},` +
-    `fps=30,format=rgba`
+    `fps=${CANVAS_FPS},format=rgba`
 
   // Apply transition (alpha fade for crossfade, no alpha for swipe/hard-cut)
   if (transition === 'crossfade') {
@@ -373,7 +375,7 @@ function buildSplitComposed(
     `setpts=PTS-STARTPTS+${start.toFixed(3)}/TB,` +
     `scale=${CANVAS_W}:${brollH}:force_original_aspect_ratio=increase,` +
     `crop=${CANVAS_W}:${brollH},` +
-    `fps=30` +
+    `fps=${CANVAS_FPS}` +
     `[${brLabel}]`
   )
 
@@ -385,7 +387,7 @@ function buildSplitComposed(
     `setpts=PTS-STARTPTS+${start.toFixed(3)}/TB,` +
     `scale=${CANVAS_W}:${speakerH}:force_original_aspect_ratio=increase,` +
     `crop=${CANVAS_W}:${speakerH},` +
-    `fps=30` +
+    `fps=${CANVAS_FPS}` +
     `[${spLabel}]`
   )
 
@@ -440,7 +442,7 @@ function buildPipComposed(
     `setpts=PTS-STARTPTS+${start.toFixed(3)}/TB,` +
     `scale=${CANVAS_W}:${CANVAS_H}:force_original_aspect_ratio=increase,` +
     `crop=${CANVAS_W}:${CANVAS_H},` +
-    `fps=30` +
+    `fps=${CANVAS_FPS}` +
     `[${brLabel}]`
   )
 
@@ -452,7 +454,7 @@ function buildPipComposed(
     `setpts=PTS-STARTPTS+${start.toFixed(3)}/TB,` +
     `scale=${pipW}:${pipH}:force_original_aspect_ratio=increase,` +
     `crop=${pipW}:${pipH},` +
-    `fps=30` +
+    `fps=${CANVAS_FPS}` +
     `[${spLabel}]`
   )
 

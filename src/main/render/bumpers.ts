@@ -7,6 +7,7 @@ import { tmpdir } from 'os'
 import { join } from 'path'
 import { ffmpeg, getEncoder, getSoftwareEncoder, isGpuSessionError, isGpuEncoderDisabled, disableGpuEncoderForSession, getVideoMetadata } from '../ffmpeg'
 import { toFFmpegPath } from './helpers'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../aspect-ratios'
 
 /**
  * Check if all segments have matching stream parameters (codec, resolution, fps)
@@ -66,8 +67,8 @@ export function concatDemuxerCopy(
  * Fast path: if all segments have identical codec/resolution/fps/audio, uses
  * the concat demuxer with stream copy (zero re-encoding).
  *
- * Slow path: scales all segments to 1080×1920 with black letterboxing and
- * re-encodes as h264/aac to ensure codec compatibility.
+ * Slow path: scales all segments to 720×1280 (locked 9:16) with black
+ * letterboxing and re-encodes as h264/aac to ensure codec compatibility.
  * Segments without an audio stream get a generated silence track.
  */
 export async function concatWithBumpers(
@@ -112,10 +113,11 @@ export async function concatWithBumpers(
   const filterParts: string[] = []
 
   for (let i = 0; i < segments.length; i++) {
-    // Scale to 1080×1920 with black padding to preserve aspect ratio
+    // Scale to the locked 720×1280 (9:16) canvas with black padding so the
+    // segment's original aspect ratio is preserved, then force fps=30.
     filterParts.push(
-      `[${i}:v]scale=1080:1920:force_original_aspect_ratio=decrease,` +
-      `pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,fps=30[sv${i}]`
+      `[${i}:v]scale=${OUTPUT_WIDTH}:${OUTPUT_HEIGHT}:force_original_aspect_ratio=decrease,` +
+      `pad=${OUTPUT_WIDTH}:${OUTPUT_HEIGHT}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,fps=${OUTPUT_FPS}[sv${i}]`
     )
     if (segments[i].hasAudio) {
       filterParts.push(

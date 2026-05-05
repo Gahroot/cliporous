@@ -14,6 +14,7 @@ import { existsSync, mkdirSync } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
 import { createHash } from 'crypto'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from './aspect-ratios'
 
 // ---------------------------------------------------------------------------
 // Config
@@ -34,7 +35,7 @@ function ensureVideoCacheDir(): void {
 /**
  * Convert a static image to a short video clip with a Ken Burns pan/zoom effect.
  *
- * The resulting video is 1080×1920 (9:16) at 30fps, encoded with libx264.
+ * The resulting video is 720×1280 (locked 9:16) at 30fps, encoded with libx264.
  * A slow zoom-in effect (1.0× → 1.08×) is applied for visual interest.
  *
  * @param imagePath   Absolute path to the source PNG image
@@ -67,7 +68,7 @@ export async function imageToVideoClip(
     return dest
   }
 
-  const fps = 30
+  const fps = OUTPUT_FPS
   const totalFrames = Math.ceil(duration * fps)
 
   // Ken Burns: slow zoom from 1.0× to 1.08× centred on the image
@@ -78,7 +79,7 @@ export async function imageToVideoClip(
     `d=1`,
     `x='iw/2-(iw/zoom/2)'`,
     `y='ih/2-(ih/zoom/2)'`,
-    `s=1080x1920`,
+    `s=${OUTPUT_WIDTH}x${OUTPUT_HEIGHT}`,
     `fps=${fps}`
   ].join(':')
 

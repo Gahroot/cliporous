@@ -28,6 +28,7 @@ import { toFFmpegPath } from './helpers'
 import { buildSegmentLayout, type SegmentLayoutParams } from '../layouts/segment-layouts'
 import { getEditStyleById, DEFAULT_EDIT_STYLE_ID } from './../edit-styles/index'
 import { buildSceneCropFilter } from './scene-crop-filter'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../aspect-ratios'
 
 /**
  * Assemble a stitched video: extract each source segment at the target
@@ -135,8 +136,8 @@ export async function assembleStitchedVideo(
           getEditStyleById(job.stylePresetId ?? DEFAULT_EDIT_STYLE_ID) ??
           getEditStyleById(DEFAULT_EDIT_STYLE_ID)!
         const layoutParams: SegmentLayoutParams = {
-          width: 1080,
-          height: 1920,
+          width: OUTPUT_WIDTH,
+          height: OUTPUT_HEIGHT,
           segmentDuration: segDuration,
           imagePath: seg.imagePath,
           overlayText: seg.overlayText,
@@ -162,7 +163,7 @@ export async function assembleStitchedVideo(
         filterComplexFinalLabel = 'outv'
       }
 
-      const videoFilter = `${legacyCropFilter},scale=1080:1920`
+      const videoFilter = `${legacyCropFilter},scale=${OUTPUT_WIDTH}:${OUTPUT_HEIGHT},fps=${OUTPUT_FPS}`
 
       await new Promise<void>((resolve, reject) => {
         let fallbackAttempted = false

@@ -24,8 +24,8 @@ import { formatASSTimestamp, cssHexToASS, buildASSFilter } from '../helpers'
 export function generateHookTitleASSFile(
   text: string,
   config: HookTitleConfig,
-  frameWidth = 1080,
-  frameHeight = 1920,
+  frameWidth = 720,
+  frameHeight = 1280,
   yPositionPx?: number
 ): string {
   const {
@@ -42,8 +42,9 @@ export function generateHookTitleASSFile(
   const primaryASS = cssHexToASS(textColor)
   const outlineASS = cssHexToASS(outlineColor)
 
-  // Y position from top: use provided value or fall back to 220px
-  const marginV = yPositionPx ?? 220
+  // Y position from top: use provided value or fall back to ~11.46% of
+  // frame height (147px @ 1280) — inside the union 9:16 vertical safe zone.
+  const marginV = yPositionPx ?? Math.round(frameHeight * 0.1146)
 
   // Filled rounded-rect look: BorderStyle 3 = opaque box behind text.
   // White box background, black text, with generous outline (padding).
@@ -121,12 +122,13 @@ export function createHookTitleFeature(): RenderFeature {
       }
 
       try {
-        const frameHeight = 1920
+        const frameWidth = 720
+        const frameHeight = 1280
         const yPositionPx = batchOptions.templateLayout?.titleText
           ? Math.round((batchOptions.templateLayout.titleText.y / 100) * frameHeight)
           : undefined
 
-        const assPath = generateHookTitleASSFile(job.hookTitleText, job.hookTitleConfig, 1080, frameHeight, yPositionPx)
+        const assPath = generateHookTitleASSFile(job.hookTitleText, job.hookTitleConfig, frameWidth, frameHeight, yPositionPx)
         assPathMap.set(job.clipId, assPath)
         console.log(`[HookTitle] Generated ASS overlay: ${assPath}`)
         return { tempFiles: [assPath], modified: true }

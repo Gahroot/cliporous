@@ -1,17 +1,18 @@
 /**
- * Aspect Ratio Configuration
+ * Aspect Ratio Configuration — locked to 9:16 vertical (720×1280)
  *
- * Defines the supported output aspect ratios for rendered clips.
- * Each config specifies the output canvas dimensions, display label,
- * target platforms, and human-readable description.
+ * Output is hard-locked to 720×1280 @ 30fps for vertical short-form video.
+ * No other aspect ratios are supported. Platform-specific branching
+ * (TikTok / Reels / Shorts) has been removed — the canvas is a single
+ * vertical union zone.
  */
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-import type { OutputAspectRatio } from '@shared/types'
-export type { OutputAspectRatio }
+/** The only supported output aspect ratio. */
+export type OutputAspectRatio = '9:16'
 
 export interface AspectRatioConfig {
   /** Canonical ratio identifier */
@@ -20,8 +21,6 @@ export interface AspectRatioConfig {
   label: string
   /** Human-readable description */
   description: string
-  /** Target platforms */
-  platforms: string[]
   /** Output canvas width in pixels */
   width: number
   /** Output canvas height in pixels */
@@ -31,45 +30,28 @@ export interface AspectRatioConfig {
 }
 
 // ---------------------------------------------------------------------------
-// Config registry
+// Locked output dimensions & frame rate
+// ---------------------------------------------------------------------------
+
+/** Locked output width in pixels. */
+export const OUTPUT_WIDTH = 720
+/** Locked output height in pixels. */
+export const OUTPUT_HEIGHT = 1280
+/** Locked output frame rate. */
+export const OUTPUT_FPS = 30
+
+// ---------------------------------------------------------------------------
+// Config registry — only 9:16 is supported
 // ---------------------------------------------------------------------------
 
 export const ASPECT_RATIO_CONFIGS: Record<OutputAspectRatio, AspectRatioConfig> = {
   '9:16': {
     ratio: '9:16',
     label: '9:16',
-    description: 'Vertical — full-screen mobile',
-    platforms: ['TikTok', 'Reels', 'Shorts'],
-    width: 1080,
-    height: 1920,
+    description: 'Vertical — full-screen mobile (720×1280 @ 30fps)',
+    width: OUTPUT_WIDTH,
+    height: OUTPUT_HEIGHT,
     aspect: 9 / 16
-  },
-  '1:1': {
-    ratio: '1:1',
-    label: '1:1',
-    description: 'Square — feed posts',
-    platforms: ['Instagram Feed', 'Facebook'],
-    width: 1080,
-    height: 1080,
-    aspect: 1
-  },
-  '4:5': {
-    ratio: '4:5',
-    label: '4:5',
-    description: 'Portrait — Instagram post',
-    platforms: ['Instagram Post'],
-    width: 1080,
-    height: 1350,
-    aspect: 4 / 5
-  },
-  '16:9': {
-    ratio: '16:9',
-    label: '16:9',
-    description: 'Landscape — widescreen',
-    platforms: ['YouTube', 'Twitter / X'],
-    width: 1920,
-    height: 1080,
-    aspect: 16 / 9
   }
 }
 
@@ -78,27 +60,25 @@ export const ASPECT_RATIO_CONFIGS: Record<OutputAspectRatio, AspectRatioConfig> 
 // ---------------------------------------------------------------------------
 
 /**
- * Get the canvas dimensions for an aspect ratio.
- * Defaults to 1080×1920 (9:16) when ratio is undefined.
+ * Get the canvas dimensions. Always returns 720×1280 since output is locked
+ * to 9:16 vertical.
  */
-export function getCanvasDimensions(ratio?: OutputAspectRatio): { width: number; height: number } {
-  if (!ratio) return { width: 1080, height: 1920 }
-  const config = ASPECT_RATIO_CONFIGS[ratio]
-  return { width: config.width, height: config.height }
+export function getCanvasDimensions(_ratio?: OutputAspectRatio): { width: number; height: number } {
+  return { width: OUTPUT_WIDTH, height: OUTPUT_HEIGHT }
 }
 
 /**
- * Compute the center-crop region from a source video to match the target
- * aspect ratio. Returns crop rectangle (x, y, width, height) in source pixels.
- * Rounds values to even numbers for H.264 compatibility.
+ * Compute the center-crop region from a source video to match the locked
+ * 9:16 vertical aspect ratio. Returns crop rectangle (x, y, width, height)
+ * in source pixels. Rounds values to even numbers for H.264 compatibility.
  */
 export function computeCenterCropForRatio(
   sourceWidth: number,
   sourceHeight: number,
-  targetRatio: OutputAspectRatio
+  _targetRatio?: OutputAspectRatio
 ): { x: number; y: number; width: number; height: number } {
   const roundToEven = (n: number): number => n - (n % 2)
-  const { aspect } = ASPECT_RATIO_CONFIGS[targetRatio]
+  const aspect = ASPECT_RATIO_CONFIGS['9:16'].aspect
 
   const sourceAspect = sourceWidth / sourceHeight
 

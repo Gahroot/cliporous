@@ -485,21 +485,21 @@ export interface RenderBatchOptions {
    */
   renderConcurrency?: number
   /**
-   * Render quality and output format settings. When omitted, defaults to
-   * normal quality (CRF 23, 1080×1920, veryfast preset, MP4).
+   * Render quality and encoding-format settings. Output resolution is locked
+   * to 720×1280 (9:16) at 30fps; only CRF/preset/container are configurable.
+   * When omitted, defaults to normal quality (CRF 23, veryfast preset, MP4).
    */
   renderQuality?: {
     preset: 'draft' | 'normal' | 'high' | 'custom'
     customCrf: number
-    outputResolution: '1080x1920' | '720x1280' | '540x960'
+    /** Locked to 720×1280 — value is accepted for backward compat but ignored. */
+    outputResolution: '720x1280'
     outputFormat: 'mp4' | 'webm'
     encodingPreset: 'ultrafast' | 'veryfast' | 'medium' | 'slow'
   }
   /**
-   * Output aspect ratio for rendered clips. Controls the canvas dimensions and
-   * the fallback center-crop region. When provided, overrides the default 9:16
-   * (1080×1920) canvas. Face-detected crop regions are still used when available.
-   * Defaults to '9:16' when omitted.
+   * Output aspect ratio is locked to 9:16 vertical (720×1280 @ 30fps).
+   * Field retained for backward compatibility; value is ignored.
    */
   outputAspectRatio?: OutputAspectRatio
   /**

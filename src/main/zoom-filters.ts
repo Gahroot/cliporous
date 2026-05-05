@@ -20,9 +20,9 @@
 // ---------------------------------------------------------------------------
 
 export interface ZoomFilterParams {
-  /** Output width in pixels (typically 1080) */
+  /** Output width in pixels — locked to 720 (9:16 vertical) */
   width: number
-  /** Output height in pixels (typically 1920) */
+  /** Output height in pixels — locked to 1280 (9:16 vertical) */
   height: number
   /** Video frame rate */
   fps: number

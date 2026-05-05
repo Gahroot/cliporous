@@ -1,10 +1,10 @@
 // ---------------------------------------------------------------------------
-// Preview render — fast low-quality render at 540×960 with all overlays applied
+// Preview render — fast low-quality render at the locked 720×1280 canvas
 // ---------------------------------------------------------------------------
 //
 // Designed for the ClipPreview dialog's "Preview with Overlays" button.
 // Renders in ~3–5 seconds instead of 20–30 seconds by using:
-//   - Half resolution (540×960 instead of 1080×1920)
+//   - Locked 720×1280 @ 30fps output (matches the final render)
 //   - Software encoder (libx264) with ultrafast preset and CRF 35
 //   - All overlays applied (captions, hook title, progress bar, brand logo, auto-zoom)
 //   - Bumpers, sound design, B-roll, and filler removal are skipped
@@ -14,6 +14,7 @@ import { join } from 'path'
 import { tmpdir } from 'os'
 import { unlinkSync } from 'fs'
 import { getVideoMetadata } from '../ffmpeg'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../aspect-ratios'
 import { generateZoomFilter } from '../auto-zoom'
 import { buildVideoFilter, renderClip } from './base-render'
 import { createCaptionsFeature } from './features/captions.feature'
@@ -29,9 +30,10 @@ import type { VideoSegment, EmphasizedWord } from '@shared/types'
 // Constants
 // ---------------------------------------------------------------------------
 
-/** Preview output resolution (half of 1080×1920) */
-const PREVIEW_WIDTH = 540
-const PREVIEW_HEIGHT = 960
+/** Preview output resolution — locked to the same 720×1280 @ 30fps as final renders. */
+const PREVIEW_WIDTH = OUTPUT_WIDTH
+const PREVIEW_HEIGHT = OUTPUT_HEIGHT
+const PREVIEW_FPS = OUTPUT_FPS
 
 /**
  * Derive a lighter tint from a hex color for the supersize word color.
@@ -157,7 +159,7 @@ async function renderSegmentedPreview(
     editStyle,
     width: PREVIEW_WIDTH,
     height: PREVIEW_HEIGHT,
-    fps: meta.fps ?? 30,
+    fps: PREVIEW_FPS,
     sourceWidth: meta.width,
     sourceHeight: meta.height,
     defaultCropRect: config.cropRegion,
@@ -184,7 +186,7 @@ async function renderSegmentedPreview(
 // ---------------------------------------------------------------------------
 
 /**
- * Render a single clip at 540×960 with ultrafast/CRF-35 encoding.
+ * Render a single clip at the locked 720×1280 @ 30fps with ultrafast/CRF-35 encoding.
  * Applies captions, hook title, brand logo, and auto-zoom.
  * Skips bumpers, sound design, B-roll, and filler removal.
  *

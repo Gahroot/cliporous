@@ -29,7 +29,7 @@ vi.mock('../../word-emphasis', () => ({
 }))
 
 vi.mock('../../auto-zoom', () => ({
-  generateZoomFilter: vi.fn(() => 'crop=trunc(iw*1.1):trunc(ih*1.1):0:0,scale=1080:1920')
+  generateZoomFilter: vi.fn(() => 'crop=trunc(iw*1.1):trunc(ih*1.1):0:0,scale=720:1280')
 }))
 
 vi.mock('../../overlays/rehook', () => ({
@@ -57,12 +57,16 @@ vi.mock('../../ffmpeg', () => ({
 }))
 
 vi.mock('../../aspect-ratios', () => ({
+  // Locked to 9:16 vertical at 720×1280 @ 30fps. No other ratios are supported.
   ASPECT_RATIO_CONFIGS: {
-    '9:16': { width: 1080, height: 1920 },
-    '16:9': { width: 1920, height: 1080 },
-    '1:1': { width: 1080, height: 1080 },
-    '4:5': { width: 1080, height: 1350 }
-  }
+    '9:16': { width: 720, height: 1280 }
+  },
+  OUTPUT_WIDTH: 720,
+  OUTPUT_HEIGHT: 1280,
+  OUTPUT_FPS: 30,
+  computeCenterCropForRatio: (sw: number, sh: number) => ({
+    x: 0, y: 0, width: sw, height: sh
+  })
 }))
 
 // ---------------------------------------------------------------------------
@@ -213,8 +217,8 @@ describe('CaptionsFeature', () => {
     const job = makeJob({ assFilePath: '/tmp/test.ass' })
     const result = feature.overlayPass!(job, {
       clipDuration: 30,
-      targetWidth: 1080,
-      targetHeight: 1920
+      targetWidth: 720,
+      targetHeight: 1280
     })
     expect(result).not.toBeNull()
     expect(result!.name).toBe('captions')
@@ -226,8 +230,8 @@ describe('CaptionsFeature', () => {
     const job = makeJob()
     const result = feature.overlayPass!(job, {
       clipDuration: 30,
-      targetWidth: 1080,
-      targetHeight: 1920
+      targetWidth: 720,
+      targetHeight: 1280
     })
     expect(result).toBeNull()
   })
@@ -305,8 +309,8 @@ describe('HookTitleFeature', () => {
     )
     const result = feature.overlayPass!(job, {
       clipDuration: 30,
-      targetWidth: 1080,
-      targetHeight: 1920
+      targetWidth: 720,
+      targetHeight: 1280
     })
     expect(result).not.toBeNull()
     expect(result!.name).toBe('hook-title')
@@ -318,8 +322,8 @@ describe('HookTitleFeature', () => {
     const job = makeJob()
     const result = feature.overlayPass!(job, {
       clipDuration: 30,
-      targetWidth: 1080,
-      targetHeight: 1920
+      targetWidth: 720,
+      targetHeight: 1280
     })
     expect(result).toBeNull()
   })
@@ -484,8 +488,8 @@ describe('AutoZoomFeature', () => {
     const filter = autoZoomFeature.videoFilter!(job, {
       sourceWidth: 1920,
       sourceHeight: 1080,
-      targetWidth: 1080,
-      targetHeight: 1920,
+      targetWidth: 720,
+      targetHeight: 1280,
       clipDuration: 30,
       outputAspectRatio: '9:16'
     })
@@ -499,8 +503,8 @@ describe('AutoZoomFeature', () => {
     const filter = autoZoomFeature.videoFilter!(job, {
       sourceWidth: 1920,
       sourceHeight: 1080,
-      targetWidth: 1080,
-      targetHeight: 1920,
+      targetWidth: 720,
+      targetHeight: 1280,
       clipDuration: 30,
       outputAspectRatio: '9:16'
     })

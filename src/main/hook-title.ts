@@ -25,7 +25,7 @@ export interface HookTitleConfig {
   fadeIn: number
   /** Fade-out time in seconds (default 0.4). */
   fadeOut: number
-  /** Font size in pixels on the 1080×1920 canvas (default 72). */
+  /** Font size in pixels on the locked 720×1280 canvas (default 72). */
   fontSize: number
   /** Text color in CSS hex format (default '#FFFFFF'). */
   textColor: string
@@ -235,8 +235,10 @@ export function buildHookTitleFilter(
     ? `fontfile='${fontFilePath.replace(/\\/g, '/').replace(/:/g, '\\:').replace(/'/g, "\\'")}':fontsize=${fontSize}`
     : `font='Sans Bold':fontsize=${fontSize}`
 
-  // Y position: in the top safe zone (~220px from top, well clear of TikTok/Reels UI)
-  const yPos = 220
+  // Y position: top of the union 9:16 vertical safe zone (~147px @ 1280,
+  // proportional to the legacy 220px @ 1920). No platform-specific branching —
+  // a single union safe zone covers all short-form vertical surfaces.
+  const yPos = 147
 
   // Text color (we animate alpha via the alpha= expression)
   const fgColor = hexToFFmpegColor(textColor, 1.0)
