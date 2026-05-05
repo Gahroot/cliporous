@@ -1,13 +1,8 @@
 /**
- * ClipGrid — masonry grid of 9:16 clip cards with filter chips and Render
- * Approved primary action.
+ * Re-export of the canonical ClipGrid implementation.
  *
- * Stub: full implementation lives in the dedicated ClipGrid task.
+ * The component lives at `@/components/ClipGrid` next to its sibling
+ * `ClipCard`. This file remains for backwards compatibility with existing
+ * `@/components/screens/ClipGrid` imports (App.tsx).
  */
-export function ClipGrid(): React.JSX.Element {
-  return (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="text-muted-foreground text-sm">ClipGrid</div>
-    </div>
-  )
-}
+export { ClipGrid } from '@/components/ClipGrid'
