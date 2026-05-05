@@ -14,9 +14,10 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "vitest run --config vitest.config.main.ts",
+    "test:watch": "vitest --config vitest.config.main.ts",
     "test:main": "vitest run --config vitest.config.main.ts",
+    "test:renderer": "vitest run",
     "setup:python": "bash scripts/setup-python.sh"
   },
   "dependencies": {
