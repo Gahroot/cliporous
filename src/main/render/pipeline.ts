@@ -414,6 +414,7 @@ export async function startBatchRender(
             overlayText: raw.overlayText ?? resolved.layoutParamOverrides.overlayText,
             accentColor: raw.accentColor ?? resolved.layoutParamOverrides.accentColor,
             captionBgOpacity: raw.captionBgOpacity ?? resolved.layoutParamOverrides.captionBgOpacity,
+            backgroundColor: resolved.layoutParamOverrides.backgroundColor,
             imagePath: raw.imagePath,
             cropRect: raw.cropRect,
             archetype: raw.archetype,

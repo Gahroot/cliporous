@@ -1,18 +1,28 @@
 import React from 'react'
 import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from 'remotion'
-import { PrestyjBackground } from '../shared/PrestyjBackground'
 import { PrestyjFonts } from '../shared/fonts'
 import { EASE } from '../shared/easing'
+import { BRAND_ACCENT, BRAND_BG, BRAND_FG } from '../../edit-styles/shared/brand'
 
 export interface FullscreenQuoteProps {
   /** The quote body. Word-by-word reveal happens automatically. */
   quote: string
   /** Optional attribution rendered below the quote in script font. */
   attribution?: string
-  /** Hex accent color (PRESTYJ default: #7058E3). */
-  accentColor: string
-  /** Hex primary text color (default white). */
-  primaryColor: string
+  /**
+   * Accent color used for emphasis (accent bar, attribution glow). Defaults
+   * to BRAND_ACCENT when callers omit it. The "just subtitles" archetype
+   * keeps the bg solid — the accent shows up only on highlighted words.
+   */
+  accentColor?: string
+  /** Primary text color. Defaults to BRAND_FG. */
+  primaryColor?: string
+  /**
+   * Solid background color rendered behind the quote. Defaults to BRAND_BG.
+   * Mirrors the FFmpeg `color=` source used by buildFullscreenTextCenter so
+   * preview and final render are pixel-identical on the backdrop.
+   */
+  backgroundColor?: string
   /** Body display font family — must match a loaded @font-face. */
   bodyFont: string
   /** Script attribution font family — must match a loaded @font-face. */
@@ -26,8 +36,9 @@ const ATTRIBUTION_DELAY_FRAMES = 14
 export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
   quote,
   attribution,
-  accentColor,
-  primaryColor,
+  accentColor = BRAND_ACCENT,
+  primaryColor = BRAND_FG,
+  backgroundColor = BRAND_BG,
   bodyFont,
   scriptFont
 }) => {
@@ -60,9 +71,14 @@ export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
   )
 
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={{ backgroundColor }}>
       <PrestyjFonts />
-      <PrestyjBackground accentColor={accentColor} />
+
+      {/*
+        "just subtitles" archetype: solid brand backdrop only. No gradient,
+        no vignette, no grain — mirrors the FFmpeg buildFullscreenTextCenter
+        layout (color=c=BRAND_BG) and the example reference frame.
+      */}
 
       {/* Centered stack — quote dominates, attribution is a quiet whisper. */}
       <AbsoluteFill

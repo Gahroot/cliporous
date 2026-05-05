@@ -59,6 +59,12 @@ export interface ResolvedSegment {
   accentColor?: string
   /** Caption bg opacity for this segment */
   captionBgOpacity?: number
+  /**
+   * Solid backdrop hex color (e.g. '#23100c') for no-broll archetypes
+   * (fullscreen-quote, fullscreen-headline). Forwarded to SegmentLayoutParams
+   * so the FFmpeg `color=` source matches the brand identity.
+   */
+  backgroundColor?: string
   /** Contextual image path (for image-based layouts) */
   imagePath?: string
   /** Per-segment face crop override */
@@ -621,6 +627,7 @@ async function encodeLayoutSegment(
     overlayText: seg.overlayText,
     accentColor: seg.accentColor ?? config.userAccentColor,
     captionBgOpacity: seg.captionBgOpacity,
+    backgroundColor: seg.backgroundColor,
     sourceWidth,
     sourceHeight,
     cropRect: seg.cropRect ?? config.defaultCropRect,

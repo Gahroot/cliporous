@@ -21,6 +21,7 @@ import { existsSync } from 'fs'
 import { readdir } from 'fs/promises'
 import { app } from 'electron'
 import { escapeDrawtext } from '../hook-title'
+import { BRAND_BG } from '../edit-styles/shared/brand'
 
 // ---------------------------------------------------------------------------
 // Canvas constants
@@ -47,6 +48,12 @@ export interface SegmentLayoutParams {
   accentColor?: string
   /** Caption background opacity 0–1. Default: 0.6. */
   captionBgOpacity?: number
+  /**
+   * Solid backdrop hex color (e.g. '#23100c') for layouts that paint a
+   * full-frame background — fullscreen-text-center / fullscreen-text-headline.
+   * Default: BRAND_BG.
+   */
+  backgroundColor?: string
   /** Font size for text overlays. Default: 96. */
   fontSize?: number
   /** Source video width (for crop calculations). */
@@ -508,31 +515,40 @@ function buildFullscreenImageClean(params: SegmentLayoutParams): SegmentLayoutRe
 }
 
 /**
- * fullscreen-text-center: Solid dark background. The hero ASS pass
+ * fullscreen-text-center: Solid brand background. The hero ASS pass
  * (archetype-hero.ts) draws the animated text on top; fall back to a static
  * drawtext when no overlayText is set so the frame isn't blank.
+ *
+ * Background defaults to BRAND_BG (#23100c). The template can override via
+ * `layoutParamOverrides.backgroundColor` — keeps the FFmpeg backdrop in
+ * lockstep with the Remotion FullscreenQuote composition and the renderer
+ * CSS tokens.
  */
 async function buildFullscreenTextCenter(params: SegmentLayoutParams): Promise<SegmentLayoutResult> {
   const w = params.width
   const h = params.height
   const dur = params.segmentDuration
+  const bgColor = hexToFFmpeg(params.backgroundColor ?? BRAND_BG)
 
-  const bg = `color=c=0x0a0a14:s=${w}x${h}:d=${dur.toFixed(3)}:r=30`
+  const bg = `color=c=${bgColor}:s=${w}x${h}:d=${dur.toFixed(3)}:r=30`
   const fc = `${bg}[composed];` + finalize('composed')
   return { filterComplex: fc, inputCount: 0 }
 }
 
 /**
- * fullscreen-text-headline: Solid dark background. The hero ASS pass
+ * fullscreen-text-headline: Solid brand background. The hero ASS pass
  * (archetype-hero.ts) renders the animated headline + subtext; this layout
  * only produces the solid background.
+ *
+ * See buildFullscreenTextCenter for the brand-color background contract.
  */
 async function buildFullscreenTextHeadline(params: SegmentLayoutParams): Promise<SegmentLayoutResult> {
   const w = params.width
   const h = params.height
   const dur = params.segmentDuration
+  const bgColor = hexToFFmpeg(params.backgroundColor ?? BRAND_BG)
 
-  const bg = `color=c=0x0a0a14:s=${w}x${h}:d=${dur.toFixed(3)}:r=30`
+  const bg = `color=c=${bgColor}:s=${w}x${h}:d=${dur.toFixed(3)}:r=30`
   const fc = `${bg}[composed];` + finalize('composed')
   return { filterComplex: fc, inputCount: 0 }
 }

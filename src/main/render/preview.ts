@@ -147,6 +147,7 @@ async function renderSegmentedPreview(
       overlayText: raw.overlayText ?? resolved.layoutParamOverrides.overlayText,
       accentColor: resolved.layoutParamOverrides.accentColor,
       captionBgOpacity: resolved.layoutParamOverrides.captionBgOpacity,
+      backgroundColor: resolved.layoutParamOverrides.backgroundColor,
       imagePath: raw.imagePath,
       archetype: raw.archetype,
       captionMarginV: resolved.captionMarginV
