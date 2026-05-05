@@ -1,0 +1,78 @@
+import { createEditStyle } from '../shared/base'
+import type { Archetype } from '../shared/archetypes'
+import type { EditStyleTemplate } from '../shared/types'
+import { T_PRESTYJ } from '../shared/transitions'
+
+import { talkingHead } from './templates/talking-head'
+import { tightPunch } from './templates/tight-punch'
+import { wideBreather } from './templates/wide-breather'
+import { quoteLower } from './templates/quote-lower'
+import { splitImage } from './templates/split-image'
+import { fullscreenImage } from './templates/fullscreen-image'
+import { fullscreenQuote } from './templates/fullscreen-quote'
+import { fullscreenHeadline } from './templates/fullscreen-headline'
+
+export const prestyjEditStyle: EditStyle = createEditStyle({
+  id: 'prestyj',
+  name: 'PRESTYJ',
+  energy: 'high',
+  accentColor: '#7058E3',
+  letterbox: 'none',
+  defaultZoomStyle: 'drift',
+  defaultZoomIntensity: 1.10,
+  defaultTransition: 'crossfade',
+  flashColor: '#FFFFFF',
+  transitionDuration: 0.3,
+  targetEditsPerSecond: 0.5,
+  captionStyle: {
+    fontName: 'Geist',
+    fontSize: 0.065,
+    primaryColor: '#FFFFFF',
+    highlightColor: '#7058E3',
+    emphasisColor: '#7058E3',
+    supersizeColor: '#7058E3',
+    outlineColor: '#FFFFFF',
+    outline: 2,
+    shadow: 0,
+    shadowDistance: 3,
+    shadowAngle: 69,
+    shadowSoftness: 80,
+    shadowOpacity: 0.95,
+    shadowColor: '#000000',
+    wordsPerLine: 4,
+    animation: 'captions-ai'
+  },
+  textAnimation: 'scale-up',
+  description:
+    'Clean modern energy — Geist Bold captions, purple emphasis, smooth transitions, Style Script quotes',
+  colorGrade: {
+    warmth: 0.0,
+    contrast: 1.10,
+    saturation: 1.05,
+    blackLift: 0.02,
+    highlightSoftness: 0.7
+  },
+  transitionMap: T_PRESTYJ,
+  vfxOverlays: [],
+  headlineStyle: {
+    fontSize: 72,
+    textColor: '#FFFFFF',
+    outlineColor: '#FFFFFF',
+    outlineWidth: 2,
+    bold: true,
+    animation: 'scale-pop',
+    animationDurationMs: 350,
+    verticalPosition: 0.15
+  }
+})
+
+export const prestyjTemplates: Record<Archetype, EditStyleTemplate> = {
+  'talking-head': talkingHead,
+  'tight-punch': tightPunch,
+  'wide-breather': wideBreather,
+  'quote-lower': quoteLower,
+  'split-image': splitImage,
+  'fullscreen-image': fullscreenImage,
+  'fullscreen-quote': fullscreenQuote,
+  'fullscreen-headline': fullscreenHeadline
+}
