@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+out/
+dist/
+build/
+
+# Logs
+*.log
+
+# Python venv (users run npm run setup:python locally)
+python/venv/
+
+# Environment / secrets
+.env
+.env.local
+
+# Electron build artifacts
+*.AppImage
+*.exe
+*.dmg
+*.deb
+*.rpm
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+python/__pycache__/
