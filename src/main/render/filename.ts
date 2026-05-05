@@ -5,7 +5,6 @@
 import { join, basename, extname } from 'path'
 import { sanitizeFilename } from './helpers'
 import type { RenderClipJob } from './types'
-import { DEFAULT_FILENAME_TEMPLATE } from '@shared/constants'
 
 /**
  * Slugify a string for use inside a filename:
@@ -38,9 +37,10 @@ export function zeroPad(n: number): string {
  * Resolve a filename template string with per-clip variables.
  *
  * Available variables:
- *   {source}   — source video name without extension
+ *   {source}   — source video name without extension (slugified for filesystem safety)
  *   {index}    — 1-based clip index, zero-padded (01, 02, …)
- *   {score}    — AI viral score (0–100)
+ *   {score}    — AI viral score (0–100), unpadded
+ *   {score2}   — AI viral score zero-padded to 2 digits (e.g. 7 → "07", 85 → "85")
  *   {hook}     — hook text slugified (lowercase, spaces→hyphens, max 30 chars)
  *   {duration} — clip duration in seconds (rounded)
  *   {start}    — clip start time as MM-SS
@@ -70,10 +70,14 @@ export function resolveFilenameTemplate(
     String(today.getDate()).padStart(2, '0')
   ].join('-')
 
+  const scoreInt = Math.max(0, Math.min(100, Math.round(variables.score)))
+
   const resolved = template
     .replace(/\{source\}/g, sanitizeFilename(variables.source))
     .replace(/\{index\}/g, zeroPad(variables.index))
-    .replace(/\{score\}/g, String(Math.round(variables.score)))
+    // {score2} must be replaced before {score} so the substring match doesn't leak.
+    .replace(/\{score2\}/g, zeroPad(scoreInt))
+    .replace(/\{score\}/g, String(scoreInt))
     .replace(/\{hook\}/g, slugify(variables.hook))
     .replace(/\{duration\}/g, String(Math.round(variables.duration)))
     .replace(/\{start\}/g, formatMMSS(variables.startTime))
@@ -86,8 +90,37 @@ export function resolveFilenameTemplate(
 }
 
 /**
+ * Build the canonical batch-clip filename (without extension):
+ *
+ *   `{source-slug}_{score-padded-to-2}_{hook-slug-30char}`
+ *
+ * This is the convention used when no custom `filenameTemplate` override is
+ * supplied on the batch options. The full output path is assembled by
+ * `buildOutputPath` which appends the extension and the configured output
+ * directory.
+ */
+export function buildBatchClipFilename(
+  sourceName: string,
+  score: number,
+  hookText: string
+): string {
+  const sourceSlug = slugify(sourceName, 60) || sanitizeFilename(sourceName) || 'source'
+  const scoreInt = Math.max(0, Math.min(100, Math.round(score)))
+  const hookSlug = slugify(hookText, 30)
+  const name = `${sourceSlug}_${zeroPad(scoreInt)}_${hookSlug}`
+  // Trim trailing underscore when hook is empty so we don't emit "name_07_.mp4"
+  return name.replace(/_+$/g, '') || 'clip'
+}
+
+/**
  * Build the full output file path for a rendered clip.
- * Uses the job's outputFileName if set, otherwise resolves the filename template.
+ *
+ * Resolution order:
+ *   1. `job.outputFileName` (explicit per-job override) — sanitized + extension forced.
+ *   2. Custom `filenameTemplate` (if supplied on batch options) — resolved via
+ *      `resolveFilenameTemplate`.
+ *   3. Default convention via `buildBatchClipFilename`:
+ *        `{source-slug}_{score-padded-to-2}_{hook-slug-30char}`
  */
 export function buildOutputPath(
   outputDirectory: string,
@@ -105,12 +138,20 @@ export function buildOutputPath(
     return join(outputDirectory, `${base}${ext}`)
   }
   const srcBase = basename(job.sourceVideoPath, extname(job.sourceVideoPath))
-  const template = filenameTemplate ?? DEFAULT_FILENAME_TEMPLATE
-  const name = resolveFilenameTemplate(template, {
+  const score = extraVars?.score ?? job.manifestMeta?.score ?? 0
+  const hook = job.hookTitleText ?? ''
+
+  // No custom template → use the canonical batch convention.
+  if (!filenameTemplate) {
+    const name = buildBatchClipFilename(srcBase, score, hook)
+    return join(outputDirectory, `${name}${ext}`)
+  }
+
+  const name = resolveFilenameTemplate(filenameTemplate, {
     source: srcBase,
     index: index + 1,
-    score: extraVars?.score ?? job.manifestMeta?.score ?? 0,
-    hook: job.hookTitleText ?? '',
+    score,
+    hook,
     duration: job.endTime - job.startTime,
     startTime: job.startTime,
     endTime: job.endTime,

@@ -16,11 +16,7 @@ import { getEncoder, getVideoMetadata } from '../ffmpeg'
 import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../aspect-ratios'
 import type { OutputAspectRatio } from '../aspect-ratios'
 import { writeDescriptionFile } from '../ai/description-generator'
-import {
-  generateRenderManifest,
-  writeManifestFiles,
-  type ManifestJobMeta
-} from '../export-manifest'
+import type { ManifestJobMeta } from '../export-manifest'
 
 import type { RenderClipJob, RenderBatchOptions, RenderStitchedClipJob } from './types'
 import type { RenderFeature, FilterContext, OverlayContext, PostProcessContext, OverlayPassResult } from './features/feature'
@@ -135,9 +131,32 @@ function remapWordEmphasis<T extends { start: number; end: number }>(
  *   5. feature.overlayPass() — collect overlay passes (captions, hook, rehook, bar)
  *   6. feature.postProcess() — post-processing (B-Roll)
  */
+/**
+ * Data passed to a `BatchDoneHandler` so the IPC layer (or test harness) can
+ * write the export manifest alongside the rendered MP4s. Decoupling the
+ * manifest write from this orchestrator means manifest IO is invoked from
+ * `render-handlers.ts` on `render:batchDone` rather than buried mid-pipeline.
+ */
+export interface BatchDoneInfo {
+  options: RenderBatchOptions
+  jobs: RenderClipJob[]
+  outputDirectory: string
+  clipMeta: ManifestJobMeta[]
+  clipResults: Map<string, string | null>
+  clipRenderTimes: Map<string, number>
+  totalRenderTimeMs: number
+  encoder: string
+  completed: number
+  failed: number
+  total: number
+}
+
+export type BatchDoneHandler = (info: BatchDoneInfo) => void | Promise<void>
+
 export async function startBatchRender(
   options: RenderBatchOptions,
-  window: BrowserWindow
+  window: BrowserWindow,
+  onBatchDone?: BatchDoneHandler
 ): Promise<void> {
   cancelRequested = false
 
@@ -748,7 +767,11 @@ export async function startBatchRender(
   }
 
   // ── Generate export manifest ────────────────────────────────────────────
-  if (options.sourceMeta) {
+  // Hand off batch-done info to the IPC layer for manifest writing.
+  // The export manifest is written from `render-handlers.ts` on the
+  // `render:batchDone` boundary rather than here, so this orchestrator stays
+  // focused on rendering and IO concerns live at the IPC layer.
+  if (onBatchDone) {
     try {
       const clipMeta: ManifestJobMeta[] = jobs.map((job) => ({
         clipId: job.clipId,
@@ -760,23 +783,21 @@ export async function startBatchRender(
         description: job.description
       }))
 
-      const manifest = generateRenderManifest({
-        jobs,
+      await onBatchDone({
         options,
+        jobs,
+        outputDirectory,
         clipMeta,
         clipResults: manifestResults,
         clipRenderTimes: manifestRenderTimes,
         totalRenderTimeMs: Date.now() - batchStartTime,
         encoder: getEncoder().encoder,
-        sourceName: options.sourceMeta.name,
-        sourcePath: options.sourceMeta.path,
-        sourceDuration: options.sourceMeta.duration
+        completed,
+        failed,
+        total
       })
-
-      const { jsonPath, csvPath } = writeManifestFiles(manifest, outputDirectory)
-      console.log(`[Manifest] Written: ${jsonPath}, ${csvPath}`)
-    } catch (manifestErr) {
-      console.warn('[Manifest] Failed to write manifest files:', manifestErr)
+    } catch (err) {
+      console.warn('[render-pipeline] onBatchDone handler threw:', err)
     }
   }
 

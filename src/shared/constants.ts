@@ -23,8 +23,15 @@ export const AI_VALIDATION_MODEL = 'gemini-2.5-flash-lite'
 /** Default minimum virality score for clip approval. */
 export const DEFAULT_MIN_SCORE = 69
 
-/** Default filename template for rendered clips. */
-export const DEFAULT_FILENAME_TEMPLATE = '{source}_clip{index}_{score}'
+/**
+ * Default filename template for rendered clips.
+ *
+ * Convention: `{source-slug}_{score-padded-to-2}_{hook-slug-30char}.mp4`
+ *   • `{source}` — slugified source video name
+ *   • `{score2}` — viral score (0–100), zero-padded to 2 digits (e.g. 7 → "07", 85 → "85")
+ *   • `{hook}`   — hook text slugified, truncated to 30 chars
+ */
+export const DEFAULT_FILENAME_TEMPLATE = '{source}_{score2}_{hook}'
 
 // ---------------------------------------------------------------------------
 // Concurrency / Limits

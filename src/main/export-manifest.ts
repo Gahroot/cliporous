@@ -22,6 +22,22 @@ export interface ManifestClipEntry {
   duration: number
   /** AI-generated hook text */
   hookText: string
+  /**
+   * Source video path used for this clip. Captured per-clip because stitched
+   * clips may eventually mix sources, and viewers of the manifest shouldn't
+   * have to cross-reference the batch-level `source` block.
+   */
+  sourceVideo: string
+  /** Resolved accent color (hex, e.g. "#9F75FF") for highlights/emphasis. */
+  accentColor?: string
+  /** Captions render mode ("standard" | "emphasis" | "emphasis_highlight" | "disabled"). */
+  captionsMode: string
+  /**
+   * Archetype used for this clip. For segmented/stitched clips the value is the
+   * primary (first segment) archetype; for non-segmented clips it falls back to
+   * the active style preset id.
+   */
+  archetype?: string
   /** AI reasoning for score */
   reasoning: string
   /** Render status */
@@ -211,6 +227,13 @@ export function generateRenderManifest(input: GenerateManifestInput): RenderMani
   let completed = 0
   let failed = 0
 
+  // Resolve global captions mode once — individual clips can override via
+  // clipOverrides.enableCaptions but they don't currently override the mode.
+  const globalCaptionsMode = options.captionsEnabled === false
+    ? 'disabled'
+    : (options.captionStyle?.captionMode ?? 'standard')
+  const globalAccentColor = options.captionStyle?.accentColor
+
   const clipEntries: ManifestClipEntry[] = jobs.map((job, index) => {
     const outputPath = clipResults.get(job.clipId) ?? null
     const isSuccess = outputPath !== null
@@ -230,6 +253,28 @@ export function generateRenderManifest(input: GenerateManifestInput): RenderMani
       ? basename(outputPath)
       : `clip_${index + 1}_${Math.round(job.startTime)}s-${Math.round(job.endTime)}s.mp4`
 
+    // ── Per-clip accent color resolution ──────────────────────────────────
+    // 1. clipOverrides.accentColor (explicit per-clip)
+    // 2. First stitched/segmented segment accentColor (when present)
+    // 3. Global captionStyle.accentColor (batch default)
+    const segmentAccent =
+      job.stitchedSegments?.find((s) => s.accentColor)?.accentColor
+    const accentColor =
+      job.clipOverrides?.accentColor ?? segmentAccent ?? globalAccentColor
+
+    // ── Per-clip captions mode resolution ─────────────────────────────────
+    const captionsMode = job.clipOverrides?.enableCaptions === false
+      ? 'disabled'
+      : globalCaptionsMode
+
+    // ── Archetype: first segmented archetype, else style preset id ─────────
+    // `segmentedSegments` carry an archetype per entry (segment-render path).
+    // Stitched segments don't carry archetype — we record the style preset id
+    // instead, since the stitched render resolves archetypes from the active
+    // edit-style template at render time.
+    const segmentedArchetype = job.segmentedSegments?.[0]?.archetype
+    const resolvedArchetype = segmentedArchetype ?? job.stylePresetId
+
     return {
       id: job.clipId,
       filename,
@@ -238,6 +283,10 @@ export function generateRenderManifest(input: GenerateManifestInput): RenderMani
       endTime: job.endTime,
       duration: job.endTime - job.startTime,
       hookText,
+      sourceVideo: job.sourceVideoPath,
+      accentColor,
+      captionsMode,
+      archetype: resolvedArchetype,
       reasoning,
       status: isSuccess ? 'success' : 'failed',
       transcriptExcerpt: transcriptText.slice(0, 200),
@@ -290,6 +339,10 @@ const CSV_HEADERS = [
   'End (s)',
   'Duration',
   'Hook Text',
+  'Source Video',
+  'Accent Color',
+  'Captions Mode',
+  'Archetype',
   'Loop Score',
   'Status',
   'Render Time (s)',
@@ -317,6 +370,10 @@ function generateManifestCSV(manifest: RenderManifest): string {
       clip.endTime.toFixed(2),
       formatDuration(clip.duration),
       clip.hookText,
+      clip.sourceVideo,
+      clip.accentColor ?? '',
+      clip.captionsMode,
+      clip.archetype ?? '',
       clip.loopScore !== undefined ? String(clip.loopScore) : '',
       clip.status,
       clip.renderTimeMs !== undefined ? (clip.renderTimeMs / 1000).toFixed(1) : '',
