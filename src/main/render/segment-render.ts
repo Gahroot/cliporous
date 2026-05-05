@@ -798,6 +798,7 @@ async function encodeLayoutSegment(
           '-map', '0:a',
           '-c:v', enc,
           ...flags,
+          '-r', String(config.fps),
           '-c:a', 'aac',
           '-b:a', '192k',
           '-movflags', '+faststart',
@@ -1093,6 +1094,7 @@ async function encodeSegment(
         '-y',
         '-c:v', enc,
         ...flags,
+        '-r', String(config.fps),
         '-c:a', 'aac',
         '-b:a', '192k',
         '-movflags', '+faststart'

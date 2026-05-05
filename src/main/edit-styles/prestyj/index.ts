@@ -26,8 +26,13 @@ export const prestyjEditStyle: EditStyle = createEditStyle({
   transitionDuration: 0.3,
   targetEditsPerSecond: 0.5,
   captionStyle: {
+    // V2 captions resolves layout/colour from these fields:
+    captionMode: 'emphasis_highlight',
+    accentColor: BRAND_ACCENT,
     fontName: 'Geist',
     fontSize: 0.065,
+    wordsPerLine: 4,
+    // Legacy fields kept for back-compat with the single-clip render path:
     primaryColor: '#FFFFFF',
     highlightColor: BRAND_ACCENT,
     emphasisColor: BRAND_ACCENT,
@@ -40,7 +45,6 @@ export const prestyjEditStyle: EditStyle = createEditStyle({
     shadowSoftness: 80,
     shadowOpacity: 0.95,
     shadowColor: '#000000',
-    wordsPerLine: 4,
     animation: 'captions-ai'
   },
   textAnimation: 'scale-up',

@@ -202,6 +202,15 @@ export interface CaptionStyleInput {
   borderStyle: number
   wordsPerLine: number
   animation: CaptionAnimation
+  /**
+   * V2 caption mode. Selected explicitly by an edit style to opt into the
+   * font/colour swap for emphasised words. When omitted, V2 falls back to
+   * 'standard' (uniform text). Mirrors the type declared in main/captions.ts;
+   * kept here so EditStyle.captionStyle can carry it through to the renderer.
+   */
+  captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight'
+  /** V2 accent colour for 'emphasis_highlight' mode. */
+  accentColor?: string
   /** Emphasis-level word color. Defaults to highlightColor. */
   emphasisColor?: string
   /** Supersize word color. Defaults to '#FFD700'. */

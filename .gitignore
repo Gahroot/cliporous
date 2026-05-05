@@ -34,3 +34,8 @@ python/venv/
 
 # Python
 python/__pycache__/
+
+# Local verification artifacts (regenerable via scripts/verify-archetypes/run.sh)
+.ezcoder/plans/frames/
+.ezcoder/plans/renders/
+scripts/verify-archetypes/*.bundle.cjs
