@@ -49,7 +49,7 @@ export function addRecentProject(entry: RecentProjectEntry): void {
 
 function buildRecentEntry(filePath: string, json: string): RecentProjectEntry {
   const project = JSON.parse(json)
-  const name = filePath.split('/').pop()?.replace('.batchcontent', '') ?? 'Untitled'
+  const name = filePath.split('/').pop()?.replace('.batchclip', '') ?? 'Untitled'
   return {
     path: filePath,
     name,
@@ -101,14 +101,14 @@ export function registerProjectHandlers(): void {
     })
   )
 
-  // Project — save project JSON to a .batchcontent file chosen by user
+  // Project — save project JSON to a .batchclip file chosen by user
   ipcMain.handle(
     Ch.Invoke.PROJECT_SAVE,
     wrapHandler(Ch.Invoke.PROJECT_SAVE, async (_event, json: string) => {
       const result = await dialog.showSaveDialog({
         title: 'Save Project',
-        defaultPath: 'project.batchcontent',
-        filters: [{ name: 'BatchContent Project', extensions: ['batchcontent'] }]
+        defaultPath: 'project.batchclip',
+        filters: [{ name: 'BatchClip Project', extensions: ['batchclip'] }]
       })
       if (result.canceled || !result.filePath) return null
       writeFileSync(result.filePath, json, 'utf-8')
@@ -117,14 +117,14 @@ export function registerProjectHandlers(): void {
     })
   )
 
-  // Project — load project JSON from a .batchcontent file chosen by user
+  // Project — load project JSON from a .batchclip file chosen by user
   ipcMain.handle(
     Ch.Invoke.PROJECT_LOAD,
     wrapHandler(Ch.Invoke.PROJECT_LOAD, async () => {
       const result = await dialog.showOpenDialog({
         title: 'Open Project',
         properties: ['openFile'],
-        filters: [{ name: 'BatchContent Project', extensions: ['batchcontent'] }]
+        filters: [{ name: 'BatchClip Project', extensions: ['batchclip'] }]
       })
       if (result.canceled || result.filePaths.length === 0) return null
       const filePath = result.filePaths[0]
@@ -140,7 +140,7 @@ export function registerProjectHandlers(): void {
     wrapHandler(Ch.Invoke.PROJECT_AUTO_SAVE, async (_event, json: string) => {
       const recoveryDir = join(app.getPath('userData'), 'recovery')
       if (!existsSync(recoveryDir)) mkdirSync(recoveryDir, { recursive: true })
-      const recoveryPath = join(recoveryDir, 'autosave.batchcontent')
+      const recoveryPath = join(recoveryDir, 'autosave.batchclip')
       writeFileSync(recoveryPath, json, 'utf-8')
       return recoveryPath
     })
@@ -150,7 +150,7 @@ export function registerProjectHandlers(): void {
   ipcMain.handle(
     Ch.Invoke.PROJECT_LOAD_RECOVERY,
     wrapHandler(Ch.Invoke.PROJECT_LOAD_RECOVERY, async () => {
-      const recoveryPath = join(app.getPath('userData'), 'recovery', 'autosave.batchcontent')
+      const recoveryPath = join(app.getPath('userData'), 'recovery', 'autosave.batchclip')
       if (!existsSync(recoveryPath)) return null
       return readFileSync(recoveryPath, 'utf-8')
     })
@@ -160,7 +160,7 @@ export function registerProjectHandlers(): void {
   ipcMain.handle(
     Ch.Invoke.PROJECT_CLEAR_RECOVERY,
     wrapHandler(Ch.Invoke.PROJECT_CLEAR_RECOVERY, async () => {
-      const recoveryPath = join(app.getPath('userData'), 'recovery', 'autosave.batchcontent')
+      const recoveryPath = join(app.getPath('userData'), 'recovery', 'autosave.batchclip')
       if (existsSync(recoveryPath)) {
         unlinkSync(recoveryPath)
       }
