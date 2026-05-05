@@ -687,6 +687,13 @@ interface Api {
   // Shell
   openPath: (path: string) => Promise<string>
   showItemInFolder: (path: string) => Promise<void>
+  /**
+   * Open the rendered-output directory in the OS file manager.
+   * If `dirPath` is omitted, the main process opens the default location.
+   * Returns an empty string on success or an error message on failure
+   * (matches the underlying Electron `shell.openPath` contract).
+   */
+  openOutputFolder: (dirPath?: string) => Promise<string>
 
   // Python setup
   getPythonStatus: () => Promise<PythonSetupStatus>

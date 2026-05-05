@@ -137,6 +137,14 @@ const api = {
   // Shell
   openPath: invoke(I.SHELL_OPEN_PATH),
   showItemInFolder: invoke(I.SHELL_SHOW_ITEM_IN_FOLDER),
+  /**
+   * Open the configured output directory in the OS file manager.
+   * Reads `settings.outputDirectory` is the renderer's job — this just
+   * forwards a path. When `dirPath` is omitted the main process falls
+   * back to its default output directory.
+   */
+  openOutputFolder: (dirPath?: string): Promise<string> =>
+    ipcRenderer.invoke(I.SHELL_OPEN_PATH, dirPath ?? ''),
 
   // Python setup
   getPythonStatus: invoke(I.PYTHON_GET_STATUS),
