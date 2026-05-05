@@ -116,6 +116,9 @@ export const InvokeChannels = {
   SECRETS_SET: 'secrets:set',
   SECRETS_HAS: 'secrets:has',
   SECRETS_CLEAR: 'secrets:clear',
+
+  // Export — social-media descriptions (csv/json/txt)
+  EXPORT_DESCRIPTIONS: 'export:descriptions',
 } as const
 
 // ---- Send channels (main → renderer, fire-and-forget) ---------------------
