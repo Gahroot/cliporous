@@ -19,33 +19,8 @@ import { RenderScreen } from '@/components/screens/RenderScreen'
 
 import { useAutosave } from '@/hooks'
 import { useStore } from '@/store'
+import { selectScreen } from '@/store/selectors'
 import { saveProject, loadProject } from '@/services'
-import type { PipelineStage } from '@/store/types'
-
-// ---------------------------------------------------------------------------
-// pipeline.stage → screen mapping (matches .ezcoder/plans/ux.md §6)
-// ---------------------------------------------------------------------------
-
-type ScreenName = 'drop' | 'processing' | 'clips' | 'render'
-
-const PROCESSING_STAGES: ReadonlySet<PipelineStage> = new Set<PipelineStage>([
-  'downloading',
-  'transcribing',
-  'scoring',
-  'optimizing-loops',
-  'detecting-faces',
-  'ai-editing',
-  'segmenting',
-])
-
-function selectScreen(stage: PipelineStage, hasActiveSource: boolean): ScreenName {
-  if (PROCESSING_STAGES.has(stage)) return 'processing'
-  if (stage === 'ready') return hasActiveSource ? 'clips' : 'drop'
-  if (stage === 'rendering' || stage === 'done') return 'render'
-  // 'idle' and 'error' fall through to drop unless we already have a source
-  if (stage === 'error' && hasActiveSource) return 'processing'
-  return 'drop'
-}
 
 // ---------------------------------------------------------------------------
 // Autosave toast — small bottom-right card that fades in when useAutosave
