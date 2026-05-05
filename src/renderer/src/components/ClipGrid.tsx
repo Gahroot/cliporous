@@ -16,20 +16,12 @@
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import { ClipCard } from '@/components/ClipCard'
+import { ClipDetail } from '@/components/ClipDetail'
 import { useStore } from '@/store'
 import { selectActiveClips } from '@/store/selectors'
-import type { ClipCandidate } from '@/store/types'
 
 // ---------------------------------------------------------------------------
 // Tailwind classes — responsive grid columns at the requested breakpoints
@@ -57,41 +49,6 @@ function ClipGridSkeleton(): React.JSX.Element {
         <Skeleton key={i} className="aspect-[9/16] w-full rounded-lg" />
       ))}
     </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// ClipDetail Sheet — placeholder.
-// The full editor lives in a separate task. We render the Sheet primitives
-// here so card clicks have a working open/close target today.
-// ---------------------------------------------------------------------------
-
-function ClipDetailSheet({
-  clip,
-  open,
-  onOpenChange,
-}: {
-  clip: ClipCandidate | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}): React.JSX.Element {
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>{clip?.hookText || 'Clip details'}</SheetTitle>
-          <SheetDescription>
-            {clip
-              ? `Score ${Math.round(clip.score)} · ${clip.duration.toFixed(1)}s`
-              : 'No clip selected.'}
-          </SheetDescription>
-        </SheetHeader>
-        <Separator className="my-4" />
-        <div className="text-sm text-muted-foreground">
-          Detailed editor coming soon.
-        </div>
-      </SheetContent>
-    </Sheet>
   )
 }
 
@@ -188,8 +145,9 @@ export function ClipGrid(): React.JSX.Element {
         )}
       </div>
 
-      <ClipDetailSheet
+      <ClipDetail
         clip={openClip}
+        source={source}
         open={openClipId !== null}
         onOpenChange={(o) => {
           if (!o) setOpenClipId(null)

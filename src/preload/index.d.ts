@@ -508,6 +508,9 @@ interface Api {
   // Word Emphasis
   analyzeWordEmphasis: (words: WordTimestamp[], apiKey?: string) => Promise<WordEmphasisResult>
 
+  // AI Edit Plan — regenerate plan for a single clip
+  regenerateClipEditPlan: (clipId: string) => Promise<{ ok: true } | { ok: false; error: string }>
+
   // Face detection
   detectFaceCrops: (
     videoPath: string,

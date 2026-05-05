@@ -45,6 +45,7 @@ export const InvokeChannels = {
   AI_GENERATE_CLIP_DESCRIPTION: 'ai:generateClipDescription',
   AI_GENERATE_BATCH_DESCRIPTIONS: 'ai:generateBatchDescriptions',
   AI_ANALYZE_WORD_EMPHASIS: 'ai:analyzeWordEmphasis',
+  AI_REGENERATE_CLIP_EDIT_PLAN: 'ai:regenerateClipEditPlan',
 
   // Face detection
   FACE_DETECT_CROPS: 'face:detectCrops',
@@ -139,6 +140,7 @@ export const SendChannels = {
   PYTHON_SETUP_DONE: 'python:setupDone',
   AI_TOKEN_USAGE: 'ai:tokenUsage',
   SETTINGS_WINDOW_CLOSED: 'settings-window:closed',
+  SEGMENT_FALLBACK: 'render:segmentFallback',
 } as const
 
 // ---- Combined shorthand -------------------------------------------------
@@ -232,6 +234,12 @@ export interface IpcSendChannelMap {
     timestamp: number
   }
   [SendChannels.SETTINGS_WINDOW_CLOSED]: Record<string, never>
+  [SendChannels.SEGMENT_FALLBACK]: {
+    clipId: string
+    segmentIndex: number
+    archetype: string
+    reason: string
+  }
 }
 
 // ---- Helper types --------------------------------------------------------

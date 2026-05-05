@@ -72,6 +72,9 @@ const api = {
   // Word Emphasis
   analyzeWordEmphasis: invoke(I.AI_ANALYZE_WORD_EMPHASIS),
 
+  // AI Edit Plan — regenerate plan for a single clip
+  regenerateClipEditPlan: invoke(I.AI_REGENERATE_CLIP_EDIT_PLAN),
+
   // Face detection
   detectFaceCrops: invoke(I.FACE_DETECT_CROPS),
   onFaceDetectionProgress: listen(S.FACE_PROGRESS),
