@@ -1,13 +1,8 @@
 /**
- * ProcessingScreen — shows the three-stage pipeline timeline (Download,
- * Transcribe, Score) while a source is being processed.
+ * Re-export of the canonical ProcessingScreen implementation.
  *
- * Stub: full implementation lives in the dedicated ProcessingScreen task.
+ * The component lives at `@/components/ProcessingScreen` so it sits next to
+ * other top-level surfaces.  This file remains for backwards compatibility
+ * with existing `@/components/screens/ProcessingScreen` imports (App.tsx).
  */
-export function ProcessingScreen(): React.JSX.Element {
-  return (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="text-muted-foreground text-sm">ProcessingScreen</div>
-    </div>
-  )
-}
+export { ProcessingScreen } from '@/components/ProcessingScreen'
