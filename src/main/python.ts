@@ -228,6 +228,15 @@ export function runPythonScript(
     let stderrBuf = ''
     let timedOut = false
 
+    // Line buffers for stream callbacks. Pipe chunks are NOT line-aligned, so a
+    // single JSON message (especially the multi-MB `done` payload from
+    // transcribe.py) can be split across many `data` events. Naively splitting
+    // each chunk on '\n' yields partial JSON that fails to parse, dropping the
+    // result. We buffer until we see a real newline before flushing complete
+    // lines to the callbacks.
+    let stdoutLineBuf = ''
+    let stderrLineBuf = ''
+
     // Timeout guard
     const timer = setTimeout(() => {
       timedOut = true
@@ -240,10 +249,15 @@ export function runPythonScript(
       const text = chunk.toString()
       stdout += text
       if (onStdout) {
-        const lines = text.split('\n')
-        for (const line of lines) {
-          const trimmed = line.trim()
-          if (trimmed) onStdout(trimmed)
+        stdoutLineBuf += text
+        const newlineIdx = stdoutLineBuf.lastIndexOf('\n')
+        if (newlineIdx !== -1) {
+          const complete = stdoutLineBuf.slice(0, newlineIdx)
+          stdoutLineBuf = stdoutLineBuf.slice(newlineIdx + 1)
+          for (const line of complete.split('\n')) {
+            const trimmed = line.trim()
+            if (trimmed) onStdout(trimmed)
+          }
         }
       }
     })
@@ -252,10 +266,15 @@ export function runPythonScript(
       const text = chunk.toString()
       stderrBuf += text
       if (onStderr) {
-        const lines = text.split('\n')
-        for (const line of lines) {
-          const trimmed = line.trim()
-          if (trimmed) onStderr(trimmed)
+        stderrLineBuf += text
+        const newlineIdx = stderrLineBuf.lastIndexOf('\n')
+        if (newlineIdx !== -1) {
+          const complete = stderrLineBuf.slice(0, newlineIdx)
+          stderrLineBuf = stderrLineBuf.slice(newlineIdx + 1)
+          for (const line of complete.split('\n')) {
+            const trimmed = line.trim()
+            if (trimmed) onStderr(trimmed)
+          }
         }
       }
     })
@@ -277,6 +296,16 @@ export function runPythonScript(
 
     proc.on('close', (code) => {
       clearTimeout(timer)
+
+      // Flush any trailing partial line that wasn't terminated by a newline.
+      if (onStdout && stdoutLineBuf.trim()) {
+        onStdout(stdoutLineBuf.trim())
+        stdoutLineBuf = ''
+      }
+      if (onStderr && stderrLineBuf.trim()) {
+        onStderr(stderrLineBuf.trim())
+        stderrLineBuf = ''
+      }
 
       if (timedOut) {
         return reject(new Error(`Python script '${scriptName}' timed out after ${timeoutMs / 1000}s`))

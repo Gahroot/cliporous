@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { tmpdir } from 'os'
-import { unlink } from 'fs/promises'
+import { unlink, readFile } from 'fs/promises'
 import { existsSync } from 'fs'
 import { extractAudio } from './ffmpeg'
 import { runPythonScript, resolvePythonPath, resolveScriptPath } from './python'
@@ -100,6 +100,10 @@ export async function transcribeVideo(
   // --- Step 2 & 3: load model + transcribe ---
   let result: TranscriptionResult | null = null
   let scriptError: string | null = null
+  // Tail of recent stdout/stderr captured for diagnostics if no result is produced.
+  const recentStdout: string[] = []
+  const recentStderr: string[] = []
+  const TAIL_LIMIT = 40
 
   try {
     try {
@@ -108,12 +112,20 @@ export async function transcribeVideo(
         ['--input', wavPath, '--output', jsonPath, '--model', model],
         {
           timeoutMs: TRANSCRIPTION_TIMEOUT_MS,
+          onStderr: (line) => {
+            recentStderr.push(line)
+            if (recentStderr.length > TAIL_LIMIT) recentStderr.shift()
+          },
           onStdout: (line) => {
+            recentStdout.push(line)
+            if (recentStdout.length > TAIL_LIMIT) recentStdout.shift()
+
             let parsed: PythonLine
             try {
               parsed = JSON.parse(line) as PythonLine
             } catch {
-              // Not a JSON line — ignore (e.g. Python warnings)
+              // Not a JSON line — ignore (e.g. Python warnings, NeMo logs,
+              // tqdm progress smushed against a JSON message via \r).
               return
             }
 
@@ -148,6 +160,29 @@ export async function transcribeVideo(
       }
       throw runErr
     }
+
+    // --- Fallback: if the `done` JSON line wasn't captured from stdout (e.g.
+    // NeMo log output or tqdm \r output got concatenated against it and broke
+    // JSON.parse), read the result file the script always writes to disk. This
+    // makes us tolerant of any future stdout pollution from NeMo/PyTorch.
+    if (!result && !scriptError && existsSync(jsonPath)) {
+      try {
+        const raw = await readFile(jsonPath, 'utf-8')
+        const parsed = JSON.parse(raw) as Partial<TranscriptionResult> & { error?: string }
+        if (parsed.error) {
+          scriptError = parsed.error
+        } else if (typeof parsed.text === 'string' && Array.isArray(parsed.words) && Array.isArray(parsed.segments)) {
+          console.warn('[Transcribe] stdout `done` line was lost — recovered result from output JSON file')
+          result = {
+            text: parsed.text,
+            words: parsed.words as TranscriptionResult['words'],
+            segments: parsed.segments as TranscriptionResult['segments'],
+          }
+        }
+      } catch (err) {
+        console.warn('[Transcribe] Failed to read output JSON fallback:', (err as Error).message)
+      }
+    }
   } finally {
     // Clean up WAV temp file regardless of success/failure
     unlink(wavPath).catch(() => {/* ignore */})
@@ -159,7 +194,17 @@ export async function transcribeVideo(
   }
 
   if (!result) {
-    throw new Error('Transcription script completed but produced no result')
+    // Surface the recent stderr/stdout tail so the user sees what NeMo actually
+    // printed instead of a vague "no result". Capped to keep the message
+    // dialog reasonable.
+    const stderrTail = recentStderr.slice(-15).join('\n')
+    const stdoutTail = recentStdout.slice(-10).map((l) => l.slice(0, 200)).join('\n')
+    throw new Error(
+      'Transcription script completed but produced no result.\n' +
+      `Output JSON: ${jsonPath} (exists: ${existsSync(jsonPath)})\n` +
+      (stderrTail ? `\n--- last stderr ---\n${stderrTail}` : '') +
+      (stdoutTail ? `\n--- last stdout ---\n${stdoutTail}` : '')
+    )
   }
 
   return result

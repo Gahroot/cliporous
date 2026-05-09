@@ -248,50 +248,119 @@ async function ensureEmbeddedPython(
 // ---------------------------------------------------------------------------
 
 /**
- * Find a suitable system python3 binary.
- * Requires Python >= 3.10.
+ * Probe a candidate python binary and return its (major, minor) version,
+ * or null if it can't be executed.
+ */
+function probePythonVersion(
+  bin: string
+): { bin: string; major: number; minor: number } | null {
+  const { execFileSync: execSync } = require('child_process') as typeof import('child_process')
+  try {
+    const output = execSync(bin, ['--version'], {
+      encoding: 'utf-8',
+      timeout: 10_000,
+      stdio: ['ignore', 'pipe', 'pipe']
+    }) as string
+    const versionStr = String(output).trim()
+    const match = versionStr.match(/Python (\d+)\.(\d+)/)
+    if (!match) return null
+    return { bin, major: parseInt(match[1], 10), minor: parseInt(match[2], 10) }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * On macOS, install python@3.12 via Homebrew if it is available. Returns the
+ * absolute path to the installed binary, or null if Homebrew is not present
+ * or the install failed.
+ */
+function tryInstallViaHomebrew(): string | null {
+  if (process.platform !== 'darwin') return null
+  const { execFileSync: execSync } = require('child_process') as typeof import('child_process')
+  let brewBin: string
+  try {
+    brewBin = (execSync('command', ['-v', 'brew'], {
+      encoding: 'utf-8',
+      shell: '/bin/bash' as never,
+      timeout: 5_000
+    }) as string).trim()
+    if (!brewBin) return null
+  } catch {
+    return null
+  }
+
+  console.log('[PythonSetup] Installing python@3.12 via Homebrew (this may take a few minutes)...')
+  try {
+    execSync(brewBin, ['install', 'python@3.12'], {
+      stdio: ['ignore', 'inherit', 'inherit'],
+      timeout: 600_000
+    })
+  } catch (err) {
+    console.warn('[PythonSetup] brew install python@3.12 failed:', (err as Error).message)
+    return null
+  }
+
+  // Resolve the installed binary — try both Apple Silicon and Intel prefixes.
+  for (const candidate of ['/opt/homebrew/bin/python3.12', '/usr/local/bin/python3.12']) {
+    if (existsSync(candidate)) {
+      console.log('[PythonSetup] Homebrew python installed at:', candidate)
+      return candidate
+    }
+  }
+  return null
+}
+
+/**
+ * Find a suitable system Python binary.
+ *
+ * NeMo requires Python >= 3.10 — older Pythons (notably macOS's stock
+ * /usr/bin/python3, which is 3.9) cannot install `nemo_toolkit[asr]` because
+ * its transitive `youtokentome` dep does not build cleanly. We probe specific
+ * versioned candidates first so that we don't get tricked into using whatever
+ * `python3` happens to point at.
+ *
+ * On macOS we will offer to install `python@3.12` via Homebrew if no suitable
+ * interpreter is found and `brew` is available.
  */
 function findSystemPython(): string {
-  const { execFileSync: execSync } = require('child_process') as typeof import('child_process')
-  const candidates = ['python3', 'python']
+  // Prefer specific 3.10+ versions over generic `python3`/`python`, which on
+  // macOS commonly resolves to 3.9. Order: most-tested first.
+  const candidates = [
+    'python3.12',
+    'python3.11',
+    'python3.13',
+    'python3.10',
+    'python3',
+    'python'
+  ]
 
   for (const bin of candidates) {
-    try {
-      // python --version prints to stdout (Python 3.10+) or stderr (older).
-      // execFileSync with encoding returns a string directly.
-      const output = execSync(bin, ['--version'], {
-        encoding: 'utf-8',
-        timeout: 10_000,
-        stdio: ['ignore', 'pipe', 'pipe']
-      }) as string
-      const versionStr = String(output).trim()
-      const match = versionStr.match(/Python (\d+)\.(\d+)/)
-      if (match) {
-        const major = parseInt(match[1], 10)
-        const minor = parseInt(match[2], 10)
-        if (major === 3 && minor >= 10) {
-          console.log(`[PythonSetup] Found system Python: ${bin} (${versionStr})`)
-          return bin
-        }
-      }
-    } catch {
-      // Try next candidate
+    const probe = probePythonVersion(bin)
+    if (probe && probe.major === 3 && probe.minor >= 10) {
+      console.log(`[PythonSetup] Found system Python: ${probe.bin} (${probe.major}.${probe.minor})`)
+      return probe.bin
     }
   }
 
-  // Last resort: try the candidates that at least exist and hope for the best
-  for (const bin of candidates) {
-    try {
-      execSync(bin, ['--version'], { timeout: 5_000 })
-      console.warn(`[PythonSetup] Using ${bin} (version check inconclusive)`)
-      return bin
-    } catch {
-      // Not found
-    }
-  }
+  // None of the candidates met the >=3.10 requirement. On macOS, try to
+  // install python@3.12 via Homebrew automatically.
+  const brewInstalled = tryInstallViaHomebrew()
+  if (brewInstalled) return brewInstalled
+
+  // Last-ditch diagnostic: report what we *did* find so the error message is
+  // actionable instead of generic.
+  const found = candidates
+    .map(probePythonVersion)
+    .filter((p): p is NonNullable<ReturnType<typeof probePythonVersion>> => p !== null)
+    .map((p) => `${p.bin} (${p.major}.${p.minor})`)
+    .join(', ') || 'none'
 
   throw new Error(
-    'Python 3.10+ is required but not found. Please install Python from https://python.org'
+    `Python 3.10+ is required but not found (detected: ${found}). ` +
+    (process.platform === 'darwin'
+      ? 'Install via Homebrew: `brew install python@3.12`, or download from https://python.org'
+      : 'Please install Python 3.10+ from https://python.org')
   )
 }
 
@@ -333,6 +402,20 @@ async function createVenvAndInstall(
     const venvDir = getVenvDir()
     const venvPython = getVenvPythonPath()
 
+    // If a venv already exists but was created with a Python <3.10, it cannot
+    // install nemo_toolkit. Detect and nuke it so we recreate with the new
+    // interpreter we just resolved.
+    if (existsSync(venvPython)) {
+      const existing = probePythonVersion(venvPython)
+      if (!existing || existing.major !== 3 || existing.minor < 10) {
+        const { rmSync } = require('fs') as typeof import('fs')
+        console.warn(
+          `[PythonSetup] Existing venv uses Python ${existing ? `${existing.major}.${existing.minor}` : 'unknown'} — recreating with ${pythonBin}`
+        )
+        try { rmSync(venvDir, { recursive: true, force: true }) } catch { /* best-effort */ }
+      }
+    }
+
     if (!existsSync(venvPython)) {
       onProgress?.('creating-venv', 'Creating virtual environment...', 0)
       console.log('[PythonSetup] Creating venv at:', venvDir)
@@ -364,9 +447,12 @@ async function createVenvAndInstall(
   }
 
   // Upgrade pip first
-  onProgress?.('installing-packages', 'Installing build tools (pip, setuptools, wheel)...', 2)
+  // Cython is included up-front because nemo_toolkit's transitive `youtokentome`
+  // dep doesn't declare it as a build requirement and will fail in pip's
+  // isolated build env without it. See NVIDIA-NeMo/NeMo discussion #8301.
+  onProgress?.('installing-packages', 'Installing build tools (pip, setuptools, wheel, Cython)...', 2)
   await new Promise<void>((resolve, reject) => {
-    const proc = spawn(activePython, ['-m', 'pip', 'install', '--upgrade', 'pip', 'setuptools', 'wheel'], {
+    const proc = spawn(activePython, ['-m', 'pip', 'install', '--upgrade', 'pip', 'setuptools', 'wheel', 'Cython'], {
       stdio: ['ignore', 'pipe', 'pipe'],
       env: { ...process.env, PYTHONUNBUFFERED: '1' }
     })

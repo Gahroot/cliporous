@@ -14,7 +14,7 @@ export default defineConfig({
     },
     build: {
       externalizeDeps: {
-        exclude: ['uuid', '@google/genai']
+        exclude: ['uuid']
       }
     }
   },

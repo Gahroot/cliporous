@@ -22,12 +22,42 @@ import tempfile
 
 
 # ---------------------------------------------------------------------------
+# stdout discipline
+# ---------------------------------------------------------------------------
+#
+# The Electron main process parses our stdout line-by-line as JSON. NeMo /
+# PyTorch / lightning / huggingface routinely print to stdout (info logs, YAML
+# config dumps, tqdm progress with \r) which corrupts the stream and breaks
+# JSON.parse on the Node side — in particular the final {"type":"done",...}
+# line can end up smushed against a tqdm progress fragment via a carriage
+# return and never reach the renderer.
+#
+# To keep stdout clean we keep a private handle to the original stdout file
+# descriptor and redirect Python's stdout (fd 1) to stderr. Only `emit()`
+# writes to the saved handle, guaranteeing every byte on real stdout is a
+# complete line of JSON.
+_REAL_STDOUT = os.fdopen(os.dup(1), "w", buffering=1, encoding="utf-8", errors="replace")
+try:
+    os.dup2(2, 1)  # redirect fd 1 -> fd 2 (stderr)
+    sys.stdout = os.fdopen(1, "w", buffering=1, encoding="utf-8", errors="replace")
+except Exception:
+    # Best effort — if redirection fails (rare), we'll still emit() to the
+    # original stdout, just with possible NeMo log pollution alongside it.
+    pass
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
 def emit(obj: dict) -> None:
-    """Emit a JSON line to stdout (flushed immediately for streaming)."""
-    print(json.dumps(obj), flush=True)
+    """Emit a JSON line on the *original* stdout (flushed immediately).
+
+    Library logs and tqdm output go to stderr via the redirection above, so
+    Node's stdout reader only ever sees one complete JSON object per line.
+    """
+    _REAL_STDOUT.write(json.dumps(obj) + "\n")
+    _REAL_STDOUT.flush()
 
 
 def emit_progress(stage: str, message: str) -> None:
