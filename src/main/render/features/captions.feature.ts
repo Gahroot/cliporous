@@ -2,9 +2,9 @@
 // Captions render feature — V2.
 //
 // Consumes the V2 caption pipeline, which supports exactly three modes:
-//   • 'standard'           — PRESTYJ sans, #f6ecd9, no per-word overrides
-//   • 'emphasis'            — emphasis words swap to PRESTYJ display font
-//   • 'emphasis_highlight'  — emphasis words swap font AND recolor to accent
+//   • 'standard'           — Inter Bold, white, soft 0-offset black halo
+//   • 'emphasis'            — emphasis words recolor to the purple accent
+//   • 'emphasis_highlight'  — emphasis words recolor AND swap to Bebas Neue
 //
 // This feature picks the mode and accent for the clip, then hands a
 // CaptionStyleInput annotated with `captionMode` + `accentColor` to
@@ -56,7 +56,7 @@ function resolveCaptionMode(
   // Treat any explicit accent (on `accentColor`, or the legacy `emphasisColor`
   // / `highlightColor` slots) as a request for the highlighted variant.
   const accent = style.accentColor ?? style.emphasisColor ?? style.highlightColor
-  if (accent && accent.toLowerCase() !== '#f6ecd9' && accent.toLowerCase() !== '#ffffff') {
+  if (accent && accent.toLowerCase() !== '#ffffff') {
     return 'emphasis_highlight'
   }
   return 'emphasis'

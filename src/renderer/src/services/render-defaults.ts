@@ -25,13 +25,13 @@ export const PRESTYJ_ACCENT = '#9f75ff'
  * 'emphasis_highlight' mode and the PRESTYJ accent.
  */
 export const PRESTYJ_CAPTION_STYLE: CaptionStyleInput = {
-  fontName: 'Geist',
+  fontName: 'Inter',
   fontSize: 0.065,
   primaryColor: '#FFFFFF',
   highlightColor: PRESTYJ_ACCENT,
-  outlineColor: '#FFFFFF',
+  outlineColor: '#000000',
   backColor: '#00000000',
-  outline: 2,
+  outline: 6,
   shadow: 0,
   borderStyle: 1,
   wordsPerLine: 4,

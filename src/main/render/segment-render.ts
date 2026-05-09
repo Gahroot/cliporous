@@ -503,9 +503,9 @@ function generateSegmentHeroAss(
 
   const accentColor = seg.accentColor ?? userAccentColor ?? editStyle.accentColor ?? '#7058E3'
   const primaryColor = editStyle.captionStyle?.primaryColor ?? '#FFFFFF'
-  const bodyFont = editStyle.captionStyle?.fontName ?? 'Geist'
-  // Quote uses the script font.
-  const scriptFont = 'Style Script'
+  const bodyFont = editStyle.captionStyle?.fontName ?? 'Inter'
+  // Quote uses the condensed display font (matches the V2 emphasis_highlight swap).
+  const scriptFont = 'Bebas Neue'
 
   const result = buildArchetypeHero({
     archetype: seg.archetype,

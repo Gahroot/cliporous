@@ -29,7 +29,7 @@ export const prestyjEditStyle: EditStyle = createEditStyle({
     // V2 captions resolves layout/colour from these fields:
     captionMode: 'emphasis_highlight',
     accentColor: BRAND_ACCENT,
-    fontName: 'Geist',
+    fontName: 'Inter',
     fontSize: 0.065,
     wordsPerLine: 4,
     // Legacy fields kept for back-compat with the single-clip render path:
@@ -37,8 +37,8 @@ export const prestyjEditStyle: EditStyle = createEditStyle({
     highlightColor: BRAND_ACCENT,
     emphasisColor: BRAND_ACCENT,
     supersizeColor: BRAND_ACCENT,
-    outlineColor: '#FFFFFF',
-    outline: 2,
+    outlineColor: '#000000',
+    outline: 6,
     shadow: 0,
     shadowDistance: 3,
     shadowAngle: 69,
@@ -49,7 +49,7 @@ export const prestyjEditStyle: EditStyle = createEditStyle({
   },
   textAnimation: 'scale-up',
   description:
-    'Clean modern energy — Geist Bold captions, purple emphasis, smooth transitions, Style Script quotes',
+    'Clean modern energy — Inter Bold captions with soft black halo, purple emphasis, Bebas Neue display swap',
   colorGrade: {
     warmth: 0.0,
     contrast: 1.10,

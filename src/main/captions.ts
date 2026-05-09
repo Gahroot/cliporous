@@ -4,14 +4,15 @@
 // V2 caption pipeline. Every other animation/level/box variation from V1 has
 // been removed. Captions render in exactly one of three visual modes:
 //
-//   1. 'standard'           — PRESTYJ sans (Geist), color #f6ecd9 on every
-//                             word. No emphasis swap. No accent highlight.
-//   2. 'emphasis'            — PRESTYJ sans base. Words flagged as emphasis
-//                             swap to the PRESTYJ display font (Style Script).
-//                             Color stays at #f6ecd9 across the whole line.
-//   3. 'emphasis_highlight'  — Same as 'emphasis' for the font swap, plus the
-//                             emphasis words are recolored to the accent
-//                             (default #9f75ff).
+//   1. 'standard'           — Inter Bold, white (#ffffff) on every word.
+//                             Soft 0-offset black halo behind the text. No
+//                             per-word color/font swap.
+//   2. 'emphasis'            — Inter Bold base. Words flagged as emphasis
+//                             are recolored to the accent (purple #9f75ff).
+//                             Same black halo behind every word.
+//   3. 'emphasis_highlight'  — Same color treatment as 'emphasis', plus a
+//                             font swap on emphasized words to the
+//                             condensed display font (Bebas Neue).
 //
 // Visual ground truth: see .ezcoder/examples/standard*.jpg.
 //
@@ -121,14 +122,23 @@ export interface ShotCaptionOverride {
 // V2 design constants — locked.
 // ---------------------------------------------------------------------------
 
-/** PRESTYJ sans (used for standard text in every mode). */
-export const STANDARD_FONT = 'Geist'
-/** PRESTYJ display/fancy (used for emphasis words in 'emphasis' / 'emphasis_highlight'). */
-export const FANCY_FONT = 'Style Script'
-/** Standard text color across all three modes. */
-export const STANDARD_COLOR = '#f6ecd9'
-/** Default accent for 'emphasis_highlight' (PRESTYJ purple). */
+/** Standard caption font: clean blocky sans-serif (Inter Bold, weight 700). */
+export const STANDARD_FONT = 'Inter'
+/** Display font for the 'emphasis_highlight' font-swap variant (condensed all-caps display). */
+export const FANCY_FONT = 'Bebas Neue'
+/** Standard text color across all three modes — clean white. */
+export const STANDARD_COLOR = '#ffffff'
+/** Default accent for emphasis (PRESTYJ purple). */
 export const DEFAULT_ACCENT = '#9f75ff'
+
+// ── Drop-shadow look (centered black glow behind white text) ───────────────
+// Implemented in libass with BorderStyle=1, Shadow=0 (no offset), and a
+// thick black Outline that the per-event \blur tag converts into a soft
+// 0-offset halo. This produces the requested
+// "0 offset, 100% opacity, ~75% blur" drop shadow.
+const SHADOW_BLUR = 12        // \blur radius — strong soft halo
+const SHADOW_THICKNESS = 6    // outline radius for the black halo
+const SHADOW_COLOR = '#000000'
 
 // 9:16 reference frame.
 const DEFAULT_FRAME_WIDTH = 720
@@ -241,8 +251,14 @@ export function buildAssLines(
     const start = formatASSTime(group.start)
     const end = formatASSTime(group.end)
 
+    // Every line opens with a \blur override so the black outline reads as a
+    // soft 0-offset halo rather than a hard stroke. Outline colour stays
+    // black via the Style header.
+    const linePrefix = `{\\blur${SHADOW_BLUR}}`
+
     // Render each word with the override block its mode requires, then a `\r`
-    // to reset back to the Default style (so the next word inherits cleanly).
+    // to reset back to the Default style — followed by a `\blur` re-apply,
+    // because `\r` resets transient overrides too.
     const parts = group.words.map((w, idx) => {
       const isLast = idx === group.words.length - 1
       const sep = isLast ? '' : ' '
@@ -253,19 +269,19 @@ export function buildAssLines(
         return `${w.text}${sep}`
       }
 
-      // Mode 2: emphasis — swap font only.
+      // Mode 2: emphasis — recolor to purple accent. Outline stays black so
+      // the same halo reads behind the coloured word. Halo blur is
+      // re-applied after \r so the override doesn't drop it.
       if (mode === 'emphasis') {
-        return `{\\fn${FANCY_FONT}}${w.text}{\\r}${sep}`
+        return `{\\1c${accentASS}}${w.text}{\\r\\blur${SHADOW_BLUR}}${sep}`
       }
 
       // Mode 3: emphasis_highlight — swap font AND recolor to accent.
-      // \1c sets the primary fill; \3c matches it so the outline reads as
-      // additional weight on the coloured glyph rather than a contrasting stroke.
-      return `{\\fn${FANCY_FONT}\\1c${accentASS}\\3c${accentASS}}${w.text}{\\r}${sep}`
+      return `{\\fn${FANCY_FONT}\\1c${accentASS}}${w.text}{\\r\\blur${SHADOW_BLUR}}${sep}`
     })
 
     lines.push(
-      `Dialogue: 0,${start},${end},Default,,0,0,0,,${parts.join('')}`
+      `Dialogue: 0,${start},${end},Default,,0,0,0,,${linePrefix}${parts.join('')}`
     )
   }
 
@@ -291,7 +307,8 @@ function resolveAccent(style: CaptionStyleInput | undefined): string {
  *
  * Per-shot overrides change the caption MODE and/or accent color for the
  * groups whose midpoint falls inside the override's time window. The font
- * (Geist), text color (#f6ecd9), and base layout are locked across all shots.
+ * (Inter Bold), text color (#ffffff), and the soft black halo are locked
+ * across all shots.
  */
 function buildASSDocument(
   words: WordInput[],
@@ -305,19 +322,22 @@ function buildASSDocument(
   const wordsPerLine = Math.max(1, (style.wordsPerLine | 0) || 4)
 
   const standardASS = hexToASS(STANDARD_COLOR)
-  const outlineASS = hexToASS(style.outlineColor ?? '#000000')
-  const backASS = hexToASS(style.backColor ?? '#00000000')
+  // Outline / back colours are forced to fully-opaque black so the per-event
+  // \blur tag converts the outline into a centered soft halo behind the glyph.
+  const shadowASS = hexToASS(SHADOW_COLOR)
 
-  const outline = style.outline ?? 2
-  const shadow = style.shadow ?? 0
-  const borderStyle = style.borderStyle ?? 1
+  // V2 lock: 0-offset black halo. Per-style outline/shadow knobs from the
+  // input are intentionally ignored so every clip gets the same treatment.
+  const outline = SHADOW_THICKNESS
+  const shadow = 0
+  const borderStyle = 1
   const marginV = marginVOverride ?? Math.round(frameHeight * 0.12)
 
   // ── Style block ────────────────────────────────────────────────────────
-  // Default = PRESTYJ sans (Geist), painted in #f6ecd9. Bold on (Geist-Bold).
+  // Default = clean white Inter Bold with a soft black halo (outline + blur).
   const styleLine =
     `Style: Default,${STANDARD_FONT},${fontSize},${standardASS},${standardASS},` +
-    `${outlineASS},${backASS},-1,0,0,0,100,100,0,0,${borderStyle},${outline},${shadow},2,40,40,${marginV},1`
+    `${shadowASS},${shadowASS},-1,0,0,0,100,100,0,0,${borderStyle},${outline},${shadow},2,40,40,${marginV},1`
 
   const header = [
     '[Script Info]',
