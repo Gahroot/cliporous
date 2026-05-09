@@ -12,7 +12,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     setupFiles: ['src/main/test-setup.ts'],
-    include: ['src/main/**/*.test.ts'],
+    include: ['src/main/**/*.test.ts', 'src/shared/**/*.test.ts'],
     exclude: ['node_modules', 'out', 'dist']
   }
 })

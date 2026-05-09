@@ -26,7 +26,7 @@ import { ProcessingScreen } from '@/components/screens/ProcessingScreen'
 import { ClipGrid } from '@/components/screens/ClipGrid'
 import { RenderScreen } from '@/components/screens/RenderScreen'
 
-import { useAutosave } from '@/hooks'
+import { useAutosave, usePythonSetup } from '@/hooks'
 import { useStore } from '@/store'
 import { selectScreen } from '@/store/selectors'
 import { saveProject, loadProject, loadRecovery, clearRecovery } from '@/services'
@@ -268,6 +268,20 @@ function RecoveryPrompt(): React.JSX.Element | null {
 export default function App(): React.JSX.Element {
   const stage = useStore((s) => s.pipeline.stage)
   const activeSourceId = useStore((s) => s.activeSourceId)
+  const hydrateSecretsFromMain = useStore((s) => s.hydrateSecretsFromMain)
+
+  // Wire python:setupProgress / python:setupDone listeners into the store so
+  // DropScreen can render the first-run install card. Mounted once at the App
+  // root — the hook is idempotent.
+  usePythonSetup()
+
+  // Hydrate API keys from the main-process safeStorage on first paint.
+  // The Settings window writes via window.api.secrets.set(...) and the main
+  // window's Zustand state is empty until this runs. Without this the
+  // pipeline's scoring step fails with "API key required".
+  useEffect(() => {
+    void hydrateSecretsFromMain()
+  }, [hydrateSecretsFromMain])
 
   const screen = useMemo(
     () => selectScreen(stage, activeSourceId !== null),

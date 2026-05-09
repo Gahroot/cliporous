@@ -116,7 +116,11 @@ export async function loadProjectFromPath(filePath: string): Promise<boolean> {
 export async function autoSaveProject(): Promise<void> {
   const state = useStore.getState()
   const hasClips = Object.values(state.clips).some((arr) => arr.length > 0)
-  if (!hasClips) return
+  // Autosave even before clips exist if there's a transcription cached — that
+  // way a scoring failure mid-pipeline doesn't lose the (slow) transcription
+  // step on the next launch and the user can resume.
+  const hasTranscription = Object.keys(state.transcriptions).length > 0
+  if (!hasClips && !hasTranscription) return
   try {
     await window.api.autoSaveProject(getProjectJson())
     useStore.setState({ isDirty: false, lastSavedAt: Date.now() })

@@ -73,6 +73,23 @@ export async function transcriptionStage(
     formattedForAI
   })
 
+  // Last-resort duration backfill — if yt-dlp + ffprobe both came up empty,
+  // use the end of the final transcribed word as the audio duration. This
+  // protects the scoring validator from the `start-past-video-end` mass-reject.
+  //
+  // ctx.source is immer-frozen, so we write through the store and then
+  // re-point ctx.source at the fresh snapshot rather than mutating in place.
+  if (!source.duration || source.duration <= 0) {
+    const lastWord = transcriptionResult.words[transcriptionResult.words.length - 1]
+    const lastSeg = transcriptionResult.segments[transcriptionResult.segments.length - 1]
+    const fallback = Math.max(lastWord?.end ?? 0, lastSeg?.end ?? 0)
+    if (fallback > 0) {
+      getState().updateSource(source.id, { duration: fallback })
+      const refreshed = getState().sources.find((s) => s.id === source.id)
+      if (refreshed) ctx.source = refreshed
+    }
+  }
+
   reporter.done('Transcription complete')
   ctx.markStageCompleted('transcribing')
 

@@ -6,3 +6,4 @@ export {
   loadRecovery,
   clearRecovery,
 } from './project-service'
+export { startApprovedRender } from './render-service'

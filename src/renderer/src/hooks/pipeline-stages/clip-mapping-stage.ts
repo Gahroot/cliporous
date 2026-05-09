@@ -9,7 +9,8 @@ export async function clipMappingStage(
   ctx: PipelineContext,
   transcription: TranscriptionStageResult
 ): Promise<ClipCandidate[]> {
-  const { source, check, setPipeline, shouldSkip, store, getState, geminiApiKey, processingConfig } = ctx
+  const { source, check, setPipeline, shouldSkip, store, getState, processingConfig } = ctx
+  let { geminiApiKey } = ctx
   const reporter = createStageReporter(setPipeline, 'scoring')
 
   // Intentionally reading latest state at execution time — cached clips
@@ -19,6 +20,24 @@ export async function clipMappingStage(
     reporter.done('Using cached scores')
     ctx.markStageCompleted('scoring')
     return [...cachedClips]
+  }
+
+  // Last-chance hydration — if the key isn't in store yet, pull directly
+  // from main-process safeStorage. Guards against a race where the user
+  // saved a key in the Settings window seconds before clicking Run.
+  if (!geminiApiKey || !geminiApiKey.trim()) {
+    try {
+      const fromMain = await window.api?.secrets?.get('gemini')
+      if (fromMain && fromMain.trim()) geminiApiKey = fromMain
+    } catch {
+      // ignore — fall through to the explicit error below
+    }
+  }
+
+  if (!geminiApiKey || !geminiApiKey.trim()) {
+    throw new Error(
+      'Gemini API key is required for scoring. Open Settings and paste your key under "API Keys".'
+    )
   }
 
   reporter.start('Sending to Gemini…')

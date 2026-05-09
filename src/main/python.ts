@@ -11,20 +11,97 @@ const execFileAsync = promisify(execFile)
 /** Timeout for the quick Python import check (30 seconds). */
 const PYTHON_CHECK_TIMEOUT_MS = 30_000
 
+/**
+ * Cached system Python fallback resolved by `findSystemFallback()`.
+ * `undefined` = not yet probed; `null` = probed and nothing found.
+ */
+let cachedSystemFallback: string | null | undefined = undefined
+
+/**
+ * Probe a candidate Python launcher with `--version`.
+ * Returns true if the executable exists on PATH and responds.
+ */
+function probeLauncher(bin: string, args: string[] = []): boolean {
+  try {
+    execFileSync(bin, [...args, '--version'], {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 5_000
+    })
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Find a working system Python on PATH.
+ *
+ * Tried in order:
+ *   Windows: `py -3` (Python launcher, bundled with python.org installer),
+ *            then `python.exe`, then `python3.exe`.
+ *   POSIX:   `python3`, then `python`.
+ *
+ * Returns the bare command (so it resolves through PATH at spawn time) plus
+ * any required prefix args, or `null` if nothing usable is found.
+ */
+function findSystemFallback(): { bin: string; prefixArgs: string[] } | null {
+  if (cachedSystemFallback === null) return null
+  if (typeof cachedSystemFallback === 'string') {
+    // Cached value is a JSON-encoded { bin, prefixArgs }.
+    try { return JSON.parse(cachedSystemFallback) } catch { /* re-probe */ }
+  }
+
+  const candidates: { bin: string; prefixArgs: string[] }[] = process.platform === 'win32'
+    ? [
+        { bin: 'py', prefixArgs: ['-3'] },
+        { bin: 'python', prefixArgs: [] },
+        { bin: 'python3', prefixArgs: [] }
+      ]
+    : [
+        { bin: 'python3', prefixArgs: [] },
+        { bin: 'python', prefixArgs: [] }
+      ]
+
+  for (const candidate of candidates) {
+    if (probeLauncher(candidate.bin, candidate.prefixArgs)) {
+      console.log(
+        `[Python] System fallback: ${candidate.bin} ${candidate.prefixArgs.join(' ')}`.trim()
+      )
+      cachedSystemFallback = JSON.stringify(candidate)
+      return candidate
+    }
+  }
+
+  cachedSystemFallback = null
+  return null
+}
+
 // ---------------------------------------------------------------------------
 // Path resolution
 // ---------------------------------------------------------------------------
 
 /**
- * Resolve the Python binary path.
+ * Resolved Python binary plus any prefix args required to invoke it
+ * (e.g. `py -3` on Windows when only the Python launcher is on PATH).
+ */
+export interface ResolvedPython {
+  bin: string
+  prefixArgs: string[]
+  /** True if this is a managed venv / embedded distribution (not a bare PATH lookup). */
+  isManaged: boolean
+}
+
+/**
+ * Resolve the Python binary path with all required invocation args.
  *
  * Priority order:
- * 1. userData auto-setup venv  (created by python-setup.ts on first launch)
- * 2. Packaged venv             (legacy bundled builds)
- * 3. Dev venv                  (development)
- * 4. System fallback           (python3 / python)
+ * 1. userData embedded Python  (Windows auto-setup)
+ * 2. userData auto-setup venv  (created by python-setup.ts on first launch)
+ * 3. Packaged venv             (legacy bundled builds)
+ * 4. Dev venv                  (development)
+ * 5. System fallback           (probed: `py -3` / `python3` / `python`)
  */
-export function resolvePythonPath(): string {
+export function resolvePython(): ResolvedPython {
   const isWin = process.platform === 'win32'
 
   // 1. Check userData embedded Python (Windows auto-setup, no venv)
@@ -32,7 +109,9 @@ export function resolvePythonPath(): string {
     const embeddedPython = join(
       app.getPath('userData'), 'python-env', 'python-3.12.8', 'python.exe'
     )
-    if (existsSync(embeddedPython)) return embeddedPython
+    if (existsSync(embeddedPython)) {
+      return { bin: embeddedPython, prefixArgs: [], isManaged: true }
+    }
   }
 
   // 2. Check userData venv (auto-setup location, macOS/Linux)
@@ -40,7 +119,9 @@ export function resolvePythonPath(): string {
     app.getPath('userData'), 'python-env', 'venv',
     isWin ? join('Scripts', 'python.exe') : join('bin', 'python')
   )
-  if (existsSync(userDataVenv)) return userDataVenv
+  if (existsSync(userDataVenv)) {
+    return { bin: userDataVenv, prefixArgs: [], isManaged: true }
+  }
 
   // 3. Check bundled venv (packaged builds, legacy)
   const venvSubpath = isWin
@@ -49,17 +130,36 @@ export function resolvePythonPath(): string {
 
   if (app.isPackaged) {
     const packaged = join(process.resourcesPath, venvSubpath)
-    if (existsSync(packaged)) return packaged
+    if (existsSync(packaged)) {
+      return { bin: packaged, prefixArgs: [], isManaged: true }
+    }
     console.warn('[Python] Packaged venv not found at:', packaged)
-    return isWin ? 'python' : 'python3'
+  } else {
+    // 4. Development: look for venv relative to project root
+    const devVenv = join(process.cwd(), venvSubpath)
+    if (existsSync(devVenv)) {
+      return { bin: devVenv, prefixArgs: [], isManaged: true }
+    }
+    console.warn('[Python] Dev venv not found at:', devVenv, '— probing system Python')
   }
 
-  // 4. Development: look for venv relative to project root
-  const devVenv = join(process.cwd(), venvSubpath)
-  if (existsSync(devVenv)) return devVenv
+  // 5. System fallback — probe what's actually on PATH so we never hand back
+  //    a name (`python`) that will spawn-ENOENT.
+  const fallback = findSystemFallback()
+  if (fallback) {
+    return { bin: fallback.bin, prefixArgs: fallback.prefixArgs, isManaged: false }
+  }
 
-  console.warn('[Python] Dev venv not found at:', devVenv, '— falling back to system python3')
-  return isWin ? 'python' : 'python3'
+  // Nothing found. Return a sentinel so the caller can produce a clear error.
+  return { bin: isWin ? 'py' : 'python3', prefixArgs: [], isManaged: false }
+}
+
+/**
+ * Backwards-compat shim — returns just the binary path.
+ * Prefer `resolvePython()` for new code so prefix args are honored.
+ */
+export function resolvePythonPath(): string {
+  return resolvePython().bin
 }
 
 /**
@@ -102,7 +202,8 @@ export function runPythonScript(
   const { timeoutMs = 10 * 60 * 1000, onStderr, onStdout } = options
 
   return new Promise((resolve, reject) => {
-    const pythonBin = resolvePythonPath()
+    const resolved = resolvePython()
+    const { bin: pythonBin, prefixArgs, isManaged } = resolved
     const scriptPath = resolveScriptPath(scriptName)
 
     if (!existsSync(scriptPath)) {
@@ -118,7 +219,7 @@ export function runPythonScript(
       spawnEnv.PATH = ffmpegDir + sep + (spawnEnv.PATH || '')
     }
 
-    const proc = spawn(pythonBin, [scriptPath, ...args], {
+    const proc = spawn(pythonBin, [...prefixArgs, scriptPath, ...args], {
       stdio: ['ignore', 'pipe', 'pipe'],
       env: spawnEnv
     })
@@ -159,8 +260,18 @@ export function runPythonScript(
       }
     })
 
-    proc.on('error', (err) => {
+    proc.on('error', (err: NodeJS.ErrnoException) => {
       clearTimeout(timer)
+      if (err.code === 'ENOENT') {
+        const launcher = [pythonBin, ...prefixArgs].join(' ')
+        const hint = isManaged
+          ? `The managed Python environment was expected at "${pythonBin}" but is missing. ` +
+            `Open Settings → Python Setup and run the installer.`
+          : `No Python interpreter was found on PATH (tried "${launcher}"). ` +
+            `Open Settings → Python Setup to install a managed Python runtime, ` +
+            `or install Python 3.10+ from https://python.org and restart the app.`
+        return reject(new Error(`Failed to spawn Python process: ${hint}`))
+      }
       reject(new Error(`Failed to spawn Python process: ${err.message}`))
     })
 
@@ -197,20 +308,26 @@ export function runPythonScript(
  * Returns true if the venv Python binary exists and can import key modules.
  */
 export async function isPythonAvailable(): Promise<boolean> {
-  const pythonBin = resolvePythonPath()
+  const { bin: pythonBin, prefixArgs, isManaged } = resolvePython()
 
-  if (!existsSync(pythonBin) && pythonBin !== 'python3' && pythonBin !== 'python') {
+  // For a managed binary (venv/embedded) the path must exist on disk.
+  // For an unmanaged PATH lookup, `findSystemFallback()` already probed it.
+  if (isManaged && !existsSync(pythonBin)) {
     console.log('[Python] Binary not found:', pythonBin)
     return false
   }
 
   try {
     // Quick import check for the two heavyweight packages
-    await execFileAsync(pythonBin, ['-c', 'import nemo; import mediapipe; import yt_dlp'], {
-      timeout: PYTHON_CHECK_TIMEOUT_MS,
-      env: { ...process.env, PYTHONUNBUFFERED: '1' }
-    })
-    console.log('[Python] Environment OK:', pythonBin)
+    await execFileAsync(
+      pythonBin,
+      [...prefixArgs, '-c', 'import nemo; import mediapipe; import yt_dlp'],
+      {
+        timeout: PYTHON_CHECK_TIMEOUT_MS,
+        env: { ...process.env, PYTHONUNBUFFERED: '1' }
+      }
+    )
+    console.log('[Python] Environment OK:', [pythonBin, ...prefixArgs].join(' '))
     return true
   } catch (err) {
     console.warn('[Python] Environment check failed:', (err as Error).message?.slice(0, 300))

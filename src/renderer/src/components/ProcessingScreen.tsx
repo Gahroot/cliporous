@@ -34,6 +34,8 @@ import { cn } from '@/lib/utils'
 
 import { useStore } from '@/store'
 import type { PipelineStage } from '@/store/types'
+import { usePipeline } from '@/hooks'
+import { RotateCcw } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
 // Types & constants
@@ -200,6 +202,21 @@ export function ProcessingScreen(): React.JSX.Element {
   const setPipeline = useStore((s) => s.setPipeline)
   const setActiveSource = useStore((s) => s.setActiveSource)
   const clearPipelineCache = useStore((s) => s.clearPipelineCache)
+  const { processVideo } = usePipeline()
+
+  // Resume is offered only when:
+  //   • the pipeline is currently in the error state
+  //   • we know which stage failed
+  //   • the source still exists in the store (not cancelled)
+  // Re-runs `processVideo` with `resumeFrom` set to the failed stage so prior
+  // stages (download, transcribe) reuse their cached output and we pick up
+  // exactly where it broke.
+  const canResume = isError && failedStage !== null && activeSource !== null
+
+  const handleResume = (): void => {
+    if (!canResume || !activeSource || !failedStage) return
+    void processVideo(activeSource, failedStage)
+  }
 
   // Show the Download row only for YouTube sources.
   const visibleStages = useMemo<readonly StageRow[]>(() => {
@@ -267,10 +284,21 @@ export function ProcessingScreen(): React.JSX.Element {
 
         <Separator className="my-3" />
 
-        <div className="flex justify-end">
+        <div className="flex items-center justify-end gap-2">
           <Button variant="ghost" size="sm" onClick={handleCancel}>
             {isError ? 'Back' : 'Cancel'}
           </Button>
+          {canResume && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleResume}
+              title={`Resume from ${failedStage}`}
+            >
+              <RotateCcw className="mr-1 h-3.5 w-3.5" />
+              Resume from {failedStage}
+            </Button>
+          )}
         </div>
       </Card>
     </div>

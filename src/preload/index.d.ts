@@ -312,6 +312,15 @@ interface RenderBatchOptions {
   captionsEnabled?: boolean
   /** Caption style for re-generating captions after filler removal */
   captionStyle?: CaptionStyleInput
+  /** Filler / silence / repeat removal settings. */
+  fillerRemoval?: {
+    enabled: boolean
+    removeFillerWords: boolean
+    trimSilences: boolean
+    removeRepeats: boolean
+    silenceThreshold: number
+    fillerWords: string[]
+  }
   /** B-Roll overlay settings — when enabled, generates AI image placements */
   broll?: {
     enabled: boolean

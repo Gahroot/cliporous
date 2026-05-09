@@ -36,6 +36,7 @@ import { useStore } from '@/store'
 import { loadProject, loadProjectFromPath } from '@/services'
 import { usePipeline } from '@/hooks'
 import type { SourceVideo } from '@/store'
+import { PythonSetupCard } from '@/components/PythonSetupCard'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -98,7 +99,17 @@ export function DropScreen(): React.JSX.Element {
   const addSource = useStore((s) => s.addSource)
   const setActiveSource = useStore((s) => s.setActiveSource)
   const addError = useStore((s) => s.addError)
+  const pythonStatus = useStore((s) => s.pythonStatus)
   const { processVideo } = usePipeline()
+
+  // While the Python env is installing or has failed, replace the drop zone
+  // with the install card. `'checking'` is the brief moment between mount and
+  // the first status reply — we render the normal drop zone (status
+  // optimistically assumed ready) so a warm-path launch doesn't flash an
+  // install card. `'skipped'` is set by future flows that opt-out entirely.
+  const showSetupCard =
+    pythonStatus === 'installing' || pythonStatus === 'error'
+  const isSetupBusy = pythonStatus === 'installing'
 
   const [value, setValue] = useState('')
   const [isDragOver, setIsDragOver] = useState(false)
@@ -195,8 +206,9 @@ export function DropScreen(): React.JSX.Element {
     [addSource, isStarting, processVideo, setActiveSource]
   )
 
-  // ── Submit (Enter / blur) ──────────────────────────────────────────────
+  // ── Submit (Enter / blur) ───────────────────────────────────────────────────────
   const handleSubmit = useCallback((): void => {
+    if (isSetupBusy) return
     const trimmed = value.trim()
     if (!trimmed) return
     if (isUrl(trimmed)) {
@@ -205,7 +217,7 @@ export function DropScreen(): React.JSX.Element {
       // Treat as a local path. ffprobe will fail loudly if it isn't a video.
       void startFromFilePath(trimmed)
     }
-  }, [startFromFilePath, startFromUrl, value])
+  }, [isSetupBusy, startFromFilePath, startFromUrl, value])
 
   // ── Native HTML5 drag-and-drop ─────────────────────────────────────────
   const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>): void => {
@@ -326,8 +338,12 @@ export function DropScreen(): React.JSX.Element {
           </Alert>
         )}
 
+        {/* Python first-run install card — replaces the drop zone while the
+            env is installing or errored. */}
+        {showSetupCard && <PythonSetupCard />}
+
         {/* Drop zone — single shadcn Card with dashed border */}
-        <Card
+        {!showSetupCard && <Card
           role="button"
           tabIndex={0}
           aria-label="Drop a video file or paste a URL"
@@ -398,7 +414,7 @@ export function DropScreen(): React.JSX.Element {
               aria-label="Video URL or file path"
             />
           </div>
-        </Card>
+        </Card>}
 
         {/* Recent projects */}
         <section className="flex flex-col gap-3">

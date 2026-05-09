@@ -16,7 +16,7 @@ import type {
   BRollDisplayMode,
   BRollTransition
 } from '../broll-placement'
-import { checkPythonSetup, runFullSetup } from '../python-setup'
+import { checkPythonSetup, runFullSetup, ensurePythonReady } from '../python-setup'
 import { generateBRollImage } from '../broll-image-gen'
 import { imageToVideoClip } from '../broll-image-overlay'
 
@@ -25,6 +25,38 @@ export function registerMediaHandlers(): void {
   ipcMain.handle(
     Ch.Invoke.YOUTUBE_DOWNLOAD,
     wrapHandler(Ch.Invoke.YOUTUBE_DOWNLOAD, async (event, url: string) => {
+      // Self-healing: if the env is already stamped + verified, this returns in
+      // <1s. If it's the first run, this triggers (or joins) the install and
+      // streams progress to the renderer's install card. Same callback path
+      // as the startup probe — a renderer that's already showing the install
+      // card just keeps watching it.
+      const result = await ensurePythonReady({
+        onProgress: (stage, message, percent, pkg, currentPackage, totalPackages) => {
+          event.sender.send(Ch.Send.PYTHON_SETUP_PROGRESS, {
+            stage,
+            message,
+            percent,
+            package: pkg,
+            currentPackage,
+            totalPackages,
+          })
+        },
+      })
+      if (!result.ready) {
+        event.sender.send(Ch.Send.PYTHON_SETUP_DONE, {
+          success: false,
+          error: result.error,
+        })
+        throw new Error(
+          `Python environment couldn't be set up: ${result.error ?? 'unknown error'}`
+        )
+      }
+      if (result.installed) {
+        // Notify the renderer that the install finished so the install card
+        // dismisses and the drop zone re-appears before the YouTube download
+        // begins streaming progress.
+        event.sender.send(Ch.Send.PYTHON_SETUP_DONE, { success: true })
+      }
       const outputDir = join(tmpdir(), 'batchcontent-yt')
       return downloadYouTube(url, outputDir, (percent) => {
         event.sender.send(Ch.Send.YOUTUBE_PROGRESS, { percent })
@@ -36,6 +68,12 @@ export function registerMediaHandlers(): void {
   ipcMain.handle(
     Ch.Invoke.TRANSCRIBE_VIDEO,
     wrapHandler(Ch.Invoke.TRANSCRIBE_VIDEO, async (event, videoPath: string) => {
+      const result = await ensurePythonReady()
+      if (!result.ready) {
+        throw new Error(
+          `Python environment couldn't be set up: ${result.error ?? 'unknown error'}`
+        )
+      }
       return transcribeVideo(videoPath, (progress) => {
         event.sender.send(Ch.Send.TRANSCRIBE_PROGRESS, progress)
       })
@@ -59,6 +97,12 @@ export function registerMediaHandlers(): void {
     wrapHandler(
       Ch.Invoke.FACE_DETECT_CROPS,
       async (event, videoPath: string, segments: { start: number; end: number }[]) => {
+        const result = await ensurePythonReady()
+        if (!result.ready) {
+          throw new Error(
+            `Python environment couldn't be set up: ${result.error ?? 'unknown error'}`
+          )
+        }
         return detectFaceCrops(videoPath, segments, (progress) => {
           event.sender.send(Ch.Send.FACE_PROGRESS, progress)
         })

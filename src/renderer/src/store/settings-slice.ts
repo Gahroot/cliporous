@@ -116,13 +116,20 @@ export const createSettingsSlice: StateCreator<
     )
 
     try {
-      const [gemini, fal] = await Promise.all([
+      const [gemini, fal, pexels, outputDirectory] = await Promise.all([
         secrets.get('gemini'),
         secrets.get('fal'),
+        secrets.get('pexels'),
+        secrets.get('outputDirectory'),
       ])
       set((state) => {
         if (gemini) state.settings.geminiApiKey = gemini
         if (fal) state.settings.falApiKey = fal
+        if (pexels) state.settings.pexelsApiKey = pexels
+        // outputDirectory is intentionally allowed to overwrite to null/empty
+        // so removing it in the Settings window propagates to the main window.
+        const trimmed = (outputDirectory ?? '').trim()
+        state.settings.outputDirectory = trimmed.length > 0 ? trimmed : null
       })
     } catch (err) {
       console.warn('[secrets] Failed to hydrate secrets from main:', err)
@@ -141,8 +148,12 @@ export const createSettingsSlice: StateCreator<
     set((state) => { state.settings.falApiKey = key })
   },
 
-  setOutputDirectory: (dir) =>
-    set((state) => { state.settings.outputDirectory = dir }),
+  setOutputDirectory: (dir) => {
+    // Persist to safeStorage so the Settings window (separate BrowserWindow)
+    // sees the same value. Settings window reads/writes the same secret key.
+    void window.api?.secrets?.set('outputDirectory', dir ?? '')
+    set((state) => { state.settings.outputDirectory = dir })
+  },
 
   setMinScore: (score) => {
     _pushUndo(get(), set)
@@ -275,12 +286,17 @@ export const createSettingsSlice: StateCreator<
 
   resetSettings: () =>
     set((state) => {
+      // Preserve all credentials + the output directory — reset only tweakable
+      // creative knobs. These four live in safeStorage; we don't want a reset
+      // of the in-memory store to wipe what the user already configured.
       const apiKey = state.settings.geminiApiKey
       const falKey = state.settings.falApiKey
+      const pexelsKey = state.settings.pexelsApiKey
       const outputDir = state.settings.outputDirectory
       Object.assign(state.settings, DEFAULT_SETTINGS)
       state.settings.geminiApiKey = apiKey
       state.settings.falApiKey = falKey
+      state.settings.pexelsApiKey = pexelsKey
       state.settings.outputDirectory = outputDir
     }),
 

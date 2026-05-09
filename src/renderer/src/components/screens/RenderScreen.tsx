@@ -45,6 +45,7 @@ import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 
+import { startApprovedRender } from '@/services/render-service'
 import { useStore } from '@/store'
 import type { ClipCandidate, RenderProgress } from '@/store/types'
 
@@ -201,7 +202,6 @@ function ClipRow({ clip, progress }: ClipRowProps): React.JSX.Element {
 export function RenderScreen(): React.JSX.Element {
   // ── Store reads ────────────────────────────────────────────────────────
   const activeSourceId = useStore((s) => s.activeSourceId)
-  const sources = useStore((s) => s.sources)
   const clipsBySource = useStore((s) => s.clips)
   const renderProgress = useStore((s) => s.renderProgress)
   const renderErrors = useStore((s) => s.renderErrors)
@@ -231,11 +231,6 @@ export function RenderScreen(): React.JSX.Element {
     const list = clipsBySource[activeSourceId] ?? []
     return list.filter((c) => c.status === 'approved')
   }, [activeSourceId, clipsBySource])
-
-  const activeSource = useMemo(
-    () => sources.find((s) => s.id === activeSourceId) ?? null,
-    [sources, activeSourceId]
-  )
 
   // Merge store renderProgress + renderErrors into a stable per-row view.
   const progressMap = useMemo(() => {
@@ -334,69 +329,11 @@ export function RenderScreen(): React.JSX.Element {
   }, [setRenderProgress, setRenderError, setIsRendering, setPipeline, addError])
 
   // ── Action: Render All ────────────────────────────────────────────────
+  // Delegates to the shared render-service so the ClipGrid "Render Approved"
+  // button and this "Render All" button stay in lockstep.
   const handleRenderAll = async (): Promise<void> => {
-    if (!activeSource) {
-      toast.error('No active source video')
-      return
-    }
-    if (approvedClips.length === 0) {
-      toast.error('No approved clips to render')
-      return
-    }
-    if (!outputDirectory) {
-      toast.error('Set an output directory in Settings before rendering')
-      return
-    }
-
-    // Reset per-batch state before kicking off the next run.
-    clearRenderErrors()
     setBatchSummary(null)
-    setRenderProgress(
-      approvedClips.map((c) => ({ clipId: c.id, percent: 0, status: 'queued' as const }))
-    )
-    setIsRendering(true)
-    setPipeline({ stage: 'rendering', message: '', percent: 0 })
-
-    const settings = useStore.getState().settings
-
-    try {
-      await window.api.startBatchRender({
-        outputDirectory,
-        renderConcurrency: settings.renderConcurrency,
-        renderQuality: settings.renderQuality,
-        outputAspectRatio: settings.outputAspectRatio,
-        filenameTemplate: settings.filenameTemplate,
-        developerMode: settings.developerMode,
-        sourceMeta: {
-          name: activeSource.name,
-          path: activeSource.path,
-          duration: activeSource.duration
-        },
-        jobs: approvedClips.map((c) => ({
-          clipId: c.id,
-          sourceVideoPath: activeSource.path,
-          startTime: c.startTime,
-          endTime: c.endTime,
-          cropRegion: c.cropRegion
-            ? {
-                x: c.cropRegion.x,
-                y: c.cropRegion.y,
-                width: c.cropRegion.width,
-                height: c.cropRegion.height
-              }
-            : undefined,
-          cropTimeline: c.cropTimeline,
-          wordTimestamps: c.wordTimestamps,
-          hookTitleText: c.hookText
-        }))
-      })
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
-      setIsRendering(false)
-      setPipeline({ stage: 'error', message: msg, percent: 0 })
-      toast.error(`Couldn't start render: ${msg}`)
-      addError({ source: 'render', message: `Couldn't start render: ${msg}` })
-    }
+    await startApprovedRender()
   }
 
   // ── Action: Cancel ────────────────────────────────────────────────────

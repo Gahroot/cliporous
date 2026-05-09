@@ -85,12 +85,15 @@ WHAT TO EXCLUDE:
 - Pure entertainment/humor with no value for the target audience
 - Segments where the speaker is just repeating themselves
 
-SCORING (0-100):
+SCORING (0-100) — BE GENEROUS. The user filters by score downstream; your job is to surface candidates, not gatekeep:
 - 90-100: Must-clip — fully standalone + strong hook + specific actionable insight + high share potential. A stranger could watch this one clip and walk away with clear value.
 - 80-89: Very strong — clear value delivery, complete idea, good hook, audience would save this. No missing context.
 - 70-79: Solid — good standalone value, may benefit from tight editing but the thought is complete and self-contained.
-- 69: Minimum — borderline; the thought is there but delivery could be stronger. Still fully understandable without any other context.
-- Below 69: Do not include — incomplete thought, no clear value, requires outside context, or off-target for audience
+- 60-69: Decent — has a real idea but delivery is loose, hook is okay, or context is partially missing. INCLUDE these.
+- 50-59: Weak but viable — a kernel of an interesting moment. INCLUDE if the clip is at least understandable on its own.
+- Below 50: Do not include — truly incoherent, broken mid-sentence, or pure filler.
+
+IMPORTANT: An 8-minute video should typically yield 5-15 candidate segments. If you find yourself returning fewer than 3, you are being too strict — lower your bar and surface more candidates. The user can dismiss the weak ones.
 
 DURATION & SCORING RELATIONSHIP:
 - Clips under 25 seconds should RARELY score above 80. In 15-20 seconds you can deliver a punchy one-liner, but you almost never have time for setup + context + payoff + actionable value. If you're scoring a short clip 85+, ask yourself: "Is this TRULY a complete, high-value thought, or am I just rewarding tightness?" Most real value needs breathing room.
@@ -186,29 +189,82 @@ interface RawResponse {
  * Validate and normalise the raw JSON from Gemini into ScoredSegment[].
  * Applies all timing / score / overlap rules.
  */
-function validateSegments(raw: RawSegment[], videoDuration: number, targetDuration: TargetDuration = 'auto'): ScoredSegment[] {
+/**
+ * Hard floor for the validator. Anything below this is almost certainly junk
+ * (Gemini gave it up itself). The user-facing approval bar is
+ * `settings.minScore` (defaults to 69) — lower-scoring clips still flow
+ * through and show up in the grid so the user can see what was rejected
+ * and decide for themselves.
+ */
+const VALIDATOR_MIN_SCORE = 50
+
+interface ValidationOutcome {
+  segments: ScoredSegment[]
+  rejectionReasons: Record<string, number>
+}
+
+function validateSegments(raw: RawSegment[], videoDuration: number, targetDuration: TargetDuration = 'auto'): ValidationOutcome {
   const minDuration = getMinDuration(targetDuration)
   const parsed: ScoredSegment[] = []
+  const rejectionReasons: Record<string, number> = {}
+  const reject = (reason: string): void => {
+    rejectionReasons[reason] = (rejectionReasons[reason] ?? 0) + 1
+  }
+
+  // If videoDuration is zero/negative/non-finite, treat the bound as unknown
+  // rather than rejecting every segment. This guards against an upstream bug
+  // where the source's duration was never written back after download — in
+  // that case we'd rather accept Gemini's timestamps than throw away every
+  // segment with `start-past-video-end`.
+  const hasVideoBound = Number.isFinite(videoDuration) && videoDuration > 0
 
   for (const seg of raw) {
-    if (typeof seg.start_time !== 'string' || typeof seg.end_time !== 'string') continue
-    if (typeof seg.text !== 'string' || seg.text.trim().split(/\s+/).length < 3) continue
+    if (typeof seg.start_time !== 'string' || typeof seg.end_time !== 'string') {
+      reject('missing-timestamps')
+      continue
+    }
+    if (typeof seg.text !== 'string' || seg.text.trim().split(/\s+/).length < 3) {
+      reject('text-too-short')
+      continue
+    }
 
     const startTime = parseTimestamp(seg.start_time)
     const endTime = parseTimestamp(seg.end_time)
 
-    if (isNaN(startTime) || isNaN(endTime)) continue
-    if (startTime >= endTime) continue
+    if (isNaN(startTime) || isNaN(endTime)) {
+      reject('unparseable-timestamps')
+      continue
+    }
+    if (startTime >= endTime) {
+      reject('start-after-end')
+      continue
+    }
 
     const duration = endTime - startTime
-    if (duration < minDuration) continue
+    if (duration < minDuration) {
+      reject(`duration-below-${minDuration}s`)
+      continue
+    }
 
     const score = typeof seg.score === 'number' ? seg.score : Number(seg.score)
-    if (isNaN(score) || score < 69) continue
+    if (isNaN(score)) {
+      reject('invalid-score')
+      continue
+    }
+    if (score < VALIDATOR_MIN_SCORE) {
+      reject(`score-below-${VALIDATOR_MIN_SCORE}`)
+      continue
+    }
 
-    // Clamp to video duration
-    if (startTime >= videoDuration) continue
-    const clampedEnd = Math.min(endTime, videoDuration)
+    // Clamp to video duration only when we know it.
+    let clampedEnd = endTime
+    if (hasVideoBound) {
+      if (startTime >= videoDuration) {
+        reject('start-past-video-end')
+        continue
+      }
+      clampedEnd = Math.min(endTime, videoDuration)
+    }
 
     parsed.push({
       startTime,
@@ -218,6 +274,21 @@ function validateSegments(raw: RawSegment[], videoDuration: number, targetDurati
       hookText: typeof seg.hook_text === 'string' ? seg.hook_text.trim() : '',
       reasoning: typeof seg.reasoning === 'string' ? seg.reasoning.trim() : ''
     })
+  }
+
+  if (raw.length > 0 && parsed.length === 0) {
+    console.warn(
+      `[scoring] All ${raw.length} segments from Gemini were rejected. Reasons:`,
+      rejectionReasons,
+      `videoDuration=${videoDuration}`,
+      'Sample raw scores:',
+      raw.slice(0, 5).map((s) => ({ score: s.score, start: s.start_time, end: s.end_time }))
+    )
+  } else if (raw.length > 0) {
+    console.log(
+      `[scoring] Gemini returned ${raw.length} segments, ${parsed.length} passed validation.`,
+      Object.keys(rejectionReasons).length > 0 ? `Rejections: ${JSON.stringify(rejectionReasons)}` : ''
+    )
   }
 
   // Sort by score descending
@@ -234,7 +305,17 @@ function validateSegments(raw: RawSegment[], videoDuration: number, targetDurati
     }
   }
 
-  return result
+  return { segments: result, rejectionReasons }
+}
+
+/** Format a rejection-reasons map as a compact, human-readable string. */
+function formatRejectionReasons(reasons: Record<string, number>): string {
+  const entries = Object.entries(reasons)
+  if (entries.length === 0) return ''
+  return entries
+    .sort((a, b) => b[1] - a[1])
+    .map(([reason, count]) => `${reason}×${count}`)
+    .join(', ')
 }
 
 // ---------------------------------------------------------------------------
@@ -285,10 +366,29 @@ ${formattedTranscript}`
   }
 
   const rawSegments = Array.isArray(rawResponse.segments) ? (rawResponse.segments as RawSegment[]) : []
-  const segments = validateSegments(rawSegments, videoDuration, targetDuration)
+  const { segments, rejectionReasons } = validateSegments(rawSegments, videoDuration, targetDuration)
 
   if (segments.length === 0) {
-    throw new Error('AI returned no segments scoring ≥69')
+    const rawCount = rawSegments.length
+    if (rawCount === 0) {
+      throw new Error(
+        'Gemini returned 0 segments. The transcript may be too short, silent, or unintelligible. Check the source video.'
+      )
+    }
+    const sampleScores = rawSegments
+      .slice(0, 5)
+      .map((s) => (typeof s.score === 'number' ? s.score : Number(s.score)))
+      .filter((n) => !isNaN(n))
+    const reasonStr = formatRejectionReasons(rejectionReasons)
+    const durationNote =
+      rejectionReasons['start-past-video-end'] && (!Number.isFinite(videoDuration) || videoDuration <= 0)
+        ? ' (videoDuration was 0 — source metadata likely missing)'
+        : ''
+    throw new Error(
+      `Gemini returned ${rawCount} segments but all were filtered out by validation. ` +
+      `Sample scores: [${sampleScores.join(', ')}]. ` +
+      `Rejection reasons: ${reasonStr || '(none recorded)'}${durationNote}.`
+    )
   }
 
   return {

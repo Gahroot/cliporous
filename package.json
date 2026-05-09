@@ -18,7 +18,9 @@
     "test:watch": "vitest --config vitest.config.main.ts",
     "test:main": "vitest run --config vitest.config.main.ts",
     "test:renderer": "vitest run --config vitest.config.ts",
-    "setup:python": "bash scripts/setup-python.sh"
+    "setup:python": "bash scripts/setup-python.sh",
+    "deploy": "bash scripts/deploy-windows.sh",
+    "deploy:fast": "bash scripts/deploy-windows.sh --fast --yes"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

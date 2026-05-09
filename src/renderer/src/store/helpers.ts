@@ -103,6 +103,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   // store has a valid synchronous initial shape.
   geminiApiKey: '',
   falApiKey: localStorage.getItem('batchclip-fal-key') || '',
+  pexelsApiKey: '',
   outputDirectory: null,
   minScore: DEFAULT_MIN_SCORE,
   autoZoom: DEFAULT_AUTO_ZOOM,
@@ -164,8 +165,13 @@ export function loadPersistedSettings(): AppSettings {
       return {
         ...DEFAULT_SETTINGS,
         ...saved,
-        // Gemini key is hydrated asynchronously from safeStorage.
+        // Gemini / Pexels keys + output directory are hydrated asynchronously
+        // from safeStorage by hydrateSecretsFromMain(). Always start empty so
+        // a stale localStorage value can't shadow the safeStorage source of
+        // truth (where the Settings window writes them).
         geminiApiKey: '',
+        pexelsApiKey: '',
+        outputDirectory: null,
         falApiKey: localStorage.getItem('batchclip-fal-key') || '',
         autoZoom: { ...DEFAULT_AUTO_ZOOM, ...(saved.autoZoom ?? {}) },
         hookTitleOverlay: { ...DEFAULT_HOOK_TITLE_OVERLAY, ...(saved.hookTitleOverlay ?? {}) },
@@ -196,9 +202,19 @@ export function loadPersistedProcessingConfig(): ProcessingConfig {
 
 export function persistSettings(settings: AppSettings): void {
   try {
-    const { geminiApiKey: _g, falApiKey: _f, ...rest } = settings
+    // Strip values that live in safeStorage (the Settings window's source of
+    // truth) so we don't double-write them to plaintext localStorage.
+    const {
+      geminiApiKey: _g,
+      falApiKey: _f,
+      pexelsApiKey: _p,
+      outputDirectory: _o,
+      ...rest
+    } = settings
     void _g
     void _f
+    void _p
+    void _o
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(rest))
   } catch {
     // Storage full or unavailable — silently ignore

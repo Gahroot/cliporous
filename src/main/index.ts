@@ -22,7 +22,8 @@ import { join } from 'path'
 
 import { initLogger, log, closeLogger } from './logger'
 import { setupFFmpeg } from './ffmpeg'
-import { isPythonAvailable } from './python'
+import { ensurePythonReady } from './python-setup'
+import { Ch } from '@shared/ipc-channels'
 
 import {
   registerAiHandlers,
@@ -56,6 +57,49 @@ let mainWindow: BrowserWindow | null = null
 let pythonReady = false
 export function isPythonReady(): boolean {
   return pythonReady
+}
+
+/**
+ * Run the Python first-run / repair flow. Streams progress to the main
+ * window so the renderer can show an inline install card on DropScreen.
+ * Window creation is NOT blocked by this — it runs alongside.
+ */
+function kickoffPythonSetup(): void {
+  ensurePythonReady({
+    onProgress: (stage, message, percent, pkg, currentPackage, totalPackages) => {
+      // Forward every progress event to the main window. The renderer's
+      // python-slice listens on Ch.Send.PYTHON_SETUP_PROGRESS.
+      mainWindow?.webContents.send(Ch.Send.PYTHON_SETUP_PROGRESS, {
+        stage,
+        message,
+        percent,
+        package: pkg,
+        currentPackage,
+        totalPackages,
+      })
+    },
+  })
+    .then((result) => {
+      pythonReady = result.ready
+      log('info', 'main', `python ensure: ready=${result.ready} installed=${result.installed}`, {
+        error: result.error,
+      })
+      // Always emit a setupDone so the renderer can flip out of any install state,
+      // even on the fast-path (no install was performed).
+      mainWindow?.webContents.send(Ch.Send.PYTHON_SETUP_DONE, {
+        success: result.ready,
+        error: result.error,
+      })
+    })
+    .catch((err) => {
+      pythonReady = false
+      const message = err instanceof Error ? err.message : String(err)
+      log('error', 'main', 'python ensure threw', { message })
+      mainWindow?.webContents.send(Ch.Send.PYTHON_SETUP_DONE, {
+        success: false,
+        error: message,
+      })
+    })
 }
 
 // ---------------------------------------------------------------------------
@@ -169,17 +213,6 @@ if (!app.requestSingleInstanceLock()) {
 
     setupFFmpeg()
 
-    // Non-blocking Python probe — record status, never gate startup.
-    isPythonAvailable()
-      .then((ok) => {
-        pythonReady = ok
-        log('info', 'main', `python available: ${ok}`)
-      })
-      .catch((err) => {
-        pythonReady = false
-        log('warn', 'main', 'python probe failed', { message: String(err) })
-      })
-
     // Register every IPC handler module.
     registerAiHandlers()
     registerExportHandlers()
@@ -192,6 +225,15 @@ if (!app.requestSingleInstanceLock()) {
 
     mainWindow = createMainWindow()
     registerSettingsWindowHandlers(mainWindow)
+
+    // Self-healing Python setup. Fast path returns in <1s on subsequent
+    // launches; slow path streams install progress to the renderer so the
+    // user sees a first-run install card on DropScreen.
+    // Deferred until after `did-finish-load` so the renderer's IPC listeners
+    // are wired before we start emitting progress events.
+    mainWindow.webContents.once('did-finish-load', () => {
+      kickoffPythonSetup()
+    })
 
     // Dev-only: F12 toggles DevTools, Ctrl/Cmd+R is suppressed in production.
     app.on('browser-window-created', (_event, window) => {

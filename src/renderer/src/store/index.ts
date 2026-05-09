@@ -53,6 +53,13 @@ export const useStore = create<AppState>()(immer((...a) => {
     addSource: (source: SourceVideo) =>
       set((state) => { state.sources.push(source) }),
 
+    updateSource: (id: string, updates: Partial<SourceVideo>) =>
+      set((state) => {
+        const idx = state.sources.findIndex((s) => s.id === id)
+        if (idx === -1) return
+        state.sources[idx] = { ...state.sources[idx], ...updates, id: state.sources[idx].id }
+      }),
+
     removeSource: (id: string) =>
       set((state) => {
         // Clean up per-clip undo stacks for clips belonging to this source
@@ -202,6 +209,8 @@ useStore.subscribe((state, prevState) => {
   if (state.isDirty) return
   if (
     state.clips !== prevState.clips ||
+    state.transcriptions !== prevState.transcriptions ||
+    state.sources !== prevState.sources ||
     state.settings.minScore !== prevState.settings.minScore
   ) {
     queueMicrotask(() => useStore.setState({ isDirty: true }))
@@ -215,7 +224,22 @@ useStore.subscribe((state, prevState) => {
 listenForSettingsChanges(() => {
   const freshSettings = loadPersistedSettings()
   const freshConfig = loadPersistedProcessingConfig()
-  useStore.setState({ settings: freshSettings, processingConfig: freshConfig })
+  // loadPersistedSettings() returns empty strings / null for values that live
+  // in safeStorage (API keys + outputDirectory). Preserve the current
+  // in-memory values so a sibling-window broadcast doesn't visibly wipe them
+  // before hydrateSecretsFromMain() refreshes them from the source of truth.
+  const current = useStore.getState().settings
+  useStore.setState({
+    settings: {
+      ...freshSettings,
+      geminiApiKey: current.geminiApiKey,
+      falApiKey: current.falApiKey,
+      pexelsApiKey: current.pexelsApiKey,
+      outputDirectory: current.outputDirectory,
+    },
+    processingConfig: freshConfig,
+  })
+  void useStore.getState().hydrateSecretsFromMain()
 })
 
 // ---------------------------------------------------------------------------

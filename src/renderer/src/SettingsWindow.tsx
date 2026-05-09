@@ -198,6 +198,17 @@ export default function SettingsWindow(): React.JSX.Element {
           String(form.autosaveIntervalSec * 1000)
         ),
       ])
+      // Notify the main window so it re-hydrates secrets from safeStorage.
+      // Without this, the main window's in-memory geminiApiKey stays empty
+      // and the scoring step fails with "API key required".
+      try {
+        new BroadcastChannel('batchclip-settings-sync').postMessage({
+          type: 'settings-changed',
+          timestamp: Date.now(),
+        })
+      } catch {
+        // BroadcastChannel unavailable — main window will pick up on next mount
+      }
       setStatus({ kind: 'saved', message: 'Settings saved' })
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)

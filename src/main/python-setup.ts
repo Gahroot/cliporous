@@ -1,6 +1,7 @@
 import { app } from 'electron'
 import { join } from 'path'
 import { existsSync, mkdirSync, createWriteStream, copyFileSync, readFileSync, writeFileSync } from 'fs'
+import { createHash } from 'crypto'
 import { spawn } from 'child_process'
 import { promisify } from 'util'
 import { execFile } from 'child_process'
@@ -41,6 +42,39 @@ function getPythonEnvDir(): string {
 /** Path to the venv inside the python-env directory. */
 function getVenvDir(): string {
   return join(getPythonEnvDir(), 'venv')
+}
+
+/** Path to the requirements digest stamp — proves "these exact requirements are installed". */
+function getStampPath(): string {
+  return join(getPythonEnvDir(), 'requirements.sha256')
+}
+
+/** SHA-256 hex digest of a file's contents, or `null` if the file is unreadable. */
+function hashFile(path: string): string | null {
+  try {
+    const content = readFileSync(path)
+    return createHash('sha256').update(content).digest('hex')
+  } catch {
+    return null
+  }
+}
+
+/** Read the stamped digest from a previous successful install, or `null`. */
+function readStamp(): string | null {
+  try {
+    return readFileSync(getStampPath(), 'utf-8').trim()
+  } catch {
+    return null
+  }
+}
+
+/** Persist the current requirements digest as a stamp marking install success. */
+function writeStamp(digest: string): void {
+  try {
+    writeFileSync(getStampPath(), digest, 'utf-8')
+  } catch (err) {
+    console.warn('[PythonSetup] Failed to write stamp:', (err as Error).message)
+  }
 }
 
 /** Path to the venv Python binary. */
@@ -545,6 +579,10 @@ export async function runFullSetup(sender: WebContents): Promise<void> {
       throw new Error('Verification failed: one or more packages could not be imported')
     }
 
+    // Stamp the requirements digest so future launches skip the install entirely.
+    const reqDigest = hashFile(getRequirementsPath())
+    if (reqDigest) writeStamp(reqDigest)
+
     sendProgress('verifying', 'Setup complete!', 100)
     sender.send(Ch.Send.PYTHON_SETUP_DONE, { success: true })
   } catch (err) {
@@ -552,6 +590,170 @@ export async function runFullSetup(sender: WebContents): Promise<void> {
     console.error('[PythonSetup] Setup failed:', message)
     sender.send(Ch.Send.PYTHON_SETUP_DONE, { success: false, error: message })
   }
+}
+
+// ---------------------------------------------------------------------------
+// ensurePythonReady — self-healing first-run / cold-start setup
+// ---------------------------------------------------------------------------
+
+/**
+ * Concurrency guard — a single in-flight setup promise shared by every caller
+ * (startup probe + IPC handlers racing to ensure readiness on first paste).
+ */
+let inFlightSetup: Promise<EnsureReadyResult> | null = null
+
+export interface EnsureReadyResult {
+  ready: boolean
+  /** Whether an install was actually performed (vs. fast-path stamp hit). */
+  installed: boolean
+  /** Error message if `ready === false`. */
+  error?: string
+}
+
+export interface EnsureReadyOptions {
+  /**
+   * Optional progress sink. When provided, install progress events are
+   * forwarded here verbatim. Used by the main process to relay events to
+   * renderer windows via `Ch.Send.PYTHON_SETUP_PROGRESS`.
+   */
+  onProgress?: (
+    stage: PythonSetupProgress['stage'],
+    message: string,
+    percent: number,
+    pkg?: string,
+    currentPkg?: number,
+    totalPkgs?: number
+  ) => void
+}
+
+/**
+ * Quick smoke test: does the resolved Python binary import every package the
+ * pipeline actually needs? Used for the warm-path fast check (separate from
+ * `verifyInstallation()` so we can keep the timeout tight).
+ */
+async function quickImportCheck(pythonBin: string): Promise<boolean> {
+  if (!existsSync(pythonBin)) return false
+  try {
+    await execFileAsync(
+      pythonBin,
+      ['-c', 'import nemo, mediapipe, yt_dlp'],
+      { timeout: 15_000, env: { ...process.env, PYTHONUNBUFFERED: '1' } }
+    )
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Idempotent, self-healing Python setup.
+ *
+ * Fast path (every launch after the first):
+ *   1. The Python binary exists.
+ *   2. `requirements.sha256` matches the current `requirements.txt`.
+ *   3. A 15-second `python -c "import nemo, mediapipe, yt_dlp"` passes.
+ *   → returns `{ ready: true, installed: false }` in <1s.
+ *
+ * Slow path (first run, app update with new requirements, or corrupted env):
+ *   Runs `ensureEmbeddedPython()` + `createVenvAndInstall()` + `verifyInstallation()`,
+ *   stamps the new digest on success, returns `{ ready: true, installed: true }`.
+ *
+ * Concurrency-safe — multiple concurrent callers share one in-flight setup.
+ */
+export async function ensurePythonReady(
+  options: EnsureReadyOptions = {}
+): Promise<EnsureReadyResult> {
+  if (inFlightSetup) return inFlightSetup
+
+  inFlightSetup = (async (): Promise<EnsureReadyResult> => {
+    const effectivePython = getEffectivePythonPath()
+    const reqPath = getRequirementsPath()
+    const currentDigest = hashFile(reqPath)
+    const stampedDigest = readStamp()
+
+    // Fast path: stamp matches and packages still import. Skip everything.
+    if (
+      currentDigest &&
+      stampedDigest === currentDigest &&
+      existsSync(effectivePython) &&
+      (await quickImportCheck(effectivePython))
+    ) {
+      console.log('[PythonSetup] Fast path — stamp matches, env is ready')
+      return { ready: true, installed: false }
+    }
+
+    console.log('[PythonSetup] Slow path — install/repair required', {
+      hasBinary: existsSync(effectivePython),
+      stampMatches: stampedDigest === currentDigest,
+    })
+
+    try {
+      // 1. Ensure a Python binary exists (downloads embedded Python on Windows).
+      const pythonBin = await ensureEmbeddedPython((stage, message, percent) => {
+        options.onProgress?.(
+          stage as PythonSetupProgress['stage'],
+          message,
+          percent
+        )
+      })
+
+      // 2. Create venv (or use embedded Python directly) and install requirements.
+      await createVenvAndInstall(
+        pythonBin,
+        (stage, message, percent, pkg, currentPkg, totalPkgs) => {
+          options.onProgress?.(
+            stage as PythonSetupProgress['stage'],
+            message,
+            percent,
+            pkg,
+            currentPkg,
+            totalPkgs
+          )
+        }
+      )
+
+      // 3. Verify imports work.
+      options.onProgress?.('verifying', 'Verifying installation...', 95)
+      const ok = await verifyInstallation()
+      if (!ok) {
+        return {
+          ready: false,
+          installed: true,
+          error: 'Verification failed: one or more packages could not be imported',
+        }
+      }
+
+      // 4. Stamp success.
+      if (currentDigest) writeStamp(currentDigest)
+      options.onProgress?.('verifying', 'Setup complete!', 100)
+      return { ready: true, installed: true }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      console.error('[PythonSetup] ensurePythonReady failed:', message)
+      return { ready: false, installed: false, error: message }
+    }
+  })()
+
+  try {
+    return await inFlightSetup
+  } finally {
+    inFlightSetup = null
+  }
+}
+
+/**
+ * Cheap synchronous check — does the env *look* ready without spawning a
+ * Python process? Used by IPC handlers that want to fail fast before doing
+ * any further work. Returns `true` only when the stamp matches and the
+ * binary exists; callers should still `await ensurePythonReady()` to be
+ * fully sure.
+ */
+export function isPythonStampedReady(): boolean {
+  const effectivePython = getEffectivePythonPath()
+  if (!existsSync(effectivePython)) return false
+  const currentDigest = hashFile(getRequirementsPath())
+  if (!currentDigest) return false
+  return readStamp() === currentDigest
 }
 
 /**

@@ -272,6 +272,8 @@ export interface AppSettings {
   geminiApiKey: string
   /** fal.ai API key for AI-generated B-roll images. */
   falApiKey: string
+  /** Pexels API key for stock B-roll fetch. Loaded from safeStorage. */
+  pexelsApiKey: string
   outputDirectory: string | null
   minScore: number
   autoZoom: ZoomSettings
@@ -399,6 +401,7 @@ export interface AppState {
 
   // Actions — Sources
   addSource: (source: SourceVideo) => void
+  updateSource: (id: string, updates: Partial<SourceVideo>) => void
   removeSource: (id: string) => void
   setActiveSource: (id: string | null) => void
 
