@@ -30,10 +30,12 @@ import type {
   ShotBreakReason,
   ShotSegment,
   ShotSegmentationResult,
+  Platform,
 } from '@shared/types'
 
 // Re-export shared types so existing component imports from store don't break
 export type {
+  Platform,
   WordTimestamp,
   SegmentTimestamp,
   TranscriptionResult,
@@ -65,6 +67,22 @@ export type {
   ShotBreakReason,
   ShotSegment,
   ShotSegmentationResult,
+}
+
+/**
+ * Template Layout — on-canvas placement (percentage of 1080×1920) for the
+ * two repositionable text overlays. Edited via the Template Editor dialog
+ * and forwarded to the render pipeline as `BatchRenderOptions.templateLayout`.
+ *
+ * Coordinates are 0–100 and represent the centre of the element relative to
+ * the top-left of the canvas. Render-side code clamps to the platform
+ * safe-zone before applying.
+ */
+export interface TemplateLayout {
+  /** Hook / on-screen title text — read by the hook-title and rehook features. */
+  titleText: { x: number; y: number }
+  /** Burned-in subtitles / captions baseline — read by the captions feature. */
+  subtitles: { x: number; y: number }
 }
 
 // ---------------------------------------------------------------------------
@@ -290,6 +308,10 @@ export interface AppSettings {
   filenameTemplate: string
   /** Number of clips to render in parallel (1–4). */
   renderConcurrency: number
+  /** On-canvas placement for the hook title and subtitle overlays. */
+  templateLayout: TemplateLayout
+  /** Platform whose UI dead-zones are previewed in the Template Editor. */
+  targetPlatform: Platform
 }
 
 export interface ProcessingConfig {
@@ -534,6 +556,11 @@ export interface AppState {
   setOutputAspectRatio: (ratio: OutputAspectRatio) => void
   setFilenameTemplate: (template: string) => void
   setRenderConcurrency: (concurrency: number) => void
+
+  // Actions — Template Layout (on-screen text positioning)
+  setTemplateLayout: (layout: TemplateLayout) => void
+  setTargetPlatform: (platform: Platform) => void
+  resetTemplateLayout: () => void
 
   // Actions — Reset
   resetSettings: () => void

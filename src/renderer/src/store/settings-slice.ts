@@ -13,10 +13,14 @@ import type {
   OutputAspectRatio,
   BRollDisplayMode,
   BRollTransition,
+  TemplateLayout,
+  Platform,
 } from './types'
 import {
   DEFAULT_SETTINGS,
   DEFAULT_PROCESSING_CONFIG,
+  DEFAULT_TEMPLATE_LAYOUT,
+  DEFAULT_TARGET_PLATFORM,
   loadPersistedSettings,
   loadPersistedProcessingConfig,
 } from './helpers'
@@ -74,6 +78,12 @@ export interface SettingsSlice {
   setOutputAspectRatio: (ratio: OutputAspectRatio) => void
   setFilenameTemplate: (template: string) => void
   setRenderConcurrency: (concurrency: number) => void
+
+  // Template layout (on-screen text positioning)
+  setTemplateLayout: (layout: TemplateLayout) => void
+  setTargetPlatform: (platform: Platform) => void
+  resetTemplateLayout: () => void
+
   resetSettings: () => void
   resetSection: (section: 'autoZoom' | 'hookTitle' | 'rehook' | 'fillerRemoval' | 'broll' | 'aiSettings' | 'renderQuality') => void
 
@@ -281,6 +291,20 @@ export const createSettingsSlice: StateCreator<
 
   setRenderConcurrency: (concurrency) =>
     set((state) => { state.settings.renderConcurrency = Math.max(1, Math.min(4, concurrency)) }),
+
+  // --- Template Layout (on-screen text positioning) ---
+
+  setTemplateLayout: (layout) =>
+    set((state) => { state.settings.templateLayout = layout }),
+
+  setTargetPlatform: (platform) =>
+    set((state) => { state.settings.targetPlatform = platform }),
+
+  resetTemplateLayout: () =>
+    set((state) => {
+      state.settings.templateLayout = DEFAULT_TEMPLATE_LAYOUT
+      state.settings.targetPlatform = DEFAULT_TARGET_PLATFORM
+    }),
 
   // --- Reset Settings ---
 

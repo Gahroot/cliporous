@@ -29,6 +29,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ClipCard } from '@/components/ClipCard'
 import { ClipDetail } from '@/components/ClipDetail'
 import { startApprovedRender } from '@/services/render-service'
+import { TemplateEditor } from '@/components/TemplateEditor'
 import { useStore } from '@/store'
 import { selectActiveClips } from '@/store/selectors'
 import type { ErrorLogEntry } from '@/store/types'
@@ -165,13 +166,16 @@ export function ClipGrid(): React.JSX.Element {
           {clips.length} {clips.length === 1 ? 'clip' : 'clips'}
           {approvedCount > 0 && ` · ${approvedCount} approved`}
         </div>
-        <Button
-          size="sm"
-          disabled={approvedCount === 0 || isStartingRender}
-          onClick={handleRenderApproved}
-        >
-          Render Approved {approvedCount > 0 && `(${approvedCount})`}
-        </Button>
+        <div className="flex items-center gap-2">
+          <TemplateEditor />
+          <Button
+            size="sm"
+            disabled={approvedCount === 0 || isStartingRender}
+            onClick={handleRenderApproved}
+          >
+            Render Approved {approvedCount > 0 && `(${approvedCount})`}
+          </Button>
+        </div>
       </div>
 
       {/* Scrollable grid area */}

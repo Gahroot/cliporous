@@ -46,6 +46,7 @@ import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 
 import { startApprovedRender } from '@/services/render-service'
+import { TemplateEditor } from '@/components/TemplateEditor'
 import { useStore } from '@/store'
 import type { ClipCandidate, RenderProgress } from '@/store/types'
 
@@ -387,20 +388,23 @@ export function RenderScreen(): React.JSX.Element {
           </p>
         </div>
 
-        {isRendering ? (
-          <Button variant="destructive" size="sm" onClick={handleCancel}>
-            Cancel
-          </Button>
-        ) : (
-          <Button
-            size="sm"
-            onClick={handleRenderAll}
-            disabled={isComplete || totalCount === 0}
-          >
-            <Play />
-            Render All
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {!isRendering && <TemplateEditor />}
+          {isRendering ? (
+            <Button variant="destructive" size="sm" onClick={handleCancel}>
+              Cancel
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              onClick={handleRenderAll}
+              disabled={isComplete || totalCount === 0}
+            >
+              <Play />
+              Render All
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* ── Inline batch error — surfaces the most recent failure even

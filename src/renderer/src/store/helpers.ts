@@ -10,6 +10,8 @@ import type {
   SourceVideo,
   TranscriptionData,
   ClipCandidate,
+  TemplateLayout,
+  Platform,
 } from './types'
 import { DEFAULT_MIN_SCORE, DEFAULT_FILENAME_TEMPLATE } from '@shared/constants'
 
@@ -97,6 +99,18 @@ export const DEFAULT_RENDER_QUALITY: RenderQualitySettings = {
   encodingPreset: 'veryfast'
 }
 
+/**
+ * Template layout defaults — percent-of-canvas (0–100) coordinates for the
+ * centre of each repositionable overlay. Hook title sits in the upper third,
+ * subtitles ride the lower band above the platform UI dead-zones.
+ */
+export const DEFAULT_TEMPLATE_LAYOUT: TemplateLayout = {
+  titleText: { x: 50, y: 18 },
+  subtitles: { x: 50, y: 85 }
+}
+
+export const DEFAULT_TARGET_PLATFORM: Platform = 'universal'
+
 export const DEFAULT_SETTINGS: AppSettings = {
   // API keys are loaded asynchronously from Electron safeStorage via
   // `hydrateSecretsFromMain()`. They default to empty strings here so the
@@ -116,7 +130,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
   renderQuality: DEFAULT_RENDER_QUALITY,
   outputAspectRatio: '9:16',
   filenameTemplate: DEFAULT_FILENAME_TEMPLATE,
-  renderConcurrency: 1
+  renderConcurrency: 1,
+  templateLayout: DEFAULT_TEMPLATE_LAYOUT,
+  targetPlatform: DEFAULT_TARGET_PLATFORM
 }
 
 export const DEFAULT_TARGET_AUDIENCE = 'Business owners interested in AI — making money, saving time, getting clients, handling marketing/sales, automating busy work. Content must deliver actionable value to entrepreneurs and founders.'
@@ -178,7 +194,18 @@ export function loadPersistedSettings(): AppSettings {
         rehookOverlay: { ...DEFAULT_REHOOK_OVERLAY, ...(saved.rehookOverlay ?? {}) },
         broll: { ...DEFAULT_BROLL, ...(saved.broll ?? {}) },
         fillerRemoval: { ...DEFAULT_FILLER_REMOVAL, ...(saved.fillerRemoval ?? {}) },
-        renderQuality: { ...DEFAULT_RENDER_QUALITY, ...(saved.renderQuality ?? {}) }
+        renderQuality: { ...DEFAULT_RENDER_QUALITY, ...(saved.renderQuality ?? {}) },
+        templateLayout: {
+          titleText: {
+            ...DEFAULT_TEMPLATE_LAYOUT.titleText,
+            ...(saved.templateLayout?.titleText ?? {})
+          },
+          subtitles: {
+            ...DEFAULT_TEMPLATE_LAYOUT.subtitles,
+            ...(saved.templateLayout?.subtitles ?? {})
+          }
+        },
+        targetPlatform: saved.targetPlatform ?? DEFAULT_TARGET_PLATFORM
       }
     }
   } catch {

@@ -117,12 +117,23 @@ export async function startApprovedRender(): Promise<StartApprovedRenderResult> 
       captionsEnabled: true,
       captionStyle: PRESTYJ_CAPTION_STYLE,
 
-      // ── Visual features ────────────────────────────────────────────────
+      // ── Visual features ─────────────────────────────────────────────
       autoZoom: settings.autoZoom,
       hookTitleOverlay: settings.hookTitleOverlay,
       rehookOverlay: settings.rehookOverlay,
       fillerRemoval: settings.fillerRemoval,
       broll: brollOptions,
+
+      // ── Template layout (Template Editor: subtitle + hook position) ─────
+      // The render pipeline reads only `subtitles.y` and `titleText.y`; the
+      // x coordinates are forwarded for forward-compat. `rehookText` mirrors
+      // `titleText` so the mid-clip pattern interrupt sits where the user
+      // placed the hook.
+      templateLayout: {
+        titleText: settings.templateLayout.titleText,
+        subtitles: settings.templateLayout.subtitles,
+        rehookText: settings.templateLayout.titleText,
+      },
 
       // ── AI / external service keys ─────────────────────────────────────
       // Required for B-roll keyword extraction & AI image generation.

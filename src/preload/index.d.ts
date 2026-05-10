@@ -301,7 +301,11 @@ interface RenderBatchOptions {
     outputFormat: 'mp4' | 'webm'
     encodingPreset: 'ultrafast' | 'veryfast' | 'medium' | 'slow'
   }
-  /** Template layout — controls on-screen text placement (hook title, re-hook, subtitles) */
+  /**
+   * Template layout — controls on-screen placement (% of canvas) for the
+   * hook title and burned-in subtitles. The mid-clip re-hook overlay always
+   * mirrors the title position; pass it through here on a render call.
+   */
   templateLayout?: {
     titleText: { x: number; y: number }
     subtitles: { x: number; y: number }
