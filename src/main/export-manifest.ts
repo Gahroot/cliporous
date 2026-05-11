@@ -257,10 +257,8 @@ export function generateRenderManifest(input: GenerateManifestInput): RenderMani
     // 1. clipOverrides.accentColor (explicit per-clip)
     // 2. First stitched/segmented segment accentColor (when present)
     // 3. Global captionStyle.accentColor (batch default)
-    const segmentAccent =
-      job.stitchedSegments?.find((s) => s.accentColor)?.accentColor
     const accentColor =
-      job.clipOverrides?.accentColor ?? segmentAccent ?? globalAccentColor
+      job.clipOverrides?.accentColor ?? globalAccentColor
 
     // ── Per-clip captions mode resolution ─────────────────────────────────
     const captionsMode = job.clipOverrides?.enableCaptions === false

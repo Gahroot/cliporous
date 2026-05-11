@@ -1,13 +1,13 @@
 // ---------------------------------------------------------------------------
-// Preview render — fast low-quality render at the locked 720×1280 canvas
+// Preview render — fast low-quality render at the locked 1080×1920 canvas
 // ---------------------------------------------------------------------------
 //
 // Designed for the ClipPreview dialog's "Preview with Overlays" button.
 // Renders in ~3–5 seconds instead of 20–30 seconds by using:
-//   - Locked 720×1280 @ 30fps output (matches the final render)
+//   - Locked 1080×1920 @ 30fps output (matches the final render)
 //   - Software encoder (libx264) with ultrafast preset and CRF 35
-//   - All overlays applied (captions, hook title, progress bar, brand logo, auto-zoom)
-//   - Bumpers, sound design, B-roll, and filler removal are skipped
+//   - All overlays applied (captions, hook title, auto-zoom)
+//   - Sound design, B-roll, and filler removal are skipped
 // ---------------------------------------------------------------------------
 
 import { join } from 'path'
@@ -20,7 +20,7 @@ import { buildVideoFilter, renderClip } from './base-render'
 import { createCaptionsFeature } from './features/captions.feature'
 import { createHookTitleFeature } from './features/hook-title.feature'
 import { renderSegmentedClip, type SegmentRenderConfig, type ResolvedSegment } from './segment-render'
-import { getEditStyleById, resolveTemplate, DEFAULT_EDIT_STYLE_ID } from './../edit-styles/index'
+import { getEditStyleById, DEFAULT_EDIT_STYLE_ID } from './../edit-styles/index'
 import { ARCHETYPE_DEFAULT_TRANSITION_IN } from './../edit-styles/shared/archetypes'
 import type { RenderFeature, FilterContext, OverlayContext, OverlayPassResult } from './features/feature'
 import type { RenderClipJob, RenderBatchOptions, CaptionStyleInput, HookTitleConfig, ZoomSettings } from './types'
@@ -30,7 +30,7 @@ import type { VideoSegment, EmphasizedWord } from '@shared/types'
 // Constants
 // ---------------------------------------------------------------------------
 
-/** Preview output resolution — locked to the same 720×1280 @ 30fps as final renders. */
+/** Preview output resolution — locked to the same 1080×1920 @ 30fps as final renders. */
 const PREVIEW_WIDTH = OUTPUT_WIDTH
 const PREVIEW_HEIGHT = OUTPUT_HEIGHT
 const PREVIEW_FPS = OUTPUT_FPS
@@ -85,16 +85,6 @@ export interface PreviewRenderConfig {
    */
   accentColor?: string
   /**
-   * Brand kit logo only (no bumpers for preview).
-   * Set logoPath=null to skip logo even if brandKit object is present.
-   */
-  brandKit?: {
-    logoPath: string | null
-    logoPosition: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
-    logoScale: number
-    logoOpacity: number
-  }
-  /**
    * Per-segment render plan. When present and non-empty, the preview renders
    * each segment with its own archetype layout/zoom/caption treatment via
    * renderSegmentedClip(), matching the batch render's segmented path.
@@ -120,8 +110,7 @@ export interface PreviewRenderConfig {
  * Render a preview using the per-segment archetype pipeline.
  *
  * Mirrors pipeline.ts:389-474 but produces a lower-quality, half-resolution
- * MP4 suitable for the in-editor preview dialog. Skips brand kit and template
- * layout for speed.
+ * MP4 suitable for the in-editor preview dialog.
  */
 async function renderSegmentedPreview(
   config: PreviewRenderConfig,
@@ -134,23 +123,16 @@ async function renderSegmentedPreview(
 
   const rawSegments = config.segments ?? []
   const resolvedSegments: ResolvedSegment[] = rawSegments.map((raw) => {
-    const resolved = resolveTemplate(raw.archetype, editStyleId)
     return {
       startTime: raw.startTime,
       endTime: raw.endTime,
-      styleVariant: resolved.variant,
+      archetype: raw.archetype,
       zoom: {
-        style: resolved.zoomStyle,
-        intensity: resolved.zoomIntensity
+        style: 'none',
+        intensity: 1.0
       },
       transitionIn: ARCHETYPE_DEFAULT_TRANSITION_IN[raw.archetype] ?? editStyle.defaultTransition,
-      overlayText: raw.overlayText ?? resolved.layoutParamOverrides.overlayText,
-      accentColor: resolved.layoutParamOverrides.accentColor,
-      captionBgOpacity: resolved.layoutParamOverrides.captionBgOpacity,
-      backgroundColor: resolved.layoutParamOverrides.backgroundColor,
-      imagePath: raw.imagePath,
-      archetype: raw.archetype,
-      captionMarginV: resolved.captionMarginV
+      imagePath: raw.imagePath
     }
   })
 
@@ -163,16 +145,10 @@ async function renderSegmentedPreview(
     fps: PREVIEW_FPS,
     sourceWidth: meta.width,
     sourceHeight: meta.height,
-    defaultCropRect: config.cropRegion,
-    defaultCropTimeline: config.cropTimeline,
     wordTimestamps: config.wordTimestamps,
     wordEmphasis: config.wordEmphasis,
     captionStyle: config.captionStyle,
-    captionsEnabled: config.captionsEnabled ?? true,
-    // Preview intentionally skips brand kit and template layout for speed.
-    brandKit: undefined,
-    templateLayout: undefined,
-    userAccentColor: config.accentColor
+    captionsEnabled: config.captionsEnabled ?? true
   }
 
   await renderSegmentedClip(segConfig, outputPath, () => {
@@ -187,9 +163,9 @@ async function renderSegmentedPreview(
 // ---------------------------------------------------------------------------
 
 /**
- * Render a single clip at the locked 720×1280 @ 30fps with ultrafast/CRF-35 encoding.
- * Applies captions, hook title, brand logo, and auto-zoom.
- * Skips bumpers, sound design, B-roll, and filler removal.
+ * Render a single clip at the locked 1080×1920 @ 30fps with ultrafast/CRF-35 encoding.
+ * Applies captions, hook title, and auto-zoom.
+ * Skips sound design, B-roll, and filler removal.
  *
  * @returns Absolute path to the rendered temp file (caller must delete it).
  */
@@ -214,18 +190,7 @@ export async function renderPreview(config: PreviewRenderConfig): Promise<string
     cropRegion: config.cropRegion,
     cropTimeline: config.cropTimeline,
     wordTimestamps: config.wordTimestamps,
-    hookTitleText: config.hookTitleText,
-    // Set brandKit directly on the job (without bumpers)
-    brandKit: config.brandKit?.logoPath
-      ? {
-          logoPath: config.brandKit.logoPath,
-          logoPosition: config.brandKit.logoPosition,
-          logoScale: config.brandKit.logoScale,
-          logoOpacity: config.brandKit.logoOpacity,
-          introBumperPath: null,
-          outroBumperPath: null
-        }
-      : undefined
+    hookTitleText: config.hookTitleText
   }
 
   // ── Build batch options (no sound design, no B-roll, no filler removal) ───

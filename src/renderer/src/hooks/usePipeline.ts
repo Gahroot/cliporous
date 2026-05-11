@@ -9,6 +9,7 @@ import {
   thumbnailStage,
   loopOptimizationStage,
   faceDetectionStage,
+  segmentingStage,
   notificationStage
 } from './pipeline-stages'
 
@@ -37,6 +38,7 @@ export function usePipeline(): {
   const updateClipThumbnail = useStore((s) => s.updateClipThumbnail)
   const addError = useStore((s) => s.addError)
   const setClipPartInfo = useStore((s) => s.setClipPartInfo)
+  const setClipSegments = useStore((s) => s.setClipSegments)
   const markStageCompleted = useStore((s) => s.markStageCompleted)
   const setFailedPipelineStage = useStore((s) => s.setFailedPipelineStage)
   const setCachedSourcePath = useStore((s) => s.setCachedSourcePath)
@@ -104,7 +106,8 @@ export function usePipeline(): {
             updateClipTrim,
             updateClipThumbnail,
             setClipPartInfo,
-            setCachedSourcePath
+            setCachedSourcePath,
+            setClipSegments
           },
           geminiApiKey: currentState.settings.geminiApiKey,
           processingConfig: {
@@ -140,6 +143,10 @@ export function usePipeline(): {
         currentStage = 'detecting-faces'
         await faceDetectionStage(ctx, sourcePath, clips)
 
+        // ── Step 5: Segment & style ──────────────────────────────────
+        currentStage = 'segmenting'
+        await segmentingStage(ctx, clips)
+
         // ── Done ─────────────────────────────────────────────────────
         notificationStage(ctx, clips)
 
@@ -162,8 +169,8 @@ export function usePipeline(): {
     [
       setPipeline, setTranscription, setClips, updateClipCrop, updateClipLoop,
       updateClipTrim, updateClipThumbnail, addError, setClipPartInfo,
-      markStageCompleted, setFailedPipelineStage, setCachedSourcePath,
-      clearPipelineCache
+      setClipSegments, markStageCompleted, setFailedPipelineStage,
+      setCachedSourcePath, clearPipelineCache
     ]
   )
 

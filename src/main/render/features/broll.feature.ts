@@ -13,7 +13,7 @@ import { ffmpeg as createFfmpeg, getSoftwareEncoder } from '../../ffmpeg'
 import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../../aspect-ratios'
 
 // ---------------------------------------------------------------------------
-// Canvas constants — locked to 720×1280 @ 30fps (9:16 vertical)
+// Canvas constants — locked to 1080×1920 @ 30fps (9:16 vertical)
 // ---------------------------------------------------------------------------
 
 const CANVAS_W = OUTPUT_WIDTH
@@ -180,7 +180,7 @@ function pipXY(
  * Apply B-Roll overlays to a rendered clip using a single FFmpeg filter_complex.
  *
  * Each placement specifies its display mode and transition type. The filter
- * builder composes each B-Roll segment as a full 720×1280 frame (combining
+ * builder composes each B-Roll segment as a full 1080×1920 frame (combining
  * the B-Roll footage with a scaled copy of the speaker when needed for split
  * or PiP modes), then overlays it onto the main video with the chosen
  * transition effect.
@@ -309,7 +309,7 @@ function applyBRollOverlay(
 // ---------------------------------------------------------------------------
 
 /**
- * Fullscreen: B-Roll fills the entire 720×1280 canvas.
+ * Fullscreen: B-Roll fills the entire 1080×1920 canvas.
  */
 function buildFullscreenComposed(
   parts: string[],
@@ -323,7 +323,7 @@ function buildFullscreenComposed(
   const start = p.startTime
   const fadeOutSt = start + p.duration - tDur
 
-  // Trim → shift PTS → scale/crop to 720×1280 → fps → format
+  // Trim → shift PTS → scale/crop to 1080×1920 → fps → format
   let chain =
     `[${inputIdx}:v]` +
     `trim=0:${p.duration.toFixed(3)},` +

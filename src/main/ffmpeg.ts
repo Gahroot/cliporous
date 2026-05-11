@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'fs'
 import { execSync, spawnSync, spawn, ChildProcess } from 'child_process'
 import { tmpdir } from 'os'
 import { EventEmitter } from 'events'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT } from './aspect-ratios'
 
 function findOnSystemPath(name: string): string | null {
   try {
@@ -701,14 +702,14 @@ export interface CropRect {
 
 /**
  * Crop input video to the given rectangle and scale to target resolution
- * (default 720x1280 — the locked 9:16 vertical canvas).
+ * (default 1080x1920 — the locked 9:16 vertical canvas).
  * Uses hardware encoder with software fallback.
  */
 export function cropAndExport(
   inputPath: string,
   outputPath: string,
   crop: CropRect,
-  resolution: { width: number; height: number } = { width: 720, height: 1280 }
+  resolution: { width: number; height: number } = { width: OUTPUT_WIDTH, height: OUTPUT_HEIGHT }
 ): Promise<string> {
   const cropFilter = `crop=${crop.width}:${crop.height}:${crop.x}:${crop.y}`
   const scaleFilter = `scale=${resolution.width}:${resolution.height}`

@@ -2,17 +2,12 @@
 // Base render — core FFmpeg encoding (crop → scale → encode)
 // ---------------------------------------------------------------------------
 //
-// Three paths depending on active features:
-//   1. Sound design path: filter_complex with video + audio nodes + optional logo
-//   2. Logo-only path: filter_complex with 2 inputs (video + logo image)
-//   3. Simple path: just -vf with crop+scale+zoom
-//
-// After the base encode, optional bumper concat and overlay passes are applied.
+// Single path: simple `-vf` chain with crop + scale + (optional) auto-zoom.
+// After the base encode, optional overlay passes are applied (captions, hook
+// title, rehook, etc.). Sound design, brand-logo, and intro/outro bumpers are
+// no longer wired into the renderer.
 // ---------------------------------------------------------------------------
 
-import { existsSync, unlinkSync } from 'fs'
-import { tmpdir } from 'os'
-import { join } from 'path'
 import type { FfmpegCommand } from '../ffmpeg'
 import {
   ffmpeg,
@@ -27,11 +22,8 @@ import {
 } from '../ffmpeg'
 import { computeCenterCropForRatio, OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../aspect-ratios'
 import type { OutputAspectRatio } from '../aspect-ratios'
-import type { RenderClipJob, BrandKitRenderOptions } from './types'
+import type { RenderClipJob } from './types'
 import { toFFmpegPath } from './helpers'
-import { buildLogoOnlyFilterComplex } from './features/brand-kit.feature'
-import { buildSoundFilterComplex } from './features/sound-design.feature'
-import { concatWithBumpers } from './bumpers'
 import { activeCommands, runOverlayPasses } from './overlay-runner'
 import type { OverlayPassResult } from './features/feature'
 import { buildFaceTrackCropFilter } from './face-track-filter'
@@ -65,7 +57,7 @@ export function buildVideoFilter(
   outputAspectRatio?: OutputAspectRatio,
   sourceFps?: number
 ): string {
-  // Output is hard-locked to 720×1280 (9:16). Inputs are ignored.
+  // Output is hard-locked to 1080×1920 (9:16). Inputs are ignored.
   void targetResolution
   void outputAspectRatio
   const outW = OUTPUT_WIDTH
@@ -140,9 +132,8 @@ export function buildVideoFilter(
 // ---------------------------------------------------------------------------
 
 /**
- * Render a single clip through the base encode pipeline, then optionally:
- *   - Concatenate bumpers (intro/outro)
- *   - Apply overlay passes (captions, hook title, rehook, progress bar)
+ * Render a single clip through the base encode pipeline, then optionally apply
+ * overlay passes (captions, hook title, rehook, progress bar).
  *
  * Returns the path to the final rendered file (always `outputPath`).
  */
@@ -163,20 +154,10 @@ export function renderClip(
   console.log(`[Render] sourceVideoPath=${job.sourceVideoPath}`)
   console.log(`[Render] toFFmpegPath(outputPath)=${toFFmpegPath(outputPath)}`)
 
-  const bk = job.brandKit
-  const hasLogo = !!(bk?.logoPath && existsSync(bk.logoPath))
-  const hasSoundDesign =
-    Array.isArray(job.soundPlacements) && job.soundPlacements.length > 0
-  const hasBumpers = !!(
-    (bk?.introBumperPath && existsSync(bk.introBumperPath)) ||
-    (bk?.outroBumperPath && existsSync(bk.outroBumperPath))
-  )
   const useWebm = outputFormat === 'webm'
 
-  // If bumpers are needed, render main content to a temp file first, then concat
-  const mainOutputPath = hasBumpers
-    ? join(tmpdir(), `batchcontent-main-${Date.now()}.mp4`)
-    : outputPath
+  // Main encode writes directly to the final output path — no bumper concat.
+  const mainOutputPath = outputPath
 
   // For WebM, use libvpx-vp9 with matching CRF (vp9 uses -crf + -b:v 0 for constrained quality)
   // GPU encoders don't support WebM; always use software for WebM
@@ -218,257 +199,71 @@ export function renderClip(
       const { encoder, flags: presetFlag } = getVideoCodecFlags()
       let activeCommand: FfmpegCommand | null = null
 
-      if (hasSoundDesign) {
-        // ── Sound-design path ────────────────────────────────────────────────
-        const clipDuration = job.endTime - job.startTime
-        const placements = job.soundPlacements!
+      // Simple path: no sound mixing, no logo — straight encode
+      let simpleFallbackAttempted = false
+      function runWithEncoder(enc: string, flags: string[], useHwAccel = true): FfmpegCommand {
+        const cmd = ffmpeg(toFFmpegPath(job.sourceVideoPath))
+        let stderrOutput = ''
 
-        const logoOverlay: { bk: BrandKitRenderOptions; inputIndex: number } | undefined =
-          hasLogo ? { bk: bk!, inputIndex: placements.length + 1 } : undefined
-
-        let soundFallbackAttempted = false
-
-        function runWithSoundEncoder(enc: string, flags: string[], useHwAccel = true): FfmpegCommand {
-          const cmd = ffmpeg(toFFmpegPath(job.sourceVideoPath))
-          let stderrOutput = ''
-
-          // Enable hardware-accelerated decoding (NVDEC, DXVA2, VAAPI, etc.)
-          // Skipped on software fallback — broken GPU drivers can cause -hwaccel auto to crash
-          if (useHwAccel) {
-            cmd.inputOptions(['-hwaccel', 'auto'])
-          }
-
-          cmd
-            .seekInput(job.startTime)
-            .duration(clipDuration)
-
-          // Sound placement inputs (indices 1..N)
-          for (const p of placements) {
-            cmd.input(toFFmpegPath(p.filePath))
-          }
-
-          // Logo input (index N+1), looped to cover full clip duration
-          if (hasLogo) {
-            cmd.input(toFFmpegPath(bk!.logoPath!)).inputOptions(['-loop', '1'])
-          }
-
-          const filterComplex = buildSoundFilterComplex(
-            videoFilter,
-            placements,
-            clipDuration,
-            logoOverlay
-          )
-          console.log(`[Render] Sound filter_complex for clip ${job.clipId}: ${filterComplex}`)
-
-          // When sound design IS present, [outa] is always produced by amix.
-          const audioMap = hasSoundDesign ? '[outa]' : '0:a'
-
-          cmd
-            .outputOptions([
-              '-filter_complex', filterComplex,
-              '-filter_threads', '0',
-              '-filter_complex_threads', '0',
-              '-map', '[outv]',
-              '-map', audioMap,
-              '-c:v', enc,
-              ...flags,
-              ...audioOptions,
-              ...containerFlags
-            ])
-            .on('start', (cmdLine: string) => { onCommand?.(cmdLine) })
-            .on('stderr', (line: string) => { stderrOutput += line + '\n' })
-            .on('progress', (progress) => {
-              onProgress(Math.min(hasBumpers ? 85 : (hasOverlays ? 65 : 99), progress.percent ?? 0))
-            })
-            .on('end', () => {
-              onProgress(hasBumpers ? 85 : (hasOverlays ? 65 : 100))
-              activeCommands.delete(cmd)
-              activeCommand = null
-              resolve(mainOutputPath)
-            })
-            .on('error', (err: Error) => {
-              activeCommands.delete(cmd)
-              activeCommand = null
-              console.error(`[Render] FFmpeg stderr for clip ${job.clipId}:\n${stderrOutput}`)
-              if (!soundFallbackAttempted && isGpuSessionError(err.message + '\n' + stderrOutput)) {
-                soundFallbackAttempted = true
-                disableGpuEncoderForSession()
-                console.warn(`[Render] GPU error in sound-design path, falling back to software encoder + CPU scale: ${err.message}`)
-                videoFilter = stripCudaScaleFilter(videoFilter)
-                const { encoder: swEnc, flags: swFlags } = getSoftwareCodecFlags()
-                const swCmd = runWithSoundEncoder(swEnc, swFlags, false)
-                activeCommand = swCmd
-                activeCommands.add(swCmd)
-              } else {
-                const stderrTail = stderrOutput.split('\n').slice(-10).join('\n')
-                const enhanced = new Error(`${err.message}\n[stderr tail] ${stderrTail}`)
-                reject(enhanced)
-              }
-            })
-            .save(toFFmpegPath(mainOutputPath))
-
-          return cmd
+        // Enable hardware-accelerated decoding (NVDEC, DXVA2, VAAPI, etc.)
+        // Skipped on software fallback — broken GPU drivers can cause -hwaccel auto to crash
+        if (useHwAccel) {
+          cmd.inputOptions(['-hwaccel', 'auto'])
         }
 
-        const cmd = runWithSoundEncoder(encoder, presetFlag)
-        activeCommand = cmd
-        activeCommands.add(cmd)
+        cmd
+          .seekInput(job.startTime)
+          .duration(job.endTime - job.startTime)
+          .videoFilters(videoFilter)
+          .outputOptions([
+            '-c:v', enc,
+            ...flags,
+            ...audioOptions,
+            ...containerFlags
+          ])
+          .on('start', (cmdLine: string) => { onCommand?.(cmdLine) })
+          .on('stderr', (line: string) => { stderrOutput += line + '\n' })
+          .on('progress', (progress) => {
+            onProgress(Math.min(hasOverlays ? 65 : 99, progress.percent ?? 0))
+          })
+          .on('end', () => {
+            onProgress(hasOverlays ? 65 : 100)
+            activeCommands.delete(cmd)
+            activeCommand = null
+            resolve(mainOutputPath)
+          })
+          .on('error', (err: Error) => {
+            activeCommands.delete(cmd)
+            activeCommand = null
+            console.error(`[Render] FFmpeg stderr for clip ${job.clipId}:\n${stderrOutput}`)
+            if (!simpleFallbackAttempted && isGpuSessionError(err.message + '\n' + stderrOutput)) {
+              simpleFallbackAttempted = true
+              disableGpuEncoderForSession()
+              console.warn('[Render] GPU error in simple path, falling back to software encoder + CPU scale')
+              videoFilter = stripCudaScaleFilter(videoFilter)
+              const { encoder: swEnc, flags: swFlags } = getSoftwareCodecFlags()
+              const swCmd = runWithEncoder(swEnc, swFlags, false)
+              activeCommand = swCmd
+              activeCommands.add(swCmd)
+            } else {
+              const stderrTail = stderrOutput.split('\n').slice(-10).join('\n')
+              const enhanced = new Error(`${err.message}\n[stderr tail] ${stderrTail}`)
+              reject(enhanced)
+            }
+          })
+          .save(toFFmpegPath(mainOutputPath))
 
-      } else if (hasLogo) {
-        // ── Logo-only path (no sound design) ────────────────────────────────
-        let logoFallbackAttempted = false
-        function runWithLogoEncoder(enc: string, flags: string[], useHwAccel = true): FfmpegCommand {
-          const filterComplex = buildLogoOnlyFilterComplex(videoFilter, bk!)
-          const cmd = ffmpeg(toFFmpegPath(job.sourceVideoPath))
-          let stderrOutput = ''
-
-          // Enable hardware-accelerated decoding (NVDEC, DXVA2, VAAPI, etc.)
-          // Skipped on software fallback — broken GPU drivers can cause -hwaccel auto to crash
-          if (useHwAccel) {
-            cmd.inputOptions(['-hwaccel', 'auto'])
-          }
-
-          cmd
-            .seekInput(job.startTime)
-            .duration(job.endTime - job.startTime)
-            // Logo image input — loop it for the clip duration
-            .input(toFFmpegPath(bk!.logoPath!))
-            .inputOptions(['-loop', '1'])
-
-          cmd
-            .outputOptions([
-              '-filter_complex', filterComplex,
-              '-filter_threads', '0',
-              '-filter_complex_threads', '0',
-              '-map', '[outv]',
-              '-map', '0:a',
-              '-c:v', enc,
-              ...flags,
-              ...audioOptions,
-              ...containerFlags
-            ])
-            .on('start', (cmdLine: string) => { onCommand?.(cmdLine) })
-            .on('stderr', (line: string) => { stderrOutput += line + '\n' })
-            .on('progress', (progress) => {
-              onProgress(Math.min(hasBumpers ? 85 : (hasOverlays ? 65 : 99), progress.percent ?? 0))
-            })
-            .on('end', () => {
-              onProgress(hasBumpers ? 85 : (hasOverlays ? 65 : 100))
-              activeCommands.delete(cmd)
-              activeCommand = null
-              resolve(mainOutputPath)
-            })
-            .on('error', (err: Error) => {
-              activeCommands.delete(cmd)
-              activeCommand = null
-              console.error(`[Render] FFmpeg stderr for clip ${job.clipId}:\n${stderrOutput}`)
-              if (!logoFallbackAttempted && isGpuSessionError(err.message + '\n' + stderrOutput)) {
-                logoFallbackAttempted = true
-                disableGpuEncoderForSession()
-                console.warn('[Render] GPU error in logo-only path, falling back to software encoder + CPU scale')
-                videoFilter = stripCudaScaleFilter(videoFilter)
-                const { encoder: swEnc, flags: swFlags } = getSoftwareCodecFlags()
-                const swCmd = runWithLogoEncoder(swEnc, swFlags, false)
-                activeCommand = swCmd
-                activeCommands.add(swCmd)
-              } else {
-                const stderrTail = stderrOutput.split('\n').slice(-10).join('\n')
-                const enhanced = new Error(`${err.message}\n[stderr tail] ${stderrTail}`)
-                reject(enhanced)
-              }
-            })
-            .save(toFFmpegPath(mainOutputPath))
-
-          return cmd
-        }
-
-        const cmd = runWithLogoEncoder(encoder, presetFlag)
-        activeCommand = cmd
-        activeCommands.add(cmd)
-
-      } else {
-        // ── Simple path: no sound mixing, no logo (existing behavior) ────────
-        let simpleFallbackAttempted = false
-        function runWithEncoder(enc: string, flags: string[], useHwAccel = true): FfmpegCommand {
-          const cmd = ffmpeg(toFFmpegPath(job.sourceVideoPath))
-          let stderrOutput = ''
-
-          // Enable hardware-accelerated decoding (NVDEC, DXVA2, VAAPI, etc.)
-          // Skipped on software fallback — broken GPU drivers can cause -hwaccel auto to crash
-          if (useHwAccel) {
-            cmd.inputOptions(['-hwaccel', 'auto'])
-          }
-
-          cmd
-            .seekInput(job.startTime)
-            .duration(job.endTime - job.startTime)
-            .videoFilters(videoFilter)
-            .outputOptions([
-              '-c:v', enc,
-              ...flags,
-              ...audioOptions,
-              ...containerFlags
-            ])
-            .on('start', (cmdLine: string) => { onCommand?.(cmdLine) })
-            .on('stderr', (line: string) => { stderrOutput += line + '\n' })
-            .on('progress', (progress) => {
-              onProgress(Math.min(hasBumpers ? 85 : (hasOverlays ? 65 : 99), progress.percent ?? 0))
-            })
-            .on('end', () => {
-              onProgress(hasBumpers ? 85 : (hasOverlays ? 65 : 100))
-              activeCommands.delete(cmd)
-              activeCommand = null
-              resolve(mainOutputPath)
-            })
-            .on('error', (err: Error) => {
-              activeCommands.delete(cmd)
-              activeCommand = null
-              console.error(`[Render] FFmpeg stderr for clip ${job.clipId}:\n${stderrOutput}`)
-              if (!simpleFallbackAttempted && isGpuSessionError(err.message + '\n' + stderrOutput)) {
-                simpleFallbackAttempted = true
-                disableGpuEncoderForSession()
-                console.warn('[Render] GPU error in simple path, falling back to software encoder + CPU scale')
-                videoFilter = stripCudaScaleFilter(videoFilter)
-                const { encoder: swEnc, flags: swFlags } = getSoftwareCodecFlags()
-                const swCmd = runWithEncoder(swEnc, swFlags, false)
-                activeCommand = swCmd
-                activeCommands.add(swCmd)
-              } else {
-                const stderrTail = stderrOutput.split('\n').slice(-10).join('\n')
-                const enhanced = new Error(`${err.message}\n[stderr tail] ${stderrTail}`)
-                reject(enhanced)
-              }
-            })
-            .save(toFFmpegPath(mainOutputPath))
-
-          return cmd
-        }
-
-        const cmd = runWithEncoder(encoder, presetFlag)
-        activeCommand = cmd
-        activeCommands.add(cmd)
+        return cmd
       }
+
+      const cmd = runWithEncoder(encoder, presetFlag)
+      activeCommand = cmd
+      activeCommands.add(cmd)
     })
   }
 
-  // ── Phase 1: Base render (crop + scale + zoom + logo + sound design) ──────
-  const baseResult = hasBumpers
-    ? renderMain().then(async (mainPath) => {
-        try {
-          onProgress(68)
-          await concatWithBumpers(
-            mainPath,
-            outputPath,
-            bk?.introBumperPath ?? null,
-            bk?.outroBumperPath ?? null
-          )
-          onProgress(70)
-          return outputPath
-        } finally {
-          try { unlinkSync(mainPath) } catch { /* ignore cleanup errors */ }
-        }
-      })
-    : renderMain()
+  // ── Phase 1: Base render (crop + scale + zoom) ────────────────────────────
+  const baseResult = renderMain()
 
   return baseResult.then(async (resultPath) => {
     // ── Phase 2: Multi-pass overlay post-processing ─────────────────────────

@@ -12,6 +12,7 @@ import type {
   ClipEndMode,
 } from '../../store'
 import type { useStore } from '../../store'
+import type { VideoSegment } from '@shared/types'
 
 /** Shared dependencies passed to every pipeline stage. */
 export interface PipelineContext {
@@ -49,6 +50,7 @@ export interface PipelineContext {
     updateClipThumbnail: (sourceId: string, clipId: string, thumbnail: string) => void
     setClipPartInfo: (sourceId: string, clipId: string, info: PartInfoUI) => void
     setCachedSourcePath: (path: string) => void
+    setClipSegments: (sourceId: string, clipId: string, segments: VideoSegment[]) => void
   }
   /** Settings snapshot — read once at pipeline start. */
   geminiApiKey: string

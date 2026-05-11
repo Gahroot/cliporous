@@ -22,7 +22,7 @@ export function resolveQualityParams(rq?: RenderBatchOptions['renderQuality']): 
 }
 
 /**
- * Output resolution is hard-locked to 720×1280 (9:16 vertical).
+ * Output resolution is hard-locked to 1080×1920 (9:16 vertical).
  * The string argument is ignored — kept for backward-compat call sites.
  */
 export function parseResolution(_res: string): { width: number; height: number } {

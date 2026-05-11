@@ -42,7 +42,7 @@ describe('edit-styles archetype coverage', () => {
       expect(prestyjTemplates[archetype]).toBeDefined()
     }
     expect(Object.keys(prestyjTemplates)).toHaveLength(ARCHETYPE_KEYS.length)
-    expect(ARCHETYPE_KEYS).toHaveLength(8)
+    expect(ARCHETYPE_KEYS).toHaveLength(7)
   })
 
   it('resolveTemplate returns a non-null result for every archetype', () => {
@@ -52,7 +52,6 @@ describe('edit-styles archetype coverage', () => {
       expect(resolved).toBeDefined()
       expect(resolved.archetype).toBe(archetype)
       expect(resolved.editStyleId).toBe('prestyj')
-      expect(resolved.variant).toBeDefined()
     }
   })
 })

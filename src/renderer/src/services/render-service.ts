@@ -136,8 +136,10 @@ export async function startApprovedRender(): Promise<StartApprovedRenderResult> 
       },
 
       // ── AI / external service keys ─────────────────────────────────────
-      // Required for B-roll keyword extraction & AI image generation.
+      // Required for B-roll keyword extraction & AI image generation, plus
+      // segment-image generation in the segmented render path.
       geminiApiKey: settings.geminiApiKey,
+      pexelsApiKey: settings.pexelsApiKey,
 
       sourceMeta: {
         name: activeSource.name,
@@ -160,6 +162,21 @@ export async function startApprovedRender(): Promise<StartApprovedRenderResult> 
         cropTimeline: c.cropTimeline,
         wordTimestamps: c.wordTimestamps,
         hookTitleText: c.hookText,
+        // Per-segment archetype rotation produced by the segmenting stage.
+        // Falsy zoomStyle/zoomIntensity are filled in by resolveTemplate() on
+        // the main side, so we just forward what the styler produced.
+        segmentedSegments:
+          c.segments && c.segments.length > 0
+            ? c.segments.map((s) => ({
+                id: s.id,
+                captionText: s.captionText,
+                startTime: s.startTime,
+                endTime: s.endTime,
+                archetype: s.archetype,
+                transitionIn: s.transitionIn,
+                imagePath: s.imagePath,
+              }))
+            : undefined,
       })),
     })
     return { started: true }

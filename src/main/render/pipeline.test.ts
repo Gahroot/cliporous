@@ -58,11 +58,11 @@ vi.mock('../word-emphasis', () => ({
 
 vi.mock('../auto-zoom', () => ({
   generateZoomFilter: vi.fn(
-    () => 'crop=trunc(iw*1.1):trunc(ih*1.1):0:0,scale=720:1280'
+    () => 'crop=trunc(iw*1.1):trunc(ih*1.1):0:0,scale=1080:1920'
   ),
   generatePiecewiseZoomFilter: vi.fn(
     () =>
-      "crop=w='iw*1.1':h='ih*1.1':x='(iw-iw*1.1)/2':y='(ih-ih*1.1)/2',scale=720:1280"
+      "crop=w='iw*1.1':h='ih*1.1':x='(iw-iw*1.1)/2':y='(ih-ih*1.1)/2',scale=1080:1920"
   )
 }))
 
@@ -149,12 +149,12 @@ vi.mock('../ffmpeg', () => {
 })
 
 vi.mock('../aspect-ratios', () => ({
-  // Locked to 9:16 vertical at 720×1280 @ 30fps.
+  // Locked to 9:16 vertical at 1080×1920 @ 30fps.
   ASPECT_RATIO_CONFIGS: {
-    '9:16': { width: 720, height: 1280 }
+    '9:16': { width: 1080, height: 1920 }
   },
-  OUTPUT_WIDTH: 720,
-  OUTPUT_HEIGHT: 1280,
+  OUTPUT_WIDTH: 1080,
+  OUTPUT_HEIGHT: 1920,
   OUTPUT_FPS: 30,
   computeCenterCropForRatio: (sw: number, sh: number) => ({
     x: 0,
@@ -180,8 +180,6 @@ import { createHookTitleFeature } from './features/hook-title.feature'
 import { createRehookFeature } from './features/rehook.feature'
 import { autoZoomFeature } from './features/auto-zoom.feature'
 import { createFillerRemovalFeature } from './features/filler-removal.feature'
-import { brandKitFeature } from './features/brand-kit.feature'
-import { soundDesignFeature } from './features/sound-design.feature'
 import { wordEmphasisFeature } from './features/word-emphasis.feature'
 import { brollFeature } from './features/broll.feature'
 import { shotTransitionFeature } from './features/shot-transition.feature'
@@ -251,10 +249,10 @@ function trackFeature(
 /**
  * Build a fake clip job tailored for a given archetype. Every job is laden
  * with config that triggers as many feature paths as possible — captions,
- * hook title, rehook, sound placements, broll placements, multi-shot
- * configs, and an accent color override. The archetype itself only colours
- * the segmented-segment metadata; the feature pipeline is archetype-agnostic
- * but we still verify it tolerates one job per archetype.
+ * hook title, rehook, broll placements, multi-shot configs, and an accent
+ * color override. The archetype itself only colours the segmented-segment
+ * metadata; the feature pipeline is archetype-agnostic but we still verify
+ * it tolerates one job per archetype.
  */
 function makeArchetypeJob(archetype: Archetype, index: number): RenderClipJob {
   const clipDuration = 12
@@ -275,9 +273,6 @@ function makeArchetypeJob(archetype: Archetype, index: number): RenderClipJob {
     hookTitleText: `Hook for ${archetype}`,
     stylePresetId: 'prestyj',
     clipOverrides: { accentColor: '#FF6B35' },
-    soundPlacements: [
-      { type: 'music', filePath: '/music/track.mp3', startTime: 0, volume: 0.3 }
-    ],
     brollPlacements: [
       {
         startTime: 4,
@@ -346,15 +341,6 @@ function makeBatchOptions(): RenderBatchOptions {
       mode: 'ken-burns',
       intensity: 'medium',
       intervalSeconds: 3
-    },
-    brandKit: {
-      enabled: true,
-      logoPath: '/logo.png',
-      logoPosition: 'top-right',
-      logoScale: 0.15,
-      logoOpacity: 0.8,
-      introBumperPath: null,
-      outroBumperPath: null
     }
   }
 }
@@ -364,10 +350,8 @@ function makeBatchOptions(): RenderBatchOptions {
 // ---------------------------------------------------------------------------
 
 describe('pipeline: PRESTYJ archetype × ported feature matrix', () => {
-  // Build the full registered feature set in pipeline.ts execution order,
-  // plus brand-kit and sound-design (the two ported feature wrappers that
-  // exist on disk but aren't enumerated in pipeline.ts's active list).
-  // Every ported feature is exercised by at least one job in the matrix.
+  // Build the full registered feature set in pipeline.ts execution order.
+  // Every active feature is exercised by at least one job in the matrix.
   const featureLogs = new Map<string, InvocationLog>()
   const features: RenderFeature[] = []
 
@@ -375,15 +359,13 @@ describe('pipeline: PRESTYJ archetype × ported feature matrix', () => {
     const raw: RenderFeature[] = [
       createFillerRemovalFeature(),
       accentColorFeature,
-      brandKitFeature,
       wordEmphasisFeature,
       createCaptionsFeature(),
       createHookTitleFeature(),
       createRehookFeature(),
       autoZoomFeature,
       brollFeature,
-      shotTransitionFeature,
-      soundDesignFeature
+      shotTransitionFeature
     ]
     for (const f of raw) {
       const log = makeInvocationLog()
@@ -393,8 +375,8 @@ describe('pipeline: PRESTYJ archetype × ported feature matrix', () => {
   })
 
   // Sanity check: archetypes haven't drifted out from under the test.
-  it('covers all 8 PRESTYJ archetypes', () => {
-    expect(ARCHETYPE_KEYS).toHaveLength(8)
+  it('covers all 7 PRESTYJ archetypes', () => {
+    expect(ARCHETYPE_KEYS).toHaveLength(7)
   })
 
   // ── Drive a single clip per archetype through every phase ───────────────
@@ -409,15 +391,15 @@ describe('pipeline: PRESTYJ archetype × ported feature matrix', () => {
       const filterContext: FilterContext = {
         sourceWidth: 1920,
         sourceHeight: 1080,
-        targetWidth: 720,
-        targetHeight: 1280,
+        targetWidth: 1080,
+        targetHeight: 1920,
         clipDuration: job.endTime - job.startTime,
         outputAspectRatio: '9:16'
       }
       const overlayContext: OverlayContext = {
         clipDuration: job.endTime - job.startTime,
-        targetWidth: 720,
-        targetHeight: 1280
+        targetWidth: 1080,
+        targetHeight: 1920
       }
       const postContext: PostProcessContext = {
         clipDuration: job.endTime - job.startTime,

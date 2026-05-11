@@ -40,6 +40,12 @@ python/__pycache__/
 .ezcoder/plans/renders/
 scripts/verify-archetypes/*.bundle.cjs
 
+# Agent scratch
+.ezcoder/commands/
+.ezcoder/plans/*.md
+.ezcoder/tmp/
+Screenshot*.png
+
 # E2E smoke validation artifacts (regenerable via scripts/e2e-smoke/run.sh)
 .ezcoder/plans/e2e-output/
 .ezcoder/plans/e2e-frames/

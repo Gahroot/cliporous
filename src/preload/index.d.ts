@@ -278,6 +278,22 @@ interface RenderClipJob {
     displayMode: 'fullscreen' | 'split-top' | 'split-bottom' | 'pip'
     transition: 'hard-cut' | 'crossfade' | 'swipe-up' | 'swipe-down'
   }>
+  /**
+   * When present, this job represents a segmented clip with per-segment
+   * archetype treatment. The render pipeline routes to renderSegmentedClip()
+   * instead of the normal single-segment path.
+   */
+  segmentedSegments?: Array<{
+    id?: string
+    captionText?: string
+    startTime: number
+    endTime: number
+    archetype: import('@shared/types').Archetype
+    zoomStyle?: 'none' | 'drift' | 'snap' | 'word-pulse' | 'zoom-out'
+    zoomIntensity?: number
+    transitionIn?: import('@shared/types').TransitionType
+    imagePath?: string
+  }>
 }
 
 interface RenderBatchOptions {
@@ -337,6 +353,9 @@ interface RenderBatchOptions {
   }
   /** Gemini API key — used for AI-generated B-Roll images and other AI features */
   geminiApiKey?: string
+  /** Pexels API key — used at render time to fetch stock images for image-
+   *  archetype segments (split-image / fullscreen-image). */
+  pexelsApiKey?: string
   /** Style category hint for AI image generation (e.g. 'custom', 'cinematic', 'anime') */
   styleCategory?: string
   /** Source video metadata for auto-manifest generation */
@@ -477,10 +496,6 @@ interface Api {
   validateGeminiKey: (
     apiKey: string
   ) => Promise<{ valid: boolean; error?: string; warning?: string }>
-  validatePexelsKey: (
-    apiKey: string
-  ) => Promise<{ valid: boolean; error?: string; warning?: string }>
-
   // Curiosity Gap Detector
   detectCuriosityGaps: (
     apiKey: string,
@@ -521,9 +536,6 @@ interface Api {
   // Word Emphasis
   analyzeWordEmphasis: (words: WordTimestamp[], apiKey?: string) => Promise<WordEmphasisResult>
 
-  // AI Edit Plan — regenerate plan for a single clip
-  regenerateClipEditPlan: (clipId: string) => Promise<{ ok: true } | { ok: false; error: string }>
-
   // Face detection
   detectFaceCrops: (
     videoPath: string,
@@ -550,6 +562,18 @@ interface Api {
   onRenderClipError: (callback: (data: RenderClipErrorEvent) => void) => () => void
   onRenderBatchDone: (callback: (data: RenderBatchResultEvent) => void) => () => void
   onRenderCancelled: (callback: (data: RenderBatchResultEvent) => void) => () => void
+  /**
+   * Fired when an image-archetype segment falls back to talking-head at
+   * render time (e.g. no image available). UI can surface a notice.
+   */
+  onSegmentFallback: (
+    callback: (data: {
+      clipId: string
+      segmentIndex: number
+      archetype: string
+      reason: string
+    }) => void
+  ) => () => void
   /** Fast low-quality preview with all overlays applied (540×960, ultrafast). */
   renderPreview: (config: {
     sourceVideoPath: string
@@ -725,10 +749,6 @@ interface Api {
       timestamp: number
     }) => void
   ) => () => void
-
-  // Image Cache — management for AI-generated B-Roll images
-  clearImageCache: () => Promise<{ deletedCount: number; freedBytes: number }>
-  getImageCacheStats: () => Promise<{ count: number; totalBytes: number; oldestDate: string }>
 
   // Settings Window
   openSettingsWindow: () => Promise<void>

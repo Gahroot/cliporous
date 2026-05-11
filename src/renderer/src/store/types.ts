@@ -180,6 +180,9 @@ export interface ClipCandidate {
   fillerTimeSaved?: number
   /** Face-tracking timeline for animated crop. */
   faceTimeline?: Array<{ t: number; x: number; y: number; w: number; h: number }>
+  /** Per-scene archetype-stamped segments. Produced by the segmenting stage and
+   *  consumed by render-service when building segmentedSegments on the render job. */
+  segments?: import('@shared/types').VideoSegment[]
 }
 
 /** Filler segment as stored in the renderer — mirrors the main-process FillerSegment type. */
@@ -462,6 +465,7 @@ export interface AppState {
   clearClipAIEditPlan: (sourceId: string, clipId: string) => void
   setClipShots: (sourceId: string, clipId: string, shots: import('@shared/types').ShotSegment[]) => void
   clearClipShots: (sourceId: string, clipId: string) => void
+  setClipSegments: (sourceId: string, clipId: string, segments: import('@shared/types').VideoSegment[]) => void
   setShotStyle: (sourceId: string, clipId: string, shotIndex: number, presetId: string) => void
   clearShotStyle: (sourceId: string, clipId: string, shotIndex: number) => void
   setClipShotStyles: (sourceId: string, clipId: string, assignments: import('@shared/types').ShotStyleAssignment[]) => void

@@ -50,10 +50,9 @@ export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
   const attributionStart = lastWordEnter + ATTRIBUTION_DELAY_FRAMES
 
   // Sizing: shrink as word count grows so long quotes still fit. The
-  // breakpoints are tuned for the locked 720×1280 canvas (proportionally
-  // scaled from the legacy 1080×1920 values by 720/1080 = 2/3).
+  // breakpoints are tuned for the locked 1080×1920 canvas.
   const fontSize =
-    words.length <= 6 ? 88 : words.length <= 12 ? 72 : words.length <= 20 ? 58 : 48
+    words.length <= 6 ? 132 : words.length <= 12 ? 108 : words.length <= 20 ? 87 : 72
 
   // Subtle 4% scale-out near the very end gives the segment a "release"
   // even if the next segment uses hard-cut. Cinematic micro-detail.
@@ -184,7 +183,7 @@ const Attribution: React.FC<{
         marginTop: 70,
         marginBottom: 0,
         fontFamily: font,
-        fontSize: 78,
+        fontSize: 117,
         color,
         opacity: enter,
         transform: `translateY(${(1 - enter) * 24}px)`,

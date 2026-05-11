@@ -2,10 +2,10 @@ import type { EditStyleTemplate } from '../../shared/types'
 
 export const wideBreather: EditStyleTemplate = {
   archetype: 'wide-breather',
-  variantId: 'main-video-wide',
-  zoomStyle: 'zoom-out',
-  zoomIntensity: 1.10,
+  zoomStyle: 'drift',
+  zoomIntensity: 1.05,
   captionPosition: 'lower-third',
-  captionMarginV: 480,
-  layoutParamOverrides: {}
+  captionMarginV: 230,
+  hookTitleY: 220,
+  rehookY: 220
 }

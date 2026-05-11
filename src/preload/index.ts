@@ -57,7 +57,6 @@ const api = {
   rescoreSingleClip: invoke(I.AI_RESCORE_SINGLE_CLIP),
   generateRehookText: invoke(I.AI_GENERATE_REHOOK_TEXT),
   validateGeminiKey: invoke(I.AI_VALIDATE_GEMINI_KEY),
-  validatePexelsKey: invoke(I.AI_VALIDATE_PEXELS_KEY),
 
   // Curiosity Gap Detector
   detectCuriosityGaps: invoke(I.AI_DETECT_CURIOSITY_GAPS),
@@ -71,9 +70,6 @@ const api = {
 
   // Word Emphasis
   analyzeWordEmphasis: invoke(I.AI_ANALYZE_WORD_EMPHASIS),
-
-  // AI Edit Plan — regenerate plan for a single clip
-  regenerateClipEditPlan: invoke(I.AI_REGENERATE_CLIP_EDIT_PLAN),
 
   // Face detection
   detectFaceCrops: invoke(I.FACE_DETECT_CROPS),
@@ -92,6 +88,7 @@ const api = {
   onRenderClipError: listen(S.RENDER_CLIP_ERROR),
   onRenderBatchDone: listen(S.RENDER_BATCH_DONE),
   onRenderCancelled: listen(S.RENDER_CANCELLED),
+  onSegmentFallback: listen(S.SEGMENT_FALLBACK),
   renderPreview: invoke(I.RENDER_PREVIEW),
   cleanupPreview: invoke(I.RENDER_CLEANUP_PREVIEW),
 
@@ -154,10 +151,6 @@ const api = {
 
   // AI Token Usage
   onAiTokenUsage: listen(S.AI_TOKEN_USAGE),
-
-  // Image Cache
-  clearImageCache: invoke(I.IMAGE_CACHE_CLEAR),
-  getImageCacheStats: invoke(I.IMAGE_CACHE_STATS),
 
   // Settings Window
   openSettingsWindow: invoke(I.SETTINGS_WINDOW_OPEN),

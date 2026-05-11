@@ -14,8 +14,6 @@
  *   │ Select (Standard / Emphasis / E+H)     │
  *   ├────── Accent color ────────────────────┤
  *   │ swatch #9f75ff + tooltip               │
- *   ├────── Regenerate ──────────────────────┤
- *   │ Button (Sparkles)                      │
  *   ├────────────────────────────────────────┤
  *   │ SheetFooter — Reject / Approve         │
  *   └────────────────────────────────────────┘
@@ -24,14 +22,11 @@
  *   - Trim and hook text are debounced into the store via the existing
  *     `updateClipTrim` / `updateClipHookText` actions so undo/redo works.
  *   - Captions mode is local UI state for now (no field on ClipCandidate).
- *   - Regenerate calls `window.api.regenerateClipEditPlan(clipId)`.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AlertTriangle, Check, FileVideo, Sparkles, X } from 'lucide-react'
-import { toast } from 'sonner'
+import { Check, FileVideo, X } from 'lucide-react'
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -139,9 +134,6 @@ export function ClipDetail({
   const [trim, setTrim] = useState<[number, number]>([0, 0])
   const [hookText, setHookText] = useState('')
   const [captionsMode, setCaptionsMode] = useState<CaptionsMode>('emphasis')
-  const [isRegenerating, setIsRegenerating] = useState(false)
-  const [regenerateError, setRegenerateError] = useState<string | null>(null)
-  const addError = useStore((s) => s.addError)
 
   // Sync local state whenever the active clip changes.
   useEffect(() => {
@@ -151,7 +143,6 @@ export function ClipDetail({
     // Captions mode has no persisted field on ClipCandidate yet — reset to
     // the default each time so the UI remains coherent.
     setCaptionsMode('emphasis')
-    setRegenerateError(null)
   }, [clip?.id, clip?.startTime, clip?.endTime, clip?.hookText])
 
   // ---- Video preview ------------------------------------------------------
@@ -206,32 +197,6 @@ export function ClipDetail({
     if (!clip) return
     updateClipStatus(clip.sourceId, clip.id, 'rejected')
     onOpenChange(false)
-  }
-
-  // ---- Regenerate edit plan (IPC) ----------------------------------------
-  const handleRegenerate = async (): Promise<void> => {
-    if (!clip || isRegenerating) return
-    setIsRegenerating(true)
-    setRegenerateError(null)
-    try {
-      const result = await window.api.regenerateClipEditPlan(clip.id)
-      if (result && 'ok' in result && result.ok) {
-        toast.success('Edit plan regenerated')
-      } else {
-        const msg =
-          result && 'error' in result ? result.error : 'Regenerate failed'
-        setRegenerateError(msg)
-        toast.error(msg)
-        addError({ source: 'pipeline', message: `Regenerate edit plan: ${msg}` })
-      }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
-      setRegenerateError(msg)
-      toast.error(`Regenerate failed: ${msg}`)
-      addError({ source: 'pipeline', message: `Regenerate edit plan: ${msg}` })
-    } finally {
-      setIsRegenerating(false)
-    }
   }
 
   // ---- Render -------------------------------------------------------------
@@ -467,31 +432,6 @@ export function ClipDetail({
               </TooltipProvider>
             </section>
 
-            <Separator />
-
-            {/* Section 5 — Regenerate ----------------------------------- */}
-            <section className="flex flex-col gap-2">
-              <Label>Regenerate</Label>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={handleRegenerate}
-                disabled={!clip || isRegenerating}
-                className="w-fit"
-              >
-                <Sparkles className={cn(isRegenerating && 'animate-pulse')} />
-                {isRegenerating ? 'Regenerating…' : 'Regenerate edit plan'}
-              </Button>
-              {regenerateError && (
-                <Alert variant="destructive" className="mt-1">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertTitle>Regenerate failed</AlertTitle>
-                  <AlertDescription className="break-words">
-                    {regenerateError}
-                  </AlertDescription>
-                </Alert>
-              )}
-            </section>
           </div>
           </>
           )}

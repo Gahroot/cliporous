@@ -19,6 +19,7 @@ import { buildASSFilter } from '../helpers'
 import {
   generateCaptions,
   DEFAULT_ACCENT,
+  type ArchetypeWindow,
   type CaptionMode,
   type CaptionStyleInput,
   type ShotCaptionOverride,
@@ -26,6 +27,7 @@ import {
 } from '../../captions'
 import { analyzeEmphasisHeuristic } from '../../word-emphasis'
 import { ASPECT_RATIO_CONFIGS } from '../../aspect-ratios'
+import { DEFAULT_EDIT_STYLE_ID } from '../../edit-styles'
 import type { ShotStyleConfig } from '@shared/types'
 
 /**
@@ -184,6 +186,17 @@ export function createCaptionsFeature(): RenderFeature {
           localWords
         )
 
+        // Non-segmented clips don't carry per-segment archetype data. Treat
+        // the whole clip as a single speaker-fullscreen 'talking-head'
+        // window so the per-archetype template (and — because talking-head
+        // is a speaker archetype — the user's global `templateLayout`)
+        // drive the caption marginV.
+        const clipDuration = job.endTime - job.startTime
+        const archetypeWindows: ArchetypeWindow[] = [
+          { startTime: 0, endTime: clipDuration, archetype: 'talking-head' }
+        ]
+        const editStyleId = job.stylePresetId ?? DEFAULT_EDIT_STYLE_ID
+
         job.assFilePath = await generateCaptions(
           localWords,
           resolvedStyle,
@@ -191,7 +204,10 @@ export function createCaptionsFeature(): RenderFeature {
           arCfg.width,
           arCfg.height,
           marginVOverride,
-          shotCaptionOverrides
+          shotCaptionOverrides,
+          archetypeWindows,
+          undefined,
+          editStyleId
         )
         console.log(
           `[Captions] Clip ${job.clipId}: mode=${resolvedStyle.captionMode} → ${job.assFilePath}`

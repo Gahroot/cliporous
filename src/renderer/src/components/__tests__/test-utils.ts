@@ -77,10 +77,8 @@ export function installApiStub(overrides: Record<string, unknown> = {}): Record<
     onRenderClipError: vi.fn(unsubscribe),
     onRenderBatchDone: vi.fn(unsubscribe),
     onRenderCancelled: vi.fn(unsubscribe),
+    onSegmentFallback: vi.fn(unsubscribe),
     openOutputFolder: vi.fn(async () => ''),
-
-    // Clip detail
-    regenerateClipEditPlan: vi.fn(async () => ({ ok: true })),
 
     // Misc
     setBadge: vi.fn(noop),

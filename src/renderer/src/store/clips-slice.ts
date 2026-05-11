@@ -9,7 +9,7 @@ import type {
   FillerSegmentUI,
   PartInfoUI,
 } from './types'
-import type { AIEditPlan, ShotSegment, ShotStyleAssignment } from '@shared/types'
+import type { AIEditPlan, ShotSegment, ShotStyleAssignment, VideoSegment } from '@shared/types'
 import { updateItemById } from './helpers'
 import { _pushUndo, _pushClipUndo } from './history-slice'
 
@@ -46,6 +46,7 @@ export interface ClipsSlice {
   clearClipAIEditPlan: (sourceId: string, clipId: string) => void
   setClipShots: (sourceId: string, clipId: string, shots: ShotSegment[]) => void
   clearClipShots: (sourceId: string, clipId: string) => void
+  setClipSegments: (sourceId: string, clipId: string, segments: VideoSegment[]) => void
   setShotStyle: (sourceId: string, clipId: string, shotIndex: number, presetId: string) => void
   clearShotStyle: (sourceId: string, clipId: string, shotIndex: number) => void
   setClipShotStyles: (sourceId: string, clipId: string, assignments: ShotStyleAssignment[]) => void
@@ -339,6 +340,13 @@ export const createClipsSlice: StateCreator<
       const sourceClips = state.clips[sourceId]
       if (!sourceClips) return
       state.clips[sourceId] = updateItemById(sourceClips, clipId, { shots: undefined })
+    }),
+
+  setClipSegments: (sourceId, clipId, segments) =>
+    set((state) => {
+      const sourceClips = state.clips[sourceId]
+      if (!sourceClips) return
+      state.clips[sourceId] = updateItemById(sourceClips, clipId, { segments })
     }),
 
   setShotStyle: (sourceId, clipId, shotIndex, presetId) => {

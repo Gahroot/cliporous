@@ -15,7 +15,6 @@
 import type {
   EditStyle as _EditStyle,
   SegmentStyleCategory as _SegmentStyleCategory,
-  SegmentStyleVariant as _SegmentStyleVariant,
   TransitionType as _TransitionType,
   Archetype as _Archetype,
   CaptionStyleInput as _CaptionStyleInput,
@@ -38,7 +37,6 @@ import type {
 declare global {
   type EditStyle = _EditStyle
   type SegmentStyleCategory = _SegmentStyleCategory
-  type SegmentStyleVariant = _SegmentStyleVariant
   type TransitionType = _TransitionType
   type Archetype = _Archetype
   type CaptionStyleInput = _CaptionStyleInput

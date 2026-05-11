@@ -2,13 +2,13 @@
 // Re-hook feature — mid-clip pattern interrupt ASS overlay
 // ---------------------------------------------------------------------------
 
-import { writeFileSync } from 'fs'
-import { join } from 'path'
-import { tmpdir } from 'os'
 import type { RenderFeature, PrepareResult, OverlayContext, OverlayPassResult } from './feature'
-import type { RenderClipJob, RenderBatchOptions, RehookConfig, OverlayVisualSettings } from '../types'
-import { formatASSTimestamp, cssHexToASS, buildASSFilter } from '../helpers'
+import type { RenderClipJob, RenderBatchOptions, RehookConfig, OverlayVisualSettings, HookTitleConfig } from '../types'
+import type { Archetype } from '@shared/types'
+import { buildASSFilter } from '../helpers'
 import { getDefaultRehookPhrase } from '../../overlays/rehook'
+import { generateHookTitleASSFile } from './hook-title.feature'
+import { resolveTemplate, isSpeakerFullscreen, DEFAULT_EDIT_STYLE_ID } from '../../edit-styles'
 
 /** Default visual settings used when hook title overlay is not configured. */
 const DEFAULT_OVERLAY_VISUALS: OverlayVisualSettings = {
@@ -19,78 +19,53 @@ const DEFAULT_OVERLAY_VISUALS: OverlayVisualSettings = {
 }
 
 // ---------------------------------------------------------------------------
-// ASS generation — self-contained within this feature
+// ASS generation — delegates to the hook-title pill builder
 // ---------------------------------------------------------------------------
 
 /**
  * Generate an ASS subtitle file for the re-hook / pattern interrupt overlay.
  *
- * The re-hook appears after the hook title ends, positioned just below the
- * hook title area (marginV=340) to reset viewer attention mid-clip.
- *
- * Uses ASS native features (\fad, alignment, margins, BorderStyle 3 opaque box)
- * instead of FFmpeg drawtext — avoids Windows command-line escaping issues.
+ * Visually identical to the hook title: solid white pill, black Inter Bold
+ * text. The only differences are timing (`appearTime`) and the temp file
+ * name. Reuses `generateHookTitleASSFile` so the two overlays stay locked in
+ * sync — change the pill once, both overlays update.
  *
  * @returns Path to the generated .ass file in the temp directory.
  */
-function generateRehookASSFile(
+export function generateRehookASSFile(
   text: string,
   config: RehookConfig,
   visuals: OverlayVisualSettings,
   appearTime: number,
-  frameWidth = 720,
-  frameHeight = 1280,
+  frameWidth = 1080,
+  frameHeight = 1920,
   yPositionPx?: number
 ): string {
-  const {
-    displayDuration,
-    fadeIn,
-    fadeOut
-  } = config
+  // Adapt RehookConfig (no fontSize/colors) into a HookTitleConfig by
+  // borrowing the inherited visual settings. textColor/outlineColor are
+  // intentionally ignored downstream — the hook pill is visually locked to
+  // white-on-black — but we still pass them through to satisfy the type.
+  const hookLikeConfig: HookTitleConfig = {
+    enabled: config.enabled,
+    style: 'centered-bold',
+    displayDuration: config.displayDuration,
+    fadeIn: config.fadeIn,
+    fadeOut: config.fadeOut,
+    fontSize: visuals.fontSize,
+    textColor: visuals.textColor,
+    outlineColor: visuals.outlineColor,
+    outlineWidth: visuals.outlineWidth
+  }
 
-  const { fontSize, textColor, outlineColor } = visuals
-
-  const fadeInMs = Math.round(fadeIn * 1000)
-  const fadeOutMs = Math.round(fadeOut * 1000)
-  const primaryASS = cssHexToASS(textColor)
-  const outlineASS = cssHexToASS(outlineColor)
-
-  // Y position from top: use provided value or fall back to ~11.46% of
-  // frame height (147px @ 1280) — same default as hook title.
-  const marginV = yPositionPx ?? Math.round(frameHeight * 0.1146)
-
-  // Filled rounded-rect look: same as hook title — BorderStyle 3 = opaque box.
-  // White box background, black text, with generous outline (padding).
-  const boxBackColor = cssHexToASS(outlineColor === '#000000' ? '#FFFFFF' : outlineColor)
-  // Alignment 8 = top-center in ASS (numpad layout)
-  const boxPadding = Math.round(fontSize * 0.22)
-  const boxShadow = Math.round(fontSize * 0.08)
-  const styleLine = `Style: Rehook,Arial,${fontSize},${primaryASS},${primaryASS},${outlineASS},${boxBackColor},-1,0,0,0,100,100,0,0,3,${boxPadding},${boxShadow},8,40,40,${marginV},1`
-  const dialogueText = `{\\fad(${fadeInMs},${fadeOutMs})}${text}`
-
-  const startTime = formatASSTimestamp(appearTime)
-  const endTime = formatASSTimestamp(appearTime + displayDuration)
-
-  const ass = [
-    '[Script Info]',
-    'ScriptType: v4.00+',
-    `PlayResX: ${frameWidth}`,
-    `PlayResY: ${frameHeight}`,
-    'WrapStyle: 0',
-    'ScaledBorderAndShadow: yes',
-    '',
-    '[V4+ Styles]',
-    'Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding',
-    styleLine,
-    '',
-    '[Events]',
-    'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text',
-    `Dialogue: 0,${startTime},${endTime},Rehook,,0,0,0,,${dialogueText}`,
-    ''
-  ].join('\n')
-
-  const assPath = join(tmpdir(), `batchcontent-rehook-${Date.now()}.ass`)
-  writeFileSync(assPath, ass, 'utf-8')
+  const assPath = generateHookTitleASSFile(
+    text,
+    hookLikeConfig,
+    frameWidth,
+    frameHeight,
+    yPositionPx,
+    appearTime,
+    'batchcontent-rehook'
+  )
   console.log(`[Rehook] Generated ASS overlay: ${assPath}`)
   return assPath
 }
@@ -145,12 +120,18 @@ export function createRehookFeature(): RenderFeature {
       )
 
       try {
-        // Compute Y position from template layout
-        const frameWidth = 720
-        const frameHeight = 1280
-        const yPositionPx = batchOptions.templateLayout?.rehookText
+        // Compute Y position: per-archetype default, overridable by the
+        // global template editor only for speaker-fullscreen archetypes.
+        const frameWidth = 1080
+        const frameHeight = 1920
+
+        const editStyleId = job.stylePresetId ?? DEFAULT_EDIT_STYLE_ID
+        const rehookArchetype = resolveClipRehookArchetype(job)
+        const tpl = resolveTemplate(rehookArchetype, editStyleId)
+
+        const yPositionPx = isSpeakerFullscreen(rehookArchetype) && batchOptions.templateLayout?.rehookText
           ? Math.round((batchOptions.templateLayout.rehookText.y / 100) * frameHeight)
-          : undefined
+          : tpl.rehookY
 
         // Inherit visual settings from hook title config, falling back to defaults
         const hookVisuals = batchOptions.hookTitleOverlay
@@ -195,4 +176,34 @@ export function createRehookFeature(): RenderFeature {
       }
     }
   }
+}
+
+/**
+ * Pick the archetype that owns the rehook's on-screen position.
+ *
+ * Segmented clips: find the segment whose clip-relative window covers the
+ * rehook's midpoint (`rehookAppearTime + displayDuration/2`). Non-segmented
+ * clips default to 'talking-head' (the catch-all speaker layout).
+ */
+function resolveClipRehookArchetype(job: RenderClipJob): Archetype {
+  const segments = job.segmentedSegments
+  if (!segments || segments.length === 0) return 'talking-head'
+
+  const appearTime = job.rehookAppearTime ?? 2.5
+  const rehookDuration = job.rehookConfig?.displayDuration ?? 2.5
+  const midpoint = appearTime + rehookDuration / 2
+
+  let cumulative = 0
+  for (const seg of segments) {
+    const segDuration = seg.endTime - seg.startTime
+    const winStart = cumulative
+    const winEnd = cumulative + segDuration
+    if (midpoint >= winStart && midpoint <= winEnd) {
+      return seg.archetype
+    }
+    cumulative = winEnd
+  }
+
+  // Past the last segment — use it as the fallback.
+  return segments[segments.length - 1].archetype
 }

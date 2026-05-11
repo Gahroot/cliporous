@@ -35,7 +35,7 @@ function ensureVideoCacheDir(): void {
 /**
  * Convert a static image to a short video clip with a Ken Burns pan/zoom effect.
  *
- * The resulting video is 720×1280 (locked 9:16) at 30fps, encoded with libx264.
+ * The resulting video is 1080×1920 (locked 9:16) at 30fps, encoded with libx264.
  * A slow zoom-in effect (1.0× → 1.08×) is applied for visual interest.
  *
  * @param imagePath   Absolute path to the source PNG image

@@ -6,7 +6,7 @@
  * - reactive:   zoom responds to word emphasis moments (keyframe-driven)
  * - jump-cut:   instant zoom level changes simulating multi-camera editing
  *
- * The filter must be inserted AFTER `scale=720:1280` (the locked 9:16 canvas)
+ * The filter must be inserted AFTER `scale=1080:1920` (the locked 9:16 canvas)
  * in the filter chain and BEFORE any subtitle burn-in (e.g. `ass=...`).
  */
 
@@ -15,6 +15,7 @@
 // ---------------------------------------------------------------------------
 
 import type { ZoomIntensity, ZoomMode, WordTimestamp } from '@shared/types'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT } from './aspect-ratios'
 export type { ZoomIntensity, ZoomMode }
 
 export interface ZoomSettings {
@@ -148,16 +149,16 @@ interface ReactiveSegment {
  * @param faceYNorm      Optional normalised Y position (0–1) of the face centre
  *                       within the output frame.  Defaults to 0.38
  *                       (upper-middle — typical for talking-head after face crop).
- * @param outW           Output frame width in pixels (default: 720 — locked 9:16).
- * @param outH           Output frame height in pixels (default: 1280 — locked 9:16).
+ * @param outW           Output frame width in pixels (default: 1080 — locked 9:16).
+ * @param outH           Output frame height in pixels (default: 1920 — locked 9:16).
  * @returns              A zoompan filter string (empty string when zoom is disabled).
  */
 export function generateZoomFilter(
   clipDuration: number,
   settings: ZoomSettings,
   faceYNorm: number = 0.38,
-  outW: number = 720,
-  outH: number = 1280,
+  outW: number = OUTPUT_WIDTH,
+  outH: number = OUTPUT_HEIGHT,
   wordTimestamps?: WordTimestamp[],
   emphasisKeyframes?: EmphasisKeyframe[]
 ): string {
@@ -254,10 +255,10 @@ export function generateZoomFilter(
   // faster because crop is a native, optimised FFmpeg filter.
   //
   // The crop filter extracts a region of size (iw/zoom × ih/zoom) from the
-  // 720×1280 input, centred at (x, y), then scale restores it to 720×1280.
+  // 1080×1920 input, centred at (x, y), then scale restores it to 1080×1920.
   // This produces the same visual result as zoompan but with much less overhead.
   //
-  // crop width/height expressions: iw and ih refer to the input (720×1280).
+  // crop width/height expressions: iw and ih refer to the input (1080×1920).
   // We divide by the zoom factor to get the visible sub-region.
   // Each expression is wrapped with nanSafe() so FFmpeg gets a valid constant
   // during filter graph init (when t=NAN) and the real expression per-frame.
@@ -431,7 +432,7 @@ const JUMP_CUT_ZOOM_RANGE: Record<ZoomIntensity, { min: number; max: number }> =
 
 /**
  * Maximum horizontal crop shift in pixels (±) at each cut point.
- * Applied to the locked 720-wide canvas to enhance the multi-cam illusion.
+ * Applied to the locked 1080-wide canvas to enhance the multi-cam illusion.
  */
 const JUMP_CUT_MAX_PAN_PX = 20
 
@@ -621,7 +622,7 @@ function generateJumpCutZoomFilter(
   // ── Build piecewise X-offset expression ────────────────────────────────
   // Centre + per-segment horizontal shift. Offset is in input pixels and is
   // added directly to the centre formula — canvas-agnostic.
-  // (Locked output canvas is 720×1280; offsets are calibrated against `iw`.)
+  // (Locked output canvas is 1080×1920; offsets are calibrated against `iw`.)
   const xExpr = buildStepExpr(
     segments,
     (seg) => {
@@ -712,7 +713,7 @@ export function getZoomKeyframes(
     return segments.map((seg) => ({
       time: seg.start,
       zoom: seg.zoom,
-      panX: 0.5 + seg.panOffsetPx / 720,
+      panX: 0.5 + seg.panOffsetPx / OUTPUT_WIDTH,
       panY: Math.max(0, Math.min(1, faceYNorm - 0.5 / seg.zoom)),
     }))
   }
@@ -761,8 +762,8 @@ export function generatePiecewiseZoomFilter(
   globalSettings: ZoomSettings,
   shotStyleConfigs: ShotStyleConfig[],
   faceYNorm: number = 0.38,
-  outW: number = 720,
-  outH: number = 1280,
+  outW: number = OUTPUT_WIDTH,
+  outH: number = OUTPUT_HEIGHT,
   wordTimestamps?: WordTimestamp[],
   emphasisKeyframes?: EmphasisKeyframe[]
 ): string {

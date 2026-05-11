@@ -29,7 +29,7 @@ vi.mock('../../word-emphasis', () => ({
 }))
 
 vi.mock('../../auto-zoom', () => ({
-  generateZoomFilter: vi.fn(() => 'crop=trunc(iw*1.1):trunc(ih*1.1):0:0,scale=720:1280')
+  generateZoomFilter: vi.fn(() => 'crop=trunc(iw*1.1):trunc(ih*1.1):0:0,scale=1080:1920')
 }))
 
 vi.mock('../../overlays/rehook', () => ({
@@ -57,12 +57,12 @@ vi.mock('../../ffmpeg', () => ({
 }))
 
 vi.mock('../../aspect-ratios', () => ({
-  // Locked to 9:16 vertical at 720×1280 @ 30fps. No other ratios are supported.
+  // Locked to 9:16 vertical at 1080×1920 @ 30fps. No other ratios are supported.
   ASPECT_RATIO_CONFIGS: {
-    '9:16': { width: 720, height: 1280 }
+    '9:16': { width: 1080, height: 1920 }
   },
-  OUTPUT_WIDTH: 720,
-  OUTPUT_HEIGHT: 1280,
+  OUTPUT_WIDTH: 1080,
+  OUTPUT_HEIGHT: 1920,
   OUTPUT_FPS: 30,
   computeCenterCropForRatio: (sw: number, sh: number) => ({
     x: 0, y: 0, width: sw, height: sh
@@ -78,8 +78,6 @@ import { createHookTitleFeature } from '../features/hook-title.feature'
 import { createRehookFeature } from '../features/rehook.feature'
 import { autoZoomFeature } from '../features/auto-zoom.feature'
 import { createFillerRemovalFeature } from '../features/filler-removal.feature'
-import { brandKitFeature } from '../features/brand-kit.feature'
-import { soundDesignFeature } from '../features/sound-design.feature'
 import { wordEmphasisFeature } from '../features/word-emphasis.feature'
 import { brollFeature } from '../features/broll.feature'
 import { accentColorFeature, restoreBatchOptions } from '../features/accent-color.feature'
@@ -217,8 +215,8 @@ describe('CaptionsFeature', () => {
     const job = makeJob({ assFilePath: '/tmp/test.ass' })
     const result = feature.overlayPass!(job, {
       clipDuration: 30,
-      targetWidth: 720,
-      targetHeight: 1280
+      targetWidth: 1080,
+      targetHeight: 1920
     })
     expect(result).not.toBeNull()
     expect(result!.name).toBe('captions')
@@ -230,8 +228,8 @@ describe('CaptionsFeature', () => {
     const job = makeJob()
     const result = feature.overlayPass!(job, {
       clipDuration: 30,
-      targetWidth: 720,
-      targetHeight: 1280
+      targetWidth: 1080,
+      targetHeight: 1920
     })
     expect(result).toBeNull()
   })
@@ -309,8 +307,8 @@ describe('HookTitleFeature', () => {
     )
     const result = feature.overlayPass!(job, {
       clipDuration: 30,
-      targetWidth: 720,
-      targetHeight: 1280
+      targetWidth: 1080,
+      targetHeight: 1920
     })
     expect(result).not.toBeNull()
     expect(result!.name).toBe('hook-title')
@@ -322,8 +320,8 @@ describe('HookTitleFeature', () => {
     const job = makeJob()
     const result = feature.overlayPass!(job, {
       clipDuration: 30,
-      targetWidth: 720,
-      targetHeight: 1280
+      targetWidth: 1080,
+      targetHeight: 1920
     })
     expect(result).toBeNull()
   })
@@ -488,8 +486,8 @@ describe('AutoZoomFeature', () => {
     const filter = autoZoomFeature.videoFilter!(job, {
       sourceWidth: 1920,
       sourceHeight: 1080,
-      targetWidth: 720,
-      targetHeight: 1280,
+      targetWidth: 1080,
+      targetHeight: 1920,
       clipDuration: 30,
       outputAspectRatio: '9:16'
     })
@@ -503,8 +501,8 @@ describe('AutoZoomFeature', () => {
     const filter = autoZoomFeature.videoFilter!(job, {
       sourceWidth: 1920,
       sourceHeight: 1080,
-      targetWidth: 720,
-      targetHeight: 1280,
+      targetWidth: 1080,
+      targetHeight: 1920,
       clipDuration: 30,
       outputAspectRatio: '9:16'
     })
@@ -559,131 +557,6 @@ describe('FillerRemovalFeature', () => {
     )
     // detectFillers mock returns empty segments
     expect(result.modified).toBe(false)
-  })
-})
-
-// ---------------------------------------------------------------------------
-// BrandKitFeature
-// ---------------------------------------------------------------------------
-
-describe('BrandKitFeature', () => {
-  beforeEach(() => vi.clearAllMocks())
-
-  it('skips when no brand kit config', async () => {
-    const result = await brandKitFeature.prepare!(makeJob(), makeOptions())
-    expect(result.modified).toBe(false)
-  })
-
-  it('skips when brand kit globally disabled', async () => {
-    const result = await brandKitFeature.prepare!(
-      makeJob(),
-      makeOptions({
-        brandKit: {
-          enabled: false,
-          logoPath: '/logo.png',
-          logoPosition: 'top-right',
-          logoScale: 0.15,
-          logoOpacity: 0.8,
-          introBumperPath: null,
-          outroBumperPath: null
-        }
-      })
-    )
-    expect(result.modified).toBe(false)
-  })
-
-  it('injects config when globally enabled', async () => {
-    const job = makeJob()
-    const result = await brandKitFeature.prepare!(
-      job,
-      makeOptions({
-        brandKit: {
-          enabled: true,
-          logoPath: '/logo.png',
-          logoPosition: 'top-right',
-          logoScale: 0.15,
-          logoOpacity: 0.8,
-          introBumperPath: null,
-          outroBumperPath: null
-        }
-      })
-    )
-    expect(result.modified).toBe(true)
-    expect(job.brandKit).toBeDefined()
-    expect(job.brandKit!.logoPath).toBe('/logo.png')
-  })
-
-  it('per-clip override true overrides global disabled', async () => {
-    const job = makeJob({ clipOverrides: { enableBrandKit: true } })
-    const result = await brandKitFeature.prepare!(
-      job,
-      makeOptions({
-        brandKit: {
-          enabled: false,
-          logoPath: '/logo.png',
-          logoPosition: 'top-right',
-          logoScale: 0.15,
-          logoOpacity: 0.8,
-          introBumperPath: null,
-          outroBumperPath: null
-        }
-      })
-    )
-    expect(result.modified).toBe(true)
-  })
-
-  it('per-clip override false overrides global enabled', async () => {
-    const job = makeJob({ clipOverrides: { enableBrandKit: false } })
-    const result = await brandKitFeature.prepare!(
-      job,
-      makeOptions({
-        brandKit: {
-          enabled: true,
-          logoPath: '/logo.png',
-          logoPosition: 'top-right',
-          logoScale: 0.15,
-          logoOpacity: 0.8,
-          introBumperPath: null,
-          outroBumperPath: null
-        }
-      })
-    )
-    expect(result.modified).toBe(false)
-  })
-})
-
-// ---------------------------------------------------------------------------
-// SoundDesignFeature
-// ---------------------------------------------------------------------------
-
-describe('SoundDesignFeature', () => {
-  beforeEach(() => vi.clearAllMocks())
-
-  it('skips when no sound placements', async () => {
-    const result = await soundDesignFeature.prepare!(makeJob(), makeOptions())
-    expect(result.modified).toBe(false)
-  })
-
-  it('skips when per-clip override disables', async () => {
-    const job = makeJob({
-      clipOverrides: { enableSoundDesign: false },
-      soundPlacements: [
-        { type: 'music', audioPath: '/music.mp3', startTime: 0, volume: 0.3 }
-      ]
-    })
-    const result = await soundDesignFeature.prepare!(job, makeOptions())
-    expect(result.modified).toBe(false)
-    expect(job.soundPlacements).toBeUndefined()
-  })
-
-  it('reports modified when placements exist', async () => {
-    const job = makeJob({
-      soundPlacements: [
-        { type: 'music', audioPath: '/music.mp3', startTime: 0, volume: 0.3 }
-      ]
-    })
-    const result = await soundDesignFeature.prepare!(job, makeOptions())
-    expect(result.modified).toBe(true)
   })
 })
 

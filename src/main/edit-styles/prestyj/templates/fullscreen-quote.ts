@@ -1,16 +1,14 @@
 import type { EditStyleTemplate } from '../../shared/types'
-import { BRAND_ACCENT, BRAND_BG, BRAND_FG } from '../../shared/brand'
 
 export const fullscreenQuote: EditStyleTemplate = {
   archetype: 'fullscreen-quote',
-  variantId: 'fullscreen-text-center',
   zoomStyle: 'none',
-  captionPosition: 'lower-third',
-  captionMarginV: 420,
-  layoutParamOverrides: {
-    textColor: BRAND_FG,
-    accentColor: BRAND_ACCENT,
-    backgroundColor: BRAND_BG,
-    fontSize: 230
-  }
+  // Hero captions centered on the frame — nothing else on screen.
+  captionPosition: 'center',
+  captionMarginV: 960,
+  hookTitleY: 220,
+  rehookY: 220,
+  // Hero archetype: emit one ASS dialogue event per word so each word
+  // appears/disappears on its own ASR timestamp for maximum emphasis.
+  captionMode: 'word-by-word'
 }

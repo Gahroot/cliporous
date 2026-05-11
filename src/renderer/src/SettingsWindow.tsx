@@ -263,6 +263,9 @@ export default function SettingsWindow(): React.JSX.Element {
                     placeholder="563492…"
                     onChange={(v) => update('pexels', v)}
                   />
+                  <p className="text-muted-foreground text-xs">
+                    Used for b-roll videos in split-image and fullscreen-image segments. Free at pexels.com/api.
+                  </p>
                 </div>
                 <Separator />
                 <div className="space-y-2">

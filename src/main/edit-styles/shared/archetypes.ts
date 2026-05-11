@@ -1,9 +1,9 @@
 /**
- * Segment archetypes — the 8 stable slots every edit style must fill.
+ * Segment archetypes — the 7 stable slots every edit style must fill.
  *
- * Archetypes are the AI segment-styler's vocabulary and the user-facing
- * picker's labels. Each archetype resolves (per active edit style) to one
- * of the 13 existing SegmentStyleVariants in src/main/segment-styles.ts.
+ * Archetypes are the user-facing picker's labels and drive the per-segment
+ * visual layout. Each archetype is a self-contained layout — there are no
+ * style variants underneath them anymore.
  */
 
 import type { TransitionType } from '@shared/types'
@@ -15,8 +15,7 @@ export const ARCHETYPE_KEYS = [
   'quote-lower',
   'split-image',
   'fullscreen-image',
-  'fullscreen-quote',
-  'fullscreen-headline'
+  'fullscreen-quote'
 ] as const
 
 export type Archetype = (typeof ARCHETYPE_KEYS)[number]
@@ -28,8 +27,7 @@ export const ARCHETYPE_TO_CATEGORY: Record<Archetype, SegmentStyleCategory> = {
   'quote-lower': 'main-video-text',
   'split-image': 'main-video-images',
   'fullscreen-image': 'fullscreen-image',
-  'fullscreen-quote': 'fullscreen-text',
-  'fullscreen-headline': 'fullscreen-text'
+  'fullscreen-quote': 'fullscreen-text'
 }
 
 /**
@@ -44,20 +42,7 @@ export const ARCHETYPE_DEFAULT_TRANSITION_IN: Record<Archetype, TransitionType> 
   'quote-lower': 'crossfade',
   'split-image': 'hard-cut',
   'fullscreen-image': 'crossfade',
-  'fullscreen-quote': 'color-wash',
-  'fullscreen-headline': 'flash-cut'
-}
-
-/** Fallback variant id per archetype, used when a template omits variantId. */
-export const ARCHETYPE_DEFAULT_VARIANT: Record<Archetype, string> = {
-  'talking-head': 'main-video-normal',
-  'tight-punch': 'main-video-tight',
-  'wide-breather': 'main-video-wide',
-  'quote-lower': 'main-video-text-lower',
-  'split-image': 'main-video-images-topbottom',
-  'fullscreen-image': 'fullscreen-image-dark',
-  'fullscreen-quote': 'fullscreen-text-center',
-  'fullscreen-headline': 'fullscreen-text-headline'
+  'fullscreen-quote': 'color-wash'
 }
 
 /** Human-readable metadata for the picker UI. */
@@ -79,26 +64,39 @@ export const ARCHETYPE_META: Record<
   },
   'quote-lower': {
     name: 'Quote Lower',
-    description: 'Speaker plus a large lower-third text overlay.'
+    description: 'Speaker framing with captions emphasised at the lower-third.'
   },
   'split-image': {
     name: 'Split Image',
-    description:
-      'Speaker plus a contextual image (style picks PiP / side-by-side / top-bottom / behind).'
+    description: 'Speaker on the bottom, b-roll video on top.'
   },
   'fullscreen-image': {
     name: 'Fullscreen Image',
-    description:
-      'B-roll only — image fills the frame, captions and edits still on.'
+    description: 'B-roll video fills the frame, captions on top.'
   },
   'fullscreen-quote': {
     name: 'Fullscreen Quote',
-    description: 'Solid background with a centered big-text quote.'
-  },
-  'fullscreen-headline': {
-    name: 'Fullscreen Headline',
-    description: 'Solid background with a title + subtext hero card.'
+    description: 'Solid brand-bg card with hero-sized captions.'
   }
+}
+
+/**
+ * Speaker-fullscreen archetypes — the three that frame a full-screen view
+ * of the speaker. These are the only archetypes whose caption / hook /
+ * rehook positioning can be moved by the global template editor. The
+ * remaining archetypes (`quote-lower`, `split-image`, `fullscreen-image`,
+ * `fullscreen-quote`) have purpose-built layouts that ignore the global
+ * `templateLayout` overrides.
+ */
+export const SPEAKER_FULLSCREEN_ARCHETYPES: ReadonlySet<Archetype> = new Set<Archetype>([
+  'talking-head',
+  'tight-punch',
+  'wide-breather'
+])
+
+/** Convenience predicate — reads better at call sites than `.has(...)`. */
+export function isSpeakerFullscreen(archetype: Archetype): boolean {
+  return SPEAKER_FULLSCREEN_ARCHETYPES.has(archetype)
 }
 
 /**

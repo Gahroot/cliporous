@@ -28,9 +28,11 @@ import { join } from 'path'
 import type { SegmentRenderConfig, ResolvedSegment } from './segment-render'
 import { resolveQualityParams } from './quality'
 import { buildOutputPath } from './filename'
-import { getVariantById } from '../segment-styles'
-import { getEditStyleById, resolveTemplate, DEFAULT_EDIT_STYLE_ID } from './../edit-styles/index'
-import { ARCHETYPE_DEFAULT_TRANSITION_IN } from './../edit-styles/shared/archetypes'
+import { getEditStyleById, DEFAULT_EDIT_STYLE_ID } from './../edit-styles/index'
+import { ARCHETYPE_DEFAULT_TRANSITION_IN, ARCHETYPE_TO_CATEGORY } from './../edit-styles/shared/archetypes'
+import { fetchSegmentVideos } from '../ai/segment-videos'
+import type { VideoSegment } from '@shared/types'
+import type { ArchetypeWindow } from '../captions'
 
 // Feature imports
 import { createFillerRemovalFeature } from './features/filler-removal.feature'
@@ -173,25 +175,17 @@ export async function startBatchRender(
   // Data flows via job mutation — earlier features write, later ones read.
   //
   //  1. filler-removal    — mutates job.sourceVideoPath, startTime, endTime, wordTimestamps
-  //  2. brand-kit         — writes job.brandKit (consumed by base-render)
-  //  3. accent-color      — reads clipOverrides.accentColor, overrides highlight/emphasis
+  //  2. accent-color      — reads clipOverrides.accentColor, overrides highlight/emphasis
   //                         colors in captionStyle, hookTitleOverlay, and per-shot
   //                         captionStyle — must run before any visual feature
-  //  4. word-emphasis     — writes job.wordEmphasis + job.emphasisKeyframes
-  //  5. captions          — reads job.wordEmphasis, generates ASS, fallback emphasisKeyframes
-  //  6. hook-title        — generates ASS overlay file
-  //  7. rehook            — reads hookTitleOverlay.displayDuration + textColor for appear time
-  //  8. auto-zoom         — reads job.emphasisKeyframes for reactive zoom (prepare stores settings)
-  //  9. broll             — reads job.brollPlacements + shotStyleConfigs.brollMode,
+  //  3. word-emphasis     — writes job.wordEmphasis + job.emphasisKeyframes
+  //  4. captions          — reads job.wordEmphasis, generates ASS, fallback emphasisKeyframes
+  //  5. hook-title        — generates ASS overlay file
+  //  6. rehook            — reads hookTitleOverlay.displayDuration + textColor for appear time
+  //  7. auto-zoom         — reads job.emphasisKeyframes for reactive zoom (prepare stores settings)
+  //  8. broll             — reads job.brollPlacements + shotStyleConfigs.brollMode,
   //                         emits 'broll-transition' editEvents
-  // 10. color-grade       — reads shotStyleConfigs, validates + logs color grade configs;
-  //                         videoFilter applies per-shot eq/hue — must run BEFORE transitions
-  //                         so crossfades blend between properly color-graded shots
-  // 11. shot-transition   — reads shotStyleConfigs, emits 'shot-transition' editEvents;
-  //                         videoFilter applies crossfade/swipe — runs AFTER color-grade
-  //                         so transitions blend between styled shots
-  // 12. sound-design      — reads ALL editEvents (broll + shot-transition + jump-cut),
-  //                         validates job.soundPlacements
+  //  9. shot-transition   — reads shotStyleConfigs, emits 'shot-transition' editEvents
   //
   // Cross-feature data flow:
   //   filler-removal ──wordTimestamps──▸ word-emphasis (remapped timestamps)
@@ -199,11 +193,7 @@ export async function startBatchRender(
   //   word-emphasis ──wordEmphasis──▸ captions (emphasis tags for ASS styling)
   //   word-emphasis ──emphasisKeyframes──▸ auto-zoom (reactive zoom keyframes)
   //   captions ──emphasisKeyframes (fallback)──▸ auto-zoom (if word-emphasis didn't produce them)
-  //   IPC handler ──shotStyleConfigs──▸ captions, auto-zoom, broll, color-grade, shot-transition
   //   IPC handler ──brollPlacements──▸ broll (postProcess + edit event emission)
-  //   broll ──editEvents['broll-transition']──▸ sound-design (B-Roll transition SFX sync)
-  //   shot-transition ──editEvents['shot-transition']──▸ sound-design (shot boundary SFX sync)
-  //   IPC handler ──soundPlacements──▸ sound-design (base render filter_complex)
   const features: RenderFeature[] = [
     createFillerRemovalFeature(),
     accentColorFeature,
@@ -220,7 +210,7 @@ export async function startBatchRender(
   const qualityParams = resolveQualityParams(options.renderQuality)
   const outputFormat = options.renderQuality?.outputFormat ?? 'mp4'
 
-  // Output is hard-locked to 720×1280 © 30fps (9:16 vertical).
+  // Output is hard-locked to 1080×1920 © 30fps (9:16 vertical).
   // outputAspectRatio and outputResolution are accepted for backward compat
   // but ignored — every clip renders at the locked dimensions.
   const effectiveAspectRatio: OutputAspectRatio = '9:16'
@@ -313,24 +303,18 @@ export async function startBatchRender(
         })
 
         const stitchedStyleId = job.stylePresetId ?? DEFAULT_EDIT_STYLE_ID
-        const styledStitchedSegments = job.stitchedSegments.map((seg) => {
-          const archetype: import('@shared/types').Archetype =
-            seg.role === 'hook' ? 'tight-punch'
-            : seg.overlayText ? 'quote-lower'
-            : 'talking-head'
-          const resolved = resolveTemplate(archetype, stitchedStyleId)
-          return {
-            ...seg,
-            styleVariant: resolved.variant,
-            zoom: { style: resolved.zoomStyle, intensity: resolved.zoomIntensity },
-            // Do NOT pass overlayText / accentColor / captionBgOpacity through
-            // to the assembly step — text / color treatment belongs to the
-            // feature pipeline that runs on the assembled output.
-            overlayText: undefined,
-            accentColor: undefined,
-            captionBgOpacity: undefined
-          }
-        })
+        // Stitched assembly only needs to crop+scale source ranges and concat
+        // them. Archetype text / color treatment is owned by the feature
+        // pipeline that runs on the assembled output, so strip overlayText /
+        // accentColor / captionBgOpacity here. Hook segments still get a
+        // tight-punch crop; everything else collapses to talking-head.
+        const styledStitchedSegments = job.stitchedSegments.map((seg) => ({
+          startTime: seg.startTime,
+          endTime: seg.endTime,
+          role: seg.role,
+          imagePath: seg.imagePath,
+          cropRect: seg.cropRect
+        }))
 
         const assemblyJob: RenderStitchedClipJob = {
           clipId: job.clipId,
@@ -384,7 +368,7 @@ export async function startBatchRender(
         job.sourceVideoPath = assembledPath
         job.startTime = 0
         job.endTime = totalDuration
-        // Assembled video is already at the locked 720×1280 — no further crop needed.
+        // Assembled video is already at the locked 1080×1920 — no further crop needed.
         job.cropRegion = undefined
         // Clear the stitched marker so we don't re-enter this block.
         job.stitchedSegments = undefined
@@ -416,30 +400,102 @@ export async function startBatchRender(
         const editStyleId = job.stylePresetId ?? DEFAULT_EDIT_STYLE_ID
         const editStyle = getEditStyleById(editStyleId) ?? getEditStyleById(DEFAULT_EDIT_STYLE_ID)!
 
-        // Resolve each segmented segment into a ResolvedSegment via the
-        // per-edit-style template resolver. Archetype → variant + zoom +
-        // layout param overrides all flow through resolveTemplate().
-        const resolvedSegments: ResolvedSegment[] = job.segmentedSegments.map((raw) => {
-          const resolved = resolveTemplate(raw.archetype, editStyleId)
-          return {
+        // ── Inline b-roll video fetch for media-archetype segments ──────────
+        // Only runs at render time, only for approved clips that contain a
+        // split-image / fullscreen-image segment, only when the Pexels key
+        // is set. Cached on disk so re-renders are free.
+        const mediaRaws = job.segmentedSegments.filter(
+          (raw) =>
+            raw.archetype === 'split-image' || raw.archetype === 'fullscreen-image'
+        )
+        if (
+          mediaRaws.length > 0 &&
+          options.pexelsApiKey &&
+          options.pexelsApiKey.trim().length > 0
+        ) {
+          window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
+            clipId: job.clipId,
+            message: `Fetching ${mediaRaws.length} b-roll video(s)…`,
+            percent: 5
+          })
+          // Build minimal VideoSegment-shaped objects for the video fetcher.
+          // It only reads id, captionText, segmentStyleCategory, start/end.
+          const stubs: VideoSegment[] = mediaRaws.map((raw) => ({
+            id: raw.id ?? `${job.clipId}-${raw.startTime}`,
+            clipId: job.clipId,
+            index: 0,
             startTime: raw.startTime,
             endTime: raw.endTime,
-            styleVariant: resolved.variant,
-            zoom: {
-              style: raw.zoomStyle ?? resolved.zoomStyle,
-              intensity: raw.zoomIntensity ?? resolved.zoomIntensity
-            },
-            transitionIn: ARCHETYPE_DEFAULT_TRANSITION_IN[raw.archetype] ?? editStyle.defaultTransition,
-            overlayText: raw.overlayText ?? resolved.layoutParamOverrides.overlayText,
-            accentColor: raw.accentColor ?? resolved.layoutParamOverrides.accentColor,
-            captionBgOpacity: raw.captionBgOpacity ?? resolved.layoutParamOverrides.captionBgOpacity,
-            backgroundColor: resolved.layoutParamOverrides.backgroundColor,
-            imagePath: raw.imagePath,
-            cropRect: raw.cropRect,
+            captionText: raw.captionText ?? '',
+            words: [],
             archetype: raw.archetype,
-            captionMarginV: resolved.captionMarginV
+            segmentStyleCategory: ARCHETYPE_TO_CATEGORY[raw.archetype],
+            zoomKeyframes: [],
+            transitionIn: 'hard-cut',
+            transitionOut: 'hard-cut'
+          }))
+          try {
+            const videoMap = await fetchSegmentVideos(
+              stubs,
+              options.pexelsApiKey,
+              options.geminiApiKey ?? ''
+            )
+            for (const raw of mediaRaws) {
+              const stubId = raw.id ?? `${job.clipId}-${raw.startTime}`
+              const path = videoMap.get(stubId)
+              if (path) raw.videoPath = path
+            }
+          } catch (vidErr) {
+            const msg = vidErr instanceof Error ? vidErr.message : String(vidErr)
+            console.warn(
+              `[Pipeline] Segment b-roll fetch failed for clip ${job.clipId}: ${msg}`
+            )
+            // Non-fatal — segments without videoPath surface as fallbackReason
+            // at render time and degrade to talking-head.
           }
-        })
+        }
+
+        // Build minimal ResolvedSegments — archetype owns layout + caption
+        // marginV; no per-segment text / color / variant plumbing. Captions,
+        // hook title, and rehook are burned post-concat inside
+        // renderSegmentedClip from the data forwarded below.
+        const resolvedSegments: ResolvedSegment[] = job.segmentedSegments.map((raw) => ({
+          startTime: raw.startTime,
+          endTime: raw.endTime,
+          archetype: raw.archetype,
+          zoom: {
+            style: raw.zoomStyle ?? editStyle.defaultZoomStyle,
+            intensity: raw.zoomIntensity ?? editStyle.defaultZoomIntensity
+          },
+          transitionIn:
+            ARCHETYPE_DEFAULT_TRANSITION_IN[raw.archetype] ?? editStyle.defaultTransition,
+          videoPath: raw.videoPath,
+          cropRect: raw.cropRect
+        }))
+
+        // Clip-relative archetype windows for the post-concat caption pass.
+        const archetypeWindows: ArchetypeWindow[] = []
+        {
+          let cumulative = 0
+          for (const seg of resolvedSegments) {
+            const segDuration = seg.endTime - seg.startTime
+            archetypeWindows.push({
+              startTime: cumulative,
+              endTime: cumulative + segDuration,
+              archetype: seg.archetype
+            })
+            cumulative += segDuration
+          }
+        }
+
+        // Rehook config for the segmented path — feature pipeline doesn't run
+        // here, so wire it directly from batch options.
+        const rehookEnabled = options.rehookOverlay?.enabled === true
+        const rehookText = rehookEnabled ? job.rehookText : undefined
+        const rehookConfig = rehookEnabled ? options.rehookOverlay : undefined
+        const rehookAppearTime = rehookEnabled
+          ? options.hookTitleOverlay?.displayDuration ?? 2.5
+          : undefined
 
         const segConfig: SegmentRenderConfig = {
           sourceVideoPath: job.sourceVideoPath,
@@ -450,20 +506,16 @@ export async function startBatchRender(
           fps: OUTPUT_FPS,
           sourceWidth: segMeta.width,
           sourceHeight: segMeta.height,
-          defaultCropRect: job.cropRegion,
-          defaultCropTimeline: job.cropTimeline,
           wordTimestamps: job.wordTimestamps,
           wordEmphasis: job.wordEmphasis,
           captionStyle: options.captionStyle,
           captionsEnabled: true,
-          brandKit: options.brandKit?.enabled ? {
-            logoPath: options.brandKit.logoPath,
-            logoPosition: options.brandKit.logoPosition,
-            logoScale: options.brandKit.logoScale,
-            logoOpacity: options.brandKit.logoOpacity,
-            introBumperPath: options.brandKit.introBumperPath,
-            outroBumperPath: options.brandKit.outroBumperPath
-          } : undefined,
+          archetypeWindows,
+          hookTitleText: job.hookTitleText,
+          hookTitleConfig: options.hookTitleOverlay,
+          rehookText,
+          rehookConfig,
+          rehookAppearTime,
           templateLayout: options.templateLayout,
           onFallback: (info) => {
             if (!cancelRequested) {

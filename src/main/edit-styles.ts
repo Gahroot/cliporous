@@ -14,7 +14,9 @@ export {
   getTemplatesForEditStyle,
   ARCHETYPE_KEYS,
   ARCHETYPE_TO_CATEGORY,
-  ARCHETYPE_META
+  ARCHETYPE_META,
+  SPEAKER_FULLSCREEN_ARCHETYPES,
+  isSpeakerFullscreen
 } from './edit-styles/index'
 
 export type {

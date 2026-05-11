@@ -30,6 +30,7 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   AlertCircle,
   AlertTriangle,
+  ArrowLeft,
   Check,
   FileVideo,
   Folder,
@@ -389,6 +390,16 @@ export function RenderScreen(): React.JSX.Element {
         </div>
 
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBackToClips}
+            disabled={isRendering}
+            title={isRendering ? 'Cancel the render first' : 'Back to clips'}
+          >
+            <ArrowLeft />
+            Back to Clips
+          </Button>
           {!isRendering && <TemplateEditor />}
           {isRendering ? (
             <Button variant="destructive" size="sm" onClick={handleCancel}>
@@ -450,9 +461,6 @@ export function RenderScreen(): React.JSX.Element {
       {/* ── Post-batch footer ──────────────────────────────────────── */}
       {isComplete && (
         <div className="mt-4 flex shrink-0 items-center justify-end gap-2 border-t pt-4">
-          <Button variant="ghost" size="sm" onClick={handleBackToClips}>
-            Back to Clips
-          </Button>
           <Button size="sm" onClick={handleOpenFolder} disabled={!outputDirectory}>
             <Folder />
             Open Output Folder

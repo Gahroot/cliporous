@@ -1,7 +1,7 @@
 /**
- * Aspect Ratio Configuration — locked to 9:16 vertical (720×1280)
+ * Aspect Ratio Configuration — locked to 9:16 vertical (1080×1920)
  *
- * Output is hard-locked to 720×1280 @ 30fps for vertical short-form video.
+ * Output is hard-locked to 1080×1920 @ 30fps for vertical short-form video.
  * No other aspect ratios are supported. Platform-specific branching
  * (TikTok / Reels / Shorts) has been removed — the canvas is a single
  * vertical union zone.
@@ -34,9 +34,9 @@ export interface AspectRatioConfig {
 // ---------------------------------------------------------------------------
 
 /** Locked output width in pixels. */
-export const OUTPUT_WIDTH = 720
+export const OUTPUT_WIDTH = 1080
 /** Locked output height in pixels. */
-export const OUTPUT_HEIGHT = 1280
+export const OUTPUT_HEIGHT = 1920
 /** Locked output frame rate. */
 export const OUTPUT_FPS = 30
 
@@ -48,7 +48,7 @@ export const ASPECT_RATIO_CONFIGS: Record<OutputAspectRatio, AspectRatioConfig> 
   '9:16': {
     ratio: '9:16',
     label: '9:16',
-    description: 'Vertical — full-screen mobile (720×1280 @ 30fps)',
+    description: 'Vertical — full-screen mobile (1080×1920 @ 30fps)',
     width: OUTPUT_WIDTH,
     height: OUTPUT_HEIGHT,
     aspect: 9 / 16
@@ -60,7 +60,7 @@ export const ASPECT_RATIO_CONFIGS: Record<OutputAspectRatio, AspectRatioConfig> 
 // ---------------------------------------------------------------------------
 
 /**
- * Get the canvas dimensions. Always returns 720×1280 since output is locked
+ * Get the canvas dimensions. Always returns 1080×1920 since output is locked
  * to 9:16 vertical.
  */
 export function getCanvasDimensions(_ratio?: OutputAspectRatio): { width: number; height: number } {

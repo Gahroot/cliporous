@@ -47,7 +47,7 @@ export const FullscreenQuotePlusBroll: React.FC<FullscreenQuotePlusBrollProps> =
 
   const words = quote.split(/\s+/).filter(Boolean)
   const fontSize =
-    words.length <= 8 ? 96 : words.length <= 16 ? 78 : words.length <= 24 ? 64 : 56
+    words.length <= 8 ? 144 : words.length <= 16 ? 117 : words.length <= 24 ? 96 : 84
 
   // Image entry: scale-from-0.94 + fade, slightly delayed so quote starts
   // first and the eye lands on text before the image enters.
@@ -245,7 +245,7 @@ const Attribution: React.FC<{
         marginTop: 50,
         marginBottom: 0,
         fontFamily: font,
-        fontSize: 64,
+        fontSize: 96,
         color,
         opacity: enter,
         transform: `translateY(${(1 - enter) * 20}px)`,

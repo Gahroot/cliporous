@@ -6,8 +6,7 @@
  * up by id keep working — there's just one entry.
  */
 
-import { getVariantById } from '../segment-styles'
-import { ARCHETYPE_DEFAULT_VARIANT, ARCHETYPE_KEYS } from './shared/archetypes'
+import { ARCHETYPE_KEYS } from './shared/archetypes'
 import type { Archetype } from './shared/archetypes'
 import type {
   EditStyleTemplate,
@@ -67,21 +66,40 @@ function getTemplate(
   archetype: Archetype,
   editStyleId: string
 ): EditStyleTemplate {
-  const byStyle = STYLE_TEMPLATES[editStyleId] ?? STYLE_TEMPLATES[DEFAULT_EDIT_STYLE_ID]
-  return (
-    byStyle[archetype] ?? {
-      archetype,
-      variantId: ARCHETYPE_DEFAULT_VARIANT[archetype],
-      layoutParamOverrides: {}
-    }
-  )
+  const byStyle =
+    STYLE_TEMPLATES[editStyleId] ?? STYLE_TEMPLATES[DEFAULT_EDIT_STYLE_ID]
+  return byStyle[archetype] ?? { archetype }
 }
 
 /**
- * Resolve a (archetype, editStyleId) pair into a concrete variant + zoom +
- * caption-position + layout-param overrides. This is the single merge point
- * between the authored template and the render pipeline's consumption.
+ * Resolve a (archetype, editStyleId) pair into a concrete zoom +
+ * caption-position + caption-margin bundle. Archetypes own their layout —
+ * there are no style variants underneath.
  */
+/**
+ * Defaults applied when a template does not declare a value. These mirror
+ * the legacy hardcoded values that previously lived inside the render
+ * pipeline (captions.ts ARCHETYPE_MARGIN_V, hook-title.ts y=147).
+ *
+ * Speaker archetypes anchor low (lower-third, ~230px above the bottom of
+ * a 1920px canvas). Image / quote archetypes anchor near the vertical
+ * midpoint (960 = 1920/2).
+ */
+const DEFAULT_CAPTION_MARGIN_V: Record<Archetype, number> = {
+  'talking-head': 230,
+  'tight-punch': 230,
+  'wide-breather': 230,
+  'quote-lower': 230,
+  'split-image': 960,
+  'fullscreen-image': 960,
+  'fullscreen-quote': 960
+}
+
+/** Default hook title Y position — 220px on the 1920px canvas (≈11.46%). */
+const DEFAULT_HOOK_TITLE_Y = 220
+/** Default rehook pill Y position — mirrors the hook title default. */
+const DEFAULT_REHOOK_Y = 220
+
 export function resolveTemplate(
   archetype: Archetype,
   editStyleId: string
@@ -89,30 +107,17 @@ export function resolveTemplate(
   const editStyle =
     getEditStyleById(editStyleId) ?? getEditStyleById(DEFAULT_EDIT_STYLE_ID)!
   const tpl = getTemplate(archetype, editStyle.id)
-  const baseVariant =
-    getVariantById(tpl.variantId) ??
-    getVariantById(ARCHETYPE_DEFAULT_VARIANT[archetype])!
-
-  const variant: SegmentStyleVariant = {
-    ...baseVariant,
-    captionPosition: tpl.captionPosition ?? baseVariant.captionPosition,
-    imageLayout: tpl.imageLayout ?? baseVariant.imageLayout,
-    imagePlacement: tpl.imagePlacement ?? baseVariant.imagePlacement
-  }
 
   return {
     archetype,
     editStyleId: editStyle.id,
-    variant,
-    zoomStyle:
-      tpl.zoomStyle ?? baseVariant.zoomStyle ?? editStyle.defaultZoomStyle,
-    zoomIntensity:
-      tpl.zoomIntensity ??
-      baseVariant.zoomIntensity ??
-      editStyle.defaultZoomIntensity,
-    captionPosition: variant.captionPosition,
-    layoutParamOverrides: tpl.layoutParamOverrides ?? {},
-    captionMarginV: tpl.captionMarginV
+    zoomStyle: tpl.zoomStyle ?? editStyle.defaultZoomStyle,
+    zoomIntensity: tpl.zoomIntensity ?? editStyle.defaultZoomIntensity,
+    captionPosition: tpl.captionPosition ?? 'lower-third',
+    captionMarginV: tpl.captionMarginV ?? DEFAULT_CAPTION_MARGIN_V[archetype],
+    hookTitleY: tpl.hookTitleY ?? DEFAULT_HOOK_TITLE_Y,
+    rehookY: tpl.rehookY ?? DEFAULT_REHOOK_Y,
+    captionMode: tpl.captionMode
   }
 }
 
@@ -135,18 +140,21 @@ export function getTemplatesForEditStyle(
       name: meta.name,
       description: meta.description,
       category: ARCHETYPE_TO_CATEGORY[archetype],
-      variantId: resolved.variant.id,
       zoomStyle: resolved.zoomStyle,
       zoomIntensity: resolved.zoomIntensity,
-      captionPosition: resolved.captionPosition,
-      imageLayout: resolved.variant.imageLayout,
-      imagePlacement: resolved.variant.imagePlacement
+      captionPosition: resolved.captionPosition
     }
   })
 }
 
 // Re-exports for consumers that used to import from ../edit-styles
-export { ARCHETYPE_KEYS, ARCHETYPE_TO_CATEGORY, ARCHETYPE_META } from './shared/archetypes'
+export {
+  ARCHETYPE_KEYS,
+  ARCHETYPE_TO_CATEGORY,
+  ARCHETYPE_META,
+  SPEAKER_FULLSCREEN_ARCHETYPES,
+  isSpeakerFullscreen
+} from './shared/archetypes'
 export type { Archetype } from './shared/archetypes'
 export type {
   EditStyleTemplate,

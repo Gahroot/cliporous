@@ -2,7 +2,7 @@
 // Shared render types — extracted from render-pipeline.ts
 // ---------------------------------------------------------------------------
 
-import type { SoundPlacementData, SoundDesignOptions, EditEvent } from '../sound-design'
+import type { SoundDesignOptions, EditEvent } from '../sound-design'
 import type { ZoomSettings, EmphasisKeyframe } from '../auto-zoom'
 import type { OutputAspectRatio } from '../aspect-ratios'
 import type { HookTitleConfig } from '../hook-title'
@@ -24,11 +24,10 @@ export type SegmentRole =
   | 'main-payoff'
   | 'bonus-payoff'
   | 'bridge'
-import type { EmphasizedWord, ShotStyleConfig, ColorGradeConfig, ShotTransitionConfig, SegmentStyleVariant } from '@shared/types'
+import type { EmphasizedWord, ShotStyleConfig, ColorGradeConfig, ShotTransitionConfig } from '@shared/types'
 
 // Re-export pass-through types so consumers can import from one place
 export type {
-  SoundPlacementData,
   SoundDesignOptions,
   EditEvent,
   ZoomSettings,
@@ -47,20 +46,6 @@ export type {
   ShotStyleConfig,
   ColorGradeConfig,
   ShotTransitionConfig
-}
-
-export interface BrandKitRenderOptions {
-  /** Absolute path to the logo image (PNG/JPG/WEBP). */
-  logoPath: string | null
-  logoPosition: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
-  /** Fraction of frame width (0.05–0.30). */
-  logoScale: number
-  /** Opacity 0–1. */
-  logoOpacity: number
-  /** Absolute path to intro bumper video (optional). */
-  introBumperPath: string | null
-  /** Absolute path to outro bumper video (optional). */
-  outroBumperPath: string | null
 }
 
 export interface RenderClipJob {
@@ -108,17 +93,6 @@ export interface RenderClipJob {
   outputFileName?: string
   /** Word timestamps for sound design (relative to source video, not clip) */
   wordTimestamps?: { text: string; start: number; end: number }[]
-  /**
-   * Pre-computed sound placements (computed by main IPC handler from
-   * wordTimestamps + soundDesign settings). If omitted or empty, no sound
-   * mixing is applied.
-   */
-  soundPlacements?: SoundPlacementData[]
-  /**
-   * Brand kit settings applied to this clip. Populated by the IPC handler
-   * from global RenderBatchOptions.brandKit when brand kit is enabled.
-   */
-  brandKit?: BrandKitRenderOptions
   /**
    * Hook title text to overlay in the first few seconds. Populated by the IPC
    * handler from ClipCandidate.hookText when hook title overlay is enabled.
@@ -341,6 +315,12 @@ export interface RenderClipJob {
  * Each segment has its own layout, zoom, caption, and transition settings.
  */
 export interface SegmentedSegment {
+  /** Stable segment id (matches VideoSegment.id on the renderer). Used as the
+   *  cache key for inline image generation in the segmented render path. */
+  id?: string
+  /** Spoken caption text for this segment. Used as the seed for Gemini search
+   *  queries when generating images for image-archetype segments. */
+  captionText?: string
   /** Segment time range in source video (absolute seconds) */
   startTime: number
   endTime: number
@@ -352,14 +332,10 @@ export interface SegmentedSegment {
   zoomIntensity: number
   /** Transition INTO this segment (hard-cut on first segment is ignored) */
   transitionIn: TransitionType
-  /** Overlay text for text-based layouts */
-  overlayText?: string
-  /** Accent color for this segment (overrides edit style) */
-  accentColor?: string
-  /** Caption background opacity for this segment (overrides edit style) */
-  captionBgOpacity?: number
   /** Path to a contextual image (for image-based layouts) */
   imagePath?: string
+  /** Path to a contextual b-roll video (for split-image / fullscreen-image layouts). */
+  videoPath?: string
   /** Per-segment face crop override */
   cropRect?: { x: number; y: number; width: number; height: number }
 }
@@ -367,26 +343,9 @@ export interface SegmentedSegment {
 export interface RenderStitchedClipSegment {
   startTime: number
   endTime: number
-  overlayText?: string
   role?: SegmentRole
-  /**
-   * Resolved style variant for this segment, produced by the edit-styles
-   * template resolver. When present, the stitched render path uses
-   * buildSegmentLayout() to build a per-segment filter_complex instead of
-   * the legacy raw crop+scale. When absent, the legacy path runs.
-   */
-  styleVariant?: SegmentStyleVariant
-  /** Zoom treatment resolved from the template + edit style. */
-  zoom?: {
-    style: 'none' | 'drift' | 'snap' | 'word-pulse' | 'zoom-out'
-    intensity: number
-  }
   /** Optional contextual image path for image-based layouts. */
   imagePath?: string
-  /** Per-segment accent color override. */
-  accentColor?: string
-  /** Per-segment caption background opacity override. */
-  captionBgOpacity?: number
   /** Per-segment face crop override. */
   cropRect?: { x: number; y: number; width: number; height: number }
 }
@@ -415,8 +374,6 @@ export interface RenderStitchedClipJob {
   rehookText?: string
   /** Appear time for the re-hook overlay in seconds (absolute, relative to stitched clip start). */
   rehookAppearTime?: number
-  /** Brand kit settings. */
-  brandKit?: BrandKitRenderOptions
   /** Caption style for generating per-segment captions. */
   captionStyle?: CaptionStyleInput
   /** Whether captions are enabled. */
@@ -444,16 +401,6 @@ export interface RenderBatchOptions {
   soundDesign?: SoundDesignOptions
   /** Ken Burns auto-zoom settings applied to every rendered clip */
   autoZoom?: ZoomSettings
-  /** Brand kit (logo watermark + bumpers) applied to every rendered clip */
-  brandKit?: {
-    enabled: boolean
-    logoPath: string | null
-    logoPosition: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
-    logoScale: number
-    logoOpacity: number
-    introBumperPath: string | null
-    outroBumperPath: string | null
-  }
   /** Hook title overlay settings — draws AI-generated hook text in first few seconds */
   hookTitleOverlay?: HookTitleConfig
   /** Re-hook / pattern interrupt overlay — draws mid-clip attention-reset text */
@@ -484,6 +431,10 @@ export interface RenderBatchOptions {
   }
   /** Gemini API key — used for AI-generated B-Roll images and other AI features */
   geminiApiKey?: string
+  /** Pexels API key — used by the segmented render path to fetch stock images
+   *  for image-archetype segments (split-image / fullscreen-image). Distinct
+   *  from `broll.pexelsApiKey` so segment images work even when B-roll is off. */
+  pexelsApiKey?: string
   /** Style category hint for AI image generation (e.g. 'custom', 'cinematic', 'anime') */
   styleCategory?: string
   /**
@@ -512,19 +463,19 @@ export interface RenderBatchOptions {
   renderConcurrency?: number
   /**
    * Render quality and encoding-format settings. Output resolution is locked
-   * to 720×1280 (9:16) at 30fps; only CRF/preset/container are configurable.
+   * to 1080×1920 (9:16) at 30fps; only CRF/preset/container are configurable.
    * When omitted, defaults to normal quality (CRF 23, veryfast preset, MP4).
    */
   renderQuality?: {
     preset: 'draft' | 'normal' | 'high' | 'custom'
     customCrf: number
-    /** Locked to 720×1280 — value is accepted for backward compat but ignored. */
-    outputResolution: '720x1280'
+    /** Locked to 1080×1920 — value is accepted for backward compat but ignored. */
+    outputResolution: '1080x1920'
     outputFormat: 'mp4' | 'webm'
     encodingPreset: 'ultrafast' | 'veryfast' | 'medium' | 'slow'
   }
   /**
-   * Output aspect ratio is locked to 9:16 vertical (720×1280 @ 30fps).
+   * Output aspect ratio is locked to 9:16 vertical (1080×1920 @ 30fps).
    * Field retained for backward compatibility; value is ignored.
    */
   outputAspectRatio?: OutputAspectRatio

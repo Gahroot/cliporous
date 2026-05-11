@@ -8,8 +8,8 @@ import {
 import { BRAND_ACCENT, BRAND_FG } from '../edit-styles/shared/brand'
 
 // Locked 9:16 vertical canvas — must match OUTPUT_WIDTH/HEIGHT/FPS in src/main/aspect-ratios.ts.
-const VERTICAL_WIDTH = 720
-const VERTICAL_HEIGHT = 1280
+const VERTICAL_WIDTH = 1080
+const VERTICAL_HEIGHT = 1920
 const FPS = 30
 
 const PRESTYJ_DEFAULTS = {

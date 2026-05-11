@@ -11,7 +11,6 @@ import { quoteLower } from './templates/quote-lower'
 import { splitImage } from './templates/split-image'
 import { fullscreenImage } from './templates/fullscreen-image'
 import { fullscreenQuote } from './templates/fullscreen-quote'
-import { fullscreenHeadline } from './templates/fullscreen-headline'
 
 export const prestyjEditStyle: EditStyle = createEditStyle({
   id: 'prestyj',
@@ -78,6 +77,5 @@ export const prestyjTemplates: Record<Archetype, EditStyleTemplate> = {
   'quote-lower': quoteLower,
   'split-image': splitImage,
   'fullscreen-image': fullscreenImage,
-  'fullscreen-quote': fullscreenQuote,
-  'fullscreen-headline': fullscreenHeadline
+  'fullscreen-quote': fullscreenQuote
 }

@@ -25,8 +25,6 @@ import {
 } from '../ffmpeg'
 import type { RenderStitchedClipJob } from './types'
 import { toFFmpegPath } from './helpers'
-import { buildSegmentLayout, type SegmentLayoutParams } from '../layouts/segment-layouts'
-import { getEditStyleById, DEFAULT_EDIT_STYLE_ID } from './../edit-styles/index'
 import { buildSceneCropFilter } from './scene-crop-filter'
 import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../aspect-ratios'
 
@@ -84,17 +82,11 @@ export async function assembleStitchedVideo(
       const segDuration = seg.endTime - seg.startTime
       const effectiveCropRect = seg.cropRect ?? job.cropRegion
 
-      // Build a filter_complex from the segment's style variant when present.
-      // Variants pick the correct layout (tight crop, blur-bg, split-image, etc.)
-      // and this is the stitched-specific part we KEEP — assembly only, no text.
-      let filterComplex: string | null = null
-      let layoutNeedsImageInput = false
-      let filterComplexFinalLabel = 'outv'
-
-      // Legacy crop fallback (when no styleVariant is present).
-      // Prefer a scene-aware timeline when this segment straddles >1 scene;
-      // otherwise emit a static crop.
-      let legacyCropFilter: string
+      // Stitched render does pure assembly — crop/scale only. Per-archetype
+      // visual treatments live in the segmented render path; the stitched
+      // path just concats raw source ranges to be edited by the feature
+      // pipeline downstream.
+      let cropFilter: string
       const sceneFilter = !seg.cropRect && job.cropTimeline && job.cropTimeline.length > 1
         ? buildSceneCropFilter(
             job.cropTimeline,
@@ -109,61 +101,29 @@ export async function assembleStitchedVideo(
         : null
 
       if (sceneFilter) {
-        legacyCropFilter = sceneFilter
+        cropFilter = sceneFilter
       } else if (effectiveCropRect) {
         const { x, y, width, height } = effectiveCropRect
         const cw = Math.min(width, meta.width)
         const ch = Math.min(height, meta.height)
         const cx = Math.max(0, Math.min(x, meta.width - cw))
         const cy = Math.max(0, Math.min(y, meta.height - ch))
-        legacyCropFilter = `crop=${cw}:${ch}:${cx}:${cy}`
+        cropFilter = `crop=${cw}:${ch}:${cx}:${cy}`
       } else {
         const targetAspect = 9 / 16
         const sourceAspect = meta.width / meta.height
         if (sourceAspect > targetAspect) {
           const cropWidth = Math.round(meta.height * targetAspect)
           const cropX = Math.round((meta.width - cropWidth) / 2)
-          legacyCropFilter = `crop=${cropWidth}:${meta.height}:${cropX}:0`
+          cropFilter = `crop=${cropWidth}:${meta.height}:${cropX}:0`
         } else {
           const cropHeight = Math.round(meta.width / targetAspect)
           const cropY = Math.round((meta.height - cropHeight) / 2)
-          legacyCropFilter = `crop=${meta.width}:${cropHeight}:0:${cropY}`
+          cropFilter = `crop=${meta.width}:${cropHeight}:0:${cropY}`
         }
       }
 
-      if (seg.styleVariant) {
-        const editStyle =
-          getEditStyleById(job.stylePresetId ?? DEFAULT_EDIT_STYLE_ID) ??
-          getEditStyleById(DEFAULT_EDIT_STYLE_ID)!
-        const layoutParams: SegmentLayoutParams = {
-          width: OUTPUT_WIDTH,
-          height: OUTPUT_HEIGHT,
-          segmentDuration: segDuration,
-          imagePath: seg.imagePath,
-          overlayText: seg.overlayText,
-          accentColor: seg.accentColor,
-          captionBgOpacity: seg.captionBgOpacity,
-          sourceWidth: meta.width,
-          sourceHeight: meta.height,
-          cropRect: effectiveCropRect,
-          textAnimation: editStyle.textAnimation ?? 'none'
-        }
-        const layoutResult = await buildSegmentLayout(seg.styleVariant, layoutParams)
-        let fc = layoutResult.filterComplex
-        const category = seg.styleVariant.category
-        // Remap [0:v] → [1:v] when the layout expects the image on input 0 but
-        // we feed source on 0 + image on 1 (matches encodeLayoutSegment).
-        if (category === 'fullscreen-image') {
-          fc = fc.replace(/\[0:v\]/g, '[1:v]')
-          layoutNeedsImageInput = !!seg.imagePath
-        } else if (category === 'main-video-images') {
-          layoutNeedsImageInput = !!seg.imagePath
-        }
-        filterComplex = fc
-        filterComplexFinalLabel = 'outv'
-      }
-
-      const videoFilter = `${legacyCropFilter},scale=${OUTPUT_WIDTH}:${OUTPUT_HEIGHT},fps=${OUTPUT_FPS}`
+      const videoFilter = `${cropFilter},scale=${OUTPUT_WIDTH}:${OUTPUT_HEIGHT},fps=${OUTPUT_FPS}`
 
       await new Promise<void>((resolve, reject) => {
         let fallbackAttempted = false
@@ -177,30 +137,10 @@ export async function assembleStitchedVideo(
           }
 
           cmd.seekInput(seg.startTime).duration(segDuration)
-
-          if (filterComplex && layoutNeedsImageInput && seg.imagePath) {
-            cmd.input(toFFmpegPath(seg.imagePath))
-            cmd.inputOptions(['-loop', '1'])
-          }
-
-          const videoOutputOptions = filterComplex
-            ? [
-                '-filter_complex',
-                filterComplex,
-                '-map',
-                `[${filterComplexFinalLabel}]`,
-                '-map',
-                '0:a'
-              ]
-            : []
-
-          if (!filterComplex) {
-            cmd.videoFilters(videoFilter)
-          }
+          cmd.videoFilters(videoFilter)
 
           cmd
             .outputOptions([
-              ...videoOutputOptions,
               '-y',
               '-c:v',
               enc,

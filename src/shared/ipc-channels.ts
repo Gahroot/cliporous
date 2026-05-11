@@ -37,7 +37,6 @@ export const InvokeChannels = {
   AI_GENERATE_REHOOK_TEXT: 'ai:generateRehookText',
   AI_RESCORE_SINGLE_CLIP: 'ai:rescoreSingleClip',
   AI_VALIDATE_GEMINI_KEY: 'ai:validateGeminiKey',
-  AI_VALIDATE_PEXELS_KEY: 'ai:validatePexelsKey',
   AI_DETECT_CURIOSITY_GAPS: 'ai:detectCuriosityGaps',
   AI_OPTIMIZE_CLIP_BOUNDARIES: 'ai:optimizeClipBoundaries',
   AI_OPTIMIZE_CLIP_ENDPOINTS: 'ai:optimizeClipEndpoints',
@@ -45,7 +44,6 @@ export const InvokeChannels = {
   AI_GENERATE_CLIP_DESCRIPTION: 'ai:generateClipDescription',
   AI_GENERATE_BATCH_DESCRIPTIONS: 'ai:generateBatchDescriptions',
   AI_ANALYZE_WORD_EMPHASIS: 'ai:analyzeWordEmphasis',
-  AI_REGENERATE_CLIP_EDIT_PLAN: 'ai:regenerateClipEditPlan',
 
   // Face detection
   FACE_DETECT_CROPS: 'face:detectCrops',
@@ -102,10 +100,6 @@ export const InvokeChannels = {
   // Shell
   SHELL_OPEN_PATH: 'shell:openPath',
   SHELL_SHOW_ITEM_IN_FOLDER: 'shell:showItemInFolder',
-
-  // Image Cache
-  IMAGE_CACHE_CLEAR: 'image-cache:clear',
-  IMAGE_CACHE_STATS: 'image-cache:stats',
 
   // Settings Window
   SETTINGS_WINDOW_OPEN: 'settings-window:open',

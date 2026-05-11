@@ -1,7 +1,7 @@
 /**
  * Safe Zone Layout — locked to a single 9:16 vertical union zone
  *
- * Output is hard-locked to 720×1280 vertical. There is no per-platform
+ * Output is hard-locked to 1080×1920 vertical. There is no per-platform
  * branching (TikTok / Reels / Shorts): the safe zone is the union of
  * historical platform constraints, expressed as a single rectangle that
  * keeps overlay text clear of every known UI dead zone (top status bars,
@@ -39,18 +39,18 @@ export type ElementType = 'hook' | 'caption' | 'rehook' | 'logo'
 // Single union safe zone (9:16 vertical)
 // ---------------------------------------------------------------------------
 //
-// Pixel margins are scaled proportionally from the historical 1080×1920
-// canvas so existing layout heuristics keep their visual proportions:
-//   top    = 220/1920 ≈ 11.46%   →  ~147px @ 1280
-//   bottom = 360/1920 ≈ 18.75%   →  ~240px @ 1280
-//   side   =  60/1080 ≈  5.56%   →   ~40px @  720
+// Pixel margins are scaled proportionally from the canonical 1080×1920
+// canvas:
+//   top    = 220/1920 ≈ 11.46%   →  ~220px @ 1920
+//   bottom = 360/1920 ≈ 18.75%   →  ~360px @ 1920
+//   side   =  60/1080 ≈  5.56%   →   ~60px @ 1080
 //
 // These bounds are the *union* of the strictest dead zones across short-form
 // vertical platforms — anything inside this rectangle is safe everywhere.
 
-const SIDE_MARGIN = Math.round(CANVAS_WIDTH * 0.0556)   // ~40 @ 720
-const TOP_MARGIN = Math.round(CANVAS_HEIGHT * 0.1146)   // ~147 @ 1280
-const BOTTOM_MARGIN = Math.round(CANVAS_HEIGHT * 0.1875) // ~240 @ 1280
+const SIDE_MARGIN = Math.round(CANVAS_WIDTH * 0.0556)   // ~60 @ 1080
+const TOP_MARGIN = Math.round(CANVAS_HEIGHT * 0.1146)   // ~220 @ 1920
+const BOTTOM_MARGIN = Math.round(CANVAS_HEIGHT * 0.1875) // ~360 @ 1920
 
 /**
  * The single union safe zone for the locked 9:16 vertical canvas.

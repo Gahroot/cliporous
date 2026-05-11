@@ -375,7 +375,7 @@ async function generateGeminiImage(
  * a segment's caption text. The query should find a relevant, professional
  * portrait-oriented image.
  */
-async function getImageSearchQuery(
+export async function getImageSearchQuery(
   captionText: string,
   geminiApiKey: string
 ): Promise<string> {

@@ -214,16 +214,22 @@ function selectBestVideoFile(files: PexelsVideoFile[]): PexelsVideoFile | null {
   return candidates.reduce((best, f) => (scoreVideoFile(f) >= scoreVideoFile(best) ? f : best))
 }
 
+export type PexelsOrientation = 'portrait' | 'landscape' | 'square'
+
 async function searchPexels(
   keyword: string,
   apiKey: string,
   minDurationSeconds: number,
-  maxDurationSeconds: number
+  maxDurationSeconds: number,
+  orientation?: PexelsOrientation
 ): Promise<PexelsVideo[]> {
   const url = new URL(PEXELS_API_BASE)
   url.searchParams.set('query', keyword)
   url.searchParams.set('per_page', '8')
   url.searchParams.set('size', 'small')
+  if (orientation) {
+    url.searchParams.set('orientation', orientation)
+  }
 
   const response = await fetch(url.toString(), {
     headers: {
@@ -256,11 +262,13 @@ async function searchPexels(
  * @param keyword         Search query (e.g. "laptop", "coffee shop")
  * @param pexelsApiKey    Pexels API key
  * @param clipDuration    How long the B-Roll clip should be (seconds, 2–6)
+ * @param orientation     Optional orientation hint passed to the Pexels API.
  */
 export async function fetchBRollClip(
   keyword: string,
   pexelsApiKey: string,
-  clipDuration: number
+  clipDuration: number,
+  orientation?: PexelsOrientation
 ): Promise<BRollVideoResult | null> {
   if (!pexelsApiKey) {
     console.warn('[B-Roll] No Pexels API key configured — skipping B-Roll fetch')
@@ -273,7 +281,7 @@ export async function fetchBRollClip(
   const maxDuration = Math.min(30, clipDuration + 4)
 
   try {
-    const videos = await searchPexels(keyword, pexelsApiKey, minDuration, maxDuration)
+    const videos = await searchPexels(keyword, pexelsApiKey, minDuration, maxDuration, orientation)
 
     if (videos.length === 0) {
       console.log(`[B-Roll] No Pexels results for "${keyword}"`)
@@ -328,7 +336,8 @@ export async function fetchBRollClip(
 export async function fetchBRollClips(
   keywords: string[],
   pexelsApiKey: string,
-  clipDuration: number
+  clipDuration: number,
+  orientation?: PexelsOrientation
 ): Promise<Map<string, BRollVideoResult>> {
   const results = new Map<string, BRollVideoResult>()
   const CONCURRENCY = 4
@@ -336,7 +345,7 @@ export async function fetchBRollClips(
   for (let i = 0; i < keywords.length; i += CONCURRENCY) {
     const batch = keywords.slice(i, i + CONCURRENCY)
     const settled = await Promise.allSettled(
-      batch.map((kw) => fetchBRollClip(kw, pexelsApiKey, clipDuration))
+      batch.map((kw) => fetchBRollClip(kw, pexelsApiKey, clipDuration, orientation))
     )
 
     settled.forEach((result, idx) => {

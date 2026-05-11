@@ -798,19 +798,6 @@ export type SegmentStyleCategory =
   | 'fullscreen-image'
   | 'fullscreen-text'
 
-/** A named style variant that can be applied to a segment. */
-export interface SegmentStyleVariant {
-  id: string
-  category: SegmentStyleCategory
-  name: string
-  description: string
-  zoomStyle: 'none' | 'drift' | 'snap' | 'word-pulse' | 'zoom-out'
-  zoomIntensity: number
-  captionPosition: 'lower-third' | 'center' | 'top'
-  imageLayout?: 'pip' | 'side-by-side' | 'behind-speaker' | 'fullscreen' | 'top-bottom'
-  imagePlacement?: 'left' | 'right' | 'top' | 'bottom'
-}
-
 /** A single zoom/pan keyframe within a segment. */
 export interface ZoomKeyframe {
   /** Time in seconds relative to segment start. */
@@ -827,7 +814,7 @@ export interface ZoomKeyframe {
 /** How a segment transitions in or out. */
 export type TransitionType = 'none' | 'hard-cut' | 'crossfade' | 'flash-cut' | 'color-wash'
 
-/** The 8 archetype keys every edit style must implement (see src/main/edit-styles/shared/archetypes.ts). */
+/** The 7 archetype keys every edit style must implement (see src/main/edit-styles/shared/archetypes.ts). */
 export type Archetype =
   | 'talking-head'
   | 'tight-punch'
@@ -836,7 +823,6 @@ export type Archetype =
   | 'split-image'
   | 'fullscreen-image'
   | 'fullscreen-quote'
-  | 'fullscreen-headline'
 
 /** A single segment within a clip, with its own style, captions, and zoom. */
 export interface VideoSegment {
@@ -869,15 +855,6 @@ export interface VideoSegment {
    * or 'fullscreen-image'. Absent until generation completes (or if key not set).
    */
   imagePath?: string
-  /**
-   * Large-text content for hero archetypes (fullscreen-headline,
-   * fullscreen-quote, quote-lower). Populated by the segment styler from
-   * captionText when the archetype is first assigned, editable by the user
-   * via the SegmentTemplatePicker hero text input. Without this field the
-   * hero ASS builder returns empty and those archetypes render as a blank
-   * solid background.
-   */
-  overlayText?: string
   /**
    * Set by the render pipeline when a segment's requested archetype could
    * not be honored and it was silently degraded to a different layout.

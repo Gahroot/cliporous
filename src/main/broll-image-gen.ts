@@ -14,6 +14,7 @@ import { unlink } from 'fs/promises'
 import { join } from 'path'
 import { tmpdir } from 'os'
 import { createHash } from 'crypto'
+import { OUTPUT_WIDTH, OUTPUT_HEIGHT } from './aspect-ratios'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -262,8 +263,8 @@ export async function generateBRollImage(
     return {
       filePath: cachedPath,
       keyword,
-      width: 720,
-      height: 1280,
+      width: OUTPUT_WIDTH,
+      height: OUTPUT_HEIGHT,
       source: 'ai-generated'
     }
   }
@@ -312,8 +313,8 @@ export async function generateBRollImage(
   return {
     filePath: cachedPath,
     keyword,
-    width: 720,
-    height: 1280,
+    width: OUTPUT_WIDTH,
+    height: OUTPUT_HEIGHT,
     source: 'ai-generated'
   }
 }
