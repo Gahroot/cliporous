@@ -90,8 +90,8 @@
     "vitest": "^4.0.18"
   },
   "build": {
-    "appId": "com.batchcontent.app",
-    "productName": "BatchContent",
+    "appId": "com.batchclip.app",
+    "productName": "BatchClip",
     "asar": true,
     "asarUnpack": [
       "node_modules/ffmpeg-static/**",
@@ -142,7 +142,8 @@
     },
     "files": [
       "out/**/*",
-      "!node_modules"
+      "package.json",
+      "node_modules/**/*"
     ],
     "win": {
       "target": [
