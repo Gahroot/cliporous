@@ -120,6 +120,66 @@ export interface ScoringProgress {
 }
 
 // ---------------------------------------------------------------------------
+// Stitched Clips
+//
+// A stitched clip composes several non-contiguous source ranges into one
+// coherent short. The render-side plumbing (assembly + remap) already lives in
+// main/render/stitched-render.ts + pipeline.ts; these shared types carry the
+// generator output across the IPC boundary and into the renderer store.
+// ---------------------------------------------------------------------------
+
+/** Narrative roles for ranges inside a stitched clip. Mirrors SegmentRole in main/render/types.ts. */
+export type StitchedClipRole =
+  | 'hook'
+  | 'rehook'
+  | 'context'
+  | 'why'
+  | 'what'
+  | 'how'
+  | 'mini-payoff'
+  | 'main-payoff'
+  | 'bonus-payoff'
+  | 'bridge'
+
+/** A contiguous slice of the source video that contributes to a stitched clip. */
+export interface SourceRange {
+  /** Absolute source-video start in seconds. */
+  startTime: number
+  /** Absolute source-video end in seconds. start < end. */
+  endTime: number
+  /**
+   * Narrative role within the stitched clip. Used by the validator
+   * (must include hook + at least one *-payoff) and by the render-side
+   * stitched assembly (hook ranges optionally get a tight-punch crop).
+   */
+  role: StitchedClipRole
+}
+
+/** Returned by the AI stitch generator, mapped to StitchedClipCandidate on the renderer. */
+export interface StitchedClipPlan {
+  /** 2+ ranges, no internal overlap, total duration >= 3s. */
+  ranges: SourceRange[]
+  /** Total spoken text across all ranges, in narrative order. */
+  text: string
+  /** 0-100, validator floor is 70. */
+  score: number
+  /** Hook overlay text (1-5 words). */
+  hookText: string
+  /** AI's explanation of why the composite delivers value as a coherent thought. */
+  reasoning: string
+}
+
+export interface StitchGenerationResult {
+  /** Validated, score-sorted stitched clip plans. May be empty. */
+  clips: StitchedClipPlan[]
+}
+
+export interface StitchGenerationProgress {
+  stage: 'sending' | 'analyzing' | 'validating'
+  message: string
+}
+
+// ---------------------------------------------------------------------------
 // Curiosity Gap
 // ---------------------------------------------------------------------------
 

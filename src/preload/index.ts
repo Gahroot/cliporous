@@ -71,6 +71,10 @@ const api = {
   // Word Emphasis
   analyzeWordEmphasis: invoke(I.AI_ANALYZE_WORD_EMPHASIS),
 
+  // Stitched Clips
+  generateStitchedClips: invoke(I.AI_STITCH_TRANSCRIPT),
+  onStitchProgress: listen(S.AI_STITCH_PROGRESS),
+
   // Face detection
   detectFaceCrops: invoke(I.FACE_DETECT_CROPS),
   onFaceDetectionProgress: listen(S.FACE_PROGRESS),

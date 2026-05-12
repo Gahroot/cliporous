@@ -19,6 +19,7 @@ import {
 } from './helpers'
 import { broadcastSettingsChange, listenForSettingsChanges } from './settings-sync'
 import { createClipsSlice } from './clips-slice'
+import { createStitchedClipsSlice } from './stitched-clips-slice'
 import { createSettingsSlice } from './settings-slice'
 import { createPipelineSlice } from './pipeline-slice'
 import { createProjectSlice } from './project-slice'
@@ -39,6 +40,7 @@ export const useStore = create<AppState>()(immer((...a) => {
   return {
     // --- Slices ---
     ...createClipsSlice(...a),
+    ...createStitchedClipsSlice(...a),
     ...createSettingsSlice(...a),
     ...createPipelineSlice(...a),
     ...createProjectSlice(...a),
@@ -78,6 +80,7 @@ export const useStore = create<AppState>()(immer((...a) => {
         state.sources = state.sources.filter((s) => s.id !== id)
         delete state.transcriptions[id]
         delete state.clips[id]
+        delete state.stitchedClips[id]
         if (state.activeSourceId === id) state.activeSourceId = null
         state._clipUndoStacks = undoStacks
         state._clipRedoStacks = redoStacks
@@ -209,6 +212,7 @@ useStore.subscribe((state, prevState) => {
   if (state.isDirty) return
   if (
     state.clips !== prevState.clips ||
+    state.stitchedClips !== prevState.stitchedClips ||
     state.transcriptions !== prevState.transcriptions ||
     state.sources !== prevState.sources ||
     state.settings.minScore !== prevState.settings.minScore

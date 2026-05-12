@@ -1,4 +1,4 @@
-import type { AppState, ClipCandidate, PipelineStage } from './types'
+import type { AppState, ClipCandidate, PipelineStage, StitchedClipCandidate } from './types'
 
 // ---------------------------------------------------------------------------
 // Memoized selector: selectActiveClips
@@ -26,6 +26,32 @@ export function selectActiveClips(state: AppState): ClipCandidate[] {
 }
 
 // ---------------------------------------------------------------------------
+// Memoized selector: selectActiveStitchedClips
+// ---------------------------------------------------------------------------
+
+let _stitchedCachedInput: StitchedClipCandidate[] | null = null
+let _stitchedCachedResult: StitchedClipCandidate[] = []
+
+export function selectActiveStitchedClips(state: AppState): StitchedClipCandidate[] {
+  const { stitchedClips, activeSourceId } = state
+  if (!activeSourceId)
+    return _stitchedCachedResult.length === 0
+      ? _stitchedCachedResult
+      : (_stitchedCachedResult = [])
+  const sourceClips = stitchedClips[activeSourceId]
+  if (!sourceClips || sourceClips.length === 0)
+    return _stitchedCachedResult.length === 0
+      ? _stitchedCachedResult
+      : (_stitchedCachedResult = [])
+
+  if (sourceClips === _stitchedCachedInput) return _stitchedCachedResult
+
+  _stitchedCachedInput = sourceClips
+  _stitchedCachedResult = [...sourceClips].sort((a, b) => b.score - a.score)
+  return _stitchedCachedResult
+}
+
+// ---------------------------------------------------------------------------
 // Screen routing — pipeline.stage → top-level screen identifier.
 // Single source of truth. Mirrors `.ezcoder/plans/ux.md §6`.
 // ---------------------------------------------------------------------------
@@ -37,6 +63,7 @@ export const PROCESSING_STAGES: ReadonlySet<PipelineStage> = new Set<PipelineSta
   'downloading',
   'transcribing',
   'scoring',
+  'stitching',
   'optimizing-loops',
   'detecting-faces',
   'ai-editing',

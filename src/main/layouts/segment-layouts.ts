@@ -81,6 +81,14 @@ function finalize(label: string): string {
 }
 
 /**
+ * High-quality scaling flags. Lanczos with accurate rounding + full-chroma
+ * interpolation matches the base-render path and is materially sharper than
+ * FFmpeg's default bilinear, especially on faces and high-frequency detail
+ * like text-in-frame.
+ */
+const SCALE_FLAGS = 'lanczos+accurate_rnd+full_chroma_int'
+
+/**
  * Builds the crop+scale chain for the speaker video.
  * If cropRect is provided (from face detection), crops to that region first.
  */
@@ -127,12 +135,12 @@ function buildSpeakerCropScale(
     // Tight-punch path: oversize, then center-crop back to target.
     const scaledW = roundEven(Math.round(targetW * scaleFactor))
     const scaledH = roundEven(Math.round(targetH * scaleFactor))
-    parts.push(`scale=${scaledW}:${scaledH}`)
+    parts.push(`scale=${scaledW}:${scaledH}:flags=${SCALE_FLAGS}`)
     const cropX = Math.max(0, Math.round((scaledW - targetW) / 2))
     const cropY = Math.max(0, Math.round((scaledH - targetH) / 2))
     parts.push(`crop=${targetW}:${targetH}:${cropX}:${cropY}`)
   } else {
-    parts.push(`scale=${targetW}:${targetH}`)
+    parts.push(`scale=${targetW}:${targetH}:flags=${SCALE_FLAGS}`)
   }
 
   return parts.join(',')
@@ -191,7 +199,7 @@ function buildSplitImage(params: SegmentLayoutParams): SegmentLayoutResult {
   const speakerChain = buildSpeakerCropScale(params, w, halfH, 1.0)
 
   const parts: string[] = [
-    `[1:v]scale=${w}:${halfH}:force_original_aspect_ratio=increase,crop=${w}:${halfH},fps=${fps},setsar=1[top]`,
+    `[1:v]scale=${w}:${halfH}:force_original_aspect_ratio=increase:flags=${SCALE_FLAGS},crop=${w}:${halfH},fps=${fps},setsar=1[top]`,
     `[0:v]${speakerChain},fps=${fps},setsar=1[bottom]`,
     `[top][bottom]vstack=inputs=2:shortest=1[composed]`,
     finalize('composed')
@@ -212,7 +220,7 @@ function buildFullscreenImage(params: SegmentLayoutParams): SegmentLayoutResult 
   const fps = params.fps ?? 30
 
   const fc =
-    `[1:v]scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},fps=${fps},setsar=1[composed];` +
+    `[1:v]scale=${w}:${h}:force_original_aspect_ratio=increase:flags=${SCALE_FLAGS},crop=${w}:${h},fps=${fps},setsar=1[composed];` +
     finalize('composed')
 
   return { filterComplex: fc, inputCount: 2 }

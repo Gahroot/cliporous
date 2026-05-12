@@ -64,7 +64,7 @@ export const createPipelineSlice: StateCreator<
     set((state) => {
       const completed = new Set(state.completedPipelineStages)
       const stageOrder: PipelineStage[] = [
-        'downloading', 'transcribing', 'scoring', 'optimizing-loops',
+        'downloading', 'transcribing', 'scoring', 'stitching', 'optimizing-loops',
         'detecting-faces', 'ai-editing', 'segmenting'
       ]
       const failedIdx = stageOrder.indexOf(stage)

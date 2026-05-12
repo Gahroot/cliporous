@@ -18,7 +18,7 @@
  *                The full-fidelity error log lives in the bottom panel.
  */
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AlertTriangle, Inbox } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -31,8 +31,12 @@ import { ClipDetail } from '@/components/ClipDetail'
 import { startApprovedRender } from '@/services/render-service'
 import { TemplateEditor } from '@/components/TemplateEditor'
 import { useStore } from '@/store'
-import { selectActiveClips } from '@/store/selectors'
-import type { ErrorLogEntry } from '@/store/types'
+import { selectActiveClips, selectActiveStitchedClips } from '@/store/selectors'
+import type { ClipCandidate, ErrorLogEntry, StitchedClipCandidate } from '@/store/types'
+
+type GridItem =
+  | { kind: 'normal'; clip: ClipCandidate; score: number }
+  | { kind: 'stitched'; clip: StitchedClipCandidate; score: number }
 
 // Sources whose errors are surfaced inline on this screen.
 const CLIPS_SCREEN_SOURCES: ReadonlySet<string> = new Set([
@@ -107,11 +111,13 @@ function EmptyState(): React.JSX.Element {
 
 export function ClipGrid(): React.JSX.Element {
   const clips = useStore(selectActiveClips)
+  const stitchedClips = useStore(selectActiveStitchedClips)
   const activeSourceId = useStore((s) => s.activeSourceId)
   const source = useStore((s) =>
     s.activeSourceId ? s.sources.find((src) => src.id === s.activeSourceId) ?? null : null
   )
   const updateClipStatus = useStore((s) => s.updateClipStatus)
+  const updateStitchedClipStatus = useStore((s) => s.updateStitchedClipStatus)
   const stage = useStore((s) => s.pipeline.stage)
   const errorLog = useStore((s) => s.errorLog)
 
@@ -119,33 +125,60 @@ export function ClipGrid(): React.JSX.Element {
 
   const screenError = pickClipsScreenError(errorLog)
 
-  const openClip = openClipId
-    ? clips.find((c) => c.id === openClipId) ?? null
-    : null
+  const allItems = useMemo<GridItem[]>(() => {
+    const normal: GridItem[] = clips.map((c) => ({ kind: 'normal', clip: c, score: c.score }))
+    const stitched: GridItem[] = stitchedClips.map((c) => ({
+      kind: 'stitched',
+      clip: c,
+      score: c.score,
+    }))
+    return [...normal, ...stitched].sort((a, b) => b.score - a.score)
+  }, [clips, stitchedClips])
 
-  const handleApprove = (clipId: string): void => {
+  // The detail sheet supports both clip kinds; resolve the open id against
+  // both lists. Stitched clips render the read-only variant of ClipDetail.
+  const openClip =
+    openClipId
+      ? clips.find((c) => c.id === openClipId) ??
+        stitchedClips.find((c) => c.id === openClipId) ??
+        null
+      : null
+
+  const handleApprove = (item: GridItem): void => {
     if (!activeSourceId) return
-    const current = clips.find((c) => c.id === clipId)
-    const next = current?.status === 'approved' ? 'pending' : 'approved'
-    updateClipStatus(activeSourceId, clipId, next)
+    if (item.kind === 'stitched') {
+      const next = item.clip.status === 'approved' ? 'pending' : 'approved'
+      updateStitchedClipStatus(activeSourceId, item.clip.id, next)
+    } else {
+      const next = item.clip.status === 'approved' ? 'pending' : 'approved'
+      updateClipStatus(activeSourceId, item.clip.id, next)
+    }
   }
 
-  const handleReject = (clipId: string): void => {
+  const handleReject = (item: GridItem): void => {
     if (!activeSourceId) return
-    const current = clips.find((c) => c.id === clipId)
-    const next = current?.status === 'rejected' ? 'pending' : 'rejected'
-    updateClipStatus(activeSourceId, clipId, next)
+    if (item.kind === 'stitched') {
+      const next = item.clip.status === 'rejected' ? 'pending' : 'rejected'
+      updateStitchedClipStatus(activeSourceId, item.clip.id, next)
+    } else {
+      const next = item.clip.status === 'rejected' ? 'pending' : 'rejected'
+      updateClipStatus(activeSourceId, item.clip.id, next)
+    }
   }
 
   // Loading: pipeline still working OR ready but clip array hasn't populated.
   const isLoading =
     stage === 'scoring' ||
+    stage === 'stitching' ||
     stage === 'optimizing-loops' ||
     stage === 'detecting-faces' ||
     stage === 'ai-editing' ||
     stage === 'segmenting'
 
-  const approvedCount = clips.filter((c) => c.status === 'approved').length
+  const approvedCount =
+    clips.filter((c) => c.status === 'approved').length +
+    stitchedClips.filter((c) => c.status === 'approved').length
+  const totalCount = clips.length + stitchedClips.length
   const [isStartingRender, setIsStartingRender] = useState(false)
 
   const handleRenderApproved = async (): Promise<void> => {
@@ -163,7 +196,7 @@ export function ClipGrid(): React.JSX.Element {
       {/* Top bar — clip count + Render Approved primary action */}
       <div className="flex shrink-0 items-center justify-between border-b border-border px-6 py-3">
         <div className="text-sm text-muted-foreground">
-          {clips.length} {clips.length === 1 ? 'clip' : 'clips'}
+          {totalCount} {totalCount === 1 ? 'clip' : 'clips'}
           {approvedCount > 0 && ` · ${approvedCount} approved`}
         </div>
         <div className="flex items-center gap-2">
@@ -183,7 +216,7 @@ export function ClipGrid(): React.JSX.Element {
         {/* Inline error — only when there are no clips to show; otherwise
             the bottom error log panel is the canonical surface and an inline
             alert would just duplicate it. */}
-        {screenError && clips.length === 0 && !isLoading && (
+        {screenError && totalCount === 0 && !isLoading && (
           <Alert variant="destructive" className="mb-4">
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Couldn&apos;t generate clips</AlertTitle>
@@ -193,20 +226,24 @@ export function ClipGrid(): React.JSX.Element {
           </Alert>
         )}
 
-        {isLoading && clips.length === 0 ? (
+        {isLoading && totalCount === 0 ? (
           <ClipGridSkeleton />
-        ) : clips.length === 0 ? (
+        ) : totalCount === 0 ? (
           <EmptyState />
         ) : (
           <div className={GRID_COLS}>
-            {clips.map((clip) => (
+            {allItems.map((item) => (
               <ClipCard
-                key={clip.id}
-                clip={clip}
+                key={item.clip.id}
+                clip={item.clip}
                 source={source}
+                stitched={item.kind === 'stitched'}
+                partCount={
+                  item.kind === 'stitched' ? item.clip.sourceRanges.length : undefined
+                }
                 onOpenDetail={setOpenClipId}
-                onApprove={handleApprove}
-                onReject={handleReject}
+                onApprove={() => handleApprove(item)}
+                onReject={() => handleReject(item)}
               />
             ))}
           </div>

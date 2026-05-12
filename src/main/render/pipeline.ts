@@ -340,7 +340,7 @@ export async function startBatchRender(
               percent: Math.min(49, Math.round(percent * 0.49))
             })
           }
-        })
+        }, qualityParams)
 
         // ── Rewrite the job to look like a regular clip on the assembled MP4 ──
         // Remap all source-time data (word timestamps, word emphasis, shots)
@@ -517,6 +517,7 @@ export async function startBatchRender(
           rehookConfig,
           rehookAppearTime,
           templateLayout: options.templateLayout,
+          qualityParams,
           onFallback: (info) => {
             if (!cancelRequested) {
               window.webContents.send(Ch.Send.SEGMENT_FALLBACK, {
@@ -676,6 +677,36 @@ export async function startBatchRender(
         }
       }
 
+      // ── Phase 3.5: Merge simple overlay filters into the base -vf ──────
+      // Each separate overlay pass is a full FFmpeg re-encode of the clip
+      // which compounds generation loss (visible blocking, mosquito noise).
+      // Any overlay step that's a plain -vf filter (e.g. ass subtitles for
+      // captions, hook title, rehook) can be safely chained onto the base
+      // filter and burned in a single encode. Only filter_complex passes
+      // (B-roll image overlay, animated progress bar) need their own pass
+      // because they require multiple inputs.
+      //
+      // The base videoFilter ends in `…,format=yuv420p`; we strip that tail,
+      // append each mergeable overlay, then re-pin format=yuv420p so the
+      // final output stays in universally-playable subsampling.
+      const complexSteps: OverlayPassResult[] = []
+      const mergedNames: string[] = []
+      for (const step of overlaySteps) {
+        if (step.filterComplex) {
+          complexSteps.push(step)
+        } else {
+          videoFilter = videoFilter.replace(/,format=yuv420p$/, '')
+          videoFilter = `${videoFilter},${step.filter},format=yuv420p`
+          mergedNames.push(step.name)
+        }
+      }
+      if (mergedNames.length > 0) {
+        console.log(
+          `[Pipeline] Clip ${job.clipId}: merged ${mergedNames.length} overlay(s) ` +
+          `into base encode (${mergedNames.join(', ')})`
+        )
+      }
+
       // ── Phase 4: Base render ───────────────────────────────────────────
       window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
         clipId: job.clipId,
@@ -706,7 +737,7 @@ export async function startBatchRender(
         outputFormat,
         null, // hookFontPath — no longer needed, features handle their own fonts
         null, // captionFontsDir — features handle their own font dirs
-        overlaySteps
+        complexSteps
       )
 
       if (cancelRequested) return

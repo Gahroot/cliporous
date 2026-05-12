@@ -23,5 +23,11 @@ export const PrestyjFonts: React.FC = () => (
       font-weight: 400;
       font-display: block;
     }
+    @font-face {
+      font-family: 'Bebas Neue';
+      src: url('${staticFile('fonts/BebasNeue-Regular.ttf')}') format('truetype');
+      font-weight: 400;
+      font-display: block;
+    }
   `}</style>
 )

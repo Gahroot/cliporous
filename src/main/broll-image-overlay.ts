@@ -90,9 +90,12 @@ export async function imageToVideoClip(
       .inputOptions([`-t ${duration}`])
       .videoFilter(zoomFilter)
       .outputOptions([
+        // Static image → short video. CRF 18 keeps the still razor-sharp
+        // (it compresses trivially) and the encode is still fast because
+        // libx264 ignores temporal coding when every frame is identical.
         '-c:v libx264',
         '-preset veryfast',
-        '-crf 23',
+        '-crf 18',
         '-pix_fmt yuv420p',
         `-t ${duration}`,
         '-an' // no audio

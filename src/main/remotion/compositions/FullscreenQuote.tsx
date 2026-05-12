@@ -4,15 +4,31 @@ import { PrestyjFonts } from '../shared/fonts'
 import { EASE } from '../shared/easing'
 import { BRAND_ACCENT, BRAND_BG, BRAND_FG } from '../../edit-styles/shared/brand'
 
+/** Word with clip-relative seconds. End is optional (currently unused for visuals,
+ *  but plumbed so future variants can fade out on word.end). */
+export interface QuoteWord {
+  text: string
+  /** Clip-relative seconds, snapped to the segment start. */
+  start: number
+  end?: number
+}
+
 export interface FullscreenQuoteProps {
-  /** The quote body. Word-by-word reveal happens automatically. */
+  /** The quote body, used as fallback when `words` is omitted. */
   quote: string
+  /**
+   * Per-word timings, clip-relative. When supplied, each word reveals on the
+   * frame matching its spoken `start` — i.e. the on-screen text marches in
+   * lock-step with the speaker. When omitted, words are evenly spaced across
+   * the segment duration so the composition still works in Studio previews.
+   */
+  words?: QuoteWord[]
   /** Optional attribution rendered below the quote in script font. */
   attribution?: string
   /**
-   * Accent color used for emphasis (accent bar, attribution glow). Defaults
-   * to BRAND_ACCENT when callers omit it. The "just subtitles" archetype
-   * keeps the bg solid — the accent shows up only on highlighted words.
+   * Accent color used for attribution glow + emphasis word recolor. Defaults
+   * to BRAND_ACCENT. The accent bar that used to sit above the quote has
+   * been removed — the quote itself is the hero now.
    */
   accentColor?: string
   /** Primary text color. Defaults to BRAND_FG. */
@@ -27,32 +43,44 @@ export interface FullscreenQuoteProps {
   bodyFont: string
   /** Script attribution font family — must match a loaded @font-face. */
   scriptFont: string
+  /**
+   * Optional set of word indices that should render in the accent color.
+   * Lets `emphasis` / `emphasis_highlight` caption modes carry through to
+   * this archetype.
+   */
+  emphasisIndices?: number[]
 }
 
-const WORD_STAGGER_FRAMES = 3
-const WORD_REVEAL_FRAMES = 18
+// Per-word reveal: gentle 10-frame ease, no motion blur, no rise — the cut
+// between words *is* the percussion, no need to dress it up. Each word holds
+// once revealed.
+const WORD_REVEAL_FRAMES = 10
 const ATTRIBUTION_DELAY_FRAMES = 14
 
 export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
   quote,
+  words: wordsProp,
   attribution,
   accentColor = BRAND_ACCENT,
   primaryColor = BRAND_FG,
   backgroundColor = BRAND_BG,
   bodyFont,
-  scriptFont
+  scriptFont,
+  emphasisIndices
 }) => {
   const frame = useCurrentFrame()
-  const { fps, height, durationInFrames } = useVideoConfig()
+  const { fps, durationInFrames } = useVideoConfig()
 
-  const words = quote.split(/\s+/).filter(Boolean)
-  const lastWordEnter = (words.length - 1) * WORD_STAGGER_FRAMES + WORD_REVEAL_FRAMES
+  // Resolve the on-screen word list + per-word reveal frame.
+  const words = resolveWords(quote, wordsProp, fps, durationInFrames)
+  const lastWordEnter = (words[words.length - 1]?.revealFrame ?? 0) + WORD_REVEAL_FRAMES
   const attributionStart = lastWordEnter + ATTRIBUTION_DELAY_FRAMES
 
-  // Sizing: shrink as word count grows so long quotes still fit. The
-  // breakpoints are tuned for the locked 1080×1920 canvas.
+  // Sizing: Bebas Neue is condensed all-caps, so it packs ~30% more glyphs
+  // per line than Geist Bold did. Pump the size up accordingly and let long
+  // quotes wrap to two/three lines without shrinking too aggressively.
   const fontSize =
-    words.length <= 6 ? 132 : words.length <= 12 ? 108 : words.length <= 20 ? 87 : 72
+    words.length <= 6 ? 196 : words.length <= 12 ? 156 : words.length <= 20 ? 124 : 104
 
   // Subtle 4% scale-out near the very end gives the segment a "release"
   // even if the next segment uses hard-cut. Cinematic micro-detail.
@@ -67,6 +95,11 @@ export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
     [exitStart, durationInFrames],
     [1, 0.85],
     { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
+  )
+
+  const emphasisSet = React.useMemo(
+    () => new Set(emphasisIndices ?? []),
+    [emphasisIndices]
   )
 
   return (
@@ -89,30 +122,33 @@ export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
           opacity: releaseOpacity
         }}
       >
-        {/* Tiny accent bar above quote — the "designed" tell. */}
-        <AccentBar
-          frame={frame}
-          fps={fps}
-          color={accentColor}
-        />
-
         <p
           style={{
             color: primaryColor,
             fontFamily: bodyFont,
-            fontWeight: 700,
+            // Bebas Neue is a single weight (400). 700 would force a synthetic
+            // bold and crush the letterforms — keep it native.
+            fontWeight: 400,
             fontSize,
-            lineHeight: 1.08,
-            letterSpacing: '-0.025em',
+            // Bebas hugs the baseline; a tighter line-height reads as a
+            // monolithic slab rather than a stacked sentence.
+            lineHeight: 0.96,
+            letterSpacing: '0.005em',
             textAlign: 'center',
             margin: 0,
-            marginTop: 40,
-            // Per-word spans inherit; whitespace preserved between spans.
-            wordSpacing: '0.05em'
+            // Words come pre-uppercased by Bebas's design, but force it so
+            // mixed-case ASR output renders consistently.
+            textTransform: 'uppercase'
           }}
         >
-          {words.map((word, i) => (
-            <Word key={i} word={word} index={i} frame={frame} />
+          {words.map((w, i) => (
+            <Word
+              key={i}
+              word={w.text}
+              revealFrame={w.revealFrame}
+              frame={frame}
+              accent={emphasisSet.has(i) ? accentColor : null}
+            />
           ))}
         </p>
 
@@ -132,30 +168,72 @@ export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+interface ResolvedWord {
+  text: string
+  revealFrame: number
+}
+
+/**
+ * Build the per-word reveal schedule. When `wordsProp` is supplied, each
+ * word's `start` (clip-relative seconds) is snapped to the nearest frame so
+ * the on-screen text lock-steps with the speaker. When omitted (Studio
+ * previews, ad-hoc renders), words are spread evenly across the composition
+ * so the animation still plays back without timing data.
+ */
+function resolveWords(
+  quote: string,
+  wordsProp: QuoteWord[] | undefined,
+  fps: number,
+  durationInFrames: number
+): ResolvedWord[] {
+  if (wordsProp && wordsProp.length > 0) {
+    // Assume `start` is segment-relative (0 = first frame of this composition).
+    // Anchor the first word to frame 0 in case ASR has a small lead-in.
+    const firstStart = wordsProp[0].start
+    return wordsProp.map((w, i) => ({
+      text: w.text,
+      revealFrame:
+        i === 0
+          ? 0
+          : Math.max(0, Math.round((w.start - firstStart) * fps))
+    }))
+  }
+
+  const fallback = quote.split(/\s+/).filter(Boolean)
+  if (fallback.length === 0) return []
+  // Spread evenly across the first 80% of the composition so the last word
+  // has room to breathe before the release scale-out.
+  const usable = Math.max(1, Math.floor(durationInFrames * 0.8))
+  const step = Math.max(3, Math.floor(usable / fallback.length))
+  return fallback.map((text, i) => ({ text, revealFrame: i * step }))
+}
+
+// ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
 
-const Word: React.FC<{ word: string; index: number; frame: number }> = ({
-  word,
-  index,
-  frame
-}) => {
-  const localFrame = frame - index * WORD_STAGGER_FRAMES
+const Word: React.FC<{
+  word: string
+  revealFrame: number
+  frame: number
+  accent: string | null
+}> = ({ word, revealFrame, frame, accent }) => {
+  const localFrame = frame - revealFrame
   const progress = interpolate(localFrame, [0, WORD_REVEAL_FRAMES], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: EASE.outExpo
   })
-  const ty = (1 - progress) * 24
   return (
     <span
       style={{
         display: 'inline-block',
         opacity: progress,
-        transform: `translateY(${ty}px)`,
         marginRight: '0.28em',
-        // Touch of motion blur on the inbound — sells the easing.
-        filter: progress < 1 ? `blur(${(1 - progress) * 2.5}px)` : undefined
+        color: accent ?? undefined
       }}
     >
       {word}
@@ -194,30 +272,5 @@ const Attribution: React.FC<{
     >
       {text}
     </p>
-  )
-}
-
-const AccentBar: React.FC<{ frame: number; fps: number; color: string }> = ({
-  frame,
-  fps,
-  color
-}) => {
-  // Bar grows from center outward in the first 20 frames.
-  const progress = interpolate(frame, [0, 20], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: EASE.outExpo
-  })
-  return (
-    <div
-      style={{
-        width: 120 * progress,
-        height: 4,
-        background: color,
-        borderRadius: 2,
-        marginBottom: 8,
-        boxShadow: `0 0 20px ${color}88`
-      }}
-    />
   )
 }

@@ -18,6 +18,7 @@ import {
   AlertCircle,
   AlertTriangle,
   Check,
+  Combine,
   Download,
   FileText,
   Loader2,
@@ -56,6 +57,7 @@ const ALL_STAGES: readonly StageRow[] = [
   { key: 'downloading', label: 'Download', icon: Download },
   { key: 'transcribing', label: 'Transcribe', icon: FileText },
   { key: 'scoring', label: 'Score', icon: Sparkles },
+  { key: 'stitching', label: 'Compose stitched clips', icon: Combine },
 ] as const
 
 const STAGE_ORDER: readonly PipelineStage[] = ALL_STAGES.map((s) => s.key)

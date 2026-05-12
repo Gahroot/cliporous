@@ -4,9 +4,10 @@ export const splitImage: EditStyleTemplate = {
   archetype: 'split-image',
   zoomStyle: 'none',
   // Split layout: b-roll video on top half, speaker on bottom half. Captions
-  // ride along the vertical midpoint so they stay clear of both halves.
+  // sit slightly below the vertical midpoint (~7.5% of frame height) so they
+  // bias toward the speaker half rather than splitting the seam exactly.
   captionPosition: 'center',
-  captionMarginV: 960,
+  captionMarginV: 864,
   hookTitleY: 220,
   rehookY: 220
 }

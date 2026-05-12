@@ -10,6 +10,7 @@ import type {
   SourceVideo,
   TranscriptionData,
   ClipCandidate,
+  StitchedClipCandidate,
   TemplateLayout,
   Platform,
 } from './types'
@@ -93,10 +94,10 @@ export const DEFAULT_FILLER_REMOVAL: FillerRemovalSettings = {
 
 export const DEFAULT_RENDER_QUALITY: RenderQualitySettings = {
   preset: 'normal',
-  customCrf: 23,
+  customCrf: 20,
   outputResolution: '1080x1920',
   outputFormat: 'mp4',
-  encodingPreset: 'veryfast'
+  encodingPreset: 'medium'
 }
 
 /**
@@ -162,6 +163,8 @@ export interface ProjectFileData {
   sources: SourceVideo[]
   transcriptions: Record<string, TranscriptionData>
   clips: Record<string, ClipCandidate[]>
+  /** Stitched (multi-range) clip candidates keyed by source ID. */
+  stitchedClips?: Record<string, StitchedClipCandidate[]>
   settings: AppSettings
   processingConfig?: ProcessingConfig
 }

@@ -145,6 +145,27 @@ interface WordEmphasisResult {
 }
 
 // ---------------------------------------------------------------------------
+// Stitched Clips
+// ---------------------------------------------------------------------------
+
+interface StitchedClipPlanIPC {
+  ranges: Array<{ startTime: number; endTime: number; role: string }>
+  text: string
+  score: number
+  hookText: string
+  reasoning: string
+}
+
+interface StitchGenerationResultIPC {
+  clips: StitchedClipPlanIPC[]
+}
+
+interface StitchGenerationProgressIPC {
+  stage: 'sending' | 'analyzing' | 'validating'
+  message: string
+}
+
+// ---------------------------------------------------------------------------
 // Face detection
 // ---------------------------------------------------------------------------
 
@@ -293,6 +314,19 @@ interface RenderClipJob {
     zoomIntensity?: number
     transitionIn?: import('@shared/types').TransitionType
     imagePath?: string
+  }>
+  /**
+   * When present, this job represents a stitched clip composed of multiple
+   * non-contiguous source-video ranges. The render pipeline assembles them
+   * into a single MP4 and rewrites the job to look like a regular clip on
+   * the assembled timeline before running the feature pipeline.
+   */
+  stitchedSegments?: Array<{
+    startTime: number
+    endTime: number
+    role?: import('@shared/types').StitchedClipRole
+    imagePath?: string
+    cropRect?: { x: number; y: number; width: number; height: number }
   }>
 }
 
@@ -535,6 +569,16 @@ interface Api {
 
   // Word Emphasis
   analyzeWordEmphasis: (words: WordTimestamp[], apiKey?: string) => Promise<WordEmphasisResult>
+
+  // Stitched Clips
+  generateStitchedClips: (
+    apiKey: string,
+    formattedTranscript: string,
+    videoDuration: number,
+    existingClips: Array<{ startTime: number; endTime: number; score: number; text: string }>,
+    targetAudience?: string
+  ) => Promise<StitchGenerationResultIPC>
+  onStitchProgress: (callback: (data: StitchGenerationProgressIPC) => void) => () => void
 
   // Face detection
   detectFaceCrops: (

@@ -49,6 +49,13 @@ export interface ZoomFilterParams {
 const PI_STR = '3.141592653589793'
 
 /**
+ * High-quality scaling flags. Lanczos with accurate rounding + full-chroma
+ * interpolation matches the base-render path — visibly sharper than FFmpeg's
+ * default bilinear, which is what every auto-zoom variant was using before.
+ */
+const SCALE_FLAGS = 'lanczos+accurate_rnd+full_chroma_int'
+
+/**
  * Clamp expression using abs() — avoids commas in FFmpeg option values.
  *   max(0, min(val, hi))
  */
@@ -99,7 +106,7 @@ function assembleCropScale(
   outW: number,
   outH: number
 ): string {
-  return `crop=w='${nanSafe(cropW, 'iw')}':h='${nanSafe(cropH, 'ih')}':x='${nanSafe(cropX, '0')}':y='${nanSafe(cropY, '0')}',scale=${outW}:${outH}`
+  return `crop=w='${nanSafe(cropW, 'iw')}':h='${nanSafe(cropH, 'ih')}':x='${nanSafe(cropX, '0')}':y='${nanSafe(cropY, '0')}',scale=${outW}:${outH}:flags=${SCALE_FLAGS}`
 }
 
 // ---------------------------------------------------------------------------

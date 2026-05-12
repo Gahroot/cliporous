@@ -464,7 +464,7 @@ export interface RenderBatchOptions {
   /**
    * Render quality and encoding-format settings. Output resolution is locked
    * to 1080×1920 (9:16) at 30fps; only CRF/preset/container are configurable.
-   * When omitted, defaults to normal quality (CRF 23, veryfast preset, MP4).
+   * When omitted, defaults to normal quality (CRF 20, medium preset, MP4).
    */
   renderQuality?: {
     preset: 'draft' | 'normal' | 'high' | 'custom'

@@ -13,14 +13,17 @@
  */
 
 import { useRef, useState, type MouseEvent, type KeyboardEvent } from 'react'
-import { Check, Eye, Play, X } from 'lucide-react'
+import { Check, Combine, Eye, Play, X } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardFooter } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
-import type { ClipCandidate, SourceVideo } from '@/store/types'
+import type { ClipCandidate, SourceVideo, StitchedClipCandidate } from '@/store/types'
+
+/** Either a regular or a stitched clip — only shared fields are read by the card. */
+export type CardClip = ClipCandidate | StitchedClipCandidate
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -46,8 +49,12 @@ function formatScore(score: number): string {
 }
 
 /** Pick the best available poster image for the card. */
-function pickThumbnail(clip: ClipCandidate): string | undefined {
+function pickThumbnail(clip: CardClip): string | undefined {
   return clip.customThumbnail ?? clip.thumbnail
+}
+
+function isStitchedClip(clip: CardClip): clip is StitchedClipCandidate {
+  return 'sourceRanges' in clip
 }
 
 // ---------------------------------------------------------------------------
@@ -55,8 +62,12 @@ function pickThumbnail(clip: ClipCandidate): string | undefined {
 // ---------------------------------------------------------------------------
 
 export interface ClipCardProps {
-  clip: ClipCandidate
+  clip: CardClip
   source: SourceVideo | null
+  /** True when the clip is a stitched (multi-range) composite. */
+  stitched?: boolean
+  /** Number of source ranges — only meaningful when stitched is true. */
+  partCount?: number
   onOpenDetail: (clipId: string) => void
   onApprove: (clipId: string) => void
   onReject: (clipId: string) => void
@@ -69,6 +80,8 @@ export interface ClipCardProps {
 export function ClipCard({
   clip,
   source,
+  stitched = false,
+  partCount,
   onOpenDetail,
   onApprove,
   onReject,
@@ -81,26 +94,33 @@ export function ClipCard({
   const isApproved = clip.status === 'approved'
   const isRejected = clip.status === 'rejected'
   const sourceUrl = source ? toFileUrl(source.path) : null
+  const isStitched = stitched || isStitchedClip(clip)
+  // Stitched clips don't have scalar startTime/endTime — hover preview is
+  // disabled because the single-range seek-and-play model doesn't fit a
+  // multi-range composite. Static thumbnail is fine for v1.
+  const hoverPreviewEnabled = !isStitched && 'startTime' in clip && 'endTime' in clip
+  const previewStart = hoverPreviewEnabled ? (clip as ClipCandidate).startTime : 0
+  const previewEnd = hoverPreviewEnabled ? (clip as ClipCandidate).endTime : 0
 
   const handleMouseEnter = (): void => {
+    if (!hoverPreviewEnabled) return
     setIsHovering(true)
     const v = videoRef.current
     if (!v) return
-    // Seek to the clip's start so the loop shows the actual moment.
-    if (Math.abs(v.currentTime - clip.startTime) > 0.25) {
+    if (Math.abs(v.currentTime - previewStart) > 0.25) {
       try {
-        v.currentTime = clip.startTime
+        v.currentTime = previewStart
       } catch {
-        // Some browsers throw if metadata isn't loaded yet — ignore; the
-        // onLoadedMetadata handler below will seek once ready.
+        /* ignore */
       }
     }
     void v.play().catch(() => {
-      // Autoplay can fail (e.g. before metadata) — onCanPlay will retry.
+      /* autoplay may fail before metadata */
     })
   }
 
   const handleMouseLeave = (): void => {
+    if (!hoverPreviewEnabled) return
     setIsHovering(false)
     const v = videoRef.current
     if (v) {
@@ -109,17 +129,13 @@ export function ClipCard({
     setIsVideoReady(false)
   }
 
-  /**
-   * If playback runs past the clip's endTime while looping, jump back to
-   * startTime so the user keeps seeing the clip itself, not surrounding
-   * source footage.
-   */
   const handleTimeUpdate = (): void => {
+    if (!hoverPreviewEnabled) return
     const v = videoRef.current
     if (!v) return
-    if (v.currentTime >= clip.endTime || v.currentTime < clip.startTime - 0.1) {
+    if (v.currentTime >= previewEnd || v.currentTime < previewStart - 0.1) {
       try {
-        v.currentTime = clip.startTime
+        v.currentTime = previewStart
       } catch {
         /* ignore */
       }
@@ -127,10 +143,11 @@ export function ClipCard({
   }
 
   const handleLoadedMetadata = (): void => {
+    if (!hoverPreviewEnabled) return
     const v = videoRef.current
     if (!v) return
     try {
-      v.currentTime = clip.startTime
+      v.currentTime = previewStart
     } catch {
       /* ignore */
     }
@@ -187,7 +204,7 @@ export function ClipCard({
           </div>
         )}
 
-        {sourceUrl && (
+        {sourceUrl && hoverPreviewEnabled && (
           <video
             ref={videoRef}
             src={sourceUrl}
@@ -217,10 +234,23 @@ export function ClipCard({
         {formatScore(clip.score)}
       </Badge>
 
-      {/* "Open detail" affordance — top-right, fades in on hover */}
-      <div className="pointer-events-none absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100">
-        <Eye className="h-3.5 w-3.5" />
-      </div>
+      {/* Stitched badge — top-right (replaces hover-preview eye when stitched) */}
+      {isStitched ? (
+        <Badge
+          variant="secondary"
+          className="absolute right-2 top-2 z-10 flex items-center gap-1 shadow-sm"
+        >
+          <Combine className="h-3 w-3" aria-hidden />
+          Stitched
+          {typeof partCount === 'number' && partCount > 0 && (
+            <span className="tabular-nums">· {partCount}</span>
+          )}
+        </Badge>
+      ) : (
+        <div className="pointer-events-none absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100">
+          <Eye className="h-3.5 w-3.5" />
+        </div>
+      )}
 
       {/* Hook text overlay — bottom, 2-line clamp */}
       <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 p-3">

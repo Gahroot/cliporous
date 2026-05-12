@@ -19,7 +19,8 @@ import {
   isGpuSessionError,
   isGpuEncoderDisabled,
   disableGpuEncoderForSession,
-  getVideoMetadata
+  getVideoMetadata,
+  type QualityParams
 } from '../ffmpeg'
 import type { HookTitleConfig } from './types'
 import type { CaptionStyleInput, ArchetypeWindow, WordInput } from '../captions'
@@ -31,6 +32,7 @@ import { analyzeEmphasisHeuristic } from '../word-emphasis'
 import { resolveFontsDir } from '../font-registry'
 import { buildSnapZoom, buildWordPulseZoom, buildDriftZoom, buildZoomOutReveal } from '../zoom-filters'
 import { applyFilterPass } from './overlay-runner'
+import { getIntermediateQuality } from './quality'
 import { generateHookTitleASSFile } from './features/hook-title.feature'
 import { generateRehookASSFile } from './features/rehook.feature'
 import { buildArchetypeLayout, type SegmentLayoutParams } from '../layouts/segment-layouts'
@@ -117,6 +119,14 @@ export interface SegmentRenderConfig {
    * `Ch.Send.SEGMENT_FALLBACK`.
    */
   onFallback?: (info: { segmentIndex: number; archetype: string; reason: string }) => void
+  /**
+   * Encoder quality (CRF + speed preset). Forwarded to every per-segment
+   * encode, xfade concat, and post-concat overlay pass so the user's
+   * "High / Normal / Draft / Custom" preset actually takes effect on the
+   * segmented render path. When omitted, falls back to the encoder defaults
+   * (CRF 20, medium preset).
+   */
+  qualityParams?: QualityParams
 }
 
 // ---------------------------------------------------------------------------
@@ -311,9 +321,17 @@ async function encodeSegment(
   }
 
   // ── Pick encoder ──────────────────────────────────────────────────────
-  const { encoder: detectedEncoder, presetFlag: detectedPresetFlag } = getEncoder()
+  // Per-segment outputs are *intermediates* — they will be re-decoded by
+  // the xfade concat and again by the overlay pass before reaching the user.
+  // Encoding them at the user's CRF baked three generations of libx264 loss
+  // into every clip and was the dominant cause of the "looks upscaled from
+  // 480p" softness. Use near-lossless intermediate quality (CRF 12, veryfast)
+  // here; the final overlay pass is the only encode that honours the user's
+  // selected preset, which is the correct place for that knob.
+  const qp = getIntermediateQuality()
+  const { encoder: detectedEncoder, presetFlag: detectedPresetFlag } = getEncoder(qp)
   const useSwFallback = isGpuEncoderDisabled() && detectedEncoder !== 'libx264'
-  const sw = useSwFallback ? getSoftwareEncoder() : null
+  const sw = useSwFallback ? getSoftwareEncoder(qp) : null
   const encoder = sw ? sw.encoder : detectedEncoder
   const presetFlag = sw ? sw.presetFlag : detectedPresetFlag
 
@@ -353,6 +371,11 @@ async function encodeSegment(
           '-c:v', enc,
           ...flags,
           '-r', String(fps),
+          // Force 4:2:0 at the encoder sink to match what every downstream
+          // consumer (xfade concat, overlay pass) expects. The filter graph
+          // already ends in `format=yuv420p` but encoder negotiation can
+          // promote to yuv444p mid-pipeline if upstream filters report it.
+          '-pix_fmt', 'yuv420p',
           '-c:a', 'aac',
           '-b:a', '192k',
           '-movflags', '+faststart',
@@ -373,7 +396,7 @@ async function encodeSegment(
             console.warn(
               `[SegmentRender] GPU error in segment encode, falling back to software encoder: ${err.message}`
             )
-            const fb = getSoftwareEncoder()
+            const fb = getSoftwareEncoder(qp)
             runEncode(fb.encoder, fb.presetFlag, false)
           } else {
             const stderrTail = stderrOutput.split('\n').slice(-10).join('\n')
@@ -472,6 +495,13 @@ function getXfadeType(transition: TransitionType, flashColor?: string): string |
 /**
  * Concatenate segment files using xfade filter_complex for non-hard transitions.
  * Chains segments pairwise with transition filters.
+ *
+ * NOTE: the trailing `_xfQuality` parameter is intentionally ignored. The
+ * concat output is an *intermediate* — the overlay pass immediately re-decodes
+ * it to burn captions / hook title — so we always encode near-losslessly here
+ * (CRF 12, veryfast). Honouring the user's CRF/preset at this layer baked a
+ * second generation of H.264 loss into every clip. The parameter is retained
+ * to avoid churning callers; remove it once all call sites are updated.
  */
 async function concatWithXfade(
   segmentFiles: string[],
@@ -479,7 +509,8 @@ async function concatWithXfade(
   outputPath: string,
   onProgress: (percent: number) => void,
   flashColor?: string,
-  transitionDuration?: number
+  transitionDuration?: number,
+  _xfQuality?: QualityParams
 ): Promise<void> {
   if (segmentFiles.length === 0) throw new Error('No segments to concatenate')
   if (segmentFiles.length === 1) {
@@ -542,12 +573,19 @@ async function concatWithXfade(
     audioOutputLabel = `a${i}`
   }
 
+  // Rename the final video stream to an intermediate label so we can append
+  // a `format=yuv420p` normalization step. xfade can promote the pixel
+  // format to yuv444p when the input segments report 4:4:4 (or when libavfilter
+  // negotiates up), which then makes libx264 try the `high` profile and fail
+  // with "high profile doesn't support 4:4:4". Forcing yuv420p on the chain
+  // output lets libx264 pick a compatible profile every time.
   const lastVideoLabel = `v${segmentFiles.length - 2}`
   const lastVideoFilter = filterParts[filterParts.length - 1]
   filterParts[filterParts.length - 1] = lastVideoFilter.replace(
     new RegExp(`\\[${lastVideoLabel}\\]$`),
-    '[outv]'
+    '[vxfaded]'
   )
+  filterParts.push('[vxfaded]format=yuv420p[outv]')
 
   const lastAudioLabel = `a${segmentFiles.length - 2}`
   const lastAudioFilter = audioParts[audioParts.length - 1]
@@ -559,9 +597,13 @@ async function concatWithXfade(
   const filterComplex = [...filterParts, ...audioParts].join(';')
 
   await new Promise<void>((resolve, reject) => {
-    const { encoder: xfDetectedEnc, presetFlag: xfDetectedFlags } = getEncoder()
+    // Intermediate encode — see comment on `concatWithXfade`. Always use
+    // near-lossless params so the immediate-downstream overlay pass starts
+    // from a clean source rather than CRF-20 mush.
+    const xfIntermediate = getIntermediateQuality()
+    const { encoder: xfDetectedEnc, presetFlag: xfDetectedFlags } = getEncoder(xfIntermediate)
     const xfUseSw = isGpuEncoderDisabled() && xfDetectedEnc !== 'libx264'
-    const xfSw = xfUseSw ? getSoftwareEncoder() : null
+    const xfSw = xfUseSw ? getSoftwareEncoder(xfIntermediate) : null
     const xfEncoder = xfSw ? xfSw.encoder : xfDetectedEnc
     const xfPresetFlag = xfSw ? xfSw.presetFlag : xfDetectedFlags
     let fallbackAttempted = false
@@ -584,6 +626,10 @@ async function concatWithXfade(
           '-map', '[outa]',
           '-c:v', enc,
           ...flags,
+          // Belt-and-suspenders for the `format=yuv420p` filter at the tail
+          // of the xfade chain — also force the encoder pixel format so any
+          // future filter that re-negotiates upward still hits a 4:2:0 sink.
+          '-pix_fmt', 'yuv420p',
           '-c:a', 'aac',
           '-b:a', '192k',
           '-movflags', '+faststart',
@@ -602,7 +648,7 @@ async function concatWithXfade(
           if (!fallbackAttempted && isGpuSessionError(err.message + '\n' + stderrOutput)) {
             fallbackAttempted = true
             disableGpuEncoderForSession()
-            const fb = getSoftwareEncoder()
+            const fb = getSoftwareEncoder(xfIntermediate)
             runXfade(fb.encoder, fb.presetFlag, false)
           } else {
             const stderrTail = stderrOutput.split('\n').slice(-10).join('\n')
@@ -688,6 +734,72 @@ function buildClipLevelWords(
 }
 
 /**
+ * Maximum shift (seconds) applied at any segment boundary by
+ * `rebalanceSegmentBoundaries()`. Keeps cuts from drifting more than this
+ * far from the ASR-reported word boundary even if the inter-word gap is
+ * huge — so we never bleed into the next word's audio under the wrong scene.
+ */
+const BOUNDARY_HOLD_MAX_SECONDS = 0.15
+
+/**
+ * Push each segment boundary later into the inter-word silence so the
+ * trailing acoustic decay of the last word in segment N plays under segment
+ * N's visual instead of bleeding into segment N+1.
+ *
+ * Why this exists: ASR word-end timestamps mark the perceptual end of the
+ * phoneme, not the acoustic tail. Cutting visually at `word.end` leaves
+ * ~50-300ms of audible decay that lands under the next visual scene — most
+ * noticeable on dramatic transitions like `fullscreen-quote` → speaker.
+ *
+ * Algorithm (adapted from Kaldi's `extend_segment_times.py` overlap-fix):
+ * for each adjacent pair (N, N+1), find the inter-word gap, then shift the
+ * shared boundary later by `min(gap/2, BOUNDARY_HOLD_MAX_SECONDS)`. Because
+ * segments are contiguous (segment N+1's startTime equals segment N's
+ * endTime), the same shift is applied to both — total clip duration is
+ * preserved, audio plays continuously across the join, and no word's
+ * midpoint crosses the boundary (so caption-window assignment is unchanged).
+ *
+ * Returns a new array; input is not mutated.
+ */
+function rebalanceSegmentBoundaries(
+  segments: ResolvedSegment[],
+  wordTimestamps: { text: string; start: number; end: number }[] | undefined
+): ResolvedSegment[] {
+  if (segments.length < 2 || !wordTimestamps || wordTimestamps.length === 0) {
+    return segments
+  }
+
+  const out = segments.map((s) => ({ ...s }))
+
+  for (let i = 0; i < out.length - 1; i++) {
+    const boundary = out[i].endTime // == out[i + 1].startTime by construction
+
+    // Last word of segment N: the latest word whose end is <= boundary.
+    let prevLastEnd = -Infinity
+    for (const w of wordTimestamps) {
+      if (w.end <= boundary + 1e-6 && w.end > prevLastEnd) prevLastEnd = w.end
+    }
+    // First word of segment N+1: the earliest word whose start is >= boundary.
+    let nextFirstStart = Infinity
+    for (const w of wordTimestamps) {
+      if (w.start >= boundary - 1e-6 && w.start < nextFirstStart) nextFirstStart = w.start
+    }
+
+    if (!isFinite(prevLastEnd) || !isFinite(nextFirstStart)) continue
+    const gap = nextFirstStart - prevLastEnd
+    if (gap <= 0) continue // words overlap or are adjacent — no silence to use
+
+    const shift = Math.min(gap / 2, BOUNDARY_HOLD_MAX_SECONDS)
+    if (shift <= 0) continue
+
+    out[i].endTime = boundary + shift
+    out[i + 1].startTime = boundary + shift
+  }
+
+  return out
+}
+
+/**
  * Build the per-segment ArchetypeWindow list in clip-relative time. The
  * caption builder uses this to vary marginV + fontSize for each segment.
  */
@@ -745,9 +857,20 @@ export async function renderSegmentedClip(
   // Ensure fonts dir is resolved once before any ASS pass needs it.
   await resolveFontsDir()
 
+  // Shift every segment boundary into the inter-word silence so the trailing
+  // acoustic tail of each scene's last word stays under that scene's visual.
+  // See `rebalanceSegmentBoundaries()` for the why + algorithm.
+  const balancedSegments = rebalanceSegmentBoundaries(config.segments, config.wordTimestamps)
+
+  // Archetype windows must reflect the shifted boundaries, otherwise the
+  // caption pass would partition words against the pre-shift timeline. Any
+  // pre-supplied `config.archetypeWindows` is rebuilt from the rebalanced
+  // segments here.
+  const balancedArchetypeWindows = buildClipArchetypeWindows(balancedSegments)
+
   // Transitions are indexed by segment; transitions[0] is for the first
   // segment (= ignored at concat time).
-  const transitions: TransitionType[] = config.segments.map((s) => s.transitionIn)
+  const transitions: TransitionType[] = balancedSegments.map((s) => s.transitionIn)
   const needsXfade = transitions.slice(1).some((t) => t !== 'hard-cut' && t !== 'none')
 
   // Progress allocation: 80% segment encode, 5% concat, 15% post-concat.
@@ -759,15 +882,15 @@ export async function renderSegmentedClip(
 
   try {
     // ── Phase 1: Encode each segment ────────────────────────────────────
-    for (let i = 0; i < config.segments.length; i++) {
-      const seg = config.segments[i]
+    for (let i = 0; i < balancedSegments.length; i++) {
+      const seg = balancedSegments[i]
       const segDuration = seg.endTime - seg.startTime
       const tempPath = join(tempDir, `batchcontent-seg-${Date.now()}-${i}.mp4`)
       tempFiles.push(tempPath)
       segmentOutputFiles.push(tempPath)
 
       const segProgress = (percent: number): void => {
-        const weight = segmentWeight / config.segments.length
+        const weight = segmentWeight / balancedSegments.length
         const base = weight * i
         onProgress(Math.round(base + (percent * weight / 100)))
       }
@@ -783,17 +906,18 @@ export async function renderSegmentedClip(
     tempFiles.push(concatOutputPath)
 
     if (needsXfade) {
-      console.log(`[SegmentRender] Using xfade concat for ${config.segments.length} segments`)
+      console.log(`[SegmentRender] Using xfade concat for ${balancedSegments.length} segments`)
       await concatWithXfade(
         segmentOutputFiles,
         transitions,
         concatOutputPath,
         (percent) => onProgress(concatBase + (percent - concatBase) * 0.05),
         config.editStyle.flashColor,
-        config.editStyle.transitionDuration
+        config.editStyle.transitionDuration,
+        config.qualityParams
       )
     } else {
-      console.log(`[SegmentRender] Using concat demuxer for ${config.segments.length} segments`)
+      console.log(`[SegmentRender] Using concat demuxer for ${balancedSegments.length} segments`)
       await concatWithDemuxer(
         segmentOutputFiles,
         concatOutputPath,
@@ -804,18 +928,28 @@ export async function renderSegmentedClip(
     onProgress(postConcatBase)
 
     // ── Phase 3: Post-concat overlays ───────────────────────────────────
+    //
+    // Captions, hook title, and rehook all burn through libass via the same
+    // `ass=...` filter primitive. Previously each ran as its own re-encode
+    // pass — three full encode/decode cycles of the same pixels, with the
+    // associated generational mosquito noise / blocking on faces. We now
+    // collect every ASS filter into a single comma-joined -vf chain and run
+    // a single post-concat encode. Result is visually identical at the
+    // overlay layer but materially sharper at the source-video layer.
     let currentPath = concatOutputPath
+    const assFilters: string[] = []
+    const overlayLabels: string[] = []
 
     // 3a. Clip-level captions — single ASS for the whole concatenated clip.
     if (config.captionsEnabled && config.captionStyle) {
       const clipWords = buildClipLevelWords(
-        config.segments,
+        balancedSegments,
         config.wordTimestamps,
         config.wordEmphasis
       )
       if (clipWords.length > 0) {
         try {
-          const windows = config.archetypeWindows ?? buildClipArchetypeWindows(config.segments)
+          const windows = balancedArchetypeWindows
           const marginVOverride = config.templateLayout?.subtitles
             ? Math.round((1 - config.templateLayout.subtitles.y / 100) * th)
             : undefined
@@ -833,25 +967,19 @@ export async function renderSegmentedClip(
             editStyleId
           )
           tempFiles.push(captionAssPath)
-
-          const captionsTempPath = join(tempDir, `batchcontent-seg-captions-${Date.now()}.mp4`)
-          tempFiles.push(captionsTempPath)
-          await applyFilterPass(currentPath, captionsTempPath, buildASSFilter(captionAssPath))
-          currentPath = captionsTempPath
-          onProgress(postConcatBase + 5)
+          assFilters.push(buildASSFilter(captionAssPath))
+          overlayLabels.push('captions')
         } catch (err) {
-          console.warn(`[SegmentRender] Caption overlay failed, skipping:`, err)
+          console.warn(`[SegmentRender] Caption ASS generation failed, skipping:`, err)
         }
       }
     }
 
     // 3b. Hook title overlay.
     if (config.hookTitleText && config.hookTitleConfig?.enabled) {
-      console.log(`[SegmentRender] Applying hook title overlay`)
-
       // Resolve the archetype that covers the hook's midpoint (the hook lives
       // in the first ~hookDuration seconds of the clip, clip-relative time).
-      const hookWindows = config.archetypeWindows ?? buildClipArchetypeWindows(config.segments)
+      const hookWindows = balancedArchetypeWindows
       const hookMid = config.hookTitleConfig.displayDuration / 2
       const hookArchetype = archetypeAtTime(hookWindows, hookMid)
       const hookEditStyleId = config.editStyle?.id ?? DEFAULT_EDIT_STYLE_ID
@@ -864,22 +992,19 @@ export async function renderSegmentedClip(
         ? Math.round((config.templateLayout.titleText.y / 100) * th)
         : hookTpl.hookTitleY
 
-      const assPath = generateHookTitleASSFile(
-        config.hookTitleText,
-        config.hookTitleConfig,
-        tw,
-        th,
-        yPositionPx
-      )
-      const hookTempPath = join(tempDir, `batchcontent-seg-hooktitle-${Date.now()}.mp4`)
-      tempFiles.push(assPath)
-      tempFiles.push(hookTempPath)
       try {
-        await applyFilterPass(currentPath, hookTempPath, buildASSFilter(assPath))
-        currentPath = hookTempPath
-        onProgress(postConcatBase + 10)
+        const assPath = generateHookTitleASSFile(
+          config.hookTitleText,
+          config.hookTitleConfig,
+          tw,
+          th,
+          yPositionPx
+        )
+        tempFiles.push(assPath)
+        assFilters.push(buildASSFilter(assPath))
+        overlayLabels.push('hook')
       } catch (err) {
-        console.warn(`[SegmentRender] Hook title overlay failed, skipping:`, err)
+        console.warn(`[SegmentRender] Hook title ASS generation failed, skipping:`, err)
       }
     }
 
@@ -889,10 +1014,8 @@ export async function renderSegmentedClip(
       config.rehookConfig?.enabled &&
       typeof config.rehookAppearTime === 'number'
     ) {
-      console.log(`[SegmentRender] Applying rehook overlay`)
-
       // Resolve the archetype that covers the rehook's midpoint.
-      const rehookWindows = config.archetypeWindows ?? buildClipArchetypeWindows(config.segments)
+      const rehookWindows = balancedArchetypeWindows
       const rehookMid = config.rehookAppearTime + (config.rehookConfig.displayDuration / 2)
       const rehookArchetype = archetypeAtTime(rehookWindows, rehookMid)
       const rehookEditStyleId = config.editStyle?.id ?? DEFAULT_EDIT_STYLE_ID
@@ -922,13 +1045,35 @@ export async function renderSegmentedClip(
           yPositionPx
         )
         tempFiles.push(rehookAssPath)
-        const rehookTempPath = join(tempDir, `batchcontent-seg-rehook-${Date.now()}.mp4`)
-        tempFiles.push(rehookTempPath)
-        await applyFilterPass(currentPath, rehookTempPath, buildASSFilter(rehookAssPath))
-        currentPath = rehookTempPath
+        assFilters.push(buildASSFilter(rehookAssPath))
+        overlayLabels.push('rehook')
+      } catch (err) {
+        console.warn(`[SegmentRender] Rehook ASS generation failed, skipping:`, err)
+      }
+    }
+
+    // Single combined burn-in pass. Each ass=... filter renders its events
+    // on top of the previous one; the order matches the original three-pass
+    // ordering (captions → hook → rehook). format=yuv420p is appended by
+    // applyFilterPass automatically.
+    if (assFilters.length > 0) {
+      console.log(
+        `[SegmentRender] Applying ${assFilters.length} overlay(s) in one pass: ` +
+        overlayLabels.join(', ')
+      )
+      const overlayTempPath = join(tempDir, `batchcontent-seg-overlays-${Date.now()}.mp4`)
+      tempFiles.push(overlayTempPath)
+      try {
+        await applyFilterPass(
+          currentPath,
+          overlayTempPath,
+          assFilters.join(','),
+          config.qualityParams
+        )
+        currentPath = overlayTempPath
         onProgress(postConcatBase + 14)
       } catch (err) {
-        console.warn(`[SegmentRender] Rehook overlay failed, skipping:`, err)
+        console.warn(`[SegmentRender] Combined overlay pass failed, skipping:`, err)
       }
     }
 

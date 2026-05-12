@@ -268,8 +268,18 @@ function applyBRollOverlay(
 
   const filterComplex = filterParts.join(';\n')
 
+  // Pin format=yuv420p on the final overlay output — split / overlay / scale
+  // can leave the chain in higher-subsampling pix_fmt, which TikTok / Reels
+  // soft-decode or reject. Append onto the last labelled output.
+  const pixFmtFilter = `[outv]format=yuv420p[outvf]`
+  const filterComplexWithPixFmt = `${filterComplex};\n${pixFmtFilter}`
+
   return new Promise<void>((resolve, reject) => {
-    const { encoder, presetFlag } = getSoftwareEncoder()
+    // CRF 18 / medium keeps the overlay re-encode visually transparent vs.
+    // the base render (see overlay-runner.ts for the matching quality
+    // baseline). Using the same OVERLAY_QUALITY across all post-base passes
+    // avoids one pass becoming the weakest link in the generation chain.
+    const { encoder, presetFlag } = getSoftwareEncoder({ crf: 18, preset: 'medium' })
 
     const cmd = createFfmpeg(toFFmpegPath(inputPath))
 
@@ -280,13 +290,13 @@ function applyBRollOverlay(
     cmd
       .outputOptions([
         '-filter_complex',
-        filterComplex,
+        filterComplexWithPixFmt,
         '-filter_threads',
         '0',
         '-filter_complex_threads',
         '0',
         '-map',
-        '[outv]',
+        '[outvf]',
         '-map',
         '0:a',
         '-c:v',

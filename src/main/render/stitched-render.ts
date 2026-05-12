@@ -21,7 +21,8 @@ import {
   isGpuSessionError,
   isGpuEncoderDisabled,
   disableGpuEncoderForSession,
-  getVideoMetadata
+  getVideoMetadata,
+  type QualityParams
 } from '../ffmpeg'
 import type { RenderStitchedClipJob } from './types'
 import { toFFmpegPath } from './helpers'
@@ -44,11 +45,17 @@ import { OUTPUT_WIDTH, OUTPUT_HEIGHT, OUTPUT_FPS } from '../aspect-ratios'
 export async function assembleStitchedVideo(
   job: RenderStitchedClipJob,
   outputPath: string,
-  onProgress: (percent: number) => void
+  onProgress: (percent: number) => void,
+  qualityParams?: QualityParams
 ): Promise<string> {
   const tempDir = tmpdir()
   const tempFiles: string[] = []
-  const { encoder, presetFlag } = isGpuEncoderDisabled() ? getSoftwareEncoder() : getEncoder()
+  // Honour the user's quality preset on per-segment encodes. The downstream
+  // feature pipeline encodes the final clip again with the same qualityParams,
+  // so matching the stitch encode here keeps both halves of the chain in sync.
+  const { encoder, presetFlag } = isGpuEncoderDisabled()
+    ? getSoftwareEncoder(qualityParams)
+    : getEncoder(qualityParams)
 
   let meta: { width: number; height: number; codec: string; fps: number; audioCodec: string; duration: number }
   try {
@@ -123,7 +130,9 @@ export async function assembleStitchedVideo(
         }
       }
 
-      const videoFilter = `${cropFilter},scale=${OUTPUT_WIDTH}:${OUTPUT_HEIGHT},fps=${OUTPUT_FPS}`
+      // Lanczos + accurate rounding + full-chroma interpolation matches the
+      // base-render path; default bilinear visibly softens detail on faces.
+      const videoFilter = `${cropFilter},scale=${OUTPUT_WIDTH}:${OUTPUT_HEIGHT}:flags=lanczos+accurate_rnd+full_chroma_int,fps=${OUTPUT_FPS}`
 
       await new Promise<void>((resolve, reject) => {
         let fallbackAttempted = false
@@ -169,7 +178,7 @@ export async function assembleStitchedVideo(
                 console.warn(
                   `[StitchedRender] GPU error in segment encode, falling back to software encoder: ${err.message}`
                 )
-                const sw = getSoftwareEncoder()
+                const sw = getSoftwareEncoder(qualityParams)
                 runSegmentEncode(sw.encoder, sw.presetFlag, false)
               } else {
                 const stderrTail = stderrOutput.split('\n').slice(-10).join('\n')

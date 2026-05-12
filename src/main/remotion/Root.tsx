@@ -19,6 +19,14 @@ const PRESTYJ_DEFAULTS = {
   scriptFont: 'Style Script'
 } as const
 
+// FullscreenQuote uses Bebas Neue (condensed all-caps display) — it's the
+// hero archetype where the quote *is* the entire frame, so it gets its own
+// type system rather than the body Geist used by the speaker archetypes.
+const PRESTYJ_QUOTE_DEFAULTS = {
+  ...PRESTYJ_DEFAULTS,
+  bodyFont: 'Bebas Neue'
+} as const
+
 export const RemotionRoot: React.FC = () => {
   return (
     <>
@@ -33,7 +41,7 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{
           quote: 'You don\u2019t need permission to start. You need a deadline.',
           attribution: 'PRESTYJ',
-          ...PRESTYJ_DEFAULTS
+          ...PRESTYJ_QUOTE_DEFAULTS
         } satisfies FullscreenQuoteProps}
       />
 

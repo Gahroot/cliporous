@@ -32,18 +32,42 @@ function resolveBinaryPath(name: string): string | null {
       return resourceBin
     }
 
-    // Also check asar-unpacked node_modules (legacy)
-    const unpackedPath = join(
-      process.resourcesPath,
-      'app.asar.unpacked',
-      'node_modules',
-      name === 'ffmpeg' ? 'ffmpeg-static' : '@ffprobe-installer',
-      binary
-    )
-    searchedPaths.push(`unpacked: ${unpackedPath} (exists: ${existsSync(unpackedPath)})`)
-    if (existsSync(unpackedPath)) {
-      console.log(`[FFmpeg] Found ${name} at: ${unpackedPath}`)
-      return unpackedPath
+    // Also check asar-unpacked node_modules
+    const unpackedCandidates: string[] =
+      name === 'ffmpeg'
+        ? [
+            join(process.resourcesPath, 'app.asar.unpacked', 'node_modules', 'ffmpeg-static', binary)
+          ]
+        : [
+            // @ffprobe-installer ships the binary in a platform-specific package
+            join(
+              process.resourcesPath,
+              'app.asar.unpacked',
+              'node_modules',
+              '@ffprobe-installer',
+              `${process.platform}-${process.arch}`,
+              binary
+            )
+          ]
+    for (const unpackedPath of unpackedCandidates) {
+      searchedPaths.push(`unpacked: ${unpackedPath} (exists: ${existsSync(unpackedPath)})`)
+      if (existsSync(unpackedPath)) {
+        // Some installers can lose the executable bit when bundled — restore it.
+        if (process.platform !== 'win32') {
+          try {
+            const { chmodSync, statSync } = require('node:fs') as typeof import('node:fs')
+            const mode = statSync(unpackedPath).mode
+            if ((mode & 0o111) === 0) {
+              chmodSync(unpackedPath, mode | 0o755)
+              console.log(`[FFmpeg] Restored executable bit on ${unpackedPath}`)
+            }
+          } catch (chmodErr) {
+            console.warn(`[FFmpeg] chmod failed on ${unpackedPath}:`, chmodErr)
+          }
+        }
+        console.log(`[FFmpeg] Found ${name} at: ${unpackedPath}`)
+        return unpackedPath
+      }
     }
   }
 
@@ -223,44 +247,100 @@ export function hasScaleCuda(): boolean {
 }
 
 export interface QualityParams {
-  /** CRF value (15–35). Lower = better quality. Default: 23. */
+  /** CRF value (15–35). Lower = better quality. Default: 20. */
   crf?: number
-  /** x264 encoding speed preset. Default: 'veryfast'. */
+  /** x264 encoding speed preset. Default: 'medium'. */
   preset?: 'ultrafast' | 'veryfast' | 'medium' | 'slow'
 }
 
+// VBV (Video Buffering Verifier) constraints — the rolling-average bitrate
+// ceiling and the maximum buffer size. Pinning these ensures social platforms
+// (TikTok, Reels, Shorts) accept the file without a punishing re-transcode at
+// upload time and that no single GOP spikes into a bitrate they can't decode.
+//
+// 1080×1920 @ 30fps h.264 high profile peaks comfortably around 10–12 Mb/s
+// even on noisy content; 14M / 28M leaves headroom for fast-motion bursts.
+const VBV_MAXRATE = '14M'
+const VBV_BUFSIZE = '28M'
+
 export function getEncoder(quality?: QualityParams): EncoderConfig {
   const encoder = cachedEncoder ?? detectHardwareEncoder()
-  const crf = quality?.crf ?? 23
-  const preset = quality?.preset ?? 'veryfast'
+  const crf = quality?.crf ?? 20
+  const preset = quality?.preset ?? 'medium'
 
   switch (encoder) {
     case 'h264_nvenc': {
       // Map x264 preset to nvenc preset (p1=fastest, p7=slowest)
-      // ultrafast→p1, veryfast→p2, medium→p4, slow→p6
-      // CRF maps to cq for NVENC.
-      // `-spatial_aq 1` + `-rc-lookahead 8` improve perceptual quality at
-      // negligible speed cost on Maxwell+ cards. `-b_ref_mode middle` is
-      // Turing+ only, so we gate it on a runtime probe.
+      // ultrafast→p1, veryfast→p2, medium→p5, slow→p6
+      //
+      // CRF maps to cq for NVENC, but NVENC's CQ scale is NOT equivalent to
+      // libx264's CRF scale at the same numeric value. NVENC at CQ=N typically
+      // produces output roughly 2 quality points worse than libx264 at CRF=N
+      // (well-documented in NVIDIA's encoder guide and the FFmpeg wiki). To
+      // give users on NVIDIA hardware visual parity with the software path,
+      // we shift the cq value down by 2, floored at 10 so the segmented
+      // render path (which encodes intermediates at CRF 12 for near-lossless
+      // hand-off) can actually achieve transparency on the GPU path. For
+      // normal user CRFs (17, 20, 23, 28) the floor never activates so this
+      // doesn't change anything user-visible at the final-encode layer.
+      const nvencCq = Math.max(10, crf - 2)
+      //
+      // Quality flags follow NVIDIA's documented "latency-tolerant
+      // high-quality transcoding" preset (see Immich's NvencSwDecodeConfig and
+      // NVIDIA Video Codec SDK 12.0 docs):
+      //   -tune hq             optimise for quality, not low-latency
+      //   -qmin 0              don't clamp the quantizer floor
+      //   -rc-lookahead 20     enough frames to make smart bit allocation
+      //   -spatial_aq 1        adaptive quantization across the frame
+      //   -temporal-aq 1       adaptive quantization across time
+      //   -i_qfactor 0.75      better-quality I-frames
+      //   -b_ref_mode middle   (Turing+) pyramid B-frames, big quality win
+      //   -b_qfactor 1.1       allow B-frames to use slightly more bits
       const flags = [
         '-preset', nvencPreset(preset),
+        '-tune', 'hq',
         '-rc', 'vbr',
-        '-cq', String(crf),
+        '-cq', String(nvencCq),
         '-b:v', '0',
+        '-maxrate', VBV_MAXRATE,
+        '-bufsize', VBV_BUFSIZE,
+        '-qmin', '0',
+        '-rc-lookahead', '20',
         '-spatial_aq', '1',
-        '-rc-lookahead', '8',
-        '-bf', '2'
+        '-temporal-aq', '1',
+        '-i_qfactor', '0.75',
+        '-bf', '3'
       ]
       if (nvencSupportsBRefMode()) {
-        flags.push('-b_ref_mode', 'middle')
+        flags.push('-b_ref_mode', 'middle', '-b_qfactor', '1.1')
       }
       return { encoder, presetFlag: flags }
     }
     case 'h264_qsv':
       // QSV quality: global_quality ~ CRF (higher = worse, so scale proportionally)
-      return { encoder, presetFlag: ['-preset', 'fast', '-global_quality', String(crf), '-look_ahead', '1'] }
+      return {
+        encoder,
+        presetFlag: [
+          '-preset', 'medium',
+          '-global_quality', String(crf),
+          '-look_ahead', '1',
+          '-maxrate', VBV_MAXRATE,
+          '-bufsize', VBV_BUFSIZE
+        ]
+      }
     default:
-      return { encoder: 'libx264', presetFlag: ['-preset', preset, '-crf', String(crf), '-threads', '0'] }
+      return {
+        encoder: 'libx264',
+        presetFlag: [
+          '-preset', preset,
+          '-crf', String(crf),
+          '-maxrate', VBV_MAXRATE,
+          '-bufsize', VBV_BUFSIZE,
+          '-profile:v', 'high',
+          '-level', '4.2',
+          '-threads', '0'
+        ]
+      }
   }
 }
 
@@ -268,16 +348,30 @@ function nvencPreset(x264Preset: 'ultrafast' | 'veryfast' | 'medium' | 'slow'): 
   switch (x264Preset) {
     case 'ultrafast': return 'p1'
     case 'veryfast':  return 'p2'
-    case 'medium':    return 'p4'
+    // NVENC's quality preset curve flattens above p5 — p5 gives ~95% of p7's
+    // quality at materially better speed, so we map 'medium' → p5 rather than
+    // the older p4. 'slow' stays at p6.
+    case 'medium':    return 'p5'
     case 'slow':      return 'p6'
   }
 }
 
 /** Software-only fallback encoder (always libx264, never GPU) */
 export function getSoftwareEncoder(quality?: QualityParams): EncoderConfig {
-  const crf = quality?.crf ?? 23
-  const preset = quality?.preset ?? 'veryfast'
-  return { encoder: 'libx264', presetFlag: ['-preset', preset, '-crf', String(crf), '-threads', '0'] }
+  const crf = quality?.crf ?? 20
+  const preset = quality?.preset ?? 'medium'
+  return {
+    encoder: 'libx264',
+    presetFlag: [
+      '-preset', preset,
+      '-crf', String(crf),
+      '-maxrate', VBV_MAXRATE,
+      '-bufsize', VBV_BUFSIZE,
+      '-profile:v', 'high',
+      '-level', '4.2',
+      '-threads', '0'
+    ]
+  }
 }
 
 /** Check if an FFmpeg error is a GPU/NVENC/CUDA failure that should trigger software fallback.
@@ -712,7 +806,9 @@ export function cropAndExport(
   resolution: { width: number; height: number } = { width: OUTPUT_WIDTH, height: OUTPUT_HEIGHT }
 ): Promise<string> {
   const cropFilter = `crop=${crop.width}:${crop.height}:${crop.x}:${crop.y}`
-  const scaleFilter = `scale=${resolution.width}:${resolution.height}`
+  // Lanczos + accurate rounding + full-chroma interpolation matches the base
+  // render path. Default bilinear softens detail noticeably on faces.
+  const scaleFilter = `scale=${resolution.width}:${resolution.height}:flags=lanczos+accurate_rnd+full_chroma_int`
   const videoFilter = `${cropFilter},${scaleFilter}`
 
   const gpuOff = isGpuEncoderDisabled()

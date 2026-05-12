@@ -119,14 +119,16 @@ describe('ClipDetail', () => {
       <ClipDetail clip={CLIP} source={SOURCE} open onOpenChange={() => {}} />
     )
 
-    const startInput = screen.getByLabelText(/start \(s\)/i) as HTMLInputElement
-    const endInput = screen.getByLabelText(/end \(s\)/i) as HTMLInputElement
+    // Trim inputs accept timecode strings (m:ss.s) but also bare seconds.
+    const startInput = screen.getByLabelText(/^start$/i) as HTMLInputElement
+    const endInput = screen.getByLabelText(/^end$/i) as HTMLInputElement
 
-    // Initial values mirror the fixture.
-    expect(startInput.value).toBe('10')
-    expect(endInput.value).toBe('40')
+    // Initial values mirror the fixture, formatted as m:ss.s.
+    expect(startInput.value).toBe('0:10.0')
+    expect(endInput.value).toBe('0:40.0')
 
-    // Update both bounds. onBlur commits the trim into the store.
+    // Update both bounds with bare seconds (parser accepts both forms).
+    // onBlur commits the trim into the store.
     fireEvent.change(startInput, { target: { value: '12.5' } })
     fireEvent.blur(startInput)
 

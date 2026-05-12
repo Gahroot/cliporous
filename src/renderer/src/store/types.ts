@@ -31,6 +31,8 @@ import type {
   ShotSegment,
   ShotSegmentationResult,
   Platform,
+  SourceRange,
+  StitchedClipRole,
 } from '@shared/types'
 
 // Re-export shared types so existing component imports from store don't break
@@ -67,6 +69,8 @@ export type {
   ShotBreakReason,
   ShotSegment,
   ShotSegmentationResult,
+  SourceRange,
+  StitchedClipRole,
 }
 
 /**
@@ -185,6 +189,48 @@ export interface ClipCandidate {
   segments?: import('@shared/types').VideoSegment[]
 }
 
+/**
+ * A stitched clip candidate — a single coherent short composed of multiple
+ * non-contiguous source ranges. Parallel to ClipCandidate; carried in its own
+ * slice so scalar-range fields on ClipCandidate stay untouched.
+ */
+export interface StitchedClipCandidate {
+  id: string
+  sourceId: string
+  /** 2+ non-contiguous source ranges that compose this clip. */
+  sourceRanges: SourceRange[]
+  /** Sum of all (endTime - startTime) over sourceRanges. */
+  duration: number
+  /** Concatenated transcript across all ranges, in narrative order. */
+  text: string
+  score: number
+  /** Set once when stitched clip is first created; never overwritten. */
+  originalScore?: number
+  hookText: string
+  reasoning: string
+  status: 'pending' | 'approved' | 'rejected'
+  /**
+   * Pre-filtered word timestamps from the source transcription — every word
+   * whose [start, end] falls inside any range. Times are still absolute
+   * source-video time; the render pipeline remaps to concat-time at render.
+   */
+  wordTimestamps?: WordTimestamp[]
+  thumbnail?: string
+  customThumbnail?: string
+  /** Per-clip render overrides — identical semantics to ClipCandidate.overrides. */
+  overrides?: ClipRenderSettings
+  /**
+   * In-clip archetype rotation, produced by the stitched segmenting pass on
+   * the clip-local word list (after virtual remap). Times are clip-local
+   * (0-based on the concatenated timeline), not source-time.
+   */
+  segments?: import('@shared/types').VideoSegment[]
+  /** Face crop region applied as a fallback when no per-range crop is available. */
+  cropRegion?: CropRegion
+  /** Per-range face crops (one per sourceRanges entry, same index order). */
+  rangeCropRects?: Array<{ x: number; y: number; width: number; height: number }>
+}
+
 /** Filler segment as stored in the renderer — mirrors the main-process FillerSegment type. */
 export interface FillerSegmentUI {
   start: number
@@ -198,6 +244,7 @@ export type PipelineStage =
   | 'downloading'
   | 'transcribing'
   | 'scoring'
+  | 'stitching'
   | 'optimizing-loops'
   | 'detecting-faces'
   | 'ai-editing'
@@ -353,6 +400,9 @@ export interface AppState {
 
   // Clip candidates (keyed by source ID)
   clips: Record<string, ClipCandidate[]>
+
+  // Stitched clip candidates (keyed by source ID)
+  stitchedClips: Record<string, StitchedClipCandidate[]>
 
   // Pipeline
   pipeline: PipelineProgress
@@ -593,6 +643,42 @@ export interface AppState {
   // Actions — Errors
   addError: (entry: Omit<ErrorLogEntry, 'id' | 'timestamp'>) => void
   clearErrors: () => void
+
+  // Actions — Stitched Clips
+  setStitchedClips: (sourceId: string, clips: StitchedClipCandidate[]) => void
+  updateStitchedClipStatus: (
+    sourceId: string,
+    clipId: string,
+    status: StitchedClipCandidate['status']
+  ) => void
+  updateStitchedClipThumbnail: (sourceId: string, clipId: string, thumbnail: string) => void
+  setStitchedClipCustomThumbnail: (
+    sourceId: string,
+    clipId: string,
+    thumbnail: string | null
+  ) => void
+  updateStitchedClipHookText: (sourceId: string, clipId: string, hookText: string) => void
+  setStitchedClipSegments: (
+    sourceId: string,
+    clipId: string,
+    segments: import('@shared/types').VideoSegment[]
+  ) => void
+  setStitchedClipFaceCrops: (
+    sourceId: string,
+    clipId: string,
+    cropRegion: CropRegion | undefined,
+    rangeCropRects: Array<{ x: number; y: number; width: number; height: number }> | undefined
+  ) => void
+  setStitchedClipOverride: (
+    sourceId: string,
+    clipId: string,
+    key: keyof ClipRenderSettings,
+    value: ClipRenderSettings[keyof ClipRenderSettings]
+  ) => void
+  approveAllStitched: (sourceId: string) => void
+  rejectAllStitched: (sourceId: string) => void
+  getApprovedStitchedClips: (sourceId: string) => StitchedClipCandidate[]
+  getActiveStitchedClips: () => StitchedClipCandidate[]
 
   // Computed
   getApprovedClips: (sourceId: string) => ClipCandidate[]

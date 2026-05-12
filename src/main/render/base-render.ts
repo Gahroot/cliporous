@@ -117,13 +117,19 @@ export function buildVideoFilter(
   // concat / overlay passes see consistent timing.
   const fpsLock = `fps=${OUTPUT_FPS}`
 
+  // Pin final pixel format to yuv420p so the output stays in the universally
+  // playable subsampling (TikTok / Reels / Shorts soft-decode or reject 4:4:4
+  // and 4:2:2). Lanczos + accurate_rnd + full_chroma_int give a sharper, color
+  // accurate downscale; the GPU branch already uses lanczos via interp_algo.
+  const pixFmt = 'format=yuv420p'
+
   if (useGpuScale) {
     // Hybrid pipeline: CPU crop → upload to GPU → GPU scale → download back
     const scaleFilter = `hwupload_cuda,scale_cuda=${outW}:${outH}:interp_algo=lanczos,hwdownload,format=nv12`
-    return `${cropFilter},${scaleFilter},${fpsLock}`
+    return `${cropFilter},${scaleFilter},${fpsLock},${pixFmt}`
   } else {
-    const scaleFilter = `scale=${outW}:${outH}`
-    return `${cropFilter},${scaleFilter},${fpsLock}`
+    const scaleFilter = `scale=${outW}:${outH}:flags=lanczos+accurate_rnd+full_chroma_int`
+    return `${cropFilter},${scaleFilter},${fpsLock},${pixFmt}`
   }
 }
 

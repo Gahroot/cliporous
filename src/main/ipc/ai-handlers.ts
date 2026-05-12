@@ -20,6 +20,7 @@ import {
 import type { DescriptionClipInput } from '../ai/description-generator'
 import { analyzeWordEmphasis } from '../word-emphasis'
 import type { WordTimestamp } from '@shared/types'
+import { generateStitchedClips } from '../ai/stitch-generator'
 import { generateSegmentImage } from '../fal-image'
 import type { FalAspectRatio } from '../fal-image'
 
@@ -218,6 +219,33 @@ export function registerAiHandlers(): void {
       Ch.Invoke.AI_ANALYZE_WORD_EMPHASIS,
       async (_event, words: WordTimestamp[], apiKey?: string) => {
         return analyzeWordEmphasis(words, apiKey)
+      }
+    )
+  )
+
+  // AI — generate stitched clip candidates (multi-range composites)
+  ipcMain.handle(
+    Ch.Invoke.AI_STITCH_TRANSCRIPT,
+    wrapHandler(
+      Ch.Invoke.AI_STITCH_TRANSCRIPT,
+      async (
+        event,
+        apiKey: string,
+        formattedTranscript: string,
+        videoDuration: number,
+        existingClips: Array<{ startTime: number; endTime: number; score: number; text: string }>,
+        targetAudience?: string
+      ) => {
+        return generateStitchedClips(
+          apiKey,
+          formattedTranscript,
+          videoDuration,
+          existingClips,
+          (progress) => {
+            event.sender.send(Ch.Send.AI_STITCH_PROGRESS, progress)
+          },
+          targetAudience ?? ''
+        )
       }
     )
   )

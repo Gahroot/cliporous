@@ -10,6 +10,7 @@ import type {
   CropRegionSource,
   TargetDuration,
   ClipEndMode,
+  StitchedClipCandidate,
 } from '../../store'
 import type { useStore } from '../../store'
 import type { VideoSegment } from '@shared/types'
@@ -51,6 +52,19 @@ export interface PipelineContext {
     setClipPartInfo: (sourceId: string, clipId: string, info: PartInfoUI) => void
     setCachedSourcePath: (path: string) => void
     setClipSegments: (sourceId: string, clipId: string, segments: VideoSegment[]) => void
+    setStitchedClips: (sourceId: string, clips: StitchedClipCandidate[]) => void
+    setStitchedClipSegments: (
+      sourceId: string,
+      clipId: string,
+      segments: VideoSegment[]
+    ) => void
+    updateStitchedClipThumbnail: (sourceId: string, clipId: string, thumbnail: string) => void
+    setStitchedClipFaceCrops: (
+      sourceId: string,
+      clipId: string,
+      cropRegion: CropRegion | undefined,
+      rangeCropRects: Array<{ x: number; y: number; width: number; height: number }> | undefined
+    ) => void
   }
   /** Settings snapshot — read once at pipeline start. */
   geminiApiKey: string

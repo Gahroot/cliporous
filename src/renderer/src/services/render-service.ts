@@ -23,7 +23,7 @@
 import { toast } from 'sonner'
 
 import { useStore } from '@/store'
-import type { ClipCandidate } from '@/store/types'
+import type { ClipCandidate, StitchedClipCandidate } from '@/store/types'
 import { PRESTYJ_CAPTION_STYLE } from './render-defaults'
 
 interface StartApprovedRenderResult {
@@ -38,6 +38,7 @@ export async function startApprovedRender(): Promise<StartApprovedRenderResult> 
     activeSourceId,
     sources,
     clips,
+    stitchedClips,
     settings,
     setRenderProgress,
     setIsRendering,
@@ -58,8 +59,11 @@ export async function startApprovedRender(): Promise<StartApprovedRenderResult> 
   const approvedClips: ClipCandidate[] = (clips[activeSource.id] ?? []).filter(
     (c) => c.status === 'approved'
   )
+  const approvedStitched: StitchedClipCandidate[] = (
+    stitchedClips[activeSource.id] ?? []
+  ).filter((c) => c.status === 'approved')
 
-  if (approvedClips.length === 0) {
+  if (approvedClips.length === 0 && approvedStitched.length === 0) {
     toast.error('No approved clips to render')
     return { started: false, reason: 'no-clips' }
   }
@@ -75,7 +79,10 @@ export async function startApprovedRender(): Promise<StartApprovedRenderResult> 
   // state.
   clearRenderErrors()
   setRenderProgress(
-    approvedClips.map((c) => ({ clipId: c.id, percent: 0, status: 'queued' as const }))
+    [
+      ...approvedClips.map((c) => ({ clipId: c.id, percent: 0, status: 'queued' as const })),
+      ...approvedStitched.map((c) => ({ clipId: c.id, percent: 0, status: 'queued' as const })),
+    ]
   )
   setIsRendering(true)
   // Flipping to 'rendering' routes the user to RenderScreen via
@@ -146,38 +153,79 @@ export async function startApprovedRender(): Promise<StartApprovedRenderResult> 
         path: activeSource.path,
         duration: activeSource.duration,
       },
-      jobs: approvedClips.map((c) => ({
-        clipId: c.id,
-        sourceVideoPath: activeSource.path,
-        startTime: c.startTime,
-        endTime: c.endTime,
-        cropRegion: c.cropRegion
-          ? {
-              x: c.cropRegion.x,
-              y: c.cropRegion.y,
-              width: c.cropRegion.width,
-              height: c.cropRegion.height,
-            }
-          : undefined,
-        cropTimeline: c.cropTimeline,
-        wordTimestamps: c.wordTimestamps,
-        hookTitleText: c.hookText,
-        // Per-segment archetype rotation produced by the segmenting stage.
-        // Falsy zoomStyle/zoomIntensity are filled in by resolveTemplate() on
-        // the main side, so we just forward what the styler produced.
-        segmentedSegments:
-          c.segments && c.segments.length > 0
-            ? c.segments.map((s) => ({
-                id: s.id,
-                captionText: s.captionText,
-                startTime: s.startTime,
-                endTime: s.endTime,
-                archetype: s.archetype,
-                transitionIn: s.transitionIn,
-                imagePath: s.imagePath,
-              }))
+      jobs: [
+        ...approvedClips.map((c) => ({
+          clipId: c.id,
+          sourceVideoPath: activeSource.path,
+          startTime: c.startTime,
+          endTime: c.endTime,
+          cropRegion: c.cropRegion
+            ? {
+                x: c.cropRegion.x,
+                y: c.cropRegion.y,
+                width: c.cropRegion.width,
+                height: c.cropRegion.height,
+              }
             : undefined,
-      })),
+          cropTimeline: c.cropTimeline,
+          wordTimestamps: c.wordTimestamps,
+          hookTitleText: c.hookText,
+          // Per-segment archetype rotation produced by the segmenting stage.
+          // Falsy zoomStyle/zoomIntensity are filled in by resolveTemplate() on
+          // the main side, so we just forward what the styler produced.
+          segmentedSegments:
+            c.segments && c.segments.length > 0
+              ? c.segments.map((s) => ({
+                  id: s.id,
+                  captionText: s.captionText,
+                  startTime: s.startTime,
+                  endTime: s.endTime,
+                  archetype: s.archetype,
+                  transitionIn: s.transitionIn,
+                  imagePath: s.imagePath,
+                }))
+              : undefined,
+        })),
+        // Stitched clips — the render pipeline’s stitched pre-pass assembles
+        // the ranges into a single MP4 and rewrites the job to look like a
+        // regular clip on the assembled timeline. segmentedSegments here are
+        // already clip-local (built by stitchedSegmentingPass) so they line
+        // up perfectly after assembly.
+        ...approvedStitched.map((sc) => ({
+          clipId: sc.id,
+          sourceVideoPath: activeSource.path,
+          startTime: Math.min(...sc.sourceRanges.map((r) => r.startTime)),
+          endTime: Math.max(...sc.sourceRanges.map((r) => r.endTime)),
+          cropRegion: sc.cropRegion
+            ? {
+                x: sc.cropRegion.x,
+                y: sc.cropRegion.y,
+                width: sc.cropRegion.width,
+                height: sc.cropRegion.height,
+              }
+            : undefined,
+          wordTimestamps: sc.wordTimestamps,
+          hookTitleText: sc.hookText,
+          stitchedSegments: sc.sourceRanges.map((r, i) => ({
+            startTime: r.startTime,
+            endTime: r.endTime,
+            role: r.role,
+            cropRect: sc.rangeCropRects?.[i],
+          })),
+          segmentedSegments:
+            sc.segments && sc.segments.length > 0
+              ? sc.segments.map((s) => ({
+                  id: s.id,
+                  captionText: s.captionText,
+                  startTime: s.startTime,
+                  endTime: s.endTime,
+                  archetype: s.archetype,
+                  transitionIn: s.transitionIn,
+                  imagePath: s.imagePath,
+                }))
+              : undefined,
+        })),
+      ],
     })
     return { started: true }
   } catch (err) {

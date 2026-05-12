@@ -10,6 +10,10 @@ import {
   loopOptimizationStage,
   faceDetectionStage,
   segmentingStage,
+  stitchingStage,
+  stitchedThumbnailPass,
+  stitchedFaceDetectionPass,
+  stitchedSegmentingPass,
   notificationStage
 } from './pipeline-stages'
 
@@ -18,6 +22,7 @@ const PIPELINE_STAGE_ORDER: PipelineStage[] = [
   'downloading',
   'transcribing',
   'scoring',
+  'stitching',
   'optimizing-loops',
   'detecting-faces',
   'ai-editing',
@@ -39,6 +44,10 @@ export function usePipeline(): {
   const addError = useStore((s) => s.addError)
   const setClipPartInfo = useStore((s) => s.setClipPartInfo)
   const setClipSegments = useStore((s) => s.setClipSegments)
+  const setStitchedClips = useStore((s) => s.setStitchedClips)
+  const setStitchedClipSegments = useStore((s) => s.setStitchedClipSegments)
+  const updateStitchedClipThumbnail = useStore((s) => s.updateStitchedClipThumbnail)
+  const setStitchedClipFaceCrops = useStore((s) => s.setStitchedClipFaceCrops)
   const markStageCompleted = useStore((s) => s.markStageCompleted)
   const setFailedPipelineStage = useStore((s) => s.setFailedPipelineStage)
   const setCachedSourcePath = useStore((s) => s.setCachedSourcePath)
@@ -107,7 +116,11 @@ export function usePipeline(): {
             updateClipThumbnail,
             setClipPartInfo,
             setCachedSourcePath,
-            setClipSegments
+            setClipSegments,
+            setStitchedClips,
+            setStitchedClipSegments,
+            updateStitchedClipThumbnail,
+            setStitchedClipFaceCrops
           },
           geminiApiKey: currentState.settings.geminiApiKey,
           processingConfig: {
@@ -135,17 +148,26 @@ export function usePipeline(): {
         // ── Step 3.1: Generate thumbnails ────────────────────────────
         await thumbnailStage(ctx, sourcePath, clips)
 
-        // ── Step 3.5: Clip boundary optimization ─────────────────────
+        // ── Step 3.5: Stitched clip generation (additive, never fatal) ──
+        currentStage = 'stitching'
+        const stitchedClips = await stitchingStage(ctx, transcription, clips)
+        await stitchedThumbnailPass(ctx, sourcePath, stitchedClips)
+
+        // ── Step 3.6: Clip boundary optimization ─────────────────────
+        // Loop optimization is intentionally NOT applied to stitched clips —
+        // every range was already curated by Gemini for cohesion.
         currentStage = 'optimizing-loops'
         clips = await loopOptimizationStage(ctx, transcription, clips)
 
         // ── Step 4: Face detection ───────────────────────────────────
         currentStage = 'detecting-faces'
         await faceDetectionStage(ctx, sourcePath, clips)
+        await stitchedFaceDetectionPass(ctx, sourcePath, stitchedClips)
 
         // ── Step 5: Segment & style ──────────────────────────────────
         currentStage = 'segmenting'
         await segmentingStage(ctx, clips)
+        await stitchedSegmentingPass(ctx, stitchedClips)
 
         // ── Done ─────────────────────────────────────────────────────
         notificationStage(ctx, clips)
@@ -170,7 +192,9 @@ export function usePipeline(): {
       setPipeline, setTranscription, setClips, updateClipCrop, updateClipLoop,
       updateClipTrim, updateClipThumbnail, addError, setClipPartInfo,
       setClipSegments, markStageCompleted, setFailedPipelineStage,
-      setCachedSourcePath, clearPipelineCache
+      setCachedSourcePath, clearPipelineCache, setStitchedClips,
+      setStitchedClipSegments, updateStitchedClipThumbnail,
+      setStitchedClipFaceCrops
     ]
   )
 
@@ -180,6 +204,7 @@ export function usePipeline(): {
       stage === 'downloading' ||
       stage === 'transcribing' ||
       stage === 'scoring' ||
+      stage === 'stitching' ||
       stage === 'optimizing-loops' ||
       stage === 'detecting-faces' ||
       stage === 'ai-editing' ||

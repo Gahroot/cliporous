@@ -174,8 +174,38 @@ def main() -> None:
 
     download_opts = {
         "outtmpl": output_template,
-        "format": "bv*[height<=1080]+ba/b[height<=1080]/bv*+ba/b",
-        "merge_output_format": "mp4",
+        # Prefer higher-quality codecs at higher resolution. YouTube's AV1 and
+        # VP9 streams are encoded at materially higher bitrates than the AVC
+        # (H.264) stream for the same pixel dimensions, so picking AV1/VP9 at
+        # ≥1080p gives us the cleanest source to crop + re-encode from.
+        #
+        # The format chain walks down in priority:
+        #   1. AV1 @ ≥1080p   — best quality, smallest file
+        #   2. VP9 @ ≥1080p   — nearly as good
+        #   3. Any codec @ ≥1080p
+        #   4. AV1 @ ≥720p    — acceptable fallback for low-res sources
+        #   5. VP9 @ ≥720p
+        #   6. Any codec @ ≥720p
+        #   7. Best available  — last resort, may be 480p or worse
+        "format": (
+            "bv*[height>=1080][vcodec^=av01]+ba/"
+            "bv*[height>=1080][vcodec^=vp9]+ba/"
+            "bv*[height>=1080][vcodec^=vp09]+ba/"
+            "bv*[height>=1080]+ba/"
+            "bv*[height>=720][vcodec^=av01]+ba/"
+            "bv*[height>=720][vcodec^=vp9]+ba/"
+            "bv*[height>=720][vcodec^=vp09]+ba/"
+            "bv*[height>=720]+ba/"
+            "bv*+ba/b"
+        ),
+        "format_sort": ["res", "vcodec:av01", "vcodec:vp9", "vcodec:vp09", "vcodec:h264", "br"],
+        # Merge into mkv — a permissive container that doesn't trigger a codec
+        # re-encode for VP9/AV1 streams. (mp4 used to be the merge target, but
+        # combined with the FFmpegVideoConvertor postprocessor it forced a
+        # full re-encode to H.264 at yt-dlp's default CRF — silent generational
+        # loss before our pipeline ever sees the file.) Our render pipeline
+        # accepts mkv/mp4/webm transparently via ffprobe.
+        "merge_output_format": "mkv",
         "socket_timeout": 30,
         "retries": 5,
         "fragment_retries": 5,
@@ -197,7 +227,10 @@ def main() -> None:
         "extractor_args": {
             "youtube": {"player_client": ["android", "web"]}
         },
-        "postprocessors": [{"key": "FFmpegVideoConvertor", "preferedformat": "mp4"}],
+        # NOTE: no FFmpegVideoConvertor postprocessor here — leaving it on
+        # forces a lossy H.264 transcode of VP9/AV1 streams during merge.
+        # The merge_output_format above handles container muxing without
+        # touching the video codec.
         "progress_hooks": [make_progress_hook()],
     }
 
@@ -218,6 +251,24 @@ def main() -> None:
     if not downloaded_path or not os.path.isfile(downloaded_path):
         emit({"type": "error", "message": "Download completed but output file not found"})
         sys.exit(1)
+
+    # Log what we actually got — resolution + codec + bitrate — so we can
+    # see in the session log whether YouTube served us a degraded stream.
+    try:
+        probe_opts = {"quiet": True, "no_warnings": True, "skip_download": True}
+        with yt_dlp.YoutubeDL(probe_opts) as probe_ydl:
+            probe = probe_ydl.extract_info(downloaded_path, download=False)
+            width = probe.get("width")
+            height = probe.get("height")
+            vcodec = probe.get("vcodec")
+            vbr = probe.get("vbr") or probe.get("tbr")
+            size_mb = os.path.getsize(downloaded_path) / (1024 * 1024)
+            eprint(
+                f"[download] Got: {width}x{height} {vcodec} "
+                f"vbr={vbr}kbps size={size_mb:.1f}MB"
+            )
+    except Exception as probe_err:
+        eprint(f"[download] Could not probe downloaded file: {probe_err}")
 
     emit({"type": "done", "path": downloaded_path, "title": video_title, "duration": video_duration})
     eprint(f"[download] Done. Saved to: {downloaded_path}")

@@ -269,7 +269,7 @@ export function generateZoomFilter(
   const cropX = nanSafe(xExpr, '0')
   const cropY = nanSafe(yExpr, '0')
 
-  return `crop=w='${cropW}':h='${cropH}':x='${cropX}':y='${cropY}',scale=${outW}:${outH}`
+  return `crop=w='${cropW}':h='${cropH}':x='${cropX}':y='${cropY}',scale=${outW}:${outH}:flags=${SCALE_FLAGS}`
 }
 
 // ---------------------------------------------------------------------------
@@ -413,7 +413,7 @@ function generateReactiveZoomFilter(
     return `((${minVal})+abs(${minVal}))/2`
   }), '0')
 
-  return `crop=w='${cropW}':h='${cropH}':x='${cropX}':y='${cropY}',scale=${outW}:${outH}`
+  return `crop=w='${cropW}':h='${cropH}':x='${cropX}':y='${cropY}',scale=${outW}:${outH}:flags=${SCALE_FLAGS}`
 }
 
 // ---------------------------------------------------------------------------

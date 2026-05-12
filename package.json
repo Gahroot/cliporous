@@ -5,6 +5,9 @@
   "main": "./out/main/index.js",
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
@@ -18,9 +21,20 @@
     "test:watch": "vitest --config vitest.config.main.ts",
     "test:main": "vitest run --config vitest.config.main.ts",
     "test:renderer": "vitest run --config vitest.config.ts",
+    "typecheck": "tsc -b --noEmit",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "shellcheck": "shellcheck scripts/*.sh scripts/**/*.sh",
+    "verify": "npm run check && npm run typecheck && npm test",
     "setup:python": "bash scripts/setup-python.sh",
     "deploy": "bash scripts/deploy-windows.sh",
-    "deploy:fast": "bash scripts/deploy-windows.sh --fast --yes"
+    "deploy:fast": "bash scripts/deploy-windows.sh --fast --yes",
+    "deploy:mac": "bash scripts/deploy-mac.sh",
+    "deploy:mac:fast": "bash scripts/deploy-mac.sh --fast --yes"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -63,6 +77,7 @@
     "zustand": "^5.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.15",
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@testing-library/jest-dom": "^6.9.1",

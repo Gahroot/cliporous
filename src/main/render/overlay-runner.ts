@@ -10,7 +10,7 @@
 import { join } from 'path'
 import { tmpdir } from 'os'
 import { unlinkSync, renameSync } from 'fs'
-import type { FfmpegCommand } from '../ffmpeg'
+import type { FfmpegCommand, QualityParams } from '../ffmpeg'
 import { ffmpeg, getEncoder, getSoftwareEncoder, isGpuSessionError, isGpuEncoderDisabled, disableGpuEncoderForSession } from '../ffmpeg'
 import { toFFmpegPath } from './helpers'
 import type { OverlayPassResult } from './features/feature'
@@ -29,23 +29,53 @@ export const activeCommands = new Set<FfmpegCommand>()
 // Single filter pass
 // ---------------------------------------------------------------------------
 
+// Overlay passes re-encode the whole clip. We want to (a) minimise quality
+// loss vs. the base encode (CRF 18 ≈ visually transparent) and (b) avoid
+// the `ultrafast` preset — it disables CABAC, deblock, B-frames and motion
+// search on libx264, causing visible blocking that compounds across passes.
+// `medium` is the smallest preset that keeps all the coding tools enabled.
+const OVERLAY_QUALITY: QualityParams = { crf: 18, preset: 'medium' }
+
+/**
+ * Resolve the effective quality for an overlay pass. We always want the
+ * overlay pass to be at least as good as the base encode (otherwise the
+ * overlay becomes the weak link in the generation chain), so we clamp to
+ * the better of the supplied quality and the default OVERLAY_QUALITY —
+ * lower CRF = higher quality.
+ */
+function resolveOverlayQuality(override?: QualityParams): QualityParams {
+  if (!override) return OVERLAY_QUALITY
+  const overrideCrf = override.crf ?? OVERLAY_QUALITY.crf!
+  const crf = Math.min(overrideCrf, OVERLAY_QUALITY.crf!)
+  return { crf, preset: override.preset ?? OVERLAY_QUALITY.preset }
+}
+
 /**
  * Run a single FFmpeg filter pass: read inputPath, apply videoFilter, write
  * to outputPath.
  *
- * Uses software encoding with high-quality settings (CRF 15, ultrafast) to
- * minimise generation loss across multiple re-encode passes. Audio is
- * stream-copied (no re-encode).
+ * Encodes with CRF 18 / medium preset so the overlay pass adds essentially
+ * no visible quality loss compared to the base encode. Audio is stream-copied
+ * (no re-encode). format=yuv420p is appended to keep the output in
+ * universally-playable subsampling.
  */
 export function applyFilterPass(
   inputPath: string,
   outputPath: string,
-  videoFilter: string
+  videoFilter: string,
+  qualityOverride?: QualityParams
 ): Promise<void> {
   return new Promise<void>((resolve, reject) => {
+    const quality = resolveOverlayQuality(qualityOverride)
     const gpuDisabled = isGpuEncoderDisabled()
-    const { encoder, presetFlag } = gpuDisabled ? getSoftwareEncoder({ crf: 15, preset: 'ultrafast' }) : getEncoder({ crf: 15, preset: 'ultrafast' })
+    const { encoder, presetFlag } = gpuDisabled ? getSoftwareEncoder(quality) : getEncoder(quality)
     let fallbackAttempted = false
+
+    // Ensure the final output is yuv420p — subtitles/drawtext can leave the
+    // chain in a different pix_fmt depending on the input.
+    const filterWithPixFmt = /,format=yuv420p$/.test(videoFilter)
+      ? videoFilter
+      : `${videoFilter},format=yuv420p`
 
     function runPass(enc: string, flags: string[], useHwAccel = true): void {
       const cmd = ffmpeg(toFFmpegPath(inputPath))
@@ -58,7 +88,7 @@ export function applyFilterPass(
       }
 
       cmd
-        .videoFilters(videoFilter)
+        .videoFilters(filterWithPixFmt)
         .outputOptions([
           '-c:v',
           enc,
@@ -79,7 +109,7 @@ export function applyFilterPass(
           if (!fallbackAttempted && isGpuSessionError(err.message + '\n' + stderrOutput)) {
             fallbackAttempted = true
             disableGpuEncoderForSession()
-            const sw = getSoftwareEncoder({ crf: 15, preset: 'ultrafast' })
+            const sw = getSoftwareEncoder(quality)
             runPass(sw.encoder, sw.presetFlag, false)
           } else {
             const stderrTail = stderrOutput.split('\n').slice(-10).join('\n')
@@ -109,11 +139,13 @@ export function applyFilterPass(
 export function applyFilterComplexPass(
   inputPath: string,
   outputPath: string,
-  filterComplex: string
+  filterComplex: string,
+  qualityOverride?: QualityParams
 ): Promise<void> {
   return new Promise<void>((resolve, reject) => {
+    const quality = resolveOverlayQuality(qualityOverride)
     const gpuDisabled2 = isGpuEncoderDisabled()
-    const { encoder, presetFlag } = gpuDisabled2 ? getSoftwareEncoder({ crf: 15, preset: 'ultrafast' }) : getEncoder({ crf: 15, preset: 'ultrafast' })
+    const { encoder, presetFlag } = gpuDisabled2 ? getSoftwareEncoder(quality) : getEncoder(quality)
     let fallbackAttempted = false
 
     function runPass(enc: string, flags: string[], useHwAccel = true): void {
@@ -147,7 +179,7 @@ export function applyFilterComplexPass(
           if (!fallbackAttempted && isGpuSessionError(err.message + '\n' + stderrOutput)) {
             fallbackAttempted = true
             disableGpuEncoderForSession()
-            const sw = getSoftwareEncoder({ crf: 15, preset: 'ultrafast' })
+            const sw = getSoftwareEncoder(quality)
             runPass(sw.encoder, sw.presetFlag, false)
           } else {
             const stderrTail = stderrOutput.split('\n').slice(-10).join('\n')

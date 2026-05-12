@@ -21,6 +21,7 @@ function getProjectJson(pretty = false): string {
     sources: state.sources,
     transcriptions: state.transcriptions,
     clips: state.clips,
+    stitchedClips: state.stitchedClips,
     settings: state.settings,
     processingConfig: state.processingConfig
   }
@@ -35,7 +36,10 @@ function applyProject(data: string): boolean {
   const project = JSON.parse(data) as Partial<ProjectFileData>
   const sources = project.sources ?? []
   const clips = project.clips ?? {}
-  const hasClips = Object.values(clips).some((arr) => arr.length > 0)
+  const stitchedClips = project.stitchedClips ?? {}
+  const hasClips =
+    Object.values(clips).some((arr) => arr.length > 0) ||
+    Object.values(stitchedClips).some((arr) => arr.length > 0)
 
   // If the project has clips, jump straight to the clip grid by setting
   // pipeline to 'ready' and selecting the first source.
@@ -48,6 +52,7 @@ function applyProject(data: string): boolean {
     sources,
     transcriptions: project.transcriptions ?? {},
     clips,
+    stitchedClips,
     settings: {
       ...DEFAULT_SETTINGS,
       ...(project.settings ?? {})
@@ -115,7 +120,9 @@ export async function loadProjectFromPath(filePath: string): Promise<boolean> {
 
 export async function autoSaveProject(): Promise<void> {
   const state = useStore.getState()
-  const hasClips = Object.values(state.clips).some((arr) => arr.length > 0)
+  const hasClips =
+    Object.values(state.clips).some((arr) => arr.length > 0) ||
+    Object.values(state.stitchedClips).some((arr) => arr.length > 0)
   // Autosave even before clips exist if there's a transcription cached — that
   // way a scoring failure mid-pipeline doesn't lose the (slow) transcription
   // step on the next launch and the user can resume.

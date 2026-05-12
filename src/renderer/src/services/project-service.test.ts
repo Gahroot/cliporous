@@ -285,6 +285,7 @@ function expectedProject(): ProjectFileData {
       [SOURCE_C.id]: TRANSCRIPTION_C,
     },
     clips: CLIP_FIXTURES,
+    stitchedClips: {},
     settings: SETTINGS_FIXTURE,
     processingConfig: PROCESSING_CONFIG_FIXTURE,
   }
