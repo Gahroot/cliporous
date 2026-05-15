@@ -20,7 +20,11 @@
 #   3. Refresh python/*.py + requirements.txt in
 #      ~/Desktop/BatchClip.app/Contents/Resources/python/
 #      (the venv is host-specific and is NEVER touched).
-#   4. Clear the com.apple.quarantine xattr and bump the .app mtime so
+#   4. Rsync resources/{fonts,music,sfx,bin}/ into the .app's
+#      Contents/Resources/ so newly added bundled assets (new fonts, sfx,
+#      ffmpeg/yt-dlp binaries, etc.) ship without a full electron-builder
+#      rebuild.
+#   5. Clear the com.apple.quarantine xattr and bump the .app mtime so
 #      Launch Services notices the change.
 #
 # If ~/Desktop/BatchClip.app is missing, the script copies the freshly-built
@@ -57,6 +61,21 @@ step() { printf '\n\033[1;36m▸ %s\033[0m\n' "$*"; }
 ok()   { printf '\033[1;32m✓\033[0m %s\n' "$*"; }
 fail() { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
 
+# Rsync resources/{fonts,music,sfx,bin}/ → <target>/Contents/Resources/.
+# Uses rsync --update so locally-modified files in the .app aren't clobbered
+# unless the source is newer. New files are added; deleted files in the
+# source are NOT removed (intentional — safer for a desktop deploy).
+sync_resources() {
+  local target_app="$1"
+  local target_resources="$target_app/Contents/Resources"
+  for sub in fonts music sfx bin; do
+    if [ -d "resources/$sub" ]; then
+      mkdir -p "$target_resources/$sub"
+      rsync -a --update "resources/$sub/" "$target_resources/$sub/"
+    fi
+  done
+}
+
 # --- Preflight -------------------------------------------------------------
 
 if [ "$(uname -s)" != "Darwin" ]; then
@@ -90,6 +109,8 @@ if [ ! -d "$TARGET" ]; then
   # Refresh python scripts in case they changed since build:mac.
   cp python/download.py python/face_detect.py python/transcribe.py python/requirements.txt \
      "$TARGET/Contents/Resources/python/"
+  # Refresh bundled resources (fonts/music/sfx/bin) so newly added assets land.
+  sync_resources "$TARGET"
   xattr -dr com.apple.quarantine "$TARGET" 2>/dev/null || true
   touch "$TARGET"
   ok "Deployed to $TARGET"
@@ -135,7 +156,17 @@ cp python/download.py python/face_detect.py python/transcribe.py python/requirem
    "$TARGET/Contents/Resources/python/"
 ok "Python scripts copied"
 
-# --- 4. Clear quarantine + bump mtime --------------------------------------
+# --- 4. Refresh bundled resources (fonts / music / sfx / bin) --------------
+#
+# Without this step, a new font (or sfx, or ffmpeg binary) sitting in
+# resources/ never reaches the deployed .app — electron-builder bakes those
+# in at `npm run build:mac` time and the asar repack above doesn't touch
+# them. Cheap rsync closes the gap.
+step "Refreshing bundled resources (fonts / music / sfx / bin)"
+sync_resources "$TARGET"
+ok "Resources synced"
+
+# --- 5. Clear quarantine + bump mtime --------------------------------------
 
 step "Refreshing Launch Services state"
 xattr -dr com.apple.quarantine "$TARGET" 2>/dev/null || true
