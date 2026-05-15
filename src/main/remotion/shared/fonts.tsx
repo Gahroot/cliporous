@@ -29,5 +29,12 @@ export const PrestyjFonts: React.FC = () => (
       font-weight: 400;
       font-display: block;
     }
+    @font-face {
+      font-family: 'Instrument Serif';
+      src: url('${staticFile('fonts/InstrumentSerif-Italic.ttf')}') format('truetype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: block;
+    }
   `}</style>
 )

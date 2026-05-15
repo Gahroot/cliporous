@@ -12,13 +12,14 @@
  *   - quote-lower       — same as talking-head (captions hero)
  *   - split-image       — b-roll video on top half + speaker on bottom half
  *   - fullscreen-image  — b-roll video fills the frame
- *   - fullscreen-quote  — solid BRAND_BG color source (captions hero)
+ *   - fullscreen-quote  — solid sand BRAND_FG color source (captions hero,
+ *                          dark-brown serif italic captions on top)
  *
  * All layouts produce a `[outv]` output label with pixel format yuv420p
  * and SAR 1:1, ready for encoding.
  */
 
-import { BRAND_BG } from '../edit-styles/shared/brand'
+import { BRAND_FG } from '../edit-styles/shared/brand'
 import type { Archetype } from '@shared/types'
 
 // ---------------------------------------------------------------------------
@@ -227,15 +228,17 @@ function buildFullscreenImage(params: SegmentLayoutParams): SegmentLayoutResult 
 }
 
 /**
- * fullscreen-quote: solid BRAND_BG color source for the segment duration.
- * No baked text — captions are the hero. Audio still comes from input 0
+ * fullscreen-quote: solid sand (BRAND_FG) color source for the segment
+ * duration. No baked text — captions are the hero. This archetype inverts
+ * the brand palette (sand bg, dark-brown text) so a quote moment doesn't
+ * read like the video has cut to black. Audio still comes from input 0
  * (the source video) at the encode site.
  */
 function buildFullscreenQuote(params: SegmentLayoutParams): SegmentLayoutResult {
   const w = params.width
   const h = params.height
   const dur = params.segmentDuration
-  const bgColor = hexToFFmpeg(BRAND_BG)
+  const bgColor = hexToFFmpeg(BRAND_FG)
 
   const bg = `color=c=${bgColor}:s=${w}x${h}:d=${dur.toFixed(3)}:r=30`
   const fc = `${bg}[composed];` + finalize('composed')

@@ -17,7 +17,8 @@
  *   - Output frame rate: 30/1
  *   - Caption mode 3 ('emphasis_highlight') has at least one pixel cluster of
  *     accent #9f75ff in the caption band.
- *   - 'fullscreen-quote' archetype scene has a #23100c brand-bg and #f6ecd9
+ *   - 'fullscreen-quote' archetype scene has a #f6ecd9 sand bg and #23100c dark-brown
+ *     captions (Instrument Serif Italic) — brand palette inverted vs. talking-head
  *     caption text.
  *   - manifest.json + manifest.csv exist in the output directory and reference
  *     all three rendered clips.
@@ -417,9 +418,13 @@ interface ClipVerification {
   /** Whether the accent purple #9f75ff is present (only required for emphasis_highlight) */
   accentPresent: boolean
   accentClosest: string
-  /** For the fullscreen-quote scene: whether the brand-bg #23100c (or its post-grade crush) is dominant */
-  brandBgPresent?: boolean
-  brandBgClosest?: string
+  /**
+   * For the fullscreen-quote scene: whether the inverted-palette sand bg
+   * (#f6ecd9, BRAND_FG) is dominant in the background region. The brown
+   * captions live in the caption band, not the bg region.
+   */
+  sandBgPresent?: boolean
+  sandBgClosest?: string
   failures: string[]
 }
 
@@ -450,7 +455,7 @@ function verifyClip(entry: RenderPlanEntry, outputPath: string): ClipVerificatio
   let bestCream = { matches: 0, closestHex: '#000000', closestDist: Infinity }
   let bestAccent = { matches: 0, closestHex: '#000000', closestDist: Infinity }
   let bestBg: { matches: number; closestHex: string; closestDist: number } | undefined
-  let bestBgCrush: { matches: number; closestHex: string; closestDist: number } | undefined
+
 
   for (const t of sampleTimes) {
     const stem = `${entry.outputName.replace(/\.mp4$/, '')}_t${t.toFixed(1).replace('.', '_')}`
@@ -471,32 +476,33 @@ function verifyClip(entry: RenderPlanEntry, outputPath: string): ClipVerificatio
     if (accent.matches > bestAccent.matches) bestAccent = accent
 
     if (entry.archetype === 'fullscreen-quote') {
-      const bg = countColorMatches(ppm, BRAND_BG, bgRegion, 35)
-      const bgCrushed = countColorMatches(ppm, '#170703', bgRegion, 25)
+      // Inverted palette: sand BRAND_FG fills the bg region. The post-grade
+      // PRESTYJ LUT shifts sand slightly warmer; accept a generous tolerance.
+      const bg = countColorMatches(ppm, BRAND_FG, bgRegion, 35)
       if (!bestBg || bg.matches > bestBg.matches) bestBg = bg
-      if (!bestBgCrush || bgCrushed.matches > bestBgCrush.matches) bestBgCrush = bgCrushed
     }
   }
 
+  // fullscreen-quote inverts the palette — captions are dark brown on sand,
+  // so the cream + purple caption-band checks don't apply.
+  const isQuote = entry.archetype === 'fullscreen-quote'
   const creamPresent = bestCream.matches > 50
-  if (!creamPresent) {
+  if (!isQuote && !creamPresent) {
     failures.push(`Cream caption color #f6ecd9 not found in caption band across sampled frames (closest=${bestCream.closestHex}, dist=${bestCream.closestDist.toFixed(0)})`)
   }
 
   const accentPresent = bestAccent.matches > 30
-  if (entry.captionMode === 'emphasis_highlight' && !accentPresent) {
+  if (!isQuote && entry.captionMode === 'emphasis_highlight' && !accentPresent) {
     failures.push(`Accent #9f75ff not found in caption band for emphasis_highlight clip (closest=${bestAccent.closestHex})`)
   }
 
-  let brandBgPresent: boolean | undefined
-  let brandBgClosest: string | undefined
-  if (entry.archetype === 'fullscreen-quote' && bestBg && bestBgCrush) {
-    // PRESTYJ post-grade crushes #23100c down to ≈ #170703 — see
-    // .ezcoder/plans/archetype-verification.md. Accept either within tolerance.
-    brandBgPresent = bestBg.matches > 1000 || bestBgCrush.matches > 1000
-    brandBgClosest = bestBg.closestDist < bestBgCrush.closestDist ? bestBg.closestHex : bestBgCrush.closestHex
-    if (!brandBgPresent) {
-      failures.push(`Brand bg #23100c (or post-grade crush #170703) not dominant in fullscreen-quote (closest=${brandBgClosest})`)
+  let sandBgPresent: boolean | undefined
+  let sandBgClosest: string | undefined
+  if (entry.archetype === 'fullscreen-quote' && bestBg) {
+    sandBgPresent = bestBg.matches > 1000
+    sandBgClosest = bestBg.closestHex
+    if (!sandBgPresent) {
+      failures.push(`Sand bg #f6ecd9 not dominant in fullscreen-quote (closest=${sandBgClosest})`)
     }
   }
 
@@ -514,8 +520,8 @@ function verifyClip(entry: RenderPlanEntry, outputPath: string): ClipVerificatio
     creamClosest: bestCream.closestHex,
     accentPresent,
     accentClosest: bestAccent.closestHex,
-    brandBgPresent,
-    brandBgClosest,
+    sandBgPresent,
+    sandBgClosest,
     failures
   }
 }
@@ -680,7 +686,7 @@ async function main(): Promise<void> {
     }
     const v = verifyClip(r.entry, r.outputPath)
     verifications.push(v)
-    log('Verify', `  ${v.ok ? 'OK  ' : 'FAIL'} ${v.clipId} ${v.archetype}/${v.captionMode} ${v.width}×${v.height}@${v.fps} cream=${v.creamPresent} accent=${v.accentPresent}` + (v.brandBgPresent !== undefined ? ` bg=${v.brandBgPresent}` : ''))
+    log('Verify', `  ${v.ok ? 'OK  ' : 'FAIL'} ${v.clipId} ${v.archetype}/${v.captionMode} ${v.width}×${v.height}@${v.fps} cream=${v.creamPresent} accent=${v.accentPresent}` + (v.sandBgPresent !== undefined ? ` bg=${v.sandBgPresent}` : ''))
     for (const f of v.failures) log('Verify', `       ↳ ${f}`)
   }
 
@@ -778,7 +784,7 @@ function writeReport(r: ReportInput): void {
     const accent = v.captionMode === 'emphasis_highlight'
       ? (v.accentPresent ? `✅ (closest ${v.accentClosest})` : `❌ ${v.accentClosest}`)
       : (v.accentPresent ? `+ (closest ${v.accentClosest})` : `n/a (closest ${v.accentClosest})`)
-    const bg = v.brandBgPresent === undefined ? 'n/a' : (v.brandBgPresent ? `✅ (closest ${v.brandBgClosest})` : `❌ ${v.brandBgClosest}`)
+    const bg = v.sandBgPresent === undefined ? 'n/a' : (v.sandBgPresent ? `✅ (closest ${v.sandBgClosest})` : `❌ ${v.sandBgClosest}`)
     lines.push(`| ${v.clipId} | \`${out}\` | ${v.width}×${v.height} | ${v.fps} | ${cream} | ${accent} | ${bg} | ${v.ok ? '✅' : '❌'} |`)
   }
   lines.push('')
@@ -792,9 +798,9 @@ function writeReport(r: ReportInput): void {
   lines.push('')
   lines.push('### Just-subtitles scene (clip 3, `fullscreen-quote`)')
   lines.push('')
-  lines.push(`- Backdrop: \`${BRAND_BG}\` brand bg (post-grade crush ≈ \`#170703\` — see archetype-verification.md). Verified by sampling the upper region of the frame.`)
-  lines.push(`- Caption text: \`${BRAND_FG}\` cream. Verified above.`)
-  lines.push(`- Accent: \`${BRAND_ACCENT}\` purple on emphasised words. Verified above.`)
+  lines.push(`- Backdrop: \`${BRAND_FG}\` sand bg (inverted brand palette for fullscreen-quote). Verified by sampling the upper region of the frame.`)
+  lines.push(`- Caption text: \`${BRAND_BG}\` dark-brown Instrument Serif Italic on the sand bg. Caption-band cream test is skipped for this archetype — the cream is the bg, not the text.`)
+  lines.push(`- Note: emphasis recolor is suppressed for fullscreen-quote so the inverted palette stays clean.`)
   lines.push('')
   lines.push('## Manifest')
   lines.push('')

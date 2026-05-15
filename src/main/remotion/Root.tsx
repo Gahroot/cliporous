@@ -19,12 +19,14 @@ const PRESTYJ_DEFAULTS = {
   scriptFont: 'Style Script'
 } as const
 
-// FullscreenQuote uses Bebas Neue (condensed all-caps display) — it's the
-// hero archetype where the quote *is* the entire frame, so it gets its own
-// type system rather than the body Geist used by the speaker archetypes.
+// FullscreenQuote uses Instrument Serif Italic on a sand backdrop — it's
+// the hero archetype where the quote *is* the entire frame, so it gets its
+// own type system (a dark-brown serif italic that reads like print) rather
+// than the body Geist used by the speaker archetypes. Inverts the brand
+// palette so a quote moment doesn't feel like the video cut to black.
 const PRESTYJ_QUOTE_DEFAULTS = {
   ...PRESTYJ_DEFAULTS,
-  bodyFont: 'Bebas Neue'
+  bodyFont: 'Instrument Serif'
 } as const
 
 export const RemotionRoot: React.FC = () => {

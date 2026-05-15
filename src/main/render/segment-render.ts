@@ -967,7 +967,10 @@ export async function renderSegmentedClip(
             editStyleId
           )
           tempFiles.push(captionAssPath)
-          assFilters.push(buildASSFilter(captionAssPath))
+          // Pass fontsDir so libass can find bundled faces (Inter, Bebas,
+          // Instrument Serif Italic for fullscreen-quote, etc.) even when
+          // the host system has no matching font installed.
+          assFilters.push(buildASSFilter(captionAssPath, resolveFontsDir()))
           overlayLabels.push('captions')
         } catch (err) {
           console.warn(`[SegmentRender] Caption ASS generation failed, skipping:`, err)

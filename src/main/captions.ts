@@ -164,6 +164,35 @@ export const STANDARD_COLOR = '#ffffff'
 /** Default accent for emphasis (PRESTYJ purple). */
 export const DEFAULT_ACCENT = '#9f75ff'
 
+// ---------------------------------------------------------------------------
+// Per-archetype caption visual override
+//
+// fullscreen-quote is the only archetype that breaks the global caption
+// look. Its segment is a solid sand backdrop (no video), and the quote IS
+// the frame — so the captions swap to a dark-brown serif italic with the
+// halo turned off so it reads like print, not subtitle.
+// ---------------------------------------------------------------------------
+
+interface ArchetypeCaptionOverride {
+  /** Font family name (must match a registered face in resources/fonts/). */
+  font: string
+  /** Primary fill color, CSS hex. */
+  color: string
+  /** When true, italic flag (`\i1`) is applied to every word. */
+  italic?: boolean
+  /** When true, the soft black halo (outline + blur) is suppressed. */
+  killHalo?: boolean
+}
+
+const ARCHETYPE_CAPTION_OVERRIDES: Partial<Record<Archetype, ArchetypeCaptionOverride>> = {
+  'fullscreen-quote': {
+    font: 'Instrument Serif',
+    color: '#23100c',
+    italic: true,
+    killHalo: true
+  }
+}
+
 // ── Drop-shadow look (centered black glow behind white text) ───────────────
 // Implemented in libass with BorderStyle=1, Shadow=0 (no offset), and a
 // thick black Outline that the per-event \blur tag converts into a soft
@@ -268,6 +297,13 @@ function groupWords(words: WordInput[], wordsPerLine: number): WordGroup[] {
  * @param accent  Accent color hex for `emphasis_highlight`. Defaults to PRESTYJ purple.
  * @param wordsPerLine  Max words per dialogue line. Defaults to 4.
  */
+export interface PerGroupOverride {
+  marginV?: number
+  fontSize?: number
+  /** Per-archetype visual override (font swap / recolor / halo kill). */
+  visual?: ArchetypeCaptionOverride
+}
+
 export function buildAssLines(
   words: WordInput[],
   mode: CaptionMode,
@@ -278,7 +314,7 @@ export function buildAssLines(
    * `\fs<px>` override prepended to the text so a single Style block can
    * carry archetype-specific position + size.
    */
-  perGroupOverride?: (groupMid: number) => { marginV?: number; fontSize?: number }
+  perGroupOverride?: (groupMid: number) => PerGroupOverride
 ): string[] {
   if (words.length === 0) return []
 
@@ -291,6 +327,18 @@ export function buildAssLines(
     const end = formatASSTime(group.end)
     const mid = (group.start + group.end) / 2
     const override = perGroupOverride ? perGroupOverride(mid) : undefined
+    const visual = override?.visual
+
+    // ASS overrides for archetype visual swap (font, color, italic, halo).
+    // `killHalo` zeroes both the outline thickness (`\bord0`) and the blur
+    // (`\blur0`) so the dark-brown serif reads as flat ink on the sand BG
+    // instead of having a glow behind it.
+    const visualFontTag = visual?.font ? `\\fn${visual.font}` : ''
+    const visualItalicTag = visual?.italic ? '\\i1' : ''
+    const visualColorTag = visual?.color ? `\\1c${hexToASS(visual.color)}` : ''
+    const blurValue = visual?.killHalo ? 0 : SHADOW_BLUR
+    const visualBordTag = visual?.killHalo ? '\\bord0' : ''
+    const visualPrefix = `${visualFontTag}${visualItalicTag}${visualColorTag}${visualBordTag}`
 
     // Every line opens with a \blur override so the black outline reads as a
     // soft 0-offset halo rather than a hard stroke. Outline colour stays
@@ -298,11 +346,13 @@ export function buildAssLines(
     // fontSize override, prepend a `\fs<px>` tag so the per-line size beats
     // the Default style's size.
     const linePrefix =
-      `{\\blur${SHADOW_BLUR}` +
+      `{\\blur${blurValue}` +
       (override?.fontSize ? `\\fs${override.fontSize}` : '') +
-      `}`
+      `${visualPrefix}}`
     // Re-apply \fs after every \r so per-word resets don't snap back to the
-    // Default style's font size.
+    // Default style's font size. (The emphasis branches early-return when an
+    // archetype visual override is in force, so we don't need to re-apply the
+    // visual prefix after \r — those branches never run with a visual.)
     const fsRe = override?.fontSize ? `\\fs${override.fontSize}` : ''
 
     // Render each word with the override block its mode requires, then a `\r`
@@ -315,6 +365,13 @@ export function buildAssLines(
 
       // Mode 1: standard — never apply per-word overrides.
       if (mode === 'standard' || !emphasized) {
+        return `${w.text}${sep}`
+      }
+
+      // When an archetype visual override is in force (e.g. fullscreen-quote),
+      // the emphasis recolor would fight the override's locked color. Keep the
+      // archetype's look intact and skip the per-word recolor.
+      if (visual) {
         return `${w.text}${sep}`
       }
 
@@ -435,23 +492,25 @@ function buildASSDocument(
   //     fullscreen-quote, quote-lower): the per-archetype template's
   //     `captionMarginV` always wins. `marginVOverride` is ignored —
   //     those layouts have purpose-built caption positions.
-  const perGroupOverride = archetypeWindows && archetypeWindows.length > 0
-    ? (mid: number) => {
-        const win = archetypeWindows.find((w) => mid >= w.startTime && mid <= w.endTime)
-        if (!win) return {}
-        const fontFraction = ARCHETYPE_FONT_SIZE_FRACTION[win.archetype]
-        const visual = fontFraction * frameHeight
-        const archetypeMarginV = resolveTemplate(win.archetype, editStyleId).captionMarginV
-        const speakerOverride =
-          isSpeakerFullscreen(win.archetype) && marginVOverride !== undefined
-            ? marginVOverride
-            : undefined
-        return {
-          marginV: speakerOverride ?? archetypeMarginV,
-          fontSize: Math.round(visual * LINE_HEIGHT_FACTOR),
+  const perGroupOverride: ((mid: number) => PerGroupOverride) | undefined =
+    archetypeWindows && archetypeWindows.length > 0
+      ? (mid: number) => {
+          const win = archetypeWindows.find((w) => mid >= w.startTime && mid <= w.endTime)
+          if (!win) return {}
+          const fontFraction = ARCHETYPE_FONT_SIZE_FRACTION[win.archetype]
+          const visualPx = fontFraction * frameHeight
+          const archetypeMarginV = resolveTemplate(win.archetype, editStyleId).captionMarginV
+          const speakerOverride =
+            isSpeakerFullscreen(win.archetype) && marginVOverride !== undefined
+              ? marginVOverride
+              : undefined
+          return {
+            marginV: speakerOverride ?? archetypeMarginV,
+            fontSize: Math.round(visualPx * LINE_HEIGHT_FACTOR),
+            visual: ARCHETYPE_CAPTION_OVERRIDES[win.archetype]
+          }
         }
-      }
-    : undefined
+      : undefined
 
   // Partition words by archetype window so each window can choose its own
   // grouping (multi-word vs word-by-word) based on its resolved template's

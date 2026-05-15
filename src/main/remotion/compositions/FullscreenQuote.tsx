@@ -4,6 +4,12 @@ import { PrestyjFonts } from '../shared/fonts'
 import { EASE } from '../shared/easing'
 import { BRAND_ACCENT, BRAND_BG, BRAND_FG } from '../../edit-styles/shared/brand'
 
+// fullscreen-quote inverts the brand palette: sand background, dark-brown
+// quote. Keeps the moment from reading like the video has cut to black, and
+// matches the FFmpeg `buildFullscreenQuote` color source.
+const QUOTE_BG = BRAND_FG
+const QUOTE_FG = BRAND_BG
+
 /** Word with clip-relative seconds. End is optional (currently unused for visuals,
  *  but plumbed so future variants can fade out on word.end). */
 export interface QuoteWord {
@@ -62,8 +68,8 @@ export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
   words: wordsProp,
   attribution,
   accentColor = BRAND_ACCENT,
-  primaryColor = BRAND_FG,
-  backgroundColor = BRAND_BG,
+  primaryColor = QUOTE_FG,
+  backgroundColor = QUOTE_BG,
   bodyFont,
   scriptFont,
   emphasisIndices
@@ -76,11 +82,11 @@ export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
   const lastWordEnter = (words[words.length - 1]?.revealFrame ?? 0) + WORD_REVEAL_FRAMES
   const attributionStart = lastWordEnter + ATTRIBUTION_DELAY_FRAMES
 
-  // Sizing: Bebas Neue is condensed all-caps, so it packs ~30% more glyphs
-  // per line than Geist Bold did. Pump the size up accordingly and let long
-  // quotes wrap to two/three lines without shrinking too aggressively.
+  // Sizing: Instrument Serif Italic is a proportional serif (not condensed),
+  // so it eats more horizontal room than Bebas did. Drop the size a notch and
+  // let long quotes wrap to two/three lines without shrinking too aggressively.
   const fontSize =
-    words.length <= 6 ? 196 : words.length <= 12 ? 156 : words.length <= 20 ? 124 : 104
+    words.length <= 6 ? 168 : words.length <= 12 ? 132 : words.length <= 20 ? 104 : 88
 
   // Subtle 4% scale-out near the very end gives the segment a "release"
   // even if the next segment uses hard-cut. Cinematic micro-detail.
@@ -107,9 +113,9 @@ export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
       <PrestyjFonts />
 
       {/*
-        "just subtitles" archetype: solid brand backdrop only. No gradient,
-        no vignette, no grain — mirrors the FFmpeg buildFullscreenTextCenter
-        layout (color=c=BRAND_BG) and the example reference frame.
+        "just subtitles" archetype: solid sand backdrop only. No gradient,
+        no vignette, no grain — mirrors the FFmpeg buildFullscreenQuote
+        layout (color=c=BRAND_FG) and the example reference frame.
       */}
 
       {/* Centered stack — quote dominates, attribution is a quiet whisper. */}
@@ -126,19 +132,18 @@ export const FullscreenQuote: React.FC<FullscreenQuoteProps> = ({
           style={{
             color: primaryColor,
             fontFamily: bodyFont,
-            // Bebas Neue is a single weight (400). 700 would force a synthetic
-            // bold and crush the letterforms — keep it native.
+            // Instrument Serif ships a single italic face. Forcing italic via
+            // the font-style keeps the on-screen rendering aligned with the
+            // FFmpeg caption path that selects italic with `\i1`.
             fontWeight: 400,
+            fontStyle: 'italic',
             fontSize,
-            // Bebas hugs the baseline; a tighter line-height reads as a
-            // monolithic slab rather than a stacked sentence.
-            lineHeight: 0.96,
+            // Serif italic reads best with a slightly looser line-height than
+            // Bebas's monolithic slab.
+            lineHeight: 1.08,
             letterSpacing: '0.005em',
             textAlign: 'center',
-            margin: 0,
-            // Words come pre-uppercased by Bebas's design, but force it so
-            // mixed-case ASR output renders consistently.
-            textTransform: 'uppercase'
+            margin: 0
           }}
         >
           {words.map((w, i) => (

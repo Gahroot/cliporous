@@ -152,6 +152,16 @@ export const BUNDLED_FONTS: BundledFont[] = [
     category: 'serif',
     license: 'OFL-1.1'
   },
+  {
+    // The italic face is the only one bundled — fullscreen-quote captions
+    // select it explicitly via the `\i1` ASS tag.
+    family: 'Instrument Serif',
+    label: 'Instrument Serif Italic',
+    file: 'InstrumentSerif-Italic.ttf',
+    weight: '400',
+    category: 'serif',
+    license: 'OFL-1.1'
+  },
 
   // ── Monospace ───────────────────────────────────────────────────────────
   {
