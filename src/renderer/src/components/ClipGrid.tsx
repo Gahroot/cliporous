@@ -191,6 +191,30 @@ export function ClipGrid(): React.JSX.Element {
     }
   }
 
+  // Render every clip without manual approval. Flips any non-approved clip
+  // (pending or rejected) to 'approved' first so startApprovedRender picks
+  // them up — the render service is the single entry point and only
+  // dispatches approved jobs.
+  const handleRenderAll = async (): Promise<void> => {
+    if (isStartingRender || totalCount === 0 || !activeSourceId) return
+    setIsStartingRender(true)
+    try {
+      for (const c of clips) {
+        if (c.status !== 'approved') {
+          updateClipStatus(activeSourceId, c.id, 'approved')
+        }
+      }
+      for (const c of stitchedClips) {
+        if (c.status !== 'approved') {
+          updateStitchedClipStatus(activeSourceId, c.id, 'approved')
+        }
+      }
+      await startApprovedRender()
+    } finally {
+      setIsStartingRender(false)
+    }
+  }
+
   return (
     <div className="flex h-full w-full flex-col">
       {/* Top bar — clip count + Render Approved primary action */}
@@ -201,6 +225,14 @@ export function ClipGrid(): React.JSX.Element {
         </div>
         <div className="flex items-center gap-2">
           <TemplateEditor />
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={totalCount === 0 || isStartingRender}
+            onClick={handleRenderAll}
+          >
+            Render All {totalCount > 0 && `(${totalCount})`}
+          </Button>
           <Button
             size="sm"
             disabled={approvedCount === 0 || isStartingRender}
