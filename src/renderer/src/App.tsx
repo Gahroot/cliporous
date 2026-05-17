@@ -89,8 +89,15 @@ function Header(): React.JSX.Element {
     }
   }
 
+  // The whole header is the window drag region (titleBarStyle: 'hiddenInset'
+  // on macOS hides the OS title bar — without an explicit drag zone the
+  // window can only be moved by the tiny strip next to the traffic lights).
+  // Interactive children opt back out with `app-region: no-drag`.
   return (
-    <header className="border-border flex h-12 shrink-0 items-center justify-between border-b px-4">
+    <header
+      className="border-border flex h-12 shrink-0 items-center justify-between border-b px-4 pl-20"
+      style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+    >
       <div className="flex items-center gap-2">
         <span className="text-foreground text-sm font-semibold tracking-tight">
           BatchClip
@@ -103,7 +110,10 @@ function Header(): React.JSX.Element {
         )}
       </div>
 
-      <div className="flex items-center gap-1">
+      <div
+        className="flex items-center gap-1"
+        style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+      >
         <AiUsageIndicator />
         <Separator orientation="vertical" className="mx-2 h-5" />
         <Button variant="ghost" size="sm" onClick={handleSave}>
