@@ -35,7 +35,8 @@ import type { VideoSegment } from '@shared/types'
 import type { ArchetypeWindow } from '../captions'
 
 // Feature imports
-import { createFillerRemovalFeature } from './features/filler-removal.feature'
+import { createFillerRemovalFeature, runFillerRemoval } from './features/filler-removal.feature'
+import { remapTimeAfterFillers } from '../filler-cuts'
 import { createCaptionsFeature } from './features/captions.feature'
 import { createHookTitleFeature } from './features/hook-title.feature'
 import { createRehookFeature } from './features/rehook.feature'
@@ -380,7 +381,76 @@ export async function startBatchRender(
       // path which encodes each segment with its own layout, zoom, and caption
       // treatment, then concatenates with configurable transitions.
       if (job.segmentedSegments && job.segmentedSegments.length > 0) {
-        // Resolve source metadata for the segmented clip
+        // ── Filler removal (pre-segment) ────────────────────────────
+        // The feature pipeline (which normally runs filler removal) is
+        // skipped on the segmented path. Run it inline here so:
+        //   1. The cleaned MP4 becomes the source for per-segment encoding
+        //   2. `segmentedSegments[].startTime/endTime` are remapped onto the
+        //      cleaned timeline so each segment encodes the right audio range
+        //   3. `job.wordTimestamps` are 0-based against the cleaned source
+        //      (handled inside `runFillerRemoval`)
+        if (options.fillerRemoval?.enabled) {
+          window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
+            clipId: job.clipId,
+            message: 'Removing fillers & silences…',
+            percent: 2
+          })
+          const fillerResult = await runFillerRemoval(
+            job,
+            options,
+            (message, percent) => {
+              if (!cancelRequested) {
+                window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
+                  clipId: job.clipId,
+                  message,
+                  percent: Math.min(4, Math.round(percent * 0.04))
+                })
+              }
+            }
+          )
+          allTempFiles.push(...fillerResult.tempFiles)
+
+          if (fillerResult.modified) {
+            // Remap every segment's source-time bounds onto the cleaned
+            // timeline. Drop segments whose entire word range collapses
+            // (start ≥ end after remap) — they were 100% filler/silence.
+            // The metadata cache key was the OLD source path; invalidate it
+            // so the metadata fetch below probes the cleaned intermediate.
+            metadataCache.delete(job.sourceVideoPath)
+            const remappedSegments = job.segmentedSegments
+              .map((raw) => {
+                const newStart = remapTimeAfterFillers(
+                  raw.startTime,
+                  fillerResult.originalStart,
+                  fillerResult.originalEnd,
+                  fillerResult.fillerSegments
+                )
+                const newEnd = remapTimeAfterFillers(
+                  raw.endTime,
+                  fillerResult.originalStart,
+                  fillerResult.originalEnd,
+                  fillerResult.fillerSegments
+                )
+                return { ...raw, startTime: newStart, endTime: newEnd }
+              })
+              .filter((s) => s.endTime - s.startTime >= 0.1)
+
+            if (remappedSegments.length === 0) {
+              console.warn(
+                `[Pipeline] Filler removal collapsed every segment for clip ${job.clipId} — aborting clip`
+              )
+              window.webContents.send(Ch.Send.RENDER_CLIP_ERROR, {
+                clipId: job.clipId,
+                error: 'Filler removal removed every segment; clip is empty.'
+              })
+              return
+            }
+            job.segmentedSegments = remappedSegments
+          }
+        }
+
+        // Resolve source metadata for the segmented clip (after potential
+        // filler-removal swap of `job.sourceVideoPath` to the cleaned file).
         let segMeta: { width: number; height: number; fps: number }
         const segCached = metadataCache.get(job.sourceVideoPath)
         if (segCached) {

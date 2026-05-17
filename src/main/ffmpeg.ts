@@ -633,6 +633,12 @@ interface FfprobeStream {
   height?: number
   r_frame_rate?: string
   avg_frame_rate?: string
+  // Video-stream duration. Often differs from format.duration when audio
+  // padding makes the container longer than the video stream (or when GOP
+  // rounding makes the video stream shorter than the requested duration).
+  // Needed for xfade offset math — see getVideoMetadata.videoStreamDuration.
+  duration?: string | number
+  nb_frames?: string | number
 }
 
 interface FfprobeFormat {
@@ -691,7 +697,15 @@ function ffprobeRaw(filePath: string): Promise<FfprobeData> {
 
 export async function getVideoMetadata(
   filePath: string
-): Promise<{ duration: number; width: number; height: number; codec: string; fps: number; audioCodec: string }> {
+): Promise<{
+  duration: number
+  videoStreamDuration: number
+  width: number
+  height: number
+  codec: string
+  fps: number
+  audioCodec: string
+}> {
   const metadata = await ffprobeRaw(filePath)
   const video = metadata.streams.find((s) => s.codec_type === 'video')
   if (!video) throw new Error('No video stream found')
@@ -717,8 +731,39 @@ export async function getVideoMetadata(
       ? parseFloat(rawDuration)
       : NaN
   const duration = Number.isFinite(parsedDuration) && parsedDuration > 0 ? parsedDuration : 0
+
+  // Video-stream duration. This is what xfade actually sees — not the
+  // container duration, which is often inflated by audio padding. Some
+  // encoders/containers omit `stream.duration`; in that case derive it from
+  // `nb_frames / fps` if both are available, otherwise fall back to the
+  // container duration.
+  const rawStreamDuration = video.duration
+  const parsedStreamDuration = typeof rawStreamDuration === 'number'
+    ? rawStreamDuration
+    : typeof rawStreamDuration === 'string'
+      ? parseFloat(rawStreamDuration)
+      : NaN
+  let videoStreamDuration =
+    Number.isFinite(parsedStreamDuration) && parsedStreamDuration > 0
+      ? parsedStreamDuration
+      : 0
+  if (videoStreamDuration === 0) {
+    const rawFrames = video.nb_frames
+    const frames = typeof rawFrames === 'number'
+      ? rawFrames
+      : typeof rawFrames === 'string'
+        ? parseFloat(rawFrames)
+        : NaN
+    if (Number.isFinite(frames) && frames > 0 && fps > 0) {
+      videoStreamDuration = frames / fps
+    } else {
+      videoStreamDuration = duration
+    }
+  }
+
   return {
     duration,
+    videoStreamDuration,
     width: video.width || 0,
     height: video.height || 0,
     codec: video.codec_name || 'unknown',

@@ -265,6 +265,21 @@ interface WordGroup {
   end: number
 }
 
+/**
+ * Caption lead-in / lead-out padding (seconds).
+ *
+ * NeMo Parakeet — like every modern ASR — reports word boundaries at the
+ * PERCEPTUAL edge of the phoneme, which lands ~80–200 ms before the audible
+ * onset and ~150–300 ms before the audible decay. Captions timed exactly to
+ * those raw boundaries feel like they're racing ahead of the speaker.
+ *
+ * We expand each caption group's display window by these constants, then
+ * clamp the result against neighbouring groups so consecutive lines never
+ * visually overlap.
+ */
+const CAPTION_LEAD_IN_SECONDS = 0.08
+const CAPTION_LEAD_OUT_SECONDS = 0.20
+
 function groupWords(words: WordInput[], wordsPerLine: number): WordGroup[] {
   const n = Math.max(1, wordsPerLine | 0)
   const groups: WordGroup[] = []
@@ -277,6 +292,29 @@ function groupWords(words: WordInput[], wordsPerLine: number): WordGroup[] {
       end: chunk[chunk.length - 1].end
     })
   }
+
+  // ── Apply lead-in / lead-out padding, clamped to neighbours ──────────
+  // Lead-in shifts `start` EARLIER (clamped to ≥0 and ≥ prev.end). Lead-out
+  // shifts `end` LATER (clamped to ≤ next.start). This keeps captions on
+  // screen across the small inter-word silences instead of strobing.
+  for (let i = 0; i < groups.length; i++) {
+    const g = groups[i]
+    const prev = i > 0 ? groups[i - 1] : null
+    const next = i < groups.length - 1 ? groups[i + 1] : null
+
+    const desiredStart = g.start - CAPTION_LEAD_IN_SECONDS
+    const minStart = prev ? prev.end : 0
+    g.start = Math.max(minStart, Math.max(0, desiredStart))
+
+    const desiredEnd = g.end + CAPTION_LEAD_OUT_SECONDS
+    // Use raw `next.start` for the clamp (before next's lead-in is applied
+    // in the next loop iteration — but order doesn't matter because the
+    // next iteration's clamp is `Math.max(prev.end, ...)` which sees this
+    // group's already-extended end).
+    const maxEnd = next ? next.start : Number.POSITIVE_INFINITY
+    g.end = Math.min(maxEnd, desiredEnd)
+  }
+
   return groups
 }
 

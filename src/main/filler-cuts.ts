@@ -252,3 +252,62 @@ export function remapWordTimestamps(
 
   return result
 }
+
+// ---------------------------------------------------------------------------
+// remapTimeAfterFillers
+// ---------------------------------------------------------------------------
+
+/**
+ * Remap a single source-video timestamp onto the cleaned (post-filler-removal)
+ * clip timeline.
+ *
+ * Given an absolute source-video time `t`, subtract the cumulative duration
+ * of every filler segment that ends at or before `t`, plus any portion of a
+ * filler segment that overlaps `t`. Returns 0-based clip-local seconds.
+ *
+ * If `t` falls inside a filler segment (i.e. the moment is cut from the
+ * output), the returned time is clamped to the start of that filler in the
+ * cleaned timeline — callers that need to detect this should compare
+ * against `clipStart` themselves.
+ *
+ * @param t              Absolute source-video timestamp (seconds)
+ * @param clipStart      Clip start in source video
+ * @param clipEnd        Clip end in source video
+ * @param fillerSegments Filler segments removed from the clip
+ * @returns              0-based clip-local time after filler removal
+ */
+export function remapTimeAfterFillers(
+  t: number,
+  clipStart: number,
+  clipEnd: number,
+  fillerSegments: FillerSegment[]
+): number {
+  if (t <= clipStart) return 0
+  const clamped = Math.min(t, clipEnd)
+
+  const fillers = fillerSegments
+    .filter((seg) => seg.start < clipEnd && seg.end > clipStart)
+    .map((seg) => ({
+      start: Math.max(seg.start, clipStart),
+      end: Math.min(seg.end, clipEnd),
+    }))
+    .sort((a, b) => a.start - b.start)
+
+  let cumulativeCut = 0
+  for (const filler of fillers) {
+    if (filler.end <= clamped) {
+      // Entire filler is before `t`
+      cumulativeCut += filler.end - filler.start
+    } else if (filler.start < clamped) {
+      // Filler straddles `t` — only the portion before `t` is cut from
+      // the timeline `t` lands on. (`t` itself effectively snaps to the
+      // start of this filler in the cleaned timeline.)
+      cumulativeCut += clamped - filler.start
+    } else {
+      // Filler starts at or after `t` — no more preceding cuts
+      break
+    }
+  }
+
+  return Math.max(0, (clamped - clipStart) - cumulativeCut)
+}

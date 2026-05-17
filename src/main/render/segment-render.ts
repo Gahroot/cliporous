@@ -371,6 +371,13 @@ async function encodeSegment(
           '-c:v', enc,
           ...flags,
           '-r', String(fps),
+          // Force constant frame rate. Without this, FFmpeg can mark
+          // frames as duplicates / drop them at -ss boundaries (typical
+          // when the source is VFR or 29.97), shifting per-segment PTS
+          // by up to one frame each — a drift the caption timeline can't
+          // see because captions are derived from word timestamps, not
+          // emitted PTS.
+          '-fps_mode', 'cfr',
           // Force 4:2:0 at the encoder sink to match what every downstream
           // consumer (xfade concat, overlay pass) expects. The filter graph
           // already ends in `format=yuv420p` but encoder negotiation can
@@ -378,6 +385,9 @@ async function encodeSegment(
           '-pix_fmt', 'yuv420p',
           '-c:a', 'aac',
           '-b:a', '192k',
+          // Lock audio sample rate too so concat doesn't have to resample
+          // mid-chain. 48 kHz matches the AAC stream encoders produce.
+          '-ar', '48000',
           '-movflags', '+faststart',
           '-y'
         ])
@@ -502,6 +512,27 @@ function getXfadeType(transition: TransitionType, flashColor?: string): string |
  * (CRF 12, veryfast). Honouring the user's CRF/preset at this layer baked a
  * second generation of H.264 loss into every clip. The parameter is retained
  * to avoid churning callers; remove it once all call sites are updated.
+ *
+ * `requestedDurations` is the per-segment duration we asked FFmpeg to produce
+ * for each input file (i.e. `seg.endTime - seg.startTime`). We combine that
+ * with the *video-stream* duration reported by ffprobe (NOT the container
+ * duration) and use `min(probed, requested)` for xfade `offset` math.
+ *
+ * Why both:
+ *   - container duration (`format.duration`) is often inflated by audio
+ *     padding — using it makes xfade schedule the transition past the end
+ *     of the video stream and HOLD THE LAST DECODED FRAME of segment N until
+ *     the scheduled offset is reached ("frozen photo of the speaker").
+ *   - requested duration is what we asked for, but GOP rounding / encoder
+ *     quirks can leave the actual stream a few frames SHORT of that. If we
+ *     use only the requested value, the xfade chain accumulates phantom
+ *     duration. Downstream xfades then expect input A to be longer than it
+ *     really is and they wait, holding the FIRST FRAME of input B —
+ *     identical symptom but with the next clip's frame instead of the
+ *     previous one.
+ *   - The intersection (`min`) keeps every offset inside the guaranteed
+ *     extent of the real video stream regardless of which way the encoder
+ *     drifted.
  */
 async function concatWithXfade(
   segmentFiles: string[],
@@ -510,7 +541,8 @@ async function concatWithXfade(
   onProgress: (percent: number) => void,
   flashColor?: string,
   transitionDuration?: number,
-  _xfQuality?: QualityParams
+  _xfQuality?: QualityParams,
+  requestedDurations?: number[]
 ): Promise<void> {
   if (segmentFiles.length === 0) throw new Error('No segments to concatenate')
   if (segmentFiles.length === 1) {
@@ -519,10 +551,28 @@ async function concatWithXfade(
     return
   }
 
+  // Probe each segment's actual video-stream duration and clamp against the
+  // requested duration. See the function docstring for why we need both.
   const durations: number[] = []
-  for (const f of segmentFiles) {
-    const meta = await getVideoMetadata(f)
-    durations.push(meta.duration)
+  for (let i = 0; i < segmentFiles.length; i++) {
+    const meta = await getVideoMetadata(segmentFiles[i])
+    const probed = meta.videoStreamDuration > 0 ? meta.videoStreamDuration : meta.duration
+    const requested = requestedDurations?.[i]
+    // Use the smaller of probed-stream and requested. If either is missing
+    // or zero, fall back to whichever is available.
+    let chosen: number
+    if (requested && requested > 0 && probed > 0) {
+      chosen = Math.min(probed, requested)
+      if (Math.abs(probed - requested) > 0.05) {
+        console.warn(
+          `[SegmentRender] Segment ${i} duration drift: requested=${requested.toFixed(3)}s ` +
+            `probed-stream=${probed.toFixed(3)}s — using ${chosen.toFixed(3)}s for xfade offset.`
+        )
+      }
+    } else {
+      chosen = probed > 0 ? probed : (requested ?? meta.duration)
+    }
+    durations.push(chosen)
   }
 
   // Build the video xfade chain and a parallel audio acrossfade chain.
@@ -533,10 +583,12 @@ async function concatWithXfade(
   const audioParts: string[] = []
   const xfadeDuration = transitionDuration ?? 0.3
   // Minimum duration the xfade filter can resolve at the output framerate.
-  // At 30 fps that's 1/30 ≈ 0.033 s; using 0.05 s gives a safety margin and
-  // matches what local FFmpeg 6.0 testing showed to be the lower bound that
-  // does NOT truncate the second segment to the first segment's length.
-  const hardCutXfade = 0.05
+  // We pick exactly one output frame (1/fps) so a "hard-cut inside an xfade
+  // chain" looks frame-identical to a true butt-splice while still being a
+  // legal xfade slice that doesn't truncate the second segment. At 30 fps
+  // that's ~0.033 s; the previous 0.05 s ceiling drifted captions by 17 ms
+  // per join because the chain shrank by more than one frame per cut.
+  const hardCutXfade = Math.max(1 / 30, 0.005)
 
   let inputLabel = '0:v'
   let outputLabel = 'v0'
@@ -562,8 +614,16 @@ async function concatWithXfade(
         `[${inputLabel}][${i}:v]xfade=transition=${xfadeType}:duration=${stepDuration.toFixed(3)}:offset=${offset.toFixed(3)}[${outputLabel}]`
       )
     }
+    // Audio crossfade. For hard-cuts inside the xfade chain we want a
+    // clean butt-splice (no soft fade) so the speaker's voice doesn't
+    // soften every time the visual barely cuts. `c1=nofade:c2=nofade`
+    // collapses acrossfade's curve to a sample-aligned join — the
+    // crossfade still has to exist (acrossfade requires d > 0) but it
+    // contributes no audible taper. Soft transitions keep the triangular
+    // curve so audio fades match the visual fade.
+    const audioCurves = xfadeType === null ? 'c1=nofade:c2=nofade' : 'c1=tri:c2=tri'
     audioParts.push(
-      `[${audioInputLabel}][${i}:a]acrossfade=d=${stepDuration.toFixed(3)}:c1=tri:c2=tri[${audioOutputLabel}]`
+      `[${audioInputLabel}][${i}:a]acrossfade=d=${stepDuration.toFixed(3)}:${audioCurves}[${audioOutputLabel}]`
     )
     accumulatedDuration += durations[i] - stepDuration
 
@@ -667,14 +727,57 @@ async function concatWithXfade(
 // ---------------------------------------------------------------------------
 
 /**
+ * Compute the per-boundary xfade step durations for a sequence of
+ * transitions. `stepDurations[i]` is the time (seconds) by which segment
+ * `i` OVERLAPS segment `i-1` in the rendered output. `stepDurations[0]` is
+ * always 0 (no transition into the first segment).
+ *
+ * These values MUST match what `concatWithXfade` uses, or the caption
+ * timeline will drift from the actual rendered video timeline. The values
+ * are also subtracted from the cumulative clip-time when laying out caption
+ * events and archetype windows so that everything stays in the output's
+ * post-concat coordinate system.
+ *
+ * When the segmented render uses `concatWithDemuxer` (all hard-cuts, no
+ * xfade) the step durations are all 0 — captions then align with the
+ * butt-spliced timeline exactly.
+ */
+function computeStepDurations(
+  transitions: TransitionType[],
+  transitionDuration: number,
+  fps: number,
+  flashColor: string | undefined,
+  useXfadeConcat: boolean
+): number[] {
+  // No xfade pass → demuxer concat → zero overlap at every join.
+  if (!useXfadeConcat) return transitions.map(() => 0)
+
+  // Minimum xfade slice the filter can resolve at the output framerate —
+  // one full frame (1/fps). This is effectively a single-frame crossfade,
+  // visually indistinguishable from a hard cut, and matches what
+  // `concatWithXfade` emits for hard-cut entries inside an xfade chain.
+  const hardCutXfade = Math.max(1 / Math.max(1, fps), 0.005)
+
+  return transitions.map((t, i) => {
+    if (i === 0) return 0
+    const xfadeType = getXfadeType(t, flashColor)
+    return xfadeType === null ? hardCutXfade : transitionDuration
+  })
+}
+
+/**
  * Build the WordInput list for the clip-level caption ASS. Times are
  * shifted to clip-relative (0-based) seconds by subtracting the first
- * segment's startTime.
+ * segment's startTime, then ADJUSTED for the xfade overlap that
+ * `concatWithXfade` introduces between adjacent segments. Each transition
+ * with overlap `d` shrinks the output timeline by `d` seconds; captions
+ * must subtract the same amount or they drift forward of the audio.
  */
 function buildClipLevelWords(
   segments: ResolvedSegment[],
   wordTimestamps: { text: string; start: number; end: number }[] | undefined,
-  wordEmphasis: EmphasizedWord[] | undefined
+  wordEmphasis: EmphasizedWord[] | undefined,
+  stepDurations: number[]
 ): WordInput[] {
   if (!wordTimestamps || wordTimestamps.length === 0) return []
   if (segments.length === 0) return []
@@ -682,11 +785,17 @@ function buildClipLevelWords(
   // The clip's source-time range is [first.startTime, last.endTime). Words
   // outside this range are dropped. We map source time → concatenated clip
   // time by walking the segments in order and accumulating each segment's
-  // local offset.
+  // local offset, MINUS the xfade overlap consumed by the transition into
+  // that segment (`stepDurations[i]`).
   const clipWords: WordInput[] = []
   let cumulative = 0
-  for (const seg of segments) {
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i]
     const segDuration = seg.endTime - seg.startTime
+    const step = stepDurations[i] ?? 0
+    // Segment `i` (i ≥ 1) starts `step` seconds BEFORE the un-shrunk
+    // cumulative position, because xfade overlaps it with segment i-1.
+    cumulative -= step
     for (const w of wordTimestamps) {
       if (w.end <= seg.startTime || w.start >= seg.endTime) continue
       const localStart = Math.max(0, w.start - seg.startTime)
@@ -707,8 +816,11 @@ function buildClipLevelWords(
     // Rebuild with emphasis by re-walking — we need the source time to match.
     const out: WordInput[] = []
     let cum2 = 0
-    for (const seg of segments) {
+    for (let i = 0; i < segments.length; i++) {
+      const seg = segments[i]
       const segDuration = seg.endTime - seg.startTime
+      const step = stepDurations[i] ?? 0
+      cum2 -= step
       for (const w of wordTimestamps) {
         if (w.end <= seg.startTime || w.start >= seg.endTime) continue
         const localStart = Math.max(0, w.start - seg.startTime)
@@ -802,12 +914,22 @@ function rebalanceSegmentBoundaries(
 /**
  * Build the per-segment ArchetypeWindow list in clip-relative time. The
  * caption builder uses this to vary marginV + fontSize for each segment.
+ *
+ * Like `buildClipLevelWords`, each transition's xfade overlap is subtracted
+ * from the cumulative position so the window timeline matches the rendered
+ * output's actual PTS.
  */
-function buildClipArchetypeWindows(segments: ResolvedSegment[]): ArchetypeWindow[] {
+function buildClipArchetypeWindows(
+  segments: ResolvedSegment[],
+  stepDurations: number[]
+): ArchetypeWindow[] {
   const windows: ArchetypeWindow[] = []
   let cumulative = 0
-  for (const seg of segments) {
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i]
     const segDuration = seg.endTime - seg.startTime
+    const step = stepDurations[i] ?? 0
+    cumulative -= step
     windows.push({
       startTime: cumulative,
       endTime: cumulative + segDuration,
@@ -862,16 +984,27 @@ export async function renderSegmentedClip(
   // See `rebalanceSegmentBoundaries()` for the why + algorithm.
   const balancedSegments = rebalanceSegmentBoundaries(config.segments, config.wordTimestamps)
 
-  // Archetype windows must reflect the shifted boundaries, otherwise the
-  // caption pass would partition words against the pre-shift timeline. Any
-  // pre-supplied `config.archetypeWindows` is rebuilt from the rebalanced
-  // segments here.
-  const balancedArchetypeWindows = buildClipArchetypeWindows(balancedSegments)
-
   // Transitions are indexed by segment; transitions[0] is for the first
   // segment (= ignored at concat time).
   const transitions: TransitionType[] = balancedSegments.map((s) => s.transitionIn)
   const needsXfade = transitions.slice(1).some((t) => t !== 'hard-cut' && t !== 'none')
+
+  // Per-transition xfade overlap durations. MUST match what the concat path
+  // below actually emits, or captions / archetype windows drift forward of
+  // the rendered audio at every segment boundary.
+  const stepDurations = computeStepDurations(
+    transitions,
+    config.editStyle.transitionDuration ?? 0.3,
+    config.fps,
+    config.editStyle.flashColor,
+    needsXfade
+  )
+
+  // Archetype windows must reflect the shifted boundaries AND the xfade
+  // overlap that the concat pass consumes between segments. Any pre-supplied
+  // `config.archetypeWindows` is rebuilt from the rebalanced segments +
+  // step durations here.
+  const balancedArchetypeWindows = buildClipArchetypeWindows(balancedSegments, stepDurations)
 
   // Progress allocation: 80% segment encode, 5% concat, 15% post-concat.
   const segmentWeight = 80
@@ -907,6 +1040,11 @@ export async function renderSegmentedClip(
 
     if (needsXfade) {
       console.log(`[SegmentRender] Using xfade concat for ${balancedSegments.length} segments`)
+      // Pass the requested per-segment durations so xfade offset math uses
+      // the encoder's promised stream length rather than ffprobe's container
+      // duration (which can drift past the actual video stream end and make
+      // xfade hold the last frame as a still image).
+      const requestedSegDurations = balancedSegments.map((s) => s.endTime - s.startTime)
       await concatWithXfade(
         segmentOutputFiles,
         transitions,
@@ -914,7 +1052,8 @@ export async function renderSegmentedClip(
         (percent) => onProgress(concatBase + (percent - concatBase) * 0.05),
         config.editStyle.flashColor,
         config.editStyle.transitionDuration,
-        config.qualityParams
+        config.qualityParams,
+        requestedSegDurations
       )
     } else {
       console.log(`[SegmentRender] Using concat demuxer for ${balancedSegments.length} segments`)
@@ -945,7 +1084,8 @@ export async function renderSegmentedClip(
       const clipWords = buildClipLevelWords(
         balancedSegments,
         config.wordTimestamps,
-        config.wordEmphasis
+        config.wordEmphasis,
+        stepDurations
       )
       if (clipWords.length > 0) {
         try {

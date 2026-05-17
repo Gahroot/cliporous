@@ -143,7 +143,8 @@ vi.mock('../ffmpeg', () => {
       codec: 'h264',
       fps: 30,
       audioCodec: 'aac',
-      duration: 60
+      duration: 60,
+      videoStreamDuration: 60
     }))
   }
 })
