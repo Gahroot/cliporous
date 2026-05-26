@@ -1,7 +1,7 @@
 import { GoogleGenAI } from '@google/genai'
 import { writeFileSync } from 'fs'
 import { join, basename, extname } from 'path'
-import { callGeminiWithRetry } from './gemini-client'
+import { callGeminiWithRetry, MODELS } from './gemini-client'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -42,7 +42,11 @@ async function callGeminiJSON<T>(apiKey: string, prompt: string, usageSource: st
   const ai = new GoogleGenAI({ apiKey })
   const text = await callGeminiWithRetry(
     ai,
-    { model: 'gemini-2.5-flash-lite', config: { responseMimeType: 'application/json' } },
+    {
+      model: MODELS.FAST[0],
+      fallbacks: MODELS.FAST.slice(1),
+      config: { responseMimeType: 'application/json' }
+    },
     prompt,
     usageSource
   )

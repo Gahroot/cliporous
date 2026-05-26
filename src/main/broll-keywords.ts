@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai'
 import type { WordTimestamp } from '@shared/types'
+import { callGeminiWithRetry, MODELS } from './ai/gemini-client'
 
 // ---------------------------------------------------------------------------
 // Types (WordTimestamp canonical definition lives in @shared/types)
@@ -46,11 +47,12 @@ async function extractKeywordsWithGemini(
 
   const prompt = `${KEYWORD_PROMPT}\n\nTranscript:\n${timestampedText}\n\nFull text: ${transcriptText}`
 
-  const result = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-lite',
-    contents: prompt
-  })
-  const raw = (result.text ?? '').trim()
+  const raw = await callGeminiWithRetry(
+    ai,
+    { model: MODELS.FAST[0], fallbacks: MODELS.FAST.slice(1) },
+    prompt,
+    'broll-keywords'
+  )
 
   // Strip markdown code fences if present
   const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '')

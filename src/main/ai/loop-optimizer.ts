@@ -1,4 +1,4 @@
-import { callGeminiWithRetry, type GeminiCall } from './gemini-client'
+import { callGeminiWithRetry, MODELS, type GeminiCall } from './gemini-client'
 import { GoogleGenAI, Type } from '@google/genai'
 import type { TranscriptionResult, WordTimestamp } from '../transcription'
 
@@ -225,7 +225,8 @@ Analyze this clip for loop potential. Consider:
 
   const ai = new GoogleGenAI({ apiKey })
   const call: GeminiCall = {
-    model: 'gemini-2.5-flash-lite',
+    model: MODELS.FAST[0],
+    fallbacks: MODELS.FAST.slice(1),
     config: {
       responseMimeType: 'application/json',
       responseSchema: LOOP_ANALYSIS_SCHEMA

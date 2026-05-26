@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai'
-import { callGeminiWithRetry, type GeminiCall } from './ai/gemini-client'
+import { callGeminiWithRetry, MODELS, type GeminiCall } from './ai/gemini-client'
 
 // ---------------------------------------------------------------------------
 // Types (canonical definitions live in @shared/types)
@@ -334,7 +334,8 @@ export async function scoreTranscript(
 
   const ai = new GoogleGenAI({ apiKey })
   const call: GeminiCall = {
-    model: 'gemini-2.5-flash-lite',
+    model: MODELS.FAST[0],
+    fallbacks: MODELS.FAST.slice(1),
     config: { responseMimeType: 'application/json' }
   }
 
@@ -421,7 +422,8 @@ export async function rescoreSingleClip(
 ): Promise<SingleClipRescoreResult> {
   const ai = new GoogleGenAI({ apiKey })
   const call: GeminiCall = {
-    model: 'gemini-2.5-flash-lite',
+    model: MODELS.FAST[0],
+    fallbacks: MODELS.FAST.slice(1),
     config: { responseMimeType: 'application/json' }
   }
 
@@ -489,7 +491,10 @@ Transcript: "${clipText.trim()}"`
 
 export async function generateHookText(apiKey: string, transcript: string, videoSummary?: string, keyTopics?: string[]): Promise<string> {
   const ai = new GoogleGenAI({ apiKey })
-  const call: GeminiCall = { model: 'gemini-2.5-flash' }
+  const call: GeminiCall = {
+    model: MODELS.BALANCED[0],
+    fallbacks: MODELS.BALANCED.slice(1)
+  }
 
   let contextBlock = ''
   if (videoSummary || (keyTopics && keyTopics.length > 0)) {

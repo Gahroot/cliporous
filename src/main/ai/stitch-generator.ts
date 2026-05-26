@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai'
-import { callGeminiWithRetry, type GeminiCall } from './gemini-client'
+import { callGeminiWithRetry, MODELS, type GeminiCall } from './gemini-client'
 
 import type {
   StitchedClipPlan,
@@ -356,7 +356,8 @@ export async function generateStitchedClips(
 
   const ai = new GoogleGenAI({ apiKey })
   const call: GeminiCall = {
-    model: 'gemini-2.5-flash-lite',
+    model: MODELS.FAST[0],
+    fallbacks: MODELS.FAST.slice(1),
     config: { responseMimeType: 'application/json' },
   }
 

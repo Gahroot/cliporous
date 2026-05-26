@@ -22,7 +22,7 @@ import { createHash } from 'crypto'
 import * as https from 'https'
 import * as http from 'http'
 import { URL } from 'url'
-import { callGeminiWithRetry, type GeminiCall } from './gemini-client'
+import { callGeminiWithRetry, MODELS, type GeminiCall } from './gemini-client'
 import { GoogleGenAI } from '@google/genai'
 import type { VideoSegment, SegmentStyleCategory } from '@shared/types'
 
@@ -381,7 +381,8 @@ export async function getImageSearchQuery(
 ): Promise<string> {
   const ai = new GoogleGenAI({ apiKey: geminiApiKey })
   const call: GeminiCall = {
-    model: 'gemini-2.5-flash-lite',
+    model: MODELS.FAST[0],
+    fallbacks: MODELS.FAST.slice(1),
     config: { responseMimeType: 'application/json' }
   }
 

@@ -13,7 +13,7 @@
 // ---------------------------------------------------------------------------
 
 import { GoogleGenAI } from '@google/genai'
-import { emitUsageFromResponse } from '../ai-usage'
+import { callGeminiWithRetry, MODELS, type GeminiCall } from './gemini-client'
 import {
   buildEditPlanCacheKey,
   getCachedEditPlan,
@@ -350,18 +350,16 @@ export async function generateEditPlan(options: GenerateEditPlanOptions): Promis
   )
 
   const ai = new GoogleGenAI({ apiKey })
-  // Use full Flash for the quality of reasoning this complex multi-layer analysis requires
-  const result = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: prompt,
+  // Use BALANCED chain — this complex multi-layer analysis needs Flash-class reasoning.
+  const call: GeminiCall = {
+    model: MODELS.BALANCED[0],
+    fallbacks: MODELS.BALANCED.slice(1),
     config: {
       responseMimeType: 'application/json',
-      temperature: 0.3  // lower temperature for consistent, structured output
+      temperature: 0.3 // lower temperature for consistent, structured output
     }
-  })
-  emitUsageFromResponse('edit-plan', 'gemini-2.5-flash', result)
-
-  const raw = (result.text ?? '').trim()
+  }
+  const raw = await callGeminiWithRetry(ai, call, prompt, 'edit-plan')
 
   const { wordEmphasis, brollSuggestions, sfxSuggestions, reasoning } =
     parseEditPlanResponse(raw, clippedWords, clipDuration)

@@ -1,4 +1,4 @@
-import { callGeminiWithRetry, type GeminiCall } from './gemini-client'
+import { callGeminiWithRetry, MODELS, type GeminiCall } from './gemini-client'
 import { GoogleGenAI } from '@google/genai'
 import type { TranscriptionResult } from '../transcription'
 import type { CuriosityGap, ClipBoundary, CuriosityClipCandidate, ClipEndMode } from '@shared/types'
@@ -155,7 +155,8 @@ export async function detectCuriosityGaps(
 
   const ai = new GoogleGenAI({ apiKey })
   const call: GeminiCall = {
-    model: 'gemini-2.5-flash-lite',
+    model: MODELS.FAST[0],
+    fallbacks: MODELS.FAST.slice(1),
     config: { responseMimeType: 'application/json' }
   }
 

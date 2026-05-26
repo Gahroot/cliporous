@@ -1,4 +1,4 @@
-import { callGeminiWithRetry, type GeminiCall } from './ai/gemini-client'
+import { callGeminiWithRetry, MODELS, type GeminiCall } from './ai/gemini-client'
 import { GoogleGenAI } from '@google/genai'
 import type { WordTimestamp } from '@shared/types'
 
@@ -381,7 +381,8 @@ async function analyzeEmphasisWithAI(
 ): Promise<EmphasizedWord[] | null> {
   const ai = new GoogleGenAI({ apiKey })
   const call: GeminiCall = {
-    model: 'gemini-2.5-flash-lite',
+    model: MODELS.FAST[0],
+    fallbacks: MODELS.FAST.slice(1),
     config: { responseMimeType: 'application/json' }
   }
 
