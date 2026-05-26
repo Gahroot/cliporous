@@ -534,7 +534,9 @@ describe('FillerRemovalFeature', () => {
           removeFillerWords: true,
           trimSilences: false,
           removeRepeats: false,
-          silenceThreshold: 0.5
+          silenceThreshold: 0.5,
+          silenceTargetGap: 0.15,
+          fillerWords: ['um', 'uh']
         }
       })
     )
@@ -551,7 +553,9 @@ describe('FillerRemovalFeature', () => {
           removeFillerWords: true,
           trimSilences: false,
           removeRepeats: false,
-          silenceThreshold: 0.5
+          silenceThreshold: 0.5,
+          silenceTargetGap: 0.15,
+          fillerWords: ['um', 'uh']
         }
       })
     )

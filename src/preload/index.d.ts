@@ -369,10 +369,18 @@ interface RenderBatchOptions {
   /** Filler / silence / repeat removal settings. */
   fillerRemoval?: {
     enabled: boolean
+    /**
+     * Named preset ("let-it-ride" / "tight" / "custom"). Forwarded for
+     * telemetry / UI only — the main process reads only the granular
+     * fields below.
+     */
+    preset?: 'let-it-ride' | 'tight' | 'custom'
     removeFillerWords: boolean
     trimSilences: boolean
     removeRepeats: boolean
     silenceThreshold: number
+    /** Target gap (seconds) left after trimming a silence. */
+    silenceTargetGap?: number
     fillerWords: string[]
   }
   /** B-Roll overlay settings — when enabled, generates AI image placements */

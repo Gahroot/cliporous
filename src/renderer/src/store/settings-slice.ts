@@ -15,12 +15,15 @@ import type {
   BRollTransition,
   TemplateLayout,
   Platform,
+  FillerRemovalPreset,
 } from './types'
 import {
   DEFAULT_SETTINGS,
   DEFAULT_PROCESSING_CONFIG,
   DEFAULT_TEMPLATE_LAYOUT,
   DEFAULT_TARGET_PLATFORM,
+  FILLER_PRESET_LET_IT_RIDE,
+  FILLER_PRESET_TIGHT,
   loadPersistedSettings,
   loadPersistedProcessingConfig,
 } from './helpers'
@@ -67,10 +70,12 @@ export interface SettingsSlice {
   setBRollPipSize: (size: number) => void
   setBRollPipPosition: (position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right') => void
   setFillerRemovalEnabled: (enabled: boolean) => void
+  setFillerRemovalPreset: (preset: FillerRemovalPreset) => void
   setFillerRemovalFillerWords: (enabled: boolean) => void
   setFillerRemovalSilences: (enabled: boolean) => void
   setFillerRemovalRepeats: (enabled: boolean) => void
   setFillerRemovalSilenceThreshold: (seconds: number) => void
+  setFillerRemovalSilenceTargetGap: (seconds: number) => void
   setFillerRemovalWordList: (words: string[]) => void
   setEnableNotifications: (enabled: boolean) => void
   setDeveloperMode: (enabled: boolean) => void
@@ -249,24 +254,62 @@ export const createSettingsSlice: StateCreator<
     set((state) => { state.settings.broll.pipPosition = pipPosition }),
 
   // --- Filler Removal ---
+  //
+  // `enabled` is the master kill-switch; it does NOT switch the preset to
+  // custom (toggling on/off should be cheap and reversible).
+  //
+  // Every other granular setter marks the preset as 'custom' so the UI can
+  // surface that the user has hand-tuned values that no longer match a named
+  // preset. Switching back to a preset via `setFillerRemovalPreset` clobbers
+  // the granular values with that preset's canonical settings.
 
   setFillerRemovalEnabled: (enabled) =>
     set((state) => { state.settings.fillerRemoval.enabled = enabled }),
 
+  setFillerRemovalPreset: (preset) =>
+    set((state) => {
+      const base = preset === 'tight' ? FILLER_PRESET_TIGHT : FILLER_PRESET_LET_IT_RIDE
+      // Preserve the user's enabled toggle across preset switches; replace
+      // every other field with the canonical preset values.
+      const wasEnabled = state.settings.fillerRemoval.enabled
+      state.settings.fillerRemoval = { ...base, preset, enabled: wasEnabled }
+    }),
+
   setFillerRemovalFillerWords: (removeFillerWords) =>
-    set((state) => { state.settings.fillerRemoval.removeFillerWords = removeFillerWords }),
+    set((state) => {
+      state.settings.fillerRemoval.removeFillerWords = removeFillerWords
+      state.settings.fillerRemoval.preset = 'custom'
+    }),
 
   setFillerRemovalSilences: (trimSilences) =>
-    set((state) => { state.settings.fillerRemoval.trimSilences = trimSilences }),
+    set((state) => {
+      state.settings.fillerRemoval.trimSilences = trimSilences
+      state.settings.fillerRemoval.preset = 'custom'
+    }),
 
   setFillerRemovalRepeats: (removeRepeats) =>
-    set((state) => { state.settings.fillerRemoval.removeRepeats = removeRepeats }),
+    set((state) => {
+      state.settings.fillerRemoval.removeRepeats = removeRepeats
+      state.settings.fillerRemoval.preset = 'custom'
+    }),
 
   setFillerRemovalSilenceThreshold: (silenceThreshold) =>
-    set((state) => { state.settings.fillerRemoval.silenceThreshold = silenceThreshold }),
+    set((state) => {
+      state.settings.fillerRemoval.silenceThreshold = silenceThreshold
+      state.settings.fillerRemoval.preset = 'custom'
+    }),
+
+  setFillerRemovalSilenceTargetGap: (silenceTargetGap) =>
+    set((state) => {
+      state.settings.fillerRemoval.silenceTargetGap = silenceTargetGap
+      state.settings.fillerRemoval.preset = 'custom'
+    }),
 
   setFillerRemovalWordList: (fillerWords) =>
-    set((state) => { state.settings.fillerRemoval.fillerWords = fillerWords }),
+    set((state) => {
+      state.settings.fillerRemoval.fillerWords = fillerWords
+      state.settings.fillerRemoval.preset = 'custom'
+    }),
 
   // --- Notifications ---
 

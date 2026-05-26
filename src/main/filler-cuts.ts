@@ -12,6 +12,34 @@ export interface KeepSegment {
   end: number
 }
 
+/** Options controlling how filler removal stitches together keep segments. */
+export interface BuildKeepSegmentsOptions {
+  /**
+   * Seconds to pad onto the *start* of every keep segment, preserving the
+   * lead-in (consonant onset, breath, articulation shape) of the kept audio.
+   * Padding is clamped so adjacent keep segments never overlap and so it
+   * never crosses the clip bounds. Default: 0.
+   */
+  paddingHead?: number
+  /**
+   * Seconds to pad onto the *end* of every keep segment, preserving the
+   * trailing breath / plosive release of the last word. Default: 0.
+   */
+  paddingTail?: number
+  /**
+   * Maximum cut size (in seconds) we should *not* bother making. If two keep
+   * segments would be separated by a gap smaller than this, they are merged
+   * (i.e. the in-between content is kept, no cut is made). Set higher to
+   * eliminate micro-cuts. Default: 0.05 (preserve all but degenerate cuts).
+   */
+  mergeGapThreshold?: number
+  /**
+   * Minimum acceptable duration (seconds) of any single keep segment. Smaller
+   * segments are dropped because they're too short to perceive. Default: 0.1.
+   */
+  minKeepDuration?: number
+}
+
 // ---------------------------------------------------------------------------
 // buildKeepSegments
 // ---------------------------------------------------------------------------
@@ -22,14 +50,21 @@ export interface KeepSegment {
  * @param clipStart - Clip start time in seconds (absolute, in source video)
  * @param clipEnd - Clip end time in seconds (absolute, in source video)
  * @param fillerSegments - Segments to remove (absolute timestamps from source video)
+ * @param options - Padding / merge tuning (see {@link BuildKeepSegmentsOptions})
  * @returns Array of keep segments with 0-based timestamps relative to clip start
  */
 export function buildKeepSegments(
   clipStart: number,
   clipEnd: number,
-  fillerSegments: FillerSegment[]
+  fillerSegments: FillerSegment[],
+  options: BuildKeepSegmentsOptions = {}
 ): KeepSegment[] {
   if (clipEnd <= clipStart) return []
+
+  const paddingHead = Math.max(0, options.paddingHead ?? 0)
+  const paddingTail = Math.max(0, options.paddingTail ?? 0)
+  const mergeGapThreshold = Math.max(0, options.mergeGapThreshold ?? 0.05)
+  const minKeepDuration = Math.max(0, options.minKeepDuration ?? 0.1)
 
   // Filter to only those overlapping with [clipStart, clipEnd]
   const overlapping = fillerSegments.filter(
@@ -69,11 +104,35 @@ export function buildKeepSegments(
     end: seg.end - clipStart,
   }))
 
-  // Merge keep segments that are very close together (gap < 0.05s) to avoid micro-cuts
-  keepSegments = mergeCloseSegments(keepSegments, 0.05)
+  // Apply breath padding — extend each keep segment's tail forward and the
+  // next segment's head backward, but never let them collide or escape the
+  // clip. This preserves coarticulation across cuts so the audio doesn't
+  // sound chopped off, while still removing the bulk of the filler/silence.
+  if ((paddingHead > 0 || paddingTail > 0) && keepSegments.length > 0) {
+    const clipDuration = clipEnd - clipStart
+    keepSegments = keepSegments.map((seg, i) => {
+      const prevEnd = i > 0 ? keepSegments[i - 1].end : 0
+      const nextStart = i < keepSegments.length - 1 ? keepSegments[i + 1].start : clipDuration
+      // Available room on each side of THIS segment’s gap. Split the gap so
+      // the head pad of this segment + tail pad of the previous segment
+      // never overlap.
+      const headRoom = (seg.start - prevEnd) / 2
+      const tailRoom = (nextStart - seg.end) / 2
+      return {
+        start: Math.max(0, seg.start - Math.min(paddingHead, headRoom)),
+        end: Math.min(clipDuration, seg.end + Math.min(paddingTail, tailRoom)),
+      }
+    })
+  }
 
-  // Remove keep segments shorter than 0.1s (too small to be useful)
-  keepSegments = keepSegments.filter((seg) => seg.end - seg.start >= 0.1)
+  // Merge keep segments whose remaining gap is smaller than the threshold.
+  // With default 0.05s this just kills degenerate cuts; with a larger value
+  // (e.g. 0.4s from the let-it-ride preset's perspective) it suppresses
+  // micro-cuts that aren't worth their disruption cost.
+  keepSegments = mergeCloseSegments(keepSegments, mergeGapThreshold)
+
+  // Remove keep segments shorter than minKeepDuration (too small to be useful)
+  keepSegments = keepSegments.filter((seg) => seg.end - seg.start >= minKeepDuration)
 
   return keepSegments
 }

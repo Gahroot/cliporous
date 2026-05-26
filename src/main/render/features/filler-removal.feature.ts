@@ -36,6 +36,14 @@ import { ffmpeg as createFfmpeg, getEncoder, getSoftwareEncoder, isGpuSessionErr
  * Re-encoding is required for frame-accurate cuts — stream copy would produce
  * keyframe-aligned boundaries that don't match the filler timestamps.
  */
+// 3 ms exponential click-suppression only. Linear fades of 10–20 ms (the old
+// default) stack across multiple cuts into an audible volume duck on every
+// seam — the "volume fading" complaint. 3 ms exp is below the ear's
+// detection threshold for a single transient yet still kills boundary clicks
+// from non-zero-crossing waveform truncation.
+const SEAM_FADE_DURATION_SEC = 0.003
+const SEAM_FADE_CURVE = 'exp'
+
 function trimSegment(
   sourcePath: string,
   startTime: number,
@@ -43,16 +51,18 @@ function trimSegment(
   outputPath: string
 ): Promise<void> {
   const { encoder, presetFlag } = isGpuEncoderDisabled() ? getSoftwareEncoder() : getEncoder()
+  const fadeOutStart = Math.max(0, duration - SEAM_FADE_DURATION_SEC)
+  const seamFades = [
+    `afade=t=in:st=0:d=${SEAM_FADE_DURATION_SEC}:curve=${SEAM_FADE_CURVE}`,
+    `afade=t=out:st=${fadeOutStart}:d=${SEAM_FADE_DURATION_SEC}:curve=${SEAM_FADE_CURVE}`
+  ]
 
   return new Promise<void>((resolve, reject) => {
     let stderrOutput = ''
-    const cmd = createFfmpeg(sourcePath)
+    createFfmpeg(sourcePath)
       .setStartTime(startTime)
       .setDuration(duration)
-      .audioFilters([
-        `afade=t=in:st=0:d=0.015`,
-        `afade=t=out:st=${Math.max(0, duration - 0.015)}:d=0.015`
-      ])
+      .audioFilters(seamFades)
       .outputOptions(['-y', '-c:v', encoder, ...presetFlag, '-c:a', 'aac', '-b:a', '192k'])
       .on('stderr', (line: string) => { stderrOutput += line + '\n' })
       .on('end', () => resolve())
@@ -64,10 +74,7 @@ function trimSegment(
           createFfmpeg(sourcePath)
             .setStartTime(startTime)
             .setDuration(duration)
-            .audioFilters([
-              `afade=t=in:st=0:d=0.015`,
-              `afade=t=out:st=${Math.max(0, duration - 0.015)}:d=0.015`
-            ])
+            .audioFilters(seamFades)
             .outputOptions(['-y', '-c:v', sw.encoder, ...sw.presetFlag, '-c:a', 'aac', '-b:a', '192k'])
             .on('end', () => resolve())
             .on('error', reject)
@@ -211,7 +218,24 @@ export async function runFillerRemoval(
     )
   }
 
-  const keepSegments = buildKeepSegments(job.startTime, job.endTime, fillerSegments)
+  // Breath padding & merge tuning: preserve coarticulation and suppress
+  // micro-cuts so trims feel like edits, not chops. Tuned for the "Let It
+  // Ride" defaults; Tight preset still passes its own threshold values via
+  // `silenceThreshold` / `silenceTargetGap`, so this is safe across presets.
+  //
+  //   paddingHead 50 ms  — keep the lead-in (consonant onset) of every word
+  //   paddingTail 90 ms  — keep the trailing breath / plosive release
+  //   mergeGapThreshold 200 ms — if a cut would be smaller than this, skip
+  //                              it; the saved time isn't worth the seam
+  //
+  // 200 ms is the largest threshold that still allows individual "um" cuts
+  // (≈250–300 ms) while killing rapid-fire chopping from clustered fillers.
+  const keepSegments = buildKeepSegments(job.startTime, job.endTime, fillerSegments, {
+    paddingHead: 0.05,
+    paddingTail: 0.09,
+    mergeGapThreshold: 0.2,
+    minKeepDuration: 0.1
+  })
   if (keepSegments.length === 0) {
     console.warn(`[FillerRemoval] Clip ${job.clipId}: no keep segments — skipping`)
     return empty

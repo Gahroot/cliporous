@@ -27,16 +27,42 @@ export interface FillerDetectionSettings {
   trimSilences: boolean
   /** Remove stuttered/repeated word starts */
   removeRepeats: boolean
-  /** Minimum gap (seconds) between words to consider as a removable silence. Default: 0.8 */
+  /**
+   * Minimum gap (seconds) between words to consider as a removable silence.
+   * "Let It Ride" default: 1.5 — only trim awkward dead air, not thinking pauses.
+   * "Tight" preset uses 0.8.
+   */
   silenceThreshold: number
-  /** Target silence duration (seconds) to leave after trimming. Default: 0.15 */
+  /**
+   * Target silence duration (seconds) to leave after trimming.
+   * "Let It Ride" default: 0.4 — preserve breath; "Tight" uses 0.15.
+   */
   silenceTargetGap: number
   /** Custom filler word list */
   fillerWords: string[]
 }
 
-/** Default filler word list */
+/**
+ * Default filler word list — "Let It Ride" preset.
+ *
+ * Pure hesitation sounds only. Discourse markers ('like', 'actually',
+ * 'literally', 'basically', 'right', 'you know', 'i mean', 'sort of',
+ * 'kind of', 'okay so') were removed because in long-form explanatory
+ * content they carry semantic load (contrast, emphasis, hedging, rapport,
+ * structure). Cutting them produces choppy, incoherent speech even when
+ * each individual cut is frame-accurate.
+ */
 export const DEFAULT_FILLER_WORDS: string[] = [
+  'um', 'uh', 'erm', 'er', 'ah', 'hm', 'hmm', 'mm', 'mhm'
+]
+
+/**
+ * Aggressive filler word list — "Tight" preset.
+ *
+ * Cuts hesitation sounds + discourse markers. Suited to short hook-driven
+ * content where every second matters. Will sometimes break sentence prosody.
+ */
+export const AGGRESSIVE_FILLER_WORDS: string[] = [
   'um', 'uh', 'erm', 'er', 'ah', 'hm', 'hmm', 'mm', 'mhm',
   'like', 'you know', 'i mean', 'sort of', 'kind of',
   'basically', 'actually', 'literally', 'right', 'okay so'
@@ -46,8 +72,8 @@ const DEFAULT_FILLER_DETECTION_SETTINGS: FillerDetectionSettings = {
   removeFillerWords: true,
   trimSilences: true,
   removeRepeats: true,
-  silenceThreshold: 0.8,
-  silenceTargetGap: 0.15,
+  silenceThreshold: 1.5,
+  silenceTargetGap: 0.4,
   fillerWords: DEFAULT_FILLER_WORDS
 }
 

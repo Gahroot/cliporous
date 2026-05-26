@@ -79,17 +79,99 @@ export const DEFAULT_BROLL: BRollSettings = {
   pipPosition: 'bottom-right'
 }
 
-export const DEFAULT_FILLER_REMOVAL: FillerRemovalSettings = {
+/**
+ * "Let It Ride" preset — the default. Trims only obvious hesitation sounds
+ * (um, uh, etc.) and pauses longer than 1.5 s. Leaves discourse markers,
+ * natural thinking pauses, and breath — prioritises coherence over pace.
+ */
+export const FILLER_PRESET_LET_IT_RIDE: FillerRemovalSettings = {
   enabled: true,
+  preset: 'let-it-ride',
+  removeFillerWords: true,
+  trimSilences: true,
+  removeRepeats: true,
+  silenceThreshold: 1.5,
+  silenceTargetGap: 0.4,
+  fillerWords: [
+    'um', 'uh', 'erm', 'er', 'ah', 'hm', 'hmm', 'mm', 'mhm'
+  ]
+}
+
+/**
+ * "Tight" preset — cuts hesitation + discourse markers + short pauses.
+ * Suited to short hook-driven clips where every second matters. May break
+ * sentence prosody on thoughtful long-form delivery.
+ */
+export const FILLER_PRESET_TIGHT: FillerRemovalSettings = {
+  enabled: true,
+  preset: 'tight',
   removeFillerWords: true,
   trimSilences: true,
   removeRepeats: true,
   silenceThreshold: 0.8,
+  silenceTargetGap: 0.15,
   fillerWords: [
     'um', 'uh', 'erm', 'er', 'ah', 'hm', 'hmm', 'mm', 'mhm',
     'like', 'you know', 'i mean', 'sort of', 'kind of',
     'basically', 'actually', 'literally', 'right', 'okay so'
   ]
+}
+
+export const DEFAULT_FILLER_REMOVAL: FillerRemovalSettings = FILLER_PRESET_LET_IT_RIDE
+
+/**
+ * Resolve a saved filler-removal config from an older (pre-preset) schema
+ * into the new shape.
+ *
+ * Behaviour:
+ *  1. Saved values already carry a `preset` field → overlay them onto the
+ *     named preset base (or onto "let-it-ride" if preset is "custom").
+ *  2. No `preset` field AND values match the old aggressive auto-saved
+ *     defaults exactly → silently upgrade to "Let It Ride" (the user never
+ *     made an explicit choice; the app's default just changed).
+ *  3. No `preset` field but values differ → preserve as "custom" so user
+ *     tweaks survive the upgrade.
+ */
+export function migrateFillerRemoval(
+  saved: Partial<FillerRemovalSettings> | undefined
+): FillerRemovalSettings {
+  if (!saved) return { ...FILLER_PRESET_LET_IT_RIDE }
+
+  if (saved.preset === 'tight') {
+    return { ...FILLER_PRESET_TIGHT, ...saved, preset: 'tight' }
+  }
+  if (saved.preset === 'let-it-ride') {
+    return { ...FILLER_PRESET_LET_IT_RIDE, ...saved, preset: 'let-it-ride' }
+  }
+  if (saved.preset === 'custom') {
+    return { ...FILLER_PRESET_LET_IT_RIDE, ...saved, preset: 'custom' }
+  }
+
+  // Legacy schema (no preset field). Detect users who were on the old
+  // auto-saved aggressive defaults so we can quietly migrate them to the new
+  // "Let It Ride" defaults instead of leaving them stuck with the choppy
+  // behaviour their localStorage was holding onto.
+  const isOldAutoSavedDefault =
+    saved.silenceThreshold === 0.8 &&
+    saved.removeFillerWords === true &&
+    saved.trimSilences === true &&
+    saved.removeRepeats === true &&
+    Array.isArray(saved.fillerWords) &&
+    saved.fillerWords.length === 19 &&
+    saved.fillerWords.includes('like') &&
+    saved.fillerWords.includes('basically')
+
+  if (isOldAutoSavedDefault) {
+    return { ...FILLER_PRESET_LET_IT_RIDE, enabled: saved.enabled ?? true }
+  }
+
+  // Otherwise the user (or test fixture) had deliberately tweaked something
+  // — keep their values and surface them as "custom".
+  return {
+    ...FILLER_PRESET_LET_IT_RIDE,
+    ...saved,
+    preset: 'custom'
+  }
 }
 
 export const DEFAULT_RENDER_QUALITY: RenderQualitySettings = {
@@ -196,7 +278,7 @@ export function loadPersistedSettings(): AppSettings {
         hookTitleOverlay: { ...DEFAULT_HOOK_TITLE_OVERLAY, ...(saved.hookTitleOverlay ?? {}) },
         rehookOverlay: { ...DEFAULT_REHOOK_OVERLAY, ...(saved.rehookOverlay ?? {}) },
         broll: { ...DEFAULT_BROLL, ...(saved.broll ?? {}) },
-        fillerRemoval: { ...DEFAULT_FILLER_REMOVAL, ...(saved.fillerRemoval ?? {}) },
+        fillerRemoval: migrateFillerRemoval(saved.fillerRemoval),
         renderQuality: { ...DEFAULT_RENDER_QUALITY, ...(saved.renderQuality ?? {}) },
         templateLayout: {
           titleText: {

@@ -314,12 +314,28 @@ export interface BRollSettings {
 export type BRollDisplayMode = 'fullscreen' | 'split-top' | 'split-bottom' | 'pip'
 export type BRollTransition = 'hard-cut' | 'crossfade' | 'swipe-up' | 'swipe-down'
 
+/**
+ * Preset for filler/silence removal aggressiveness.
+ *
+ * - `let-it-ride` (default): keep discourse markers, trim only long pauses,
+ *   leave breath. Optimised for coherence in long-form explanatory speech.
+ * - `tight`: cut hesitation + discourse markers + short pauses. Optimised
+ *   for short hook-driven clips where every second matters.
+ * - `custom`: user has hand-tuned individual fields.
+ */
+export type FillerRemovalPreset = 'let-it-ride' | 'tight' | 'custom'
+
 export interface FillerRemovalSettings {
   enabled: boolean
+  /** Which named preset these values reflect. */
+  preset: FillerRemovalPreset
   removeFillerWords: boolean
   trimSilences: boolean
   removeRepeats: boolean
+  /** Minimum gap (seconds) considered a removable silence. */
   silenceThreshold: number
+  /** Target gap (seconds) to leave after trimming a silence. */
+  silenceTargetGap: number
   fillerWords: string[]
 }
 
@@ -593,10 +609,12 @@ export interface AppState {
 
   // Actions — Filler Removal
   setFillerRemovalEnabled: (enabled: boolean) => void
+  setFillerRemovalPreset: (preset: FillerRemovalPreset) => void
   setFillerRemovalFillerWords: (enabled: boolean) => void
   setFillerRemovalSilences: (enabled: boolean) => void
   setFillerRemovalRepeats: (enabled: boolean) => void
   setFillerRemovalSilenceThreshold: (seconds: number) => void
+  setFillerRemovalSilenceTargetGap: (seconds: number) => void
   setFillerRemovalWordList: (words: string[]) => void
 
   // Actions — Notifications

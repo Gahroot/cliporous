@@ -240,6 +240,9 @@ const SETTINGS_FIXTURE: AppSettings = {
   fillerRemoval: {
     ...DEFAULT_SETTINGS.fillerRemoval,
     enabled: false,
+    // Custom word list — the preset field tracks that we've diverged from
+    // the canonical "let-it-ride" word list.
+    preset: 'custom',
     fillerWords: ['um', 'like', 'you know'],
   },
   renderQuality: {
