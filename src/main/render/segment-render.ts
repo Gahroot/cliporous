@@ -352,15 +352,23 @@ async function encodeSegment(
 
       // Add the b-roll video as input 1 for media-based layouts. We loop
       // the b-roll (`-stream_loop -1`) so segments longer than the source
-      // Pexels clip still fill the frame; `-t segDuration` trims the
-      // looped output so vstack sees matched stream lengths.
+      // Pexels clip still fill the frame. Critically, do NOT also pass an
+      // input-side `-t segDuration` — that combination demuxes only one
+      // segment-worth of frames and EOFs input 1, which made vstack hold
+      // the last decoded frame as a still while the output `-t` drained
+      // audio (the "two stills, audio keeps playing" freeze on split-image).
+      // The output-side `-t` from `cmd.duration(segDuration)` is what
+      // actually stops the encode at the right moment; the looped input is
+      // allowed to keep producing frames until then. PTS rewinds across
+      // loop boundaries are handled by `setpts=N/FR/TB` in the layout
+      // filter so `fps=` doesn't stall the rate converter.
       const needsMediaInput =
         !!seg.videoPath &&
         (archetype === 'split-image' || archetype === 'fullscreen-image')
 
       if (needsMediaInput && seg.videoPath) {
         cmd.input(toFFmpegPath(seg.videoPath))
-        cmd.inputOptions(['-stream_loop', '-1', '-t', segDuration.toFixed(3)])
+        cmd.inputOptions(['-stream_loop', '-1'])
       }
 
       cmd

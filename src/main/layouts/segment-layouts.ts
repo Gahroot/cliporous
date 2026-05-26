@@ -187,9 +187,22 @@ function buildWideBreather(params: SegmentLayoutParams): SegmentLayoutResult {
  * bottom half. Input 0: speaker (source video), Input 1: b-roll video.
  *
  * Both streams have native framerates, so we normalize them to the output
- * fps (`fps=FPS`) and SAR before vstacking. `shortest=1` pins the stack to
- * the speaker's duration (the b-roll is `-stream_loop -1`'d at the encoder
- * so it can cover any segment length).
+ * fps (`fps=FPS`) and SAR before vstacking. Two non-obvious bits:
+ *
+ *   1. The b-roll input is `-stream_loop -1`'d at the encoder so it can
+ *      cover any segment length. Each loop restarts the demuxer's PTS at
+ *      zero — `fps=` is a rate converter that expects monotonically
+ *      increasing PTS, so on every loop boundary it stalls and either
+ *      duplicates the last frame indefinitely or discards "old" frames.
+ *      `setpts=N/FR/TB` rewrites every frame's PTS from its index, making
+ *      the stream monotonic across loop joins.
+ *
+ *   2. No `shortest=1` on vstack. Both inputs are duration-clamped by the
+ *      output `-t` at the encoder; `shortest=1` plus the b-roll's looped
+ *      PTS rewind made vstack EOF early, which made the encoder hold the
+ *      last decoded frame as a still while the output `-t` continued to
+ *      drain audio — the "two stills, audio keeps playing" freeze on
+ *      split-image segments.
  */
 function buildSplitImage(params: SegmentLayoutParams): SegmentLayoutResult {
   const w = params.width
@@ -200,9 +213,9 @@ function buildSplitImage(params: SegmentLayoutParams): SegmentLayoutResult {
   const speakerChain = buildSpeakerCropScale(params, w, halfH, 1.0)
 
   const parts: string[] = [
-    `[1:v]scale=${w}:${halfH}:force_original_aspect_ratio=increase:flags=${SCALE_FLAGS},crop=${w}:${halfH},fps=${fps},setsar=1[top]`,
-    `[0:v]${speakerChain},fps=${fps},setsar=1[bottom]`,
-    `[top][bottom]vstack=inputs=2:shortest=1[composed]`,
+    `[1:v]scale=${w}:${halfH}:force_original_aspect_ratio=increase:flags=${SCALE_FLAGS},crop=${w}:${halfH},setpts=N/FR/TB,fps=${fps},setsar=1[top]`,
+    `[0:v]${speakerChain},setpts=N/FR/TB,fps=${fps},setsar=1[bottom]`,
+    `[top][bottom]vstack=inputs=2[composed]`,
     finalize('composed')
   ]
 
@@ -212,8 +225,9 @@ function buildSplitImage(params: SegmentLayoutParams): SegmentLayoutResult {
 /**
  * fullscreen-image: b-roll video fills the entire frame. Input 0: source
  * clip (kept only so `-map 0:a` still pulls the speaker's audio). Input 1:
- * b-roll video. The b-roll stream is locked to the output framerate so the
- * audio mapping from input 0 stays in sync.
+ * b-roll video, looped via `-stream_loop -1` at the encoder. `setpts=N/FR/TB`
+ * monotonises PTS across loop boundaries so `fps=` doesn't stall the rate
+ * converter on the demuxer's PTS rewind — same fix as split-image.
  */
 function buildFullscreenImage(params: SegmentLayoutParams): SegmentLayoutResult {
   const w = params.width
@@ -221,7 +235,7 @@ function buildFullscreenImage(params: SegmentLayoutParams): SegmentLayoutResult 
   const fps = params.fps ?? 30
 
   const fc =
-    `[1:v]scale=${w}:${h}:force_original_aspect_ratio=increase:flags=${SCALE_FLAGS},crop=${w}:${h},fps=${fps},setsar=1[composed];` +
+    `[1:v]scale=${w}:${h}:force_original_aspect_ratio=increase:flags=${SCALE_FLAGS},crop=${w}:${h},setpts=N/FR/TB,fps=${fps},setsar=1[composed];` +
     finalize('composed')
 
   return { filterComplex: fc, inputCount: 2 }
