@@ -53,6 +53,37 @@ const MIN_HEIGHT = 800
 
 let mainWindow: BrowserWindow | null = null
 
+/**
+ * Return the main window only if it exists AND has not been destroyed.
+ *
+ * Required because optional chaining (`mainWindow?.webContents.send`) only
+ * guards against `null` — it does NOT catch the "Object has been destroyed"
+ * Electron throws when you touch any property of a `BrowserWindow` after
+ * its native peer is gone. That crash bubbles up through `app` event
+ * handlers (e.g. `second-instance` after the user closed the window on
+ * macOS while the app stays alive) and kills the whole main process.
+ */
+function getAliveMainWindow(): BrowserWindow | null {
+  if (mainWindow !== null && !mainWindow.isDestroyed()) return mainWindow
+  return null
+}
+
+/**
+ * Fire-and-forget IPC send to the main window. Drops the event silently if
+ * the window is gone — callers (Python setup progress, render progress,
+ * etc.) can race with window close on shutdown.
+ */
+function sendToMainWindow(channel: string, payload: unknown): void {
+  const win = getAliveMainWindow()
+  if (!win) return
+  try {
+    win.webContents.send(channel, payload)
+  } catch {
+    // Window destroyed between the alive-check and the send. Extremely
+    // rare race on shutdown; swallow rather than crash the main process.
+  }
+}
+
 /** Result of the Python availability probe; consumed by IPC handlers. */
 let pythonReady = false
 export function isPythonReady(): boolean {
@@ -69,7 +100,7 @@ function kickoffPythonSetup(): void {
     onProgress: (stage, message, percent, pkg, currentPackage, totalPackages) => {
       // Forward every progress event to the main window. The renderer's
       // python-slice listens on Ch.Send.PYTHON_SETUP_PROGRESS.
-      mainWindow?.webContents.send(Ch.Send.PYTHON_SETUP_PROGRESS, {
+      sendToMainWindow(Ch.Send.PYTHON_SETUP_PROGRESS, {
         stage,
         message,
         percent,
@@ -86,7 +117,7 @@ function kickoffPythonSetup(): void {
       })
       // Always emit a setupDone so the renderer can flip out of any install state,
       // even on the fast-path (no install was performed).
-      mainWindow?.webContents.send(Ch.Send.PYTHON_SETUP_DONE, {
+      sendToMainWindow(Ch.Send.PYTHON_SETUP_DONE, {
         success: result.ready,
         error: result.error,
       })
@@ -95,7 +126,7 @@ function kickoffPythonSetup(): void {
       pythonReady = false
       const message = err instanceof Error ? err.message : String(err)
       log('error', 'main', 'python ensure threw', { message })
-      mainWindow?.webContents.send(Ch.Send.PYTHON_SETUP_DONE, {
+      sendToMainWindow(Ch.Send.PYTHON_SETUP_DONE, {
         success: false,
         error: message,
       })
@@ -126,6 +157,15 @@ function createMainWindow(): BrowserWindow {
   })
 
   win.once('ready-to-show', () => win.show())
+
+  // Null the module-level reference as soon as the native peer is gone so
+  // later `app` event handlers (second-instance, activate) and async IPC
+  // senders (Python setup, render progress) don't touch a destroyed window.
+  win.on('closed', () => {
+    if (mainWindow === win) {
+      mainWindow = null
+    }
+  })
 
   // Open external links in the default browser instead of a new Electron window.
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -199,9 +239,10 @@ if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {
   app.on('second-instance', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.focus()
+    const win = getAliveMainWindow()
+    if (win) {
+      if (win.isMinimized()) win.restore()
+      win.focus()
     }
   })
 
