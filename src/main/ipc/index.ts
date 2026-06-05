@@ -17,3 +17,4 @@ export {
   getAutoCleanupOnExit,
   deleteBatchContentTempFiles
 } from './system-handlers'
+export { registerHyperFramesHandlers } from './hyperframes-handlers'

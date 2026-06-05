@@ -107,6 +107,9 @@ const api = {
   // Export
   exportDescriptions: invoke(I.EXPORT_DESCRIPTIONS),
 
+  // HyperFrames overlays
+  renderHyperFramesOverlay: invoke(I.HYPERFRAMES_RENDER_OVERLAY),
+
   // Project save / load / recent
   saveProject: invoke(I.PROJECT_SAVE),
   loadProject: invoke(I.PROJECT_LOAD),

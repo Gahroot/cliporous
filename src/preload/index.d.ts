@@ -715,6 +715,33 @@ interface Api {
     apiKey: string
   }) => Promise<string>
 
+  // HyperFrames overlays
+  renderHyperFramesOverlay: (payload: {
+    block: 'popup-card' | 'icon-callout' | 'animated-label' | 'progress-bar' | 'glowing-badge'
+    props: {
+      text?: string
+      color?: string
+      fontSize?: number
+      position?: { x: number; y: number }
+      subtitle?: string
+      icon?: string
+      iconSize?: number
+      borderRadius?: number
+      animation?: 'typewriter' | 'fade-slide' | 'scale-bounce'
+      progress?: number
+      height?: number
+      widthPercent?: number
+      glowIntensity?: number
+      shape?: 'pill' | 'circle'
+    }
+    timing: { start: number; duration: number }
+  }) => Promise<{
+    movPath: string
+    duration: number
+    width: number
+    height: number
+  }>
+
   // Export descriptions — write descriptions.{csv,json,txt} to outputDirectory
   exportDescriptions: (
     clips: Array<{

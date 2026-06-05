@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: transparent; overflow: hidden; width: 1080px; height: 1920px; }
+  .bar-container {
+    position: absolute;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.15);
+    overflow: hidden;
+    opacity: 0;
+  }
+  .bar-container.visible {
+    animation: barIn 0.3s ease-out forwards;
+  }
+  .bar-container.exiting {
+    animation: barOut 0.25s ease-in forwards;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .bar-glow {
+    position: absolute;
+    right: 0;
+    top: -4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    filter: blur(4px);
+    opacity: 0.6;
+    transform: translateY(0);
+  }
+  @keyframes barIn {
+    0% { opacity: 0; transform: scaleX(0.3); }
+    100% { opacity: 1; transform: scaleX(1); }
+  }
+  @keyframes barOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="bar-container" id="barContainer">
+    <div class="bar-fill" id="barFill"></div>
+    <div class="bar-glow" id="barGlow"></div>
+  </div>
+  <script>
+    const v = window.__hyperframes?.getVariables?.() ?? {};
+    const container = document.getElementById('barContainer');
+    const fill = document.getElementById('barFill');
+    const glow = document.getElementById('barGlow');
+
+    const progress = Math.max(0, Math.min(1, v.progress ?? 0.5));
+    const color = v.color ?? '#9f75ff';
+    const barHeight = v.barHeight ?? 8;
+    const widthPercent = v.widthPercent ?? 70;
+    const xPos = v.xPos ?? 50;
+    const yPos = v.yPos ?? 85;
+
+    const barW = Math.round(1080 * (widthPercent / 100));
+    container.style.width = barW + 'px';
+    container.style.height = barHeight + 'px';
+    container.style.left = xPos + '%';
+    container.style.top = yPos + '%';
+    container.style.transform = 'translate(-50%, -50%)';
+    container.style.borderRadius = Math.round(barHeight / 2) + 'px';
+
+    fill.style.background = color;
+    fill.style.borderRadius = Math.round(barHeight / 2) + 'px';
+
+    glow.style.background = color;
+
+    container.classList.add('visible');
+
+    // Animate fill after a short delay for deterministic frame capture
+    setTimeout(() => {
+      fill.style.width = (progress * 100) + '%';
+    }, 50);
+  </script>
+</body>
+</html>

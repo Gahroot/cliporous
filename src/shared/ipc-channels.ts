@@ -115,6 +115,9 @@ export const InvokeChannels = {
 
   // Export — social-media descriptions (csv/json/txt)
   EXPORT_DESCRIPTIONS: 'export:descriptions',
+
+  // HyperFrames overlays
+  HYPERFRAMES_RENDER_OVERLAY: 'hyperframes:renderOverlay',
 } as const
 
 // ---- Send channels (main → renderer, fire-and-forget) ---------------------

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: transparent; overflow: hidden; width: 1080px; height: 1920px; }
+  .card {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 36px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  .card.visible {
+    animation: cardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  .card.exiting {
+    animation: cardOut 0.3s ease-in forwards;
+  }
+  .icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  .title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+  .subtitle {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 400;
+    text-align: center;
+    line-height: 1.3;
+    margin-top: 8px;
+    opacity: 0.85;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+  @keyframes cardIn {
+    0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes cardOut {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  }
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="icon" id="icon"></div>
+    <div class="title" id="title"></div>
+    <div class="subtitle" id="subtitle"></div>
+  </div>
+  <script>
+    const v = window.__hyperframes?.getVariables?.() ?? {};
+    const card = document.getElementById('card');
+    const titleEl = document.getElementById('title');
+    const subtitleEl = document.getElementById('subtitle');
+    const iconEl = document.getElementById('icon');
+
+    const text = v.text ?? 'Overlay';
+    const color = v.color ?? '#9f75ff';
+    const fontSize = v.fontSize ?? 36;
+    const subtitle = v.subtitle ?? '';
+    const icon = v.icon ?? '';
+    const borderRadius = v.borderRadius ?? 20;
+    const xPos = v.xPos ?? 50;
+    const yPos = v.yPos ?? 30;
+
+    titleEl.textContent = text;
+    titleEl.style.fontSize = fontSize + 'px';
+    titleEl.style.color = color;
+
+    if (subtitle) {
+      subtitleEl.textContent = subtitle;
+      subtitleEl.style.fontSize = Math.round(fontSize * 0.65) + 'px';
+      subtitleEl.style.color = color;
+    } else {
+      subtitleEl.style.display = 'none';
+    }
+
+    if (icon) {
+      iconEl.textContent = icon;
+    } else {
+      iconEl.style.display = 'none';
+    }
+
+    const cardW = Math.min(800, Math.round(1080 * 0.75));
+    card.style.width = cardW + 'px';
+    card.style.borderRadius = borderRadius + 'px';
+    card.style.background = 'rgba(20, 10, 8, 0.85)';
+    card.style.border = '1px solid ' + color + '33';
+    card.style.boxShadow = '0 8px 32px rgba(0,0,0,0.4), 0 0 20px ' + color + '22';
+    card.style.left = '50%';
+    card.style.top = yPos + '%';
+    card.style.transform = 'translateX(-50%)';
+
+    // CSS animations are frame-deterministic in HyperFrames.
+    // The animation class is added immediately — HyperFrames seeks to frame 0
+    // and captures each frame precisely.
+    card.classList.add('visible');
+  </script>
+</body>
+</html>

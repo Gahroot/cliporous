@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: transparent; overflow: hidden; width: 1080px; height: 1920px; }
+  .callout {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+  }
+  .callout.visible {
+    animation: calloutIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  .callout.exiting {
+    animation: calloutOut 0.25s ease-in forwards;
+  }
+  .icon-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .label {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    white-space: nowrap;
+  }
+  @keyframes calloutIn {
+    0% { opacity: 0; transform: translateX(-30px) scale(0.8); }
+    100% { opacity: 1; transform: translateX(0) scale(1); }
+  }
+  @keyframes calloutOut {
+    0% { opacity: 1; transform: translateX(0) scale(1); }
+    100% { opacity: 0; transform: translateX(20px) scale(0.9); }
+  }
+</style>
+</head>
+<body>
+  <div class="callout" id="callout">
+    <div class="icon-circle" id="iconCircle"></div>
+    <div class="label" id="label"></div>
+  </div>
+  <script>
+    const v = window.__hyperframes?.getVariables?.() ?? {};
+    const callout = document.getElementById('callout');
+    const iconCircle = document.getElementById('iconCircle');
+    const labelEl = document.getElementById('label');
+
+    const text = v.text ?? 'Callout';
+    const color = v.color ?? '#9f75ff';
+    const fontSize = v.fontSize ?? 28;
+    const icon = v.icon ?? '★';
+    const iconSize = v.iconSize ?? 64;
+    const xPos = v.xPos ?? 50;
+    const yPos = v.yPos ?? 50;
+
+    labelEl.textContent = text;
+    labelEl.style.fontSize = fontSize + 'px';
+    labelEl.style.color = '#f6ecd9';
+
+    iconCircle.textContent = icon;
+    iconCircle.style.width = iconSize + 'px';
+    iconCircle.style.height = iconSize + 'px';
+    iconCircle.style.background = color;
+    iconCircle.style.fontSize = Math.round(iconSize * 0.5) + 'px';
+
+    callout.style.left = xPos + '%';
+    callout.style.top = yPos + '%';
+    callout.style.transform = 'translate(-50%, -50%)';
+
+    callout.classList.add('visible');
+  </script>
+</body>
+</html>

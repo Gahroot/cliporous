@@ -45,6 +45,7 @@ import { wordEmphasisFeature } from './features/word-emphasis.feature'
 import { brollFeature } from './features/broll.feature'
 import { shotTransitionFeature } from './features/shot-transition.feature'
 import { accentColorFeature, restoreBatchOptions } from './features/accent-color.feature'
+import { hyperframesOverlayFeature } from './features/hyperframes-overlay.feature'
 
 // ---------------------------------------------------------------------------
 // Cancellation state
@@ -204,7 +205,8 @@ export async function startBatchRender(
     createRehookFeature(),
     autoZoomFeature,
     brollFeature,
-    shotTransitionFeature
+    shotTransitionFeature,
+    hyperframesOverlayFeature
   ]
 
   // ── Resolve batch-level config ────────────────────────────────────────────

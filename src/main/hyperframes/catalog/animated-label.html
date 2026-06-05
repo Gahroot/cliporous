@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: transparent; overflow: hidden; width: 1080px; height: 1920px; }
+  .label {
+    position: absolute;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 700;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+    opacity: 0;
+  }
+
+  /* Typewriter: characters appear one by one via clip-path */
+  .label.typewriter.visible {
+    animation: typeIn 0.6s steps(20, end) forwards;
+  }
+  /* Fade-slide: fade + slide up */
+  .label.fade-slide.visible {
+    animation: fadeSlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  /* Scale-bounce: pop in with overshoot */
+  .label.scale-bounce.visible {
+    animation: scaleBounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .label.exiting {
+    animation: labelOut 0.3s ease-in forwards;
+  }
+
+  @keyframes typeIn {
+    0% { opacity: 1; clip-path: inset(0 100% 0 0); }
+    100% { opacity: 1; clip-path: inset(0 0% 0 0); }
+  }
+  @keyframes fadeSlideIn {
+    0% { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scaleBounceIn {
+    0% { opacity: 0; transform: scale(0.3); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes labelOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-8px); }
+  }
+</style>
+</head>
+<body>
+  <div class="label" id="label"></div>
+  <script>
+    const v = window.__hyperframes?.getVariables?.() ?? {};
+    const label = document.getElementById('label');
+
+    const text = v.text ?? 'Label';
+    const color = v.color ?? '#f6ecd9';
+    const fontSize = v.fontSize ?? 42;
+    const animation = v.animation ?? 'fade-slide';
+    const xPos = v.xPos ?? 50;
+    const yPos = v.yPos ?? 50;
+
+    label.textContent = text;
+    label.style.fontSize = fontSize + 'px';
+    label.style.color = color;
+    label.style.left = xPos + '%';
+    label.style.top = yPos + '%';
+    label.style.transform = 'translate(-50%, -50%)';
+
+    label.classList.add(animation);
+    label.classList.add('visible');
+  </script>
+</body>
+</html>
