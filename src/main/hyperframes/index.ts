@@ -15,7 +15,7 @@ export type {
   PopupCardProps,
   IconCalloutProps,
   AnimatedLabelProps,
-  ProgressBarProps,
+  ProgressIndicatorProps,
   GlowingBadgeProps,
   OverlayPropsMap
 } from './types'

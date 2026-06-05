@@ -4,7 +4,7 @@
 // ---------------------------------------------------------------------------
 
 import { execFile } from 'child_process'
-import { existsSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'fs'
+import { existsSync, mkdirSync, writeFileSync, readFileSync, rmSync, cpSync } from 'fs'
 import { join, dirname } from 'path'
 import { tmpdir } from 'os'
 import { promisify } from 'util'
@@ -123,6 +123,15 @@ export async function renderComposition(
     }
 
     writeFileSync(join(projectDir, 'index.html'), compContent, 'utf-8')
+
+    // Copy the shared/ directory (styles, assets) if it exists alongside the
+    // composition. HyperFrames compositions reference shared/styles.css via
+    // relative <link> tags.
+    const compDir = dirname(compositionPath)
+    const sharedDir = join(compDir, 'shared')
+    if (existsSync(sharedDir)) {
+      cpSync(sharedDir, join(projectDir, 'shared'), { recursive: true })
+    }
 
     // Write a minimal package.json (HyperFrames resolveProject requires it).
     writeFileSync(

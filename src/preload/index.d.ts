@@ -717,7 +717,7 @@ interface Api {
 
   // HyperFrames overlays
   renderHyperFramesOverlay: (payload: {
-    block: 'popup-card' | 'icon-callout' | 'animated-label' | 'progress-bar' | 'glowing-badge'
+    block: 'popup-card' | 'icon-callout' | 'animated-label' | 'progress-indicator' | 'glowing-badge'
     props: {
       text?: string
       color?: string
@@ -727,10 +727,10 @@ interface Api {
       icon?: string
       iconSize?: number
       borderRadius?: number
-      animation?: 'typewriter' | 'fade-slide' | 'scale-bounce'
-      progress?: number
-      height?: number
-      widthPercent?: number
+      animation?: 'typewriter' | 'slide' | 'fade'
+      steps?: number
+      currentStep?: number
+      style?: 'dots' | 'bar' | 'circle'
       glowIntensity?: number
       shape?: 'pill' | 'circle'
     }

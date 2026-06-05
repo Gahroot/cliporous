@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HyperFrames Overlay Catalog — Preview</title>
+  <link rel="stylesheet" href="shared/styles.css">
+  <style>
+    :root {
+      --bg: #1a0d0a;
+      --surface: #23100c;
+      --border: #3a1f17;
+      --fg: #f6ecd9;
+      --accent: #9f75ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ───────────────────────────────────────────────────── */
+    header {
+      padding: 20px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    header span {
+      font-size: 13px;
+      color: #b09c7e;
+    }
+
+    /* ── Layout ───────────────────────────────────────────────────── */
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ──────────────────────────────────────────────────── */
+    .sidebar {
+      width: 240px;
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+    .sidebar h3 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #b09c7e;
+      padding: 8px 20px 12px;
+    }
+    .block-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .block-btn:hover { background: rgba(159, 117, 255, 0.08); }
+    .block-btn.active {
+      background: rgba(159, 117, 255, 0.15);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .block-btn small {
+      display: block;
+      font-size: 11px;
+      color: #b09c7e;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+
+    /* ── Preview Area ─────────────────────────────────────────────── */
+    .preview-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      gap: 16px;
+      overflow: auto;
+    }
+
+    .frame-wrapper {
+      position: relative;
+      width: 360px;
+      height: 640px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .frame-wrapper iframe {
+      width: 1080px;
+      height: 1920px;
+      border: none;
+      transform-origin: top left;
+      transform: scale(0.3333);
+      pointer-events: none;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+    .controls button {
+      padding: 8px 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .controls button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .controls button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #1a0d0a;
+    }
+    .controls button.primary:hover {
+      background: #b48fff;
+    }
+
+    .props-display {
+      font-size: 12px;
+      color: #b09c7e;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0,0,0,0.3);
+      padding: 12px 16px;
+      border-radius: 8px;
+      max-width: 360px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>HyperFrames Overlay Catalog</h1>
+    <span>1080×1920 · 30fps · GSAP · Alpha Channel</span>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <h3>Blocks</h3>
+      <button class="block-btn active" data-block="popup-card">
+        Popup Card
+        <small>Slide-in callout with icon, title, subtitle</small>
+      </button>
+      <button class="block-btn" data-block="icon-callout">
+        Icon Callout
+        <small>Glowing icon with label pop-in</small>
+      </button>
+      <button class="block-btn" data-block="animated-label">
+        Animated Label
+        <small>Typewriter / slide / fade text reveal</small>
+      </button>
+      <button class="block-btn" data-block="progress-indicator">
+        Progress Indicator
+        <small>Dots / bar / circle step progress</small>
+      </button>
+      <button class="block-btn" data-block="glowing-badge">
+        Glowing Badge
+        <small>Pill / circle badge with glow pulse</small>
+      </button>
+    </nav>
+
+    <main class="preview-area">
+      <div class="frame-wrapper" id="frameWrapper">
+        <iframe id="previewFrame" src="popup-card.html"></iframe>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="btnRestart">↻ Restart</button>
+        <button id="btnOpenRaw">↗ Open Raw</button>
+      </div>
+
+      <div class="props-display" id="propsDisplay"></div>
+    </main>
+  </div>
+
+  <script>
+    const blocks = {
+      'popup-card': {
+        file: 'popup-card.html',
+        props: {
+          text: 'Feature Callout',
+          subtitle: 'Subtitle text goes here',
+          icon: '✨',
+          color: '#9f75ff',
+          fontSize: 42,
+          yPos: 35
+        }
+      },
+      'icon-callout': {
+        file: 'icon-callout.html',
+        props: {
+          text: 'Lightning Fast',
+          color: '#9f75ff',
+          fontSize: 30,
+          icon: 'zap',
+          iconSize: 80,
+          yPos: 50
+        }
+      },
+      'animated-label': {
+        file: 'animated-label.html',
+        props: {
+          text: 'This Changes Everything',
+          color: '#f6ecd9',
+          fontSize: 52,
+          animation: 'typewriter',
+          yPos: 50
+        }
+      },
+      'progress-indicator': {
+        file: 'progress-indicator.html',
+        props: {
+          steps: 4,
+          currentStep: 3,
+          color: '#9f75ff',
+          style: 'dots',
+          yPos: 85
+        }
+      },
+      'glowing-badge': {
+        file: 'glowing-badge.html',
+        props: {
+          text: 'NEW',
+          color: '#9f75ff',
+          fontSize: 22,
+          glowIntensity: 5,
+          shape: 'pill',
+          yPos: 12
+        }
+      }
+    };
+
+    let currentBlock = 'popup-card';
+    const frame     = document.getElementById('previewFrame');
+    const propsDisp = document.getElementById('propsDisplay');
+    const buttons   = document.querySelectorAll('.block-btn');
+
+    function loadBlock(name) {
+      currentBlock = name;
+      const b = blocks[name];
+      frame.src = b.file;
+      propsDisp.textContent = JSON.stringify(b.props, null, 2);
+      buttons.forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.block === name);
+      });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => loadBlock(btn.dataset.block));
+    });
+
+    document.getElementById('btnRestart').addEventListener('click', () => {
+      const src = frame.src;
+      frame.src = '';
+      requestAnimationFrame(() => { frame.src = src; });
+    });
+
+    document.getElementById('btnOpenRaw').addEventListener('click', () => {
+      window.open(blocks[currentBlock].file, '_blank');
+    });
+
+    // Initial display
+    loadBlock('popup-card');
+  </script>
+</body>
+</html>

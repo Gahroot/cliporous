@@ -70,13 +70,13 @@ function buildVariables(request: OverlayRequest): Record<string, unknown> {
       break
 
     case 'animated-label':
-      vars.animation = (props as Record<string, unknown>).animation ?? 'fade-slide'
+      vars.animation = (props as Record<string, unknown>).animation ?? 'typewriter'
       break
 
-    case 'progress-bar':
-      vars.progress = (props as Record<string, unknown>).progress ?? 0.5
-      vars.barHeight = (props as Record<string, unknown>).height ?? 8
-      vars.widthPercent = (props as Record<string, unknown>).widthPercent ?? 70
+    case 'progress-indicator':
+      vars.steps = (props as Record<string, unknown>).steps ?? 4
+      vars.currentStep = (props as Record<string, unknown>).currentStep ?? 2
+      vars.style = (props as Record<string, unknown>).style ?? 'dots'
       break
 
     case 'glowing-badge':

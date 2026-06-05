@@ -7,7 +7,7 @@ export type OverlayBlockName =
   | 'popup-card'
   | 'icon-callout'
   | 'animated-label'
-  | 'progress-bar'
+  | 'progress-indicator'
   | 'glowing-badge'
 
 /** Position on the 1080×1920 canvas (percentage-based, 0–100). */
@@ -60,14 +60,14 @@ export interface AnimatedLabelProps extends BaseOverlayProps {
   animation?: 'typewriter' | 'fade-slide' | 'scale-bounce'
 }
 
-/** Props for the progress-bar block. */
-export interface ProgressBarProps extends BaseOverlayProps {
-  /** Progress value 0–1 (fraction complete). */
-  progress?: number
-  /** Bar height in pixels. */
-  height?: number
-  /** Bar width as percentage of canvas width (0–100). */
-  widthPercent?: number
+/** Props for the progress-indicator block. */
+export interface ProgressIndicatorProps extends BaseOverlayProps {
+  /** Total number of steps. */
+  steps?: number
+  /** Current step (1-based). */
+  currentStep?: number
+  /** Visual style: 'dots', 'bar', or 'circle'. */
+  style?: 'dots' | 'bar' | 'circle'
 }
 
 /** Props for the glowing-badge block. */
@@ -83,7 +83,7 @@ export type OverlayPropsMap = {
   'popup-card': PopupCardProps
   'icon-callout': IconCalloutProps
   'animated-label': AnimatedLabelProps
-  'progress-bar': ProgressBarProps
+  'progress-indicator': ProgressIndicatorProps
   'glowing-badge': GlowingBadgeProps
 }
 

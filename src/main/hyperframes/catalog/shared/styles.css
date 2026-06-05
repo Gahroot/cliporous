@@ -1,0 +1,97 @@
+/*
+ * HyperFrames Overlay Catalog — Shared Design Tokens & Base Styles
+ *
+ * Brand palette:
+ *   Background  #23100c  (deep warm brown)
+ *   Foreground  #f6ecd9  (warm cream)
+ *   Accent      #9f75ff  (violet)
+ *
+ * These are loaded by each catalog composition via <link> and copied
+ * into the temp render directory by the HyperFrames engine.
+ */
+
+/* ─── Brand tokens ──────────────────────────────────────────────── */
+:root {
+  --hf-bg: #23100c;
+  --hf-fg: #f6ecd9;
+  --hf-accent: #9f75ff;
+  --hf-card-bg: rgba(20, 10, 8, 0.88);
+  --hf-card-border: rgba(159, 117, 255, 0.2);
+  --hf-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(159, 117, 255, 0.12);
+  --hf-text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  --hf-glow-color: #9f75ff;
+
+  /* Canvas — matches output dimensions */
+  --hf-canvas-w: 1080px;
+  --hf-canvas-h: 1920px;
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: transparent;
+  overflow: hidden;
+  width: var(--hf-canvas-w);
+  height: var(--hf-canvas-h);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Typography ────────────────────────────────────────────────── */
+.hf-text {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--hf-fg);
+  text-shadow: var(--hf-text-shadow);
+  line-height: 1.3;
+}
+
+.hf-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.hf-subtitle {
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+/* ─── Card base ─────────────────────────────────────────────────── */
+.hf-card {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--hf-card-bg);
+  border: 1px solid var(--hf-card-border);
+  border-radius: 20px;
+  box-shadow: var(--hf-card-shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 32px 40px;
+}
+
+/* ─── Glow ──────────────────────────────────────────────────────── */
+.hf-glow {
+  position: absolute;
+  border-radius: inherit;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ─── Centering utility ─────────────────────────────────────────── */
+.hf-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
