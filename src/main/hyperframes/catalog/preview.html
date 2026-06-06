@@ -21,8 +21,6 @@
       display: flex;
       flex-direction: column;
     }
-
-    /* ── Header ───────────────────────────────────────────────────── */
     header {
       padding: 20px 32px;
       border-bottom: 1px solid var(--border);
@@ -30,274 +28,332 @@
       align-items: center;
       gap: 16px;
     }
-    header h1 {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    header span {
-      font-size: 13px;
-      color: #b09c7e;
-    }
-
-    /* ── Layout ───────────────────────────────────────────────────── */
-    .layout {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    /* ── Sidebar ──────────────────────────────────────────────────── */
+    header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+    header span { font-size: 13px; color: #b09c7e; }
+    .layout { display: flex; flex: 1; overflow: hidden; }
     .sidebar {
-      width: 240px;
+      width: 260px;
       border-right: 1px solid var(--border);
       padding: 16px 0;
       flex-shrink: 0;
       overflow-y: auto;
     }
     .sidebar h3 {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #b09c7e;
-      padding: 8px 20px 12px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: #b09c7e; padding: 8px 20px 12px;
     }
     .block-btn {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 10px 20px;
-      background: none;
-      border: none;
-      color: var(--fg);
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s;
+      display: block; width: 100%; text-align: left; padding: 10px 20px;
+      background: none; border: none; color: var(--fg); font-family: inherit;
+      font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s;
     }
     .block-btn:hover { background: rgba(159, 117, 255, 0.08); }
-    .block-btn.active {
-      background: rgba(159, 117, 255, 0.15);
-      color: var(--accent);
-      font-weight: 600;
-    }
-    .block-btn small {
-      display: block;
-      font-size: 11px;
-      color: #b09c7e;
-      font-weight: 400;
-      margin-top: 2px;
-    }
-
-    /* ── Preview Area ─────────────────────────────────────────────── */
+    .block-btn.active { background: rgba(159, 117, 255, 0.15); color: var(--accent); font-weight: 600; }
+    .block-btn small { display: block; font-size: 11px; color: #b09c7e; font-weight: 400; margin-top: 2px; }
     .preview-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      gap: 16px;
-      overflow: auto;
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 24px; gap: 16px; overflow: auto;
     }
-
     .frame-wrapper {
-      position: relative;
-      width: 360px;
-      height: 640px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      background: var(--surface);
-      flex-shrink: 0;
+      position: relative; width: 360px; height: 640px;
+      border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+      background: var(--surface); flex-shrink: 0;
     }
     .frame-wrapper iframe {
-      width: 1080px;
-      height: 1920px;
-      border: none;
-      transform-origin: top left;
-      transform: scale(0.3333);
-      pointer-events: none;
+      width: 1080px; height: 1920px; border: none;
+      transform-origin: top left; transform: scale(0.3333); pointer-events: none;
     }
-
-    .controls {
-      display: flex;
-      gap: 8px;
-    }
+    .controls { display: flex; gap: 8px; }
     .controls button {
-      padding: 8px 18px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--surface);
-      color: var(--fg);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s;
+      padding: 8px 18px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); color: var(--fg); font-family: inherit;
+      font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s;
     }
-    .controls button:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .controls button.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #1a0d0a;
-    }
-    .controls button.primary:hover {
-      background: #b48fff;
-    }
-
+    .controls button:hover { border-color: var(--accent); color: var(--accent); }
+    .controls button.primary { background: var(--accent); border-color: var(--accent); color: #1a0d0a; }
+    .controls button.primary:hover { background: #b48fff; }
     .props-display {
-      font-size: 12px;
-      color: #b09c7e;
-      font-family: 'JetBrains Mono', monospace;
-      background: rgba(0,0,0,0.3);
-      padding: 12px 16px;
-      border-radius: 8px;
-      max-width: 360px;
-      white-space: pre-wrap;
-      word-break: break-all;
+      font-size: 12px; color: #b09c7e; font-family: 'JetBrains Mono', monospace;
+      background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px;
+      max-width: 360px; white-space: pre-wrap; word-break: break-all;
     }
   </style>
 </head>
 <body>
-
   <header>
     <h1>HyperFrames Overlay Catalog</h1>
     <span>1080×1920 · 30fps · GSAP · Alpha Channel</span>
   </header>
-
   <div class="layout">
     <nav class="sidebar">
       <h3>Blocks</h3>
-      <button class="block-btn active" data-block="popup-card">
-        Popup Card
-        <small>Slide-in callout with icon, title, subtitle</small>
+      <button class="block-btn active" data-block="glass-card">
+        Glass Card <small>Frosted glass with icon + title + subtitle</small>
       </button>
-      <button class="block-btn" data-block="icon-callout">
-        Icon Callout
-        <small>Glowing icon with label pop-in</small>
+      <button class="block-btn" data-block="big-stat">
+        Big Stat <small>Large number — money, percentages, time</small>
       </button>
-      <button class="block-btn" data-block="animated-label">
-        Animated Label
-        <small>Typewriter / slide / fade text reveal</small>
+      <button class="block-btn" data-block="terminal-window">
+        Terminal Window <small>macOS terminal mockup with typed output</small>
       </button>
-      <button class="block-btn" data-block="progress-indicator">
-        Progress Indicator
-        <small>Dots / bar / circle step progress</small>
+      <button class="block-btn" data-block="checklist">
+        Checklist <small>Animated checklist with staggered checkmarks</small>
       </button>
-      <button class="block-btn" data-block="glowing-badge">
-        Glowing Badge
-        <small>Pill / circle badge with glow pulse</small>
+      <button class="block-btn" data-block="pill-badge">
+        Pill Badge <small>Floating label pill with glow</small>
+      </button>
+      <button class="block-btn" data-block="before-after">
+        Before / After <small>Side-by-side comparison columns</small>
+      </button>
+      <button class="block-btn" data-block="icon-label">
+        Icon Label <small>Centered icon with label below</small>
+      </button>
+      <button class="block-btn" data-block="numbered-step">
+        Numbered Step <small>Number + title + description</small>
+      </button>
+      <button class="block-btn" data-block="icon-grid">
+        Icon Grid <small>2×2 or 3×2 grid of icons with labels</small>
+      </button>
+      <button class="block-btn" data-block="progress-ring">
+        Progress Ring <small>Animated circular progress with label</small>
+      </button>
+      <button class="block-btn" data-block="hud-card">
+        HUD Card <small>Sci-fi targeting display with metrics</small>
+      </button>
+      <button class="block-btn" data-block="ai-orb">
+        AI Orb <small>Concentric rings with pulsing core</small>
+      </button>
+      <button class="block-btn" data-block="wave-line">
+        Wave Line <small>Animated waveform / heartbeat</small>
+      </button>
+      <button class="block-btn" data-block="network-nodes">
+        Network Nodes <small>Connected nodes visualization</small>
+      </button>
+      <button class="block-btn" data-block="stat-bar">
+        Stat Bar <small>Animated horizontal bar chart</small>
+      </button>
+      <h3 style="margin-top:12px;">Voice Agent</h3>
+      <button class="block-btn" data-block="voice-waveform">
+        Voice Waveform <small>Real-time voice activity waveform</small>
+      </button>
+      <button class="block-btn" data-block="voice-spectrum">
+        Voice Spectrum <small>Frequency spectrum analyzer bars</small>
+      </button>
+      <button class="block-btn" data-block="agent-avatar">
+        Agent Avatar <small>Circular AI avatar with pulsing rings</small>
+      </button>
+      <button class="block-btn" data-block="transcript-stream">
+        Transcript Stream <small>Live word-by-word transcript</small>
+      </button>
+      <h3 style="margin-top:12px;">Data Visualization</h3>
+      <button class="block-btn" data-block="delos-matrix">
+        Delos Matrix <small>Host attribute matrix with brain scan</small>
+      </button>
+      <button class="block-btn" data-block="delos-biometric">
+        Delos Biometric <small>Fingerprint, pulse, identity scan</small>
+      </button>
+      <button class="block-btn" data-block="delos-system-diagnostics">
+        System Diagnostics <small>Service status + network topology</small>
+      </button>
+      <button class="block-btn" data-block="delos-tracking-map">
+        Tracking Map <small>Waypoint tracking visualization</small>
+      </button>
+      <button class="block-btn" data-block="circular-progress">
+        Circular Progress <small>Analog circular progress ring</small>
+      </button>
+      <button class="block-btn" data-block="sparkline-chart">
+        Sparkline Chart <small>Mini trend chart with indicator</small>
+      </button>
+      <h3 style="margin-top:12px;">Holographic Icons</h3>
+      <button class="block-btn" data-block="hologram-orb">
+        Hologram Orb <small>Rotating holographic orb with particles</small>
+      </button>
+      <button class="block-btn" data-block="neural-network">
+        Neural Network <small>Animated nodes + traveling pulses</small>
+      </button>
+      <button class="block-btn" data-block="data-sphere">
+        Data Sphere <small>Rotating sphere of data points</small>
+      </button>
+      <button class="block-btn" data-block="glowing-cube">
+        Glowing Cube <small>3D wireframe cube with glow</small>
+      </button>
+      <button class="block-btn" data-block="energy-ring">
+        Energy Ring <small>Concentric pulse rings</small>
+      </button>
+      <h3 style="margin-top:12px;">Delos Console</h3>
+      <button class="block-btn" data-block="delos-console">
+        Delos Console <small>Full console overlay with metrics</small>
+      </button>
+      <button class="block-btn" data-block="delos-alert">
+        Delos Alert <small>Severity-coded alert notification</small>
+      </button>
+      <button class="block-btn" data-block="delos-scan-result">
+        Scan Result <small>Progress bar + findings list</small>
       </button>
     </nav>
-
     <main class="preview-area">
       <div class="frame-wrapper" id="frameWrapper">
-        <iframe id="previewFrame" src="popup-card.html"></iframe>
+        <iframe id="previewFrame" src="glass-card.html"></iframe>
       </div>
-
       <div class="controls">
         <button class="primary" id="btnRestart">↻ Restart</button>
         <button id="btnOpenRaw">↗ Open Raw</button>
       </div>
-
       <div class="props-display" id="propsDisplay"></div>
     </main>
   </div>
-
   <script>
     const blocks = {
-      'popup-card': {
-        file: 'popup-card.html',
-        props: {
-          text: 'Feature Callout',
-          subtitle: 'Subtitle text goes here',
-          icon: '✨',
-          color: '#9f75ff',
-          fontSize: 42,
-          yPos: 35
-        }
+      'glass-card': {
+        file: 'glass-card.html',
+        props: { icon: '🤖', title: 'AI Sales Agent', subtitle: 'Handles calls 24/7', accentColor: '#60a5fa', yPos: 35 }
       },
-      'icon-callout': {
-        file: 'icon-callout.html',
-        props: {
-          text: 'Lightning Fast',
-          color: '#9f75ff',
-          fontSize: 30,
-          icon: 'zap',
-          iconSize: 80,
-          yPos: 50
-        }
+      'big-stat': {
+        file: 'big-stat.html',
+        props: { number: '80%', label: 'of tasks automated', accentColor: '#4ade80', yPos: 50 }
       },
-      'animated-label': {
-        file: 'animated-label.html',
-        props: {
-          text: 'This Changes Everything',
-          color: '#f6ecd9',
-          fontSize: 52,
-          animation: 'typewriter',
-          yPos: 50
-        }
+      'terminal-window': {
+        file: 'terminal-window.html',
+        props: { title: 'AI Agent', command: '$ deploy-agent --type sales', output: 'Agent deployed ✓\nHandling inbound calls...\n24/7 coverage active' }
       },
-      'progress-indicator': {
-        file: 'progress-indicator.html',
-        props: {
-          steps: 4,
-          currentStep: 3,
-          color: '#9f75ff',
-          style: 'dots',
-          yPos: 85
-        }
+      'checklist': {
+        file: 'checklist.html',
+        props: { title: 'What AI Handles', items: ['Sales calls', 'Lead qualification', 'Follow-up emails', 'Appointment booking'], checked: [true, true, true, true], accentColor: '#4ade80', yPos: 40 }
       },
-      'glowing-badge': {
-        file: 'glowing-badge.html',
-        props: {
-          text: 'NEW',
-          color: '#9f75ff',
-          fontSize: 22,
-          glowIntensity: 5,
-          shape: 'pill',
-          yPos: 12
-        }
+      'pill-badge': {
+        file: 'pill-badge.html',
+        props: { icon: '⚡', text: 'AUTOMATED', accentColor: '#4ade80', glow: true, yPos: 50 }
+      },
+      'before-after': {
+        file: 'before-after.html',
+        props: { leftLabel: 'MANUAL', leftValue: '10 hrs/week', leftIcon: '📋', rightLabel: 'WITH AI', rightValue: '10 min/week', rightIcon: '🤖' }
+      },
+      'icon-label': {
+        file: 'icon-label.html',
+        props: { icon: '🤖', label: 'AI Automation', iconSize: 64, accentColor: '#60a5fa' }
+      },
+      'numbered-step': {
+        file: 'numbered-step.html',
+        props: { number: '1', title: 'Connect Your CRM', description: 'Link your existing tools in one click', accentColor: '#9f75ff' }
+      },
+      'icon-grid': {
+        file: 'icon-grid.html',
+        props: { columns: 2, items: [{ icon: '📞', label: 'Sales' }, { icon: '📧', label: 'Marketing' }, { icon: '🎧', label: 'Support' }, { icon: '💰', label: 'Billing' }] }
+      },
+      'progress-ring': {
+        file: 'progress-ring.html',
+        props: { percent: 90, label: 'Automated', accentColor: '#4ade80', yPos: 50 }
+      },
+      'hud-card': {
+        file: 'hud-card.html',
+        props: { title: 'AI Agent Deployed', description: 'All systems operational', statusText: 'AGENT ACTIVE',
+          metrics: [{value:'99.9%',label:'Uptime'},{value:'12ms',label:'Latency'},{value:'2.4K',label:'Today'}], accentColor: '#4ade80' }
+      },
+      'ai-orb': {
+        file: 'ai-orb.html',
+        props: { icon: '🧠', label: 'AI Processing', sublabel: 'Analyzing your data', accentColor: '#9f75ff' }
+      },
+      'wave-line': {
+        file: 'wave-line.html',
+        props: { label: 'AI Active', sublabel: 'Processing 2,400 tasks', waveType: 'pulse', accentColor: '#4ade80' }
+      },
+      'network-nodes': {
+        file: 'network-nodes.html',
+        props: { title: 'Connected & Integrated', accentColor: '#60a5fa' }
+      },
+      'stat-bar': {
+        file: 'stat-bar.html',
+        props: { title: 'Performance Metrics',
+          bars: [{label:'Automation',value:'92%',percent:92,color:'#4ade80'},{label:'Cost Reduction',value:'68%',percent:68,color:'#60a5fa'},{label:'Speed',value:'340%',percent:85,color:'#fbbf24'}] }
+      },
+      'voice-waveform': {
+        file: 'voice-waveform.html',
+        props: { label: 'Voice Agent Active', amplitude: 0.8, accentColor: '#9f75ff' }
+      },
+      'voice-spectrum': {
+        file: 'voice-spectrum.html',
+        props: { label: 'Voice Spectrum', bands: 24, accentColor: '#9f75ff' }
+      },
+      'agent-avatar': {
+        file: 'agent-avatar.html',
+        props: { icon: '🤖', label: 'AI Agent', statusText: 'ONLINE', accentColor: '#9f75ff' }
+      },
+      'transcript-stream': {
+        file: 'transcript-stream.html',
+        props: { words: ['Processing', 'voice', 'input', 'in', 'real-time'], label: 'LIVE TRANSCRIPT', accentColor: '#9f75ff' }
+      },
+      'delos-matrix': {
+        file: 'delos-matrix.html',
+        props: { hostId: 'HC-0001', metrics: [{name:'Cognition',value:98},{name:'Emotion',value:87},{name:'Fidelity',value:95}], accentColor: '#9f75ff' }
+      },
+      'delos-biometric': {
+        file: 'delos-biometric.html',
+        props: { identity: 'Host #042', pulse: 72, stressLevel: 24, accentColor: '#9f75ff' }
+      },
+      'delos-system-diagnostics': {
+        file: 'delos-system-diagnostics.html',
+        props: { services: [{name:'Core',status:'online'},{name:'Network',status:'online'},{name:'Memory',status:'warning'},{name:'GPU',status:'online'}], accentColor: '#9f75ff' }
+      },
+      'delos-tracking-map': {
+        file: 'delos-tracking-map.html',
+        props: { waypoints: [{x:30,y:40,label:'A'},{x:60,y:25,label:'B'},{x:75,y:60,label:'C'}], label: 'Tracking Active', accentColor: '#9f75ff' }
+      },
+      'circular-progress': {
+        file: 'circular-progress.html',
+        props: { percent: 78, label: 'Task Complete', accentColor: '#9f75ff' }
+      },
+      'sparkline-chart': {
+        file: 'sparkline-chart.html',
+        props: { data: [30,45,35,60,55,70,65,80], trend: '+12%', label: 'Performance Trend', accentColor: '#9f75ff' }
+      },
+      'hologram-orb': {
+        file: 'hologram-orb.html',
+        props: { icon: '🔮', label: 'Holographic Display', accentColor: '#9f75ff' }
+      },
+      'neural-network': {
+        file: 'neural-network.html',
+        props: { layers: [3,5,5,3], label: 'Neural Network Active', accentColor: '#9f75ff' }
+      },
+      'data-sphere': {
+        file: 'data-sphere.html',
+        props: { icon: '🌐', label: 'Data Sphere', points: 60, accentColor: '#9f75ff' }
+      },
+      'glowing-cube': {
+        file: 'glowing-cube.html',
+        props: { icon: '📦', label: 'Data Block', accentColor: '#9f75ff' }
+      },
+      'energy-ring': {
+        file: 'energy-ring.html',
+        props: { rings: 4, label: 'Energy Field Active', accentColor: '#9f75ff' }
+      },
+      'delos-console': {
+        file: 'delos-console.html',
+        props: { title: 'DELOS SYSTEM', statusText: 'OPERATIONAL', metrics: [{label:'Uptime',value:'99.9%'},{label:'Hosts',value:'2,048'},{label:'Fidelity',value:'98.7%'}], accentColor: '#9f75ff' }
+      },
+      'delos-alert': {
+        file: 'delos-alert.html',
+        props: { title: 'SYSTEM ALERT', message: 'Anomalous behavior detected', severity: 'warning', accentColor: '#fbbf24' }
+      },
+      'delos-scan-result': {
+        file: 'delos-scan-result.html',
+        props: { title: 'SCAN COMPLETE', findings: ['Fidelity normal','No anomalies','Memory intact'], progress: 100, accentColor: '#9f75ff' }
       }
     };
-
-    let currentBlock = 'popup-card';
-    const frame     = document.getElementById('previewFrame');
+    let currentBlock = 'glass-card';
+    const frame = document.getElementById('previewFrame');
     const propsDisp = document.getElementById('propsDisplay');
-    const buttons   = document.querySelectorAll('.block-btn');
-
+    const buttons = document.querySelectorAll('.block-btn');
     function loadBlock(name) {
       currentBlock = name;
       const b = blocks[name];
       frame.src = b.file;
       propsDisp.textContent = JSON.stringify(b.props, null, 2);
-      buttons.forEach((btn) => {
-        btn.classList.toggle('active', btn.dataset.block === name);
-      });
+      buttons.forEach((btn) => { btn.classList.toggle('active', btn.dataset.block === name); });
     }
-
-    buttons.forEach((btn) => {
-      btn.addEventListener('click', () => loadBlock(btn.dataset.block));
-    });
-
-    document.getElementById('btnRestart').addEventListener('click', () => {
-      const src = frame.src;
-      frame.src = '';
-      requestAnimationFrame(() => { frame.src = src; });
-    });
-
-    document.getElementById('btnOpenRaw').addEventListener('click', () => {
-      window.open(blocks[currentBlock].file, '_blank');
-    });
-
-    // Initial display
-    loadBlock('popup-card');
+    buttons.forEach((btn) => { btn.addEventListener('click', () => loadBlock(btn.dataset.block)); });
+    document.getElementById('btnRestart').addEventListener('click', () => { const src = frame.src; frame.src = ''; requestAnimationFrame(() => { frame.src = src; }); });
+    document.getElementById('btnOpenRaw').addEventListener('click', () => { window.open(blocks[currentBlock].file, '_blank'); });
+    loadBlock('glass-card');
   </script>
 </body>
 </html>

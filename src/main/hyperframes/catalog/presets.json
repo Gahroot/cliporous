@@ -1,0 +1,1283 @@
+{
+  "ai-sales-agent": {
+    "block": "glass-card",
+    "category": "ai",
+    "metadata": {
+      "description": "AI agent that handles sales calls and lead qualification",
+      "triggerKeywords": ["sales", "sales agent", "sales calls", "lead", "lead qualification", "inbound calls", "outbound", "cold calling", "closing", "pipeline"],
+      "topics": ["sales", "ai-agents", "lead-generation", "customer-outreach"]
+    },
+    "variables": {
+      "icon": "🤖",
+      "title": "AI Sales Agent",
+      "subtitle": "Handles calls 24/7",
+      "accentColor": "#60a5fa"
+    }
+  },
+  "ai-marketing-agent": {
+    "block": "glass-card",
+    "category": "ai",
+    "metadata": {
+      "description": "AI agent that runs marketing campaigns and content on autopilot",
+      "triggerKeywords": ["marketing", "marketing agent", "content", "campaigns", "social media", "email marketing", "advertising", "brand", "audience"],
+      "topics": ["marketing", "ai-agents", "content-creation", "advertising"]
+    },
+    "variables": {
+      "icon": "📣",
+      "title": "AI Marketing Agent",
+      "subtitle": "Content on autopilot",
+      "accentColor": "#9f75ff"
+    }
+  },
+  "ai-support-agent": {
+    "block": "glass-card",
+    "category": "ai",
+    "metadata": {
+      "description": "AI agent that resolves customer support tickets instantly",
+      "triggerKeywords": ["support", "customer support", "help desk", "tickets", "customer service", "help", "complaints", "resolution", "response time"],
+      "topics": ["customer-support", "ai-agents", "service", "helpdesk"]
+    },
+    "variables": {
+      "icon": "🎧",
+      "title": "AI Support Agent",
+      "subtitle": "Resolves tickets instantly",
+      "accentColor": "#2dd4bf"
+    }
+  },
+  "ai-hiring-agent": {
+    "block": "glass-card",
+    "category": "ai",
+    "metadata": {
+      "description": "AI agent that screens job candidates and schedules interviews",
+      "triggerKeywords": ["hiring", "recruiting", "candidates", "interviews", "resume", "screening", "talent", "recruitment", "hr", "human resources"],
+      "topics": ["hiring", "recruiting", "ai-agents", "hr"]
+    },
+    "variables": {
+      "icon": "👥",
+      "title": "AI Hiring Agent",
+      "subtitle": "Screen candidates 24/7",
+      "accentColor": "#60a5fa"
+    }
+  },
+  "ai-billing-agent": {
+    "block": "glass-card",
+    "category": "ai",
+    "metadata": {
+      "description": "AI agent that automates invoicing, billing, and payments",
+      "triggerKeywords": ["billing", "invoicing", "payments", "accounts", "finance", "bookkeeping", "subscriptions", "recurring", "billing cycle"],
+      "topics": ["billing", "finance", "ai-agents", "automation"]
+    },
+    "variables": {
+      "icon": "💳",
+      "title": "AI Billing Agent",
+      "subtitle": "Invoicing on autopilot",
+      "accentColor": "#4ade80"
+    }
+  },
+  "save-50k": {
+    "block": "big-stat",
+    "category": "money",
+    "metadata": {
+      "description": "Shows $50K annual savings from AI automation",
+      "triggerKeywords": ["save", "savings", "50k", "fifty thousand", "cost", "reduce costs", "cut costs", "save money", "annual savings"],
+      "topics": ["cost-savings", "roi", "money", "efficiency"]
+    },
+    "variables": {
+      "number": "50K",
+      "label": "saved per year",
+      "prefix": "$",
+      "accentColor": "#4ade80"
+    }
+  },
+  "save-100k": {
+    "block": "big-stat",
+    "category": "money",
+    "metadata": {
+      "description": "Shows $100K annual savings from AI automation",
+      "triggerKeywords": ["save", "savings", "100k", "hundred thousand", "massive savings", "six figures", "cut costs dramatically"],
+      "topics": ["cost-savings", "roi", "money", "scaling"]
+    },
+    "variables": {
+      "number": "100K",
+      "label": "saved per year",
+      "prefix": "$",
+      "accentColor": "#4ade80"
+    }
+  },
+  "automate-80": {
+    "block": "big-stat",
+    "category": "ai",
+    "metadata": {
+      "description": "Shows 80% of business tasks automated by AI",
+      "triggerKeywords": ["automate", "automation", "80%", "eighty percent", "most tasks", "nearly all", "automated", "hands off"],
+      "topics": ["automation", "efficiency", "ai-capability", "productivity"]
+    },
+    "variables": {
+      "number": "80%",
+      "label": "of your business automated",
+      "accentColor": "#4ade80"
+    }
+  },
+  "automate-90": {
+    "block": "big-stat",
+    "category": "ai",
+    "metadata": {
+      "description": "Shows 90% task completion rate by AI",
+      "triggerKeywords": ["90%", "ninety percent", "completion rate", "success rate", "accuracy", "almost perfect"],
+      "topics": ["automation", "reliability", "ai-performance", "quality"]
+    },
+    "variables": {
+      "number": "90%",
+      "label": "task completion rate",
+      "accentColor": "#4ade80"
+    }
+  },
+  "increase-revenue-3x": {
+    "block": "big-stat",
+    "category": "money",
+    "metadata": {
+      "description": "Shows 3x revenue increase from AI implementation",
+      "triggerKeywords": ["revenue", "3x", "triple", "three times", "grow revenue", "increase revenue", "scaling revenue", "multiply"],
+      "topics": ["revenue", "growth", "scaling", "business-results"]
+    },
+    "variables": {
+      "number": "3x",
+      "label": "revenue increase",
+      "accentColor": "#fbbf24"
+    }
+  },
+  "10-hours-saved": {
+    "block": "big-stat",
+    "category": "time",
+    "metadata": {
+      "description": "Shows 10 hours saved per week with AI",
+      "triggerKeywords": ["10 hours", "ten hours", "save time", "hours saved", "per week", "weekly", "time savings", "free up time"],
+      "topics": ["time-savings", "efficiency", "productivity", "work-life-balance"]
+    },
+    "variables": {
+      "number": "10",
+      "label": "hours saved per week",
+      "accentColor": "#fbbf24"
+    }
+  },
+  "save-20-hrs": {
+    "block": "big-stat",
+    "category": "time",
+    "metadata": {
+      "description": "Shows 20 hours saved every week with AI",
+      "triggerKeywords": ["20 hours", "twenty hours", "save 20", "massive time savings", "get your time back"],
+      "topics": ["time-savings", "efficiency", "productivity", "scaling"]
+    },
+    "variables": {
+      "number": "20",
+      "label": "hours saved every week",
+      "accentColor": "#fbbf24"
+    }
+  },
+  "3x-faster": {
+    "block": "big-stat",
+    "category": "time",
+    "metadata": {
+      "description": "Shows 3x faster than manual work",
+      "triggerKeywords": ["3x faster", "three times faster", "speed", "faster", "quick", "rapid", "lightning", "instant"],
+      "topics": ["speed", "efficiency", "time-savings", "productivity"]
+    },
+    "variables": {
+      "number": "3x",
+      "label": "faster than manual work",
+      "accentColor": "#fbbf24"
+    }
+  },
+  "100-clients": {
+    "block": "big-stat",
+    "category": "money",
+    "metadata": {
+      "description": "Shows 100+ clients served automatically by AI",
+      "triggerKeywords": ["100 clients", "hundred clients", "clients", "customers", "served", "at scale", "handle more"],
+      "topics": ["scaling", "client-management", "growth", "capacity"]
+    },
+    "variables": {
+      "number": "100+",
+      "label": "clients served automatically",
+      "accentColor": "#60a5fa"
+    }
+  },
+  "terminal-deploy-agent": {
+    "block": "terminal-window",
+    "category": "ai",
+    "metadata": {
+      "description": "Terminal showing AI agent deployment for sales",
+      "triggerKeywords": ["deploy", "launch", "set up", "activate", "turn on", "enable", "go live", "start using"],
+      "topics": ["ai-deployment", "setup", "launch", "getting-started"]
+    },
+    "variables": {
+      "title": "AI Agent",
+      "command": "$ deploy-agent --type sales",
+      "output": "Agent deployed ✓\nHandling inbound calls...\n24/7 coverage active"
+    }
+  },
+  "terminal-automation": {
+    "block": "terminal-window",
+    "category": "ai",
+    "metadata": {
+      "description": "Terminal showing outreach automation pipeline running",
+      "triggerKeywords": ["pipeline", "outreach", "automate", "workflow", "sequences", "funnel", "email sequence", "drip"],
+      "topics": ["automation", "outreach", "email-marketing", "pipelines"]
+    },
+    "variables": {
+      "title": "Automation Pipeline",
+      "command": "$ automate --workflow outreach",
+      "output": "Pipeline started ✓\nEmails queued: 2,400\nExpected opens: 680\nFollow-ups: automatic"
+    }
+  },
+  "terminal-roi": {
+    "block": "terminal-window",
+    "category": "money",
+    "metadata": {
+      "description": "Terminal showing ROI calculation for AI investment",
+      "triggerKeywords": ["roi", "return on investment", "calculate", "savings", "payoff", "break even", "worth it", "investment"],
+      "topics": ["roi", "cost-savings", "financial-analysis", "business-case"]
+    },
+    "variables": {
+      "title": "ROI Calculator",
+      "command": "$ calculate-roi --staff 5 --hours 40",
+      "output": "Monthly savings: $12,400\nAnnual savings: $148,800\nBreak-even: 2 weeks ✓"
+    }
+  },
+  "terminal-lead-qualify": {
+    "block": "terminal-window",
+    "category": "ai",
+    "metadata": {
+      "description": "Terminal showing AI lead qualification process",
+      "triggerKeywords": ["leads", "lead qualification", "qualify", "scoring", "pipeline", "crm", "prospect", "filter leads"],
+      "topics": ["lead-generation", "sales", "qualification", "ai-processing"]
+    },
+    "variables": {
+      "title": "Lead Qualifier",
+      "command": "$ qualify-leads --source crm",
+      "output": "Scanned 847 leads\nQualified: 203 (24%)\nHot leads sent to sales ✓"
+    }
+  },
+  "terminal-support-queue": {
+    "block": "terminal-window",
+    "category": "ai",
+    "metadata": {
+      "description": "Terminal showing AI support ticket processing",
+      "triggerKeywords": ["support", "tickets", "help desk", "customer service", "response time", "queue", "resolution"],
+      "topics": ["customer-support", "helpdesk", "ticket-resolution", "service"]
+    },
+    "variables": {
+      "title": "Support Queue",
+      "command": "$ process-tickets --auto-resolve",
+      "output": "Tickets today: 342\nAuto-resolved: 289 (84%)\nEscalated: 53\nAvg response: 12s ✓"
+    }
+  },
+  "checklist-what-ai-handles": {
+    "block": "checklist",
+    "category": "ai",
+    "metadata": {
+      "description": "Checklist of tasks that AI handles for your business",
+      "triggerKeywords": ["what ai handles", "tasks", "things ai does", "capabilities", "what it does", "features", "handles"],
+      "topics": ["ai-capabilities", "features", "automation", "overview"]
+    },
+    "variables": {
+      "title": "What AI Handles",
+      "items": ["Sales calls", "Lead qualification", "Follow-up emails", "Appointment booking"],
+      "checked": [true, true, true, true]
+    }
+  },
+  "checklist-time-saved": {
+    "block": "checklist",
+    "category": "time",
+    "metadata": {
+      "description": "Checklist of repetitive tasks AI automates to save time",
+      "triggerKeywords": ["save time", "time savings", "automate tasks", "repetitive", "manual work", "data entry", "busy work"],
+      "topics": ["time-savings", "automation", "productivity", "efficiency"]
+    },
+    "variables": {
+      "title": "Tasks AI Automates",
+      "items": ["Data entry", "Report generation", "Email drafting", "Scheduling"],
+      "checked": [true, true, true, true],
+      "accentColor": "#fbbf24"
+    }
+  },
+  "checklist-features": {
+    "block": "checklist",
+    "category": "ai",
+    "metadata": {
+      "description": "Checklist of platform features and capabilities",
+      "triggerKeywords": ["features", "platform", "capabilities", "what you get", "included", "built in", "comes with"],
+      "topics": ["features", "platform", "capabilities", "product-overview"]
+    },
+    "variables": {
+      "title": "Platform Features",
+      "items": ["24/7 availability", "Multi-language support", "Real-time analytics", "CRM integration"],
+      "checked": [true, true, true, true],
+      "accentColor": "#60a5fa"
+    }
+  },
+  "checklist-money-saved": {
+    "block": "checklist",
+    "category": "money",
+    "metadata": {
+      "description": "Checklist showing specific cost reductions from AI",
+      "triggerKeywords": ["costs", "save money", "reduce", "cut", "cheaper", "affordable", "budget", "spending"],
+      "topics": ["cost-savings", "budget", "roi", "efficiency"]
+    },
+    "variables": {
+      "title": "Cost Reductions",
+      "items": ["Hiring costs ↓ 60%", "Training time ↓ 80%", "Operational overhead ↓ 45%"],
+      "checked": [true, true, true],
+      "accentColor": "#4ade80"
+    }
+  },
+  "checklist-onboarding": {
+    "block": "checklist",
+    "category": "setup",
+    "metadata": {
+      "description": "Step-by-step onboarding checklist for getting started",
+      "triggerKeywords": ["setup", "getting started", "onboarding", "how to start", "first steps", "quick start", "install"],
+      "topics": ["setup", "onboarding", "getting-started", "tutorial"]
+    },
+    "variables": {
+      "title": "Quick Setup Checklist",
+      "items": ["Connect your CRM", "Import contacts", "Train AI agent", "Go live"],
+      "checked": [true, true, true, false],
+      "accentColor": "#9f75ff"
+    }
+  },
+  "pill-automated": {
+    "block": "pill-badge",
+    "category": "ai",
+    "metadata": {
+      "description": "Badge showing a feature is fully automated",
+      "triggerKeywords": ["automated", "automation", "automatic", "hands off", "self-running", "on autopilot", "set and forget"],
+      "topics": ["automation", "ai-capability", "efficiency"]
+    },
+    "variables": {
+      "icon": "⚡",
+      "text": "AUTOMATED",
+      "accentColor": "#4ade80",
+      "glow": true
+    }
+  },
+  "pill-live": {
+    "block": "pill-badge",
+    "category": "ai",
+    "metadata": {
+      "description": "Badge showing AI is live and active right now",
+      "triggerKeywords": ["live", "active", "running", "online", "right now", "currently", "in real time"],
+      "topics": ["status", "live", "real-time", "active"]
+    },
+    "variables": {
+      "icon": "🔴",
+      "text": "LIVE",
+      "accentColor": "#fb7185",
+      "glow": true
+    }
+  },
+  "pill-ai-powered": {
+    "block": "pill-badge",
+    "category": "ai",
+    "metadata": {
+      "description": "Badge showing something is AI powered",
+      "triggerKeywords": ["ai powered", "ai", "artificial intelligence", "machine learning", "powered by ai", "smart", "intelligent"],
+      "topics": ["ai", "technology", "intelligence", "capability"]
+    },
+    "variables": {
+      "icon": "🤖",
+      "text": "AI POWERED",
+      "accentColor": "#60a5fa",
+      "glow": true
+    }
+  },
+  "pill-new-feature": {
+    "block": "pill-badge",
+    "category": "ai",
+    "metadata": {
+      "description": "Badge announcing a new feature",
+      "triggerKeywords": ["new", "feature", "just added", "update", "announcement", "brand new", "introducing"],
+      "topics": ["new-feature", "announcement", "update", "product"]
+    },
+    "variables": {
+      "icon": "✨",
+      "text": "NEW FEATURE",
+      "accentColor": "#9f75ff",
+      "glow": true
+    }
+  },
+  "pill-24-7": {
+    "block": "pill-badge",
+    "category": "ai",
+    "metadata": {
+      "description": "Badge showing 24/7 always-on availability",
+      "triggerKeywords": ["24/7", "always on", "never stops", "round the clock", "any time", "day and night", "weekends", "after hours"],
+      "topics": ["availability", "uptime", "reliability", "always-on"]
+    },
+    "variables": {
+      "icon": "🕐",
+      "text": "24/7 ACTIVE",
+      "accentColor": "#2dd4bf",
+      "glow": true
+    }
+  },
+  "pill-enterprise": {
+    "block": "pill-badge",
+    "category": "ai",
+    "metadata": {
+      "description": "Badge showing enterprise readiness",
+      "triggerKeywords": ["enterprise", "business", "professional", "scale", "large team", "company", "corporate"],
+      "topics": ["enterprise", "scalability", "business", "professional"]
+    },
+    "variables": {
+      "icon": "🏢",
+      "text": "ENTERPRISE READY",
+      "accentColor": "#9f75ff",
+      "glow": false
+    }
+  },
+  "pill-roi-positive": {
+    "block": "pill-badge",
+    "category": "money",
+    "metadata": {
+      "description": "Badge showing positive ROI",
+      "triggerKeywords": ["roi", "return", "profit", "worth it", "pays for itself", "positive", "investment"],
+      "topics": ["roi", "profit", "investment", "financial"]
+    },
+    "variables": {
+      "icon": "📈",
+      "text": "ROI POSITIVE",
+      "accentColor": "#4ade80",
+      "glow": true
+    }
+  },
+  "before-after-time": {
+    "block": "before-after",
+    "category": "comparison",
+    "metadata": {
+      "description": "Comparison: manual 10 hrs/week vs AI 10 min/week",
+      "triggerKeywords": ["before and after", "manual vs ai", "time comparison", "10 hours", "10 minutes", "way faster", "compare"],
+      "topics": ["time-savings", "comparison", "efficiency", "before-after"]
+    },
+    "variables": {
+      "leftLabel": "MANUAL",
+      "leftValue": "10 hrs/week",
+      "leftIcon": "📋",
+      "rightLabel": "WITH AI",
+      "rightValue": "10 min/week",
+      "rightIcon": "🤖"
+    }
+  },
+  "before-after-cost": {
+    "block": "before-after",
+    "category": "comparison",
+    "metadata": {
+      "description": "Comparison: hiring at $80K/year vs AI agent at $200/month",
+      "triggerKeywords": ["hire vs ai", "cost comparison", "employee cost", "80k", "cheaper", "affordable", "hiring cost"],
+      "topics": ["cost-comparison", "hiring", "affordability", "roi"]
+    },
+    "variables": {
+      "leftLabel": "HIRING",
+      "leftValue": "$80K/year",
+      "leftIcon": "👤",
+      "rightLabel": "AI AGENT",
+      "rightValue": "$200/month",
+      "rightIcon": "🤖",
+      "accentColor": "#4ade80"
+    }
+  },
+  "before-after-speed": {
+    "block": "before-after",
+    "category": "comparison",
+    "metadata": {
+      "description": "Comparison: 5 days vs 5 minutes — dramatic speed improvement",
+      "triggerKeywords": ["speed", "5 days", "5 minutes", "dramatically faster", "instant", "speed comparison", "turnaround"],
+      "topics": ["speed", "efficiency", "time-savings", "turnaround"]
+    },
+    "variables": {
+      "leftLabel": "BEFORE AI",
+      "leftValue": "5 days",
+      "leftIcon": "🐌",
+      "rightLabel": "AFTER AI",
+      "rightValue": "5 minutes",
+      "rightIcon": "⚡",
+      "accentColor": "#fbbf24"
+    }
+  },
+  "before-after-leads": {
+    "block": "before-after",
+    "category": "comparison",
+    "metadata": {
+      "description": "Comparison: 20 leads/day manual vs 200 leads/day with AI",
+      "triggerKeywords": ["leads", "20 leads", "200 leads", "more leads", "lead volume", "ten times", "10x"],
+      "topics": ["lead-generation", "volume", "scaling", "sales"]
+    },
+    "variables": {
+      "leftLabel": "MANUAL",
+      "leftValue": "20 leads/day",
+      "leftIcon": "📞",
+      "rightLabel": "AI AGENT",
+      "rightValue": "200 leads/day",
+      "rightIcon": "🤖",
+      "accentColor": "#60a5fa"
+    }
+  },
+  "before-after-support": {
+    "block": "before-after",
+    "category": "comparison",
+    "metadata": {
+      "description": "Comparison: 8hr response from human team vs instant AI reply",
+      "triggerKeywords": ["response time", "8 hours", "instant", "wait time", "fast response", "customer wait", "support speed"],
+      "topics": ["customer-support", "response-time", "speed", "service"]
+    },
+    "variables": {
+      "leftLabel": "HUMAN TEAM",
+      "leftValue": "8hr response",
+      "leftIcon": "🕐",
+      "rightLabel": "AI SUPPORT",
+      "rightValue": "Instant reply",
+      "rightIcon": "⚡",
+      "accentColor": "#2dd4bf"
+    }
+  },
+  "icon-robot": {
+    "block": "icon-label",
+    "category": "ai",
+    "metadata": {
+      "description": "Robot icon representing AI automation",
+      "triggerKeywords": ["ai", "automation", "robot", "artificial intelligence", "bot", "agent"],
+      "topics": ["ai", "automation", "technology"]
+    },
+    "variables": {
+      "icon": "🤖",
+      "label": "AI Automation",
+      "accentColor": "#60a5fa"
+    }
+  },
+  "icon-clock": {
+    "block": "icon-label",
+    "category": "time",
+    "metadata": {
+      "description": "Clock icon representing time savings",
+      "triggerKeywords": ["time", "save time", "clock", "hours", "minutes", "faster", "quick"],
+      "topics": ["time-savings", "efficiency", "speed"]
+    },
+    "variables": {
+      "icon": "⏰",
+      "label": "Save Time",
+      "accentColor": "#fbbf24"
+    }
+  },
+  "icon-money": {
+    "block": "icon-label",
+    "category": "money",
+    "metadata": {
+      "description": "Money bag icon representing cost reduction",
+      "triggerKeywords": ["money", "cost", "save", "reduce", "budget", "cheap", "affordable"],
+      "topics": ["cost-savings", "money", "budget", "affordability"]
+    },
+    "variables": {
+      "icon": "💰",
+      "label": "Cut Costs",
+      "accentColor": "#4ade80"
+    }
+  },
+  "icon-growth": {
+    "block": "icon-label",
+    "category": "money",
+    "metadata": {
+      "description": "Chart icon representing revenue growth",
+      "triggerKeywords": ["growth", "revenue", "scale", "increase", "grow", "expand", "chart"],
+      "topics": ["growth", "revenue", "scaling", "business"]
+    },
+    "variables": {
+      "icon": "📈",
+      "label": "Grow Revenue",
+      "accentColor": "#4ade80"
+    }
+  },
+  "icon-gear": {
+    "block": "icon-label",
+    "category": "ai",
+    "metadata": {
+      "description": "Gear icon representing automation and workflows",
+      "triggerKeywords": ["automation", "workflow", "process", "system", "gear", "engine", "behind the scenes"],
+      "topics": ["automation", "workflows", "processes", "systems"]
+    },
+    "variables": {
+      "icon": "⚙️",
+      "label": "Automation",
+      "accentColor": "#9f75ff"
+    }
+  },
+  "step-1-connect": {
+    "block": "numbered-step",
+    "category": "setup",
+    "metadata": {
+      "description": "Step 1: Connect your CRM to the AI platform",
+      "triggerKeywords": ["step 1", "first step", "connect", "crm", "integrate", "link", "connect tools", "integration"],
+      "topics": ["setup", "integration", "crm", "getting-started"]
+    },
+    "variables": {
+      "number": "1",
+      "title": "Connect Your CRM",
+      "description": "Link your existing tools in one click",
+      "accentColor": "#9f75ff"
+    }
+  },
+  "step-2-train": {
+    "block": "numbered-step",
+    "category": "setup",
+    "metadata": {
+      "description": "Step 2: Train your AI agent with your playbook",
+      "triggerKeywords": ["step 2", "train", "training", "teach", "playbook", "knowledge base", "faq", "customize"],
+      "topics": ["setup", "training", "customization", "ai-training"]
+    },
+    "variables": {
+      "number": "2",
+      "title": "Train Your AI Agent",
+      "description": "Feed it your playbook and FAQs",
+      "accentColor": "#60a5fa"
+    }
+  },
+  "step-3-launch": {
+    "block": "numbered-step",
+    "category": "setup",
+    "metadata": {
+      "description": "Step 3: Launch and let AI scale your operations",
+      "triggerKeywords": ["step 3", "launch", "go live", "start", "activate", "scale", "turn on"],
+      "topics": ["setup", "launch", "go-live", "scaling"]
+    },
+    "variables": {
+      "number": "3",
+      "title": "Launch & Scale",
+      "description": "Go live and watch it handle everything",
+      "accentColor": "#4ade80"
+    }
+  },
+  "step-4-optimize": {
+    "block": "numbered-step",
+    "category": "setup",
+    "metadata": {
+      "description": "Step 4: AI continuously learns and improves",
+      "triggerKeywords": ["step 4", "optimize", "improve", "learn", "iterate", "better", "refine", "get smarter"],
+      "topics": ["optimization", "continuous-improvement", "ai-learning", "iteration"]
+    },
+    "variables": {
+      "number": "4",
+      "title": "Optimize & Improve",
+      "description": "AI learns and gets better every day",
+      "accentColor": "#fbbf24"
+    }
+  },
+  "grid-ai-capabilities": {
+    "block": "icon-grid",
+    "category": "ai",
+    "metadata": {
+      "description": "2×2 grid showing core AI capabilities: Sales, Marketing, Support, Billing",
+      "triggerKeywords": ["capabilities", "what it does", "sales marketing support", "core features", "all in one", "everything"],
+      "topics": ["ai-capabilities", "features", "overview", "platform"]
+    },
+    "variables": {
+      "columns": 2,
+      "items": [
+        { "icon": "📞", "label": "Sales" },
+        { "icon": "📧", "label": "Marketing" },
+        { "icon": "🎧", "label": "Support" },
+        { "icon": "💰", "label": "Billing" }
+      ]
+    }
+  },
+  "grid-3-capabilities": {
+    "block": "icon-grid",
+    "category": "ai",
+    "metadata": {
+      "description": "3×2 grid showing platform features: AI Agents, Automations, Analytics, Integrations, Security, Multi-language",
+      "triggerKeywords": ["platform features", "all features", "everything included", "full suite", "complete solution"],
+      "topics": ["features", "platform", "comprehensive", "suite"]
+    },
+    "variables": {
+      "columns": 3,
+      "items": [
+        { "icon": "🤖", "label": "AI Agents" },
+        { "icon": "⚡", "label": "Automations" },
+        { "icon": "📊", "label": "Analytics" },
+        { "icon": "🔗", "label": "Integrations" },
+        { "icon": "🛡️", "label": "Security" },
+        { "icon": "🌍", "label": "Multi-language" }
+      ]
+    }
+  },
+  "ring-90-automated": {
+    "block": "progress-ring",
+    "category": "ai",
+    "metadata": {
+      "description": "Progress ring showing 90% of tasks automated",
+      "triggerKeywords": ["90% automated", "nearly all automated", "almost done", "high automation", "most tasks automated"],
+      "topics": ["automation", "progress", "completion", "efficiency"]
+    },
+    "variables": {
+      "percent": 90,
+      "label": "of tasks automated",
+      "accentColor": "#4ade80"
+    }
+  },
+  "ring-75-complete": {
+    "block": "progress-ring",
+    "category": "setup",
+    "metadata": {
+      "description": "Progress ring showing 75% setup complete",
+      "triggerKeywords": ["75%", "setup", "almost done", "three quarters", "progress", "getting close"],
+      "topics": ["setup", "progress", "onboarding", "setup-progress"]
+    },
+    "variables": {
+      "percent": 75,
+      "label": "setup complete",
+      "accentColor": "#60a5fa"
+    }
+  },
+  "ring-95-success": {
+    "block": "progress-ring",
+    "category": "ai",
+    "metadata": {
+      "description": "Progress ring showing 95% customer satisfaction",
+      "triggerKeywords": ["95%", "satisfaction", "happy customers", "success rate", "positive feedback", "nearly perfect"],
+      "topics": ["satisfaction", "quality", "success", "customer-happiness"]
+    },
+    "variables": {
+      "percent": 95,
+      "label": "customer satisfaction",
+      "accentColor": "#9f75ff"
+    }
+  },
+  "ring-60-growth": {
+    "block": "progress-ring",
+    "category": "money",
+    "metadata": {
+      "description": "Progress ring showing 60% revenue growth this quarter",
+      "triggerKeywords": ["60%", "revenue growth", "quarterly", "growing", "up", "climbing", "on track"],
+      "topics": ["revenue", "growth", "quarterly-results", "progress"]
+    },
+    "variables": {
+      "percent": 60,
+      "label": "revenue growth this quarter",
+      "accentColor": "#fbbf24"
+    }
+  },
+
+  "hud-agent-status": {
+    "block": "hud-card",
+    "category": "ai",
+    "metadata": {
+      "description": "HUD card showing AI agent status with live metrics",
+      "triggerKeywords": ["status", "agent status", "system active", "operational", "monitoring", "live metrics", "uptime"],
+      "topics": ["ai-status", "monitoring", "reliability", "operations"]
+    },
+    "variables": {
+      "title": "AI Agent Deployed",
+      "description": "All systems operational — handling inbound",
+      "statusText": "AGENT ACTIVE",
+      "metrics": [
+        {"value": "99.9%", "label": "Uptime"},
+        {"value": "12ms", "label": "Latency"},
+        {"value": "2.4K", "label": "Today"}
+      ],
+      "accentColor": "#4ade80"
+    }
+  },
+
+  "hud-roi-dashboard": {
+    "block": "hud-card",
+    "category": "money",
+    "metadata": {
+      "description": "HUD card showing ROI dashboard with financial metrics",
+      "triggerKeywords": ["roi", "dashboard", "metrics", "results", "performance", "financial", "numbers"],
+      "topics": ["roi", "analytics", "performance", "financial"]
+    },
+    "variables": {
+      "title": "ROI Dashboard",
+      "description": "Real-time return on investment tracking",
+      "statusText": "LIVE DATA",
+      "metrics": [
+        {"value": "$148K", "label": "Annual Savings"},
+        {"value": "14x", "label": "ROI"},
+        {"value": "2wk", "label": "Payback"}
+      ],
+      "accentColor": "#fbbf24"
+    }
+  },
+
+  "hud-lead-pipeline": {
+    "block": "hud-card",
+    "category": "ai",
+    "metadata": {
+      "description": "HUD card showing lead pipeline with processing stats",
+      "triggerKeywords": ["pipeline", "leads", "processing", "leads processed", "qualification", "funnel"],
+      "topics": ["leads", "pipeline", "sales", "processing"]
+    },
+    "variables": {
+      "title": "Lead Pipeline",
+      "description": "AI qualifying leads in real-time",
+      "statusText": "SCANNING",
+      "metrics": [
+        {"value": "847", "label": "Scanned"},
+        {"value": "203", "label": "Qualified"},
+        {"value": "24%", "label": "Rate"}
+      ],
+      "accentColor": "#60a5fa"
+    }
+  },
+
+  "orb-ai-thinking": {
+    "block": "ai-orb",
+    "category": "ai",
+    "metadata": {
+      "description": "Glowing orb showing AI actively processing/thinking",
+      "triggerKeywords": ["ai thinking", "processing", "analyzing", "thinking", "learning", "neural", "computing"],
+      "topics": ["ai-processing", "thinking", "computation", "intelligence"]
+    },
+    "variables": {
+      "icon": "🧠",
+      "label": "AI Processing",
+      "sublabel": "Analyzing your data in real-time",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "orb-learning": {
+    "block": "ai-orb",
+    "category": "ai",
+    "metadata": {
+      "description": "Orb showing AI learning from your data",
+      "triggerKeywords": ["learning", "training", "adapting", "getting smarter", "ai training", "customizing"],
+      "topics": ["ai-learning", "training", "adaptation", "improvement"]
+    },
+    "variables": {
+      "icon": "📚",
+      "label": "Learning Mode",
+      "sublabel": "Training on your playbook",
+      "accentColor": "#60a5fa"
+    }
+  },
+
+  "wave-live-processing": {
+    "block": "wave-line",
+    "category": "ai",
+    "metadata": {
+      "description": "Waveform showing live AI processing activity",
+      "triggerKeywords": ["live", "processing", "active", "real-time", "streaming", "handling", "working"],
+      "topics": ["live-activity", "processing", "real-time", "ai-active"]
+    },
+    "variables": {
+      "label": "AI Active",
+      "sublabel": "Processing 2,400 tasks today",
+      "waveType": "pulse",
+      "accentColor": "#4ade80"
+    }
+  },
+
+  "wave-heartbeat": {
+    "block": "wave-line",
+    "category": "ai",
+    "metadata": {
+      "description": "Heartbeat waveform showing system health",
+      "triggerKeywords": ["heartbeat", "health", "alive", "system check", "status check", "monitoring"],
+      "topics": ["system-health", "monitoring", "uptime", "reliability"]
+    },
+    "variables": {
+      "label": "System Healthy",
+      "sublabel": "All agents responding",
+      "waveType": "heartbeat",
+      "accentColor": "#2dd4bf"
+    }
+  },
+
+  "net-integrations": {
+    "block": "network-nodes",
+    "category": "ai",
+    "metadata": {
+      "description": "Network graph showing connected integrations and tools",
+      "triggerKeywords": ["integrate", "integration", "connected", "tools", "platform", "crm", "ecosystem", "works with"],
+      "topics": ["integrations", "connections", "platform", "ecosystem"]
+    },
+    "variables": {
+      "title": "Connected & Integrated",
+      "nodes": [
+        {"x": 400, "y": 80, "icon": "🤖", "label": "AI Agent", "main": true},
+        {"x": 150, "y": 200, "icon": "📊", "label": "CRM"},
+        {"x": 650, "y": 200, "icon": "📧", "label": "Email"},
+        {"x": 200, "y": 340, "icon": "💬", "label": "SMS"},
+        {"x": 400, "y": 320, "icon": "📞", "label": "Calls"},
+        {"x": 600, "y": 340, "icon": "🌐", "label": "Web"}
+      ],
+      "accentColor": "#60a5fa"
+    }
+  },
+
+  "net-neural": {
+    "block": "network-nodes",
+    "category": "ai",
+    "metadata": {
+      "description": "Neural network visualization showing AI decision-making",
+      "triggerKeywords": ["neural", "brain", "network", "decision", "ai brain", "intelligence", "deep learning"],
+      "topics": ["neural-network", "ai-intelligence", "decision-making", "deep-learning"]
+    },
+    "variables": {
+      "title": "Neural Network Active",
+      "nodes": [
+        {"x": 400, "y": 60, "icon": "🧠", "label": "AI Core", "main": true},
+        {"x": 200, "y": 180, "icon": "📈", "label": "Analyze"},
+        {"x": 400, "y": 180, "icon": "⚡", "label": "Decide"},
+        {"x": 600, "y": 180, "icon": "🎯", "label": "Execute"},
+        {"x": 280, "y": 320, "icon": "📊", "label": "Data"},
+        {"x": 520, "y": 320, "icon": "🚀", "label": "Action"}
+      ],
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "bars-performance": {
+    "block": "stat-bar",
+    "category": "ai",
+    "metadata": {
+      "description": "Animated bar chart showing performance metrics",
+      "triggerKeywords": ["performance", "metrics", "stats", "numbers", "results", "analytics", "dashboard"],
+      "topics": ["performance", "analytics", "metrics", "results"]
+    },
+    "variables": {
+      "title": "Performance Metrics",
+      "bars": [
+        {"label": "Automation Rate", "value": "92%", "percent": 92, "color": "#4ade80"},
+        {"label": "Cost Reduction", "value": "68%", "percent": 68, "color": "#60a5fa"},
+        {"label": "Speed Increase", "value": "340%", "percent": 85, "color": "#fbbf24"}
+      ]
+    }
+  },
+
+  "bars-team": {
+    "block": "stat-bar",
+    "category": "time",
+    "metadata": {
+      "description": "Bar chart showing time allocation before and after AI",
+      "triggerKeywords": ["time saved", "time allocation", "schedule", "where time goes", "time savings"],
+      "topics": ["time-savings", "allocation", "efficiency", "productivity"]
+    },
+    "variables": {
+      "title": "Where Your Time Goes",
+      "bars": [
+        {"label": "Admin Tasks", "value": "15%", "percent": 15, "color": "#fb7185"},
+        {"label": "Client Work", "value": "60%", "percent": 60, "color": "#4ade80"},
+        {"label": "Growth", "value": "25%", "percent": 25, "color": "#fbbf24"}
+      ]
+    }
+  },
+
+  "voice-agent-active": {
+    "block": "voice-waveform",
+    "category": "voice",
+    "metadata": {
+      "description": "Animated waveform showing real-time voice agent activity",
+      "triggerKeywords": ["voice", "talking", "speaking", "voice agent", "call", "conversation", "audio"],
+      "topics": ["voice", "ai-agent", "conversation", "speech"]
+    },
+    "variables": {
+      "label": "Voice Agent Active",
+      "amplitude": 0.8,
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "voice-frequency-spectrum": {
+    "block": "voice-spectrum",
+    "category": "voice",
+    "metadata": {
+      "description": "Frequency spectrum analyzer with animated bars",
+      "triggerKeywords": ["spectrum", "frequency", "audio analysis", "sound waves", "hertz"],
+      "topics": ["audio", "frequency", "spectrum", "analysis"]
+    },
+    "variables": {
+      "label": "Voice Spectrum",
+      "bands": 24,
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "agent-avatar-online": {
+    "block": "agent-avatar",
+    "category": "voice",
+    "metadata": {
+      "description": "Circular AI agent avatar with pulsing rings and online status",
+      "triggerKeywords": ["agent avatar", "ai agent online", "agent status", "digital assistant", "virtual agent"],
+      "topics": ["agent", "avatar", "status", "identity"]
+    },
+    "variables": {
+      "icon": "🤖",
+      "label": "AI Agent",
+      "statusText": "ONLINE",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "live-transcript": {
+    "block": "transcript-stream",
+    "category": "voice",
+    "metadata": {
+      "description": "Live transcript appearing word by word with glow effect",
+      "triggerKeywords": ["transcript", "live caption", "speech to text", "real-time text", "subtitles"],
+      "topics": ["transcript", "speech-to-text", "captions", "live-text"]
+    },
+    "variables": {
+      "words": ["Processing", "voice", "input", "in", "real-time"],
+      "label": "LIVE TRANSCRIPT",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "host-attribute-matrix": {
+    "block": "delos-matrix",
+    "category": "data-viz",
+    "metadata": {
+      "description": "Host attribute matrix with brain scan visualization and metrics",
+      "triggerKeywords": ["host matrix", "brain scan", "attribute scan", "cognition", "host analysis", "ai system"],
+      "topics": ["ai-scan", "diagnostics", "attributes", "analysis"]
+    },
+    "variables": {
+      "hostId": "HC-0001",
+      "metrics": [
+        {"name": "Cognition", "value": 98},
+        {"name": "Emotion", "value": 87},
+        {"name": "Fidelity", "value": 95}
+      ],
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "biometric-scan": {
+    "block": "delos-biometric",
+    "category": "biometric",
+    "metadata": {
+      "description": "Biometric scan with fingerprint, pulse, and identity verification",
+      "triggerKeywords": ["biometric", "fingerprint", "identity", "pulse", "verification", "scan identity"],
+      "topics": ["biometric", "identity", "security", "verification"]
+    },
+    "variables": {
+      "identity": "Host #042",
+      "pulse": 72,
+      "stressLevel": 24,
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "system-diagnostics": {
+    "block": "delos-system-diagnostics",
+    "category": "data-viz",
+    "metadata": {
+      "description": "System diagnostics with service status indicators and network topology",
+      "triggerKeywords": ["diagnostics", "system status", "network", "services", "health check", "infrastructure"],
+      "topics": ["diagnostics", "system", "health", "infrastructure"]
+    },
+    "variables": {
+      "services": [
+        {"name": "Core", "status": "online"},
+        {"name": "Network", "status": "online"},
+        {"name": "Memory", "status": "warning"},
+        {"name": "GPU", "status": "online"}
+      ],
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "tracking-map": {
+    "block": "delos-tracking-map",
+    "category": "data-viz",
+    "metadata": {
+      "description": "Location tracking map with connected waypoints",
+      "triggerKeywords": ["tracking", "map", "location", "waypoints", "GPS", "navigation"],
+      "topics": ["tracking", "location", "map", "navigation"]
+    },
+    "variables": {
+      "waypoints": [
+        {"x": 30, "y": 40, "label": "A"},
+        {"x": 60, "y": 25, "label": "B"},
+        {"x": 75, "y": 60, "label": "C"}
+      ],
+      "label": "Tracking Active",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "progress-circular": {
+    "block": "circular-progress",
+    "category": "data-viz",
+    "metadata": {
+      "description": "Circular progress ring with percentage and label",
+      "triggerKeywords": ["progress ring", "circular progress", "percentage", "completion", "gauge"],
+      "topics": ["progress", "completion", "percentage", "gauge"]
+    },
+    "variables": {
+      "percent": 78,
+      "label": "Task Complete",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "sparkline-trend": {
+    "block": "sparkline-chart",
+    "category": "data-viz",
+    "metadata": {
+      "description": "Mini sparkline chart with trend indicator",
+      "triggerKeywords": ["sparkline", "trend", "mini chart", "data points", "graph"],
+      "topics": ["trend", "chart", "data", "analytics"]
+    },
+    "variables": {
+      "data": [30, 45, 35, 60, 55, 70, 65, 80],
+      "trend": "+12%",
+      "label": "Performance Trend",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "hologram-ai-icon": {
+    "block": "hologram-orb",
+    "category": "hologram",
+    "metadata": {
+      "description": "Rotating holographic orb with particle effects",
+      "triggerKeywords": ["hologram", "holographic", "3d icon", "floating icon", "hologram orb"],
+      "topics": ["hologram", "3d", "icon", "visualization"]
+    },
+    "variables": {
+      "icon": "🔮",
+      "label": "Holographic Display",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "neural-net-viz": {
+    "block": "neural-network",
+    "category": "hologram",
+    "metadata": {
+      "description": "Animated neural network with traveling pulse dots",
+      "triggerKeywords": ["neural network", "deep learning", "AI brain", "machine learning", "layers"],
+      "topics": ["neural-network", "ai", "deep-learning", "ml"]
+    },
+    "variables": {
+      "layers": [3, 5, 5, 3],
+      "label": "Neural Network Active",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "data-sphere-viz": {
+    "block": "data-sphere",
+    "category": "hologram",
+    "metadata": {
+      "description": "Rotating sphere made of glowing data points",
+      "triggerKeywords": ["data sphere", "data points", "globe", "rotating data", "3d sphere"],
+      "topics": ["data", "3d", "sphere", "visualization"]
+    },
+    "variables": {
+      "icon": "🌐",
+      "label": "Data Sphere",
+      "points": 60,
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "glowing-cube-icon": {
+    "block": "glowing-cube",
+    "category": "hologram",
+    "metadata": {
+      "description": "3D wireframe cube with glow effect",
+      "triggerKeywords": ["cube", "3d cube", "wireframe", "block", "box"],
+      "topics": ["3d", "cube", "wireframe", "icon"]
+    },
+    "variables": {
+      "icon": "📦",
+      "label": "Data Block",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "energy-field": {
+    "block": "energy-ring",
+    "category": "hologram",
+    "metadata": {
+      "description": "Concentric energy rings with pulse animation",
+      "triggerKeywords": ["energy ring", "force field", "shield", "pulse field", "energy field"],
+      "topics": ["energy", "field", "protection", "force"]
+    },
+    "variables": {
+      "rings": 4,
+      "label": "Energy Field Active",
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "delos-console-view": {
+    "block": "delos-console",
+    "category": "data-viz",
+    "metadata": {
+      "description": "Full Delos console overlay with header, status, and metrics",
+      "triggerKeywords": ["console", "system console", "system dashboard", "control panel", "admin"],
+      "topics": ["console", "dashboard", "control", "system"]
+    },
+    "variables": {
+      "title": "AI SYSTEM",
+      "statusText": "OPERATIONAL",
+      "metrics": [
+        {"label": "Uptime", "value": "99.9%"},
+        {"label": "Hosts", "value": "2,048"},
+        {"label": "Fidelity", "value": "98.7%"}
+      ],
+      "accentColor": "#9f75ff"
+    }
+  },
+
+  "delos-alert-warning": {
+    "block": "delos-alert",
+    "category": "data-viz",
+    "metadata": {
+      "description": "Delos-style alert notification with warning severity",
+      "triggerKeywords": ["alert", "warning", "notification", "alarm", "anomaly"],
+      "topics": ["alert", "warning", "notification", "security"]
+    },
+    "variables": {
+      "title": "SYSTEM ALERT",
+      "message": "Anomalous behavior detected in Sector 7",
+      "severity": "warning",
+      "accentColor": "#fbbf24"
+    }
+  },
+
+  "delos-alert-critical": {
+    "block": "delos-alert",
+    "category": "data-viz",
+    "metadata": {
+      "description": "Delos-style critical alert with flashing indicator",
+      "triggerKeywords": ["critical alert", "emergency", "breach", "critical error", "lockdown"],
+      "topics": ["critical", "emergency", "breach", "security"]
+    },
+    "variables": {
+      "title": "CRITICAL BREACH",
+      "message": "Host consciousness deviation exceeds threshold",
+      "severity": "critical",
+      "accentColor": "#fb7185"
+    }
+  },
+
+  "delos-scan-complete": {
+    "block": "delos-scan-result",
+    "category": "data-viz",
+    "metadata": {
+      "description": "Scan result display with progress bar and findings list",
+      "triggerKeywords": ["scan result", "scan complete", "diagnostic result", "test result", "analysis complete"],
+      "topics": ["scan", "result", "diagnostic", "analysis"]
+    },
+    "variables": {
+      "title": "SCAN COMPLETE",
+      "findings": ["Fidelity normal", "No anomalies detected", "Memory banks intact"],
+      "progress": 100,
+      "accentColor": "#9f75ff"
+    }
+  }
+}
