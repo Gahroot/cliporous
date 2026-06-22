@@ -799,6 +799,7 @@ interface Api {
     ram: { usedBytes: number; totalBytes: number; appBytes: number }
     gpu: { percent: number; usedMB: number; totalMB: number; name: string } | null
   }>
+  logToMain: (level: 'debug' | 'info' | 'warn' | 'error', source: string, message: string) => void
 
   // Shell
   openPath: (path: string) => Promise<string>

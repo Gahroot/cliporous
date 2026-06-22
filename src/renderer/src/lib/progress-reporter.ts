@@ -18,9 +18,24 @@ export function createStageReporter(
   stage: PipelineStage
 ): StageReporter {
   return {
-    start: (message) => setPipeline({ stage, message, percent: 0 }),
+    start: (message) => {
+      // Mirror stage entry into the main session log so a stalled run can be
+      // pinpointed from the log file (start/done only — not per-update).
+      try {
+        window.api?.logToMain?.('info', 'pipeline', `→ ${stage}: ${message}`)
+      } catch {
+        /* logging must never break the pipeline */
+      }
+      setPipeline({ stage, message, percent: 0 })
+    },
     update: (message, percent) => setPipeline({ stage, message, percent: percent ?? 0 }),
-    done: (message) =>
+    done: (message) => {
+      try {
+        window.api?.logToMain?.('info', 'pipeline', `✓ ${stage}: ${message ?? 'complete'}`)
+      } catch {
+        /* logging must never break the pipeline */
+      }
       setPipeline({ stage, message: message ?? `${stage} complete`, percent: 100 })
+    }
   }
 }

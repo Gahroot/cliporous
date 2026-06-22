@@ -137,6 +137,14 @@ const api = {
   exportLogs: invoke(I.SYSTEM_EXPORT_LOGS),
   openLogFolder: invoke(I.SYSTEM_OPEN_LOG_FOLDER),
   getResourceUsage: invoke(I.SYSTEM_GET_RESOURCE_USAGE),
+  /**
+   * Forward a renderer-side log entry into the main session log so pipeline
+   * failures (which otherwise live only in the in-memory ErrorLog) are visible
+   * in the log file. Fire-and-forget; never throws into caller code.
+   */
+  logToMain: (level: 'debug' | 'info' | 'warn' | 'error', source: string, message: string): void => {
+    void ipcRenderer.invoke(I.SYSTEM_LOG_RENDERER, level, source, message).catch(() => {})
+  },
 
   // Shell
   openPath: invoke(I.SHELL_OPEN_PATH),

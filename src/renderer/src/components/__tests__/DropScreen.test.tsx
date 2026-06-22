@@ -24,11 +24,17 @@ import { installApiStub, resetStore } from './test-utils'
 
 const processVideoMock = vi.fn(async () => undefined)
 
+const processLongformMock = vi.fn(async () => undefined)
+
 vi.mock('@/hooks', () => ({
   usePipeline: () => ({
     processVideo: processVideoMock,
     cancelProcessing: () => {},
     isProcessing: () => false,
+  }),
+  useLongformPipeline: () => ({
+    processLongform: processLongformMock,
+    cancelLongform: () => {},
   }),
 }))
 

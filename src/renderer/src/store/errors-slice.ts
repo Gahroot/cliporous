@@ -20,10 +20,20 @@ export const createErrorsSlice: StateCreator<
 > = (set) => ({
   errorLog: [],
 
-  addError: (entry) =>
+  addError: (entry) => {
+    // Forward to the main-process session log so failures are observable in the
+    // log file. Renderer ErrorLog entries are otherwise in-memory only, which
+    // makes a stalled/failed pipeline run impossible to diagnose from the logs.
+    try {
+      const detail = entry.details ? `${entry.message}\n${entry.details}` : entry.message
+      window.api?.logToMain?.('error', entry.source, detail)
+    } catch {
+      // never let logging break error reporting
+    }
     set((state) => ({
       errorLog: [...state.errorLog, { ...entry, id: uuidv4(), timestamp: Date.now() }]
-    })),
+    }))
+  },
 
   clearErrors: () => set({ errorLog: [] }),
 })

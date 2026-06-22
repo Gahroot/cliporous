@@ -11,16 +11,44 @@
  */
 import { bundle } from '@remotion/bundler'
 import { renderMedia, selectComposition } from '@remotion/renderer'
-import { join, resolve } from 'path'
+import { app } from 'electron'
+import { join } from 'path'
 import { tmpdir } from 'os'
-import { mkdtempSync } from 'fs'
+import { mkdtempSync, existsSync } from 'fs'
 
 let bundlePromise: Promise<string> | null = null
+
+/**
+ * Resolve the Remotion entry point.
+ *
+ * Remotion's `bundle()` compiles the composition TREE from SOURCE via its own
+ * webpack pass, so it needs the original `src/main/remotion/index.ts` — NOT the
+ * electron-vite-compiled `out/main/index.js`. Using `__dirname` here is wrong:
+ * at runtime `__dirname` is `out/main`, which produced the bogus path
+ * `out/main/index` (ENOENT).
+ *
+ * `app.getAppPath()` returns the project root in dev and the app root
+ * (resources/app[.asar]) when packaged, so the source tree is resolved
+ * consistently relative to it.
+ */
+function resolveRemotionEntry(): string {
+  const appPath = app.getAppPath()
+  const candidates = [
+    join(appPath, 'src', 'main', 'remotion', 'index.ts'),
+    join(appPath, 'src', 'main', 'remotion', 'index.tsx')
+  ]
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) return candidate
+  }
+  // Fall back to the first candidate so the error surfaces a real, expected
+  // path instead of a misleading compiled-output location.
+  return candidates[0]
+}
 
 async function getBundle(): Promise<string> {
   if (!bundlePromise) {
     bundlePromise = bundle({
-      entryPoint: resolve(__dirname, './index'),
+      entryPoint: resolveRemotionEntry(),
       // Inherit webpack config from remotion.config.ts implicitly.
       onProgress: () => undefined
     })

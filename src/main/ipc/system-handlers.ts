@@ -214,6 +214,24 @@ export function registerSystemHandlers(): void {
     })
   )
 
+  // System — forward a renderer-side log entry into the main session log.
+  // Renderer pipeline failures live only in the in-memory ErrorLog otherwise,
+  // so they never reach the session log file the user inspects when a run
+  // stalls. This bridge makes those failures observable.
+  ipcMain.handle(
+    Ch.Invoke.SYSTEM_LOG_RENDERER,
+    wrapHandler(
+      Ch.Invoke.SYSTEM_LOG_RENDERER,
+      (_event, level: string, source: string, message: string) => {
+        const lvl: 'debug' | 'info' | 'warn' | 'error' =
+          level === 'debug' || level === 'info' || level === 'warn' || level === 'error'
+            ? level
+            : 'error'
+        log(lvl, `Renderer/${source || 'renderer'}`, String(message ?? '').slice(0, 4000))
+      }
+    )
+  )
+
   // Shell — open a path in OS file manager
   ipcMain.handle(
     Ch.Invoke.SHELL_OPEN_PATH,
