@@ -2,8 +2,8 @@
 // Long-form (16:9) render orchestrator — Hormozi-style talking head.
 //
 // Entry point for `outputProfile === 'longform'`. Builds a segment timeline
-// from the AI edit plan, pre-renders concept cards / section headers via
-// Remotion, encodes speaker blocks through the landscape layout, concatenates
+// from the AI edit plan, pre-renders skinned content blocks via Remotion,
+// encodes speaker blocks through the landscape layout, concatenates
 // everything, then composites phrase-emphasis overlays in a final pass.
 //
 // This path is fully independent of the 9:16 feature pipeline so the locked
@@ -30,8 +30,8 @@ import { buildEditStyleColorGradeFilter } from './color-grade-filter'
 import { resolveQualityParams } from './quality'
 import { toFFmpegPath } from './helpers'
 import { encodeSpeakerSegment } from './longform-encode'
-import { renderConceptCardSegment } from './features/concept-cards.feature'
-import { renderSectionHeaderSegment } from './features/section-header.feature'
+import { renderBlockSegment } from './features/blocks.feature'
+import { DEFAULT_LONGFORM_BLOCK_SKIN } from '../remotion/registry'
 import {
   applyPhraseOverlays,
   cleanupPhraseOverlayTempFiles
@@ -40,10 +40,8 @@ import {
 import type { RenderBatchOptions } from './types'
 import type {
   LongformEditPlan,
-  LongformArchetype,
-  ConceptCardPlacement,
-  SectionBoundary,
-  PhraseEmphasis
+  PhraseEmphasis,
+  BlockPlacement
 } from '@shared/types'
 
 const HORMOZI_STYLE_ID = 'hormozi'
@@ -58,42 +56,32 @@ interface SpeakerBlock {
   endTime: number
 }
 
-interface CardBlock {
-  kind: 'concept-card'
+interface BlockBlock {
+  kind: 'block'
   startTime: number
   endTime: number
-  card: ConceptCardPlacement
+  placement: BlockPlacement
 }
 
-interface SectionBlock {
-  kind: 'section-header'
-  startTime: number
-  endTime: number
-  section: SectionBoundary
-}
-
-type TimelineBlock = SpeakerBlock | CardBlock | SectionBlock
+type TimelineBlock = SpeakerBlock | BlockBlock
 
 const MIN_BLOCK_SECONDS = 0.4
 
 /**
- * Build a non-overlapping, chronological timeline. Concept cards and section
- * headers are inserts that replace the speaker visual for their range; speaker
- * blocks fill every gap. Overlapping inserts are dropped (first one wins).
+ * Build a non-overlapping, chronological timeline. Content blocks are inserts
+ * that replace the speaker visual for their range; speaker blocks fill every
+ * gap. Overlapping inserts are dropped (first one wins).
  */
-function buildTimeline(plan: LongformEditPlan, videoDuration: number): TimelineBlock[] {
-  type Insert = CardBlock | SectionBlock
+export function buildTimeline(plan: LongformEditPlan, videoDuration: number): TimelineBlock[] {
+  type Insert = BlockBlock
   const inserts: Insert[] = []
 
-  for (const card of plan.conceptCards) {
-    inserts.push({ kind: 'concept-card', startTime: card.startTime, endTime: card.endTime, card })
-  }
-  for (const section of plan.sections) {
+  for (const placement of plan.blocks ?? []) {
     inserts.push({
-      kind: 'section-header',
-      startTime: section.startTime,
-      endTime: section.endTime,
-      section
+      kind: 'block',
+      startTime: placement.startTime,
+      endTime: placement.endTime,
+      placement
     })
   }
 
@@ -294,7 +282,7 @@ export async function renderLongformVideo(
       if (block.kind === 'speaker') {
         window.webContents.send(Ch.Send.RENDER_CLIP_PROGRESS, { clipId: job.clipId, percent: base })
         const duration = block.endTime - block.startTime
-        const layout = buildLongformLayout('speaker' as LongformArchetype, {
+        const layout = buildLongformLayout('speaker', {
           width: LANDSCAPE_WIDTH,
           height: LANDSCAPE_HEIGHT,
           segmentDuration: duration,
@@ -317,29 +305,15 @@ export async function renderLongformVideo(
         })
         segmentFiles.push(out)
         tempFiles.push(out)
-      } else if (block.kind === 'concept-card') {
-        window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
-          clipId: job.clipId,
-          message: 'Rendering concept card…',
-          percent: base
-        })
-        const out = await renderConceptCardSegment({
-          card: block.card,
-          sourceVideoPath: job.sourceVideoPath,
-          width: LANDSCAPE_WIDTH,
-          height: LANDSCAPE_HEIGHT,
-          fps: LANDSCAPE_FPS
-        })
-        segmentFiles.push(out)
-        tempFiles.push(out)
       } else {
         window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
           clipId: job.clipId,
-          message: 'Rendering section header…',
+          message: `Rendering ${block.placement.kind} block…`,
           percent: base
         })
-        const out = await renderSectionHeaderSegment({
-          section: block.section,
+        const out = await renderBlockSegment({
+          placement: block.placement,
+          skinId: options.longformSkin ?? DEFAULT_LONGFORM_BLOCK_SKIN,
           sourceVideoPath: job.sourceVideoPath,
           width: LANDSCAPE_WIDTH,
           height: LANDSCAPE_HEIGHT,
@@ -369,8 +343,8 @@ export async function renderLongformVideo(
     // Phrases map directly onto the concatenated timeline (every block preserves
     // source-time audio 1:1, so concat time == absolute source time — no remap).
     // Keep only phrases that begin inside a SPEAKER block: a phrase composited
-    // over a full-frame concept card / section header would obscure it and read
-    // as a bug, since phrase overlays are meant to float over the speaker.
+    // over a full-frame content block would obscure it and read as a bug, since
+    // phrase overlays are meant to float over the speaker.
     const speakerRanges = timeline
       .filter((b): b is SpeakerBlock => b.kind === 'speaker')
       .map((b) => ({ start: b.startTime, end: b.endTime }))

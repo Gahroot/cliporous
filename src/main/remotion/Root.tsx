@@ -54,8 +54,6 @@ import type {
   IconStatGridProps
 } from './compositions/blocks'
 import { PhraseOverlay, type PhraseOverlayProps } from './compositions/PhraseOverlay'
-import { SectionHeader, type SectionHeaderProps } from './compositions/SectionHeader'
-import { ConceptCard, type ConceptCardProps } from './compositions/ConceptCard'
 import {
   BakeoffAuroraGlass,
   BakeoffEditorial,
@@ -245,20 +243,6 @@ export const RemotionRoot: React.FC = () => {
         } satisfies PhraseOverlayProps}
       />
 
-      <Composition
-        id="HormoziSectionHeader"
-        component={SectionHeader as any}
-        durationInFrames={FPS * 3}
-        fps={FPS}
-        width={LANDSCAPE_WIDTH}
-        height={LANDSCAPE_HEIGHT}
-        defaultProps={{
-          text: 'The Real Problem',
-          iconEmoji: '🎯',
-          accentColor: '#9F75FF',
-          backgroundColor: '#1A1A2E'
-        } satisfies SectionHeaderProps}
-      />
 
       {/* ---- Timeline block × every skin (matrix proof) ---- */}
       {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
@@ -711,22 +695,6 @@ export const RemotionRoot: React.FC = () => {
         />
       ))}
 
-      <Composition
-        id="HormoziConceptCard"
-        component={ConceptCard as any}
-        durationInFrames={FPS * 4}
-        fps={FPS}
-        width={LANDSCAPE_WIDTH}
-        height={LANDSCAPE_HEIGHT}
-        defaultProps={{
-          layout: 'list',
-          text: 'Three Levers',
-          subtitle: '',
-          items: ['More customers', 'Higher prices', 'Better retention'],
-          accentColor: '#FFD600',
-          backgroundColor: '#1A1A2E'
-        } satisfies ConceptCardProps}
-      />
     </>
   )
 }

@@ -84,6 +84,7 @@ export interface SettingsSlice {
   setFilenameTemplate: (template: string) => void
   setRenderConcurrency: (concurrency: number) => void
   setOutputMode: (mode: import('./types').OutputMode) => void
+  setLongformSkin: (skin: import('./types').LongformSkinId) => void
 
   // Template layout (on-screen text positioning)
   setTemplateLayout: (layout: TemplateLayout) => void
@@ -338,6 +339,9 @@ export const createSettingsSlice: StateCreator<
 
   setOutputMode: (mode) =>
     set((state) => { state.settings.outputMode = mode }),
+
+  setLongformSkin: (skin) =>
+    set((state) => { state.settings.longformSkin = skin }),
 
   // --- Template Layout (on-screen text positioning) ---
 

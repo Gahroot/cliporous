@@ -902,14 +902,12 @@ export type OutputProfile = 'vertical' | 'longform'
  * `Archetype` backs several exhaustive `Record<Archetype, X>` maps that must
  * stay 9:16-only, so extending it would break the zero-regression invariant.
  *
- *   • 'speaker'        — full-frame 16:9 talking head (face-centered crop).
- *   • 'concept-card'   — full-frame Remotion-rendered graphic card.
- *   • 'section-header' — purple pill section divider (Remotion-rendered).
+ *   • 'speaker' — full-frame 16:9 talking head (face-centered crop).
+ *
+ * The long-form visual layer is now the skinned content-block system
+ * (`BlockPlacement`); the speaker is the only FFmpeg-rendered archetype.
  */
-export type LongformArchetype = 'speaker' | 'concept-card' | 'section-header'
-
-/** Visual layout variants for a long-form concept card. */
-export type ConceptCardLayout = 'quote' | 'list' | 'statistic' | 'section-title'
+export type LongformArchetype = 'speaker'
 
 /**
  * A phrase-level emphasis beat — large floating text composited over the
@@ -927,55 +925,352 @@ export interface PhraseEmphasis {
   accentColor?: string
 }
 
+// ---------------------------------------------------------------------------
+// Long-form content blocks — skinned full-frame data graphics
+//
+// A fourth long-form layer, parallel to concept cards. Each placement is a
+// full-frame Remotion "block" (bar chart, comparison, stat grid, numbered
+// list, …) shown for a time range while the source narration continues
+// underneath. The 17 block compositions are registered in `Root.tsx` at
+// 1920×1080 across the four skins below.
+//
+// These types are the IPC-serializable contract: they live in shared/ (cross
+// the main↔renderer boundary) and intentionally mirror — but do not import —
+// the main-side `*Props` in `compositions/blocks/types.ts`. A compile-time
+// `satisfies` check in `blocks.feature.ts` fails the build if they ever drift.
+// ---------------------------------------------------------------------------
+
 /**
- * A full-frame concept card placement — replaces the speaker visuals for a
- * time range while the source narration continues underneath.
+ * Visual skin applied to every block in a long-form edit. String-literal
+ * mirror of the `SKINS` keys in `src/main/remotion/shared/skins.tsx`; kept as
+ * a plain union here so shared types never import from `src/main`.
  */
-export interface ConceptCardPlacement {
-  /** Absolute source-video start time in seconds. */
-  startTime: number
-  /** Absolute source-video end time in seconds. */
-  endTime: number
-  /** Card visual layout. */
-  layout: ConceptCardLayout
-  /** Hero text for the card. */
+export type LongformSkinId = 'aurora-glass' | 'editorial' | 'bento' | 'terminal'
+
+/**
+ * The kind of content block to render. Each maps to a PascalCase base
+ * composition (see `LONGFORM_BLOCK_BASE` in `remotion/registry.ts`) which is
+ * combined with the chosen skin to form the registered composition id.
+ */
+export type LongformBlockKind =
+  | 'bar-chart'
+  | 'comparison'
+  | 'comparison-table'
+  | 'stat-grid'
+  | 'icon-stat-grid'
+  | 'icon-row'
+  | 'numbered-list'
+  | 'checklist'
+  | 'stat-hero'
+  | 'progress-bars'
+  | 'kpi-ticker'
+  | 'quote-card'
+  | 'tweet-card'
+  | 'definition-card'
+  | 'timeline'
+  | 'timeline-cards'
+  | 'feature-grid'
+
+/* ---- Block content item shapes (canonical; mirror blocks/types.ts) ---- */
+
+/** One vertical bar in a `bar-chart` block. */
+export interface BarChartBar {
+  /** Category label under the bar. */
+  label: string
+  /** Normalised height 0-1 (relative to the tallest bar). */
+  value: number
+  /** Display value drawn above the bar, e.g. "$84K". */
+  valueLabel: string
+}
+
+/** One metric tile in a `stat-grid` block. */
+export interface StatGridStat {
+  /** Big display number, e.g. "3.4x". */
+  value: string
+  /** Caption under the number. */
+  label: string
+}
+
+/** One icon+number tile in an `icon-stat-grid` block. */
+export interface IconStatGridItem {
+  /** Lucide icon name (PascalCase). */
+  icon: string
+  /** Big display number, e.g. "3.4x". */
+  value: string
+  /** Caption under the number. */
+  label: string
+}
+
+/** One tile in an `icon-row` block. */
+export interface IconRowItem {
+  /** Lucide icon name (PascalCase), e.g. "Target". */
+  icon: string
+  /** Label under the icon. */
+  label: string
+}
+
+/** One row in a `numbered-list` block. */
+export interface NumberedListItem {
+  /** Bold row title. */
   text: string
-  /** Optional secondary line. */
-  subtitle?: string
-  /** List items (used when layout === 'list'). */
-  items?: string[]
-  /** Accent color (hex). */
-  accentColor?: string
+  /** Optional supporting line under the title. */
+  detail?: string
+}
+
+/** One row in a `checklist` block. */
+export interface ChecklistItem {
+  /** Row label. */
+  text: string
+  /** Whether the row is ticked (accent Check) or pending (dim Circle). */
+  done?: boolean
+}
+
+/** One row in a `progress-bars` block. */
+export interface ProgressBar {
+  /** Row label. */
+  label: string
+  /** Normalised fill 0-1 (relative to the track). */
+  value: number
+  /** Display value drawn at the row end, e.g. "82%". */
+  valueLabel: string
+}
+
+/** One stat tile in a `kpi-ticker` block. */
+export interface KpiTickerItem {
+  /** Big display value, e.g. "4.8K". */
+  value: string
+  /** Label under the value. */
+  label: string
+  /** Delta text for the Badge, e.g. "+12%". */
+  delta?: string
+  /** Trend direction — picks the icon + tint. */
+  trend?: 'up' | 'down'
+}
+
+/** One feature card in a `feature-grid` block. */
+export interface FeatureGridItem {
+  /** Lucide icon name (PascalCase), e.g. "Zap". */
+  icon: string
+  /** Card title. */
+  title: string
+  /** Card description body. */
+  description: string
+}
+
+/** One step in a `timeline` block (no icon). */
+export interface TimelineStep {
+  /** Step title. */
+  title: string
+  /** Optional supporting line. */
+  detail?: string
+}
+
+/** One step in a `timeline-cards` block (icon per step). */
+export interface TimelineCardStep {
+  /** Lucide icon name (PascalCase) for the step. */
+  icon: string
+  /** Step title. */
+  title: string
+  /** Optional supporting line. */
+  detail?: string
 }
 
 /**
- * A topic transition — rendered as a purple pill section header banner.
+ * A full-frame content-block placement — a discriminated union on `kind`.
+ * Every member carries an absolute source-video `[startTime, endTime]` range,
+ * an optional `accentColor`, the shared `kicker` + `heading`, and the
+ * kind-specific payload. The fields mirror the matching `*Props` in
+ * `compositions/blocks/types.ts` minus `skinId` (one skin is chosen per video).
  */
-export interface SectionBoundary {
-  /** Absolute source-video start time in seconds. */
-  startTime: number
-  /** Absolute source-video end time in seconds. */
-  endTime: number
-  /** Section title shown inside the pill. */
-  title: string
-  /** Optional leading emoji icon. */
-  iconEmoji?: string
-  /** Accent color (hex). Defaults to the section purple when omitted. */
-  accentColor?: string
-}
+export type BlockPlacement =
+  | {
+      kind: 'bar-chart'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      bars: BarChartBar[]
+      accentColor?: string
+    }
+  | {
+      kind: 'comparison'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      leftTitle: string
+      rightTitle: string
+      leftItems: string[]
+      rightItems: string[]
+      accentColor?: string
+    }
+  | {
+      kind: 'comparison-table'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      leftTitle: string
+      rightTitle: string
+      leftItems: string[]
+      rightItems: string[]
+      accentColor?: string
+    }
+  | {
+      kind: 'stat-grid'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      stats: StatGridStat[]
+      accentColor?: string
+    }
+  | {
+      kind: 'icon-stat-grid'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      items: IconStatGridItem[]
+      accentColor?: string
+    }
+  | {
+      kind: 'icon-row'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      items: IconRowItem[]
+      accentColor?: string
+    }
+  | {
+      kind: 'numbered-list'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      items: NumberedListItem[]
+      accentColor?: string
+    }
+  | {
+      kind: 'checklist'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      items: ChecklistItem[]
+      accentColor?: string
+    }
+  | {
+      kind: 'stat-hero'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      value: number
+      decimals?: number
+      prefix?: string
+      suffix?: string
+      label: string
+      trend?: 'up' | 'down'
+      delta?: string
+      accentColor?: string
+    }
+  | {
+      kind: 'progress-bars'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      bars: ProgressBar[]
+      accentColor?: string
+    }
+  | {
+      kind: 'kpi-ticker'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      items: KpiTickerItem[]
+      accentColor?: string
+    }
+  | {
+      kind: 'quote-card'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      quote: string
+      name: string
+      role?: string
+      avatarUrl?: string
+      accentColor?: string
+    }
+  | {
+      kind: 'tweet-card'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      name: string
+      handle: string
+      verified?: boolean
+      avatarUrl?: string
+      body: string
+      replies?: string
+      reposts?: string
+      likes?: string
+      accentColor?: string
+    }
+  | {
+      kind: 'definition-card'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      term: string
+      partOfSpeech?: string
+      definition: string
+      accentColor?: string
+    }
+  | {
+      kind: 'timeline'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      steps: TimelineStep[]
+      accentColor?: string
+    }
+  | {
+      kind: 'timeline-cards'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      steps: TimelineCardStep[]
+      accentColor?: string
+    }
+  | {
+      kind: 'feature-grid'
+      startTime: number
+      endTime: number
+      kicker: string
+      heading: string
+      items: FeatureGridItem[]
+      accentColor?: string
+    }
 
 /**
  * The complete AI-generated long-form edit plan. Drives the 16:9 render:
- * phrase overlays, concept cards, and section headers are all sequenced
- * against absolute source-video timestamps.
+ * phrase overlays and skinned content blocks are sequenced against absolute
+ * source-video timestamps.
  */
 export interface LongformEditPlan {
   /** Phrase-level emphasis overlays. */
   phrases: PhraseEmphasis[]
-  /** Full-frame concept card placements. */
-  conceptCards: ConceptCardPlacement[]
-  /** Section header / chapter boundaries. */
-  sections: SectionBoundary[]
+  /** Full-frame skinned content-block placements. */
+  blocks: BlockPlacement[]
   /** Brief editorial reasoning (for debugging / UI display). */
   reasoning: string
   /** Epoch millis when the plan was generated. */

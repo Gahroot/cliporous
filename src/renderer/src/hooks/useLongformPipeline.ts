@@ -154,8 +154,7 @@ export function useLongformPipeline(): {
         check()
         toast.message(
           `Edit plan: ${plan.phrases.length} phrase${plan.phrases.length === 1 ? '' : 's'}, ` +
-            `${plan.conceptCards.length} card${plan.conceptCards.length === 1 ? '' : 's'}, ` +
-            `${plan.sections.length} section${plan.sections.length === 1 ? '' : 's'}`
+            `${plan.blocks.length} block${plan.blocks.length === 1 ? '' : 's'}`
         )
 
         // ── Step 4: Render ──────────────────────────────────────────────

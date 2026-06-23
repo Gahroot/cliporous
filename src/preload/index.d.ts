@@ -56,28 +56,25 @@ interface LongformPhraseEmphasis {
   accentColor?: string
 }
 
-interface LongformConceptCard {
+/**
+ * Skinned content-block placement. The renderer treats blocks opaquely (it
+ * only reads `blocks.length` for the planning toast), so this mirrors the
+ * shared `BlockPlacement` discriminated union loosely — the authoritative,
+ * fully-typed definition lives in `src/shared/types.ts`.
+ */
+interface LongformBlockPlacement {
+  kind: string
   startTime: number
   endTime: number
-  layout: 'quote' | 'list' | 'statistic' | 'section-title'
-  text: string
-  subtitle?: string
-  items?: string[]
+  kicker: string
+  heading: string
   accentColor?: string
-}
-
-interface LongformSectionBoundary {
-  startTime: number
-  endTime: number
-  title: string
-  iconEmoji?: string
-  accentColor?: string
+  [key: string]: unknown
 }
 
 interface LongformEditPlan {
   phrases: LongformPhraseEmphasis[]
-  conceptCards: LongformConceptCard[]
-  sections: LongformSectionBoundary[]
+  blocks: LongformBlockPlacement[]
   reasoning: string
   generatedAt: number
 }

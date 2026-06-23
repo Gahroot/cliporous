@@ -8,16 +8,8 @@ import type { LongformArchetype } from '@shared/types'
  */
 export interface LongformArchetypeTemplate {
   archetype: LongformArchetype
-  /**
-   * Zoom applied to speaker segments. Ignored for `concept-card` /
-   * `section-header` (those are full-frame Remotion renders).
-   */
+  /** Zoom applied to speaker segments. */
   zoomStyle?: 'none' | 'drift' | 'snap' | 'word-pulse' | 'zoom-out'
   /** Zoom intensity multiplier (1.0 = no zoom). */
   zoomIntensity?: number
-  /**
-   * Fallback duration (seconds) for a pre-rendered card / header segment when
-   * the edit plan does not pin an explicit end time.
-   */
-  defaultDurationSec?: number
 }

@@ -6,7 +6,8 @@
  * (editStyleId, archetype) so other styles can opt in incrementally.
  */
 import type { Archetype } from '../edit-styles/shared/archetypes'
-import type { LongformArchetype } from '@shared/types'
+import type { LongformBlockKind, LongformSkinId } from '@shared/types'
+import type { SkinId } from './shared/skins'
 
 export interface RemotionCompositionRef {
   /** Composition id registered in Root.tsx. */
@@ -44,35 +45,59 @@ export function resolveRemotionComposition(
 }
 
 // ---------------------------------------------------------------------------
-// Long-form (16:9) composition registry
+// Long-form content blocks — skinned full-frame data graphics
 //
-// Kept separate from STYLE_MAPS (which is keyed on the 9:16 `Archetype` union)
-// so the short-form resolver is untouched. `speaker` has no Remotion comp — it
-// renders through the segmented FFmpeg path — so it maps to null.
+// The 17 block compositions in `Root.tsx` are registered with id
+// `` `${BaseName}-${skinId}` `` (e.g. `BarChart-editorial`). The resolver below
+// reconstructs that id from a `(kind, skinId)` pair so the render feature can
+// `selectComposition` the right block without hard-coding strings.
 // ---------------------------------------------------------------------------
 
-const HORMOZI_LONGFORM_MAP: Record<LongformArchetype, RemotionCompositionRef | null> = {
-  speaker: null,
-  'concept-card': { compositionId: 'HormoziConceptCard', needsImage: false },
-  'section-header': { compositionId: 'HormoziSectionHeader', needsImage: false }
-}
+/**
+ * Compile-time guard: the shared `LongformSkinId` union must stay identical to
+ * the main-side `SkinId` (keys of `SKINS`). If a skin is added/removed on
+ * either side and the two diverge, one of these assignments stops compiling.
+ */
+const _skinIdForward: SkinId = '' as LongformSkinId
+const _skinIdBack: LongformSkinId = '' as SkinId
+void _skinIdForward
+void _skinIdBack
 
-const LONGFORM_STYLE_MAPS: Record<
-  string,
-  Record<LongformArchetype, RemotionCompositionRef | null>
-> = {
-  hormozi: HORMOZI_LONGFORM_MAP
+/** Maps each block kind to its PascalCase base composition name. */
+const LONGFORM_BLOCK_BASE: Record<LongformBlockKind, string> = {
+  'bar-chart': 'BarChart',
+  comparison: 'Comparison',
+  'comparison-table': 'ComparisonTable',
+  'stat-grid': 'StatGrid',
+  'icon-stat-grid': 'IconStatGrid',
+  'icon-row': 'IconRow',
+  'numbered-list': 'NumberedList',
+  checklist: 'Checklist',
+  'stat-hero': 'StatHero',
+  'progress-bars': 'ProgressBars',
+  'kpi-ticker': 'KpiTicker',
+  'quote-card': 'QuoteCard',
+  'tweet-card': 'TweetCard',
+  'definition-card': 'DefinitionCard',
+  timeline: 'Timeline',
+  'timeline-cards': 'TimelineCards',
+  'feature-grid': 'FeatureGrid'
 }
 
 /**
- * Resolve a long-form archetype to its Remotion composition. Returns null for
- * `speaker` (FFmpeg-rendered) or unknown styles/archetypes.
+ * Default skin for long-form blocks — one skin per video keeps the edit
+ * visually coherent and the AI contract small. Editorial is chosen for
+ * legibility; this can be promoted to a user setting later.
  */
-export function resolveLongformRemotionComposition(
-  editStyleId: string | undefined,
-  archetype: LongformArchetype | undefined
-): RemotionCompositionRef | null {
-  if (!editStyleId || !archetype) return null
-  const map = LONGFORM_STYLE_MAPS[editStyleId]
-  return map?.[archetype] ?? null
+export const DEFAULT_LONGFORM_BLOCK_SKIN: LongformSkinId = 'editorial'
+
+/**
+ * Resolve a `(kind, skinId)` pair to the registered Remotion composition id
+ * (`` `${BaseName}-${skinId}` ``), matching the ids registered in `Root.tsx`.
+ */
+export function resolveLongformBlockCompositionId(
+  kind: LongformBlockKind,
+  skinId: LongformSkinId
+): string {
+  return `${LONGFORM_BLOCK_BASE[kind]}-${skinId}`
 }

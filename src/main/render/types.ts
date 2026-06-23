@@ -30,7 +30,8 @@ import type {
   ColorGradeConfig,
   ShotTransitionConfig,
   OutputProfile,
-  LongformEditPlan
+  LongformEditPlan,
+  LongformSkinId
 } from '@shared/types'
 
 // Re-export pass-through types so consumers can import from one place
@@ -416,6 +417,11 @@ export interface RenderBatchOptions {
    * and section headers.
    */
   longformEditPlan?: LongformEditPlan
+  /**
+   * Visual skin applied to every long-form content block. Defaults to
+   * `DEFAULT_LONGFORM_BLOCK_SKIN` when omitted. Ignored outside `'longform'`.
+   */
+  longformSkin?: LongformSkinId
   /** Global sound design settings — used by IPC handler to compute placements */
   soundDesign?: SoundDesignOptions
   /** Ken Burns auto-zoom settings applied to every rendered clip */

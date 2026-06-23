@@ -4,17 +4,11 @@ import type { LongformArchetype } from '@shared/types'
 
 import type { LongformArchetypeTemplate } from './templates/types'
 import { speaker } from './templates/speaker'
-import { conceptCard } from './templates/concept-card'
-import { sectionHeader } from './templates/section-header'
 
 // Hormozi signature palette.
 /** Phrase emphasis + speaker accent — Hormozi's signature yellow. */
 export const HORMOZI_ACCENT = '#FFD600'
-/** Section header pill accent — purple (matches the app brand accent family). */
-export const HORMOZI_SECTION_ACCENT = '#9F75FF'
-/** Concept card background — dark warm near-navy. */
-export const HORMOZI_CARD_BG = '#1A1A2E'
-/** Concept card / phrase primary text. */
+/** Phrase / block primary text. */
 export const HORMOZI_CARD_FG = '#FFFFFF'
 
 /**
@@ -56,8 +50,8 @@ export const hormoziEditStyle: EditStyle = createEditStyle({
   },
   textAnimation: 'scale-up',
   description:
-    'Hormozi-style long-form (16:9) — phrase emphasis overlays, concept cards, ' +
-    'and purple section headers over a punch-in talking head. No burned captions.',
+    'Hormozi-style long-form (16:9) — phrase emphasis overlays and skinned ' +
+    'content blocks over a punch-in talking head. No burned captions.',
   colorGrade: {
     warmth: 0.0,
     contrast: 1.08,
@@ -74,7 +68,5 @@ export const hormoziEditStyle: EditStyle = createEditStyle({
  * long-form render pipeline — NOT by the 9:16 template resolver.
  */
 export const hormoziLongformTemplates: Record<LongformArchetype, LongformArchetypeTemplate> = {
-  speaker,
-  'concept-card': conceptCard,
-  'section-header': sectionHeader
+  speaker
 }

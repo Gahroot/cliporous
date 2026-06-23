@@ -216,7 +216,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   renderConcurrency: 1,
   templateLayout: DEFAULT_TEMPLATE_LAYOUT,
   targetPlatform: DEFAULT_TARGET_PLATFORM,
-  outputMode: 'short'
+  outputMode: 'short',
+  longformSkin: 'editorial'
 }
 
 export const DEFAULT_TARGET_AUDIENCE = 'Business owners interested in AI — making money, saving time, getting clients, handling marketing/sales, automating busy work. Content must deliver actionable value to entrepreneurs and founders.'

@@ -33,6 +33,7 @@ import type {
   Platform,
   SourceRange,
   StitchedClipRole,
+  LongformSkinId,
 } from '@shared/types'
 
 // Re-export shared types so existing component imports from store don't break
@@ -384,10 +385,14 @@ export interface AppSettings {
    *   • 'longform' — the Hormozi-style 16:9 single-video edit pipeline.
    */
   outputMode: OutputMode
+  /** Visual skin applied to every long-form content block. */
+  longformSkin: LongformSkinId
 }
 
 /** Output mode for a dropped source video. */
 export type OutputMode = 'short' | 'longform'
+
+export type { LongformSkinId } from '@shared/types'
 
 export interface ProcessingConfig {
   targetDuration: TargetDuration

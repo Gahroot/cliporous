@@ -109,6 +109,8 @@ export function DropScreen(): React.JSX.Element {
   const pythonStatus = useStore((s) => s.pythonStatus)
   const outputMode = useStore((s) => s.settings.outputMode)
   const setOutputMode = useStore((s) => s.setOutputMode)
+  const longformSkin = useStore((s) => s.settings.longformSkin)
+  const setLongformSkin = useStore((s) => s.setLongformSkin)
   const { processVideo } = usePipeline()
   const { processLongform } = useLongformPipeline()
 
@@ -384,6 +386,36 @@ export function DropScreen(): React.JSX.Element {
               <SelectContent>
                 <SelectItem value="short">Short clips (9:16)</SelectItem>
                 <SelectItem value="longform">Long-form (16:9)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {/* Block skin selector — long-form only. Picks the visual look applied
+            to every content block (one skin per video). */}
+        {!showSetupCard && outputMode === 'longform' && (
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="text-foreground text-sm font-semibold tracking-tight">
+                Block skin
+              </h3>
+              <p className="text-muted-foreground text-xs">
+                Visual style for charts, lists, and stat cards
+              </p>
+            </div>
+            <Select
+              value={longformSkin}
+              onValueChange={(v) => setLongformSkin(v as typeof longformSkin)}
+              disabled={isStarting}
+            >
+              <SelectTrigger className="w-[200px]" aria-label="Block skin">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="editorial">Editorial</SelectItem>
+                <SelectItem value="aurora-glass">Aurora Glass</SelectItem>
+                <SelectItem value="bento">Bento</SelectItem>
+                <SelectItem value="terminal">Terminal</SelectItem>
               </SelectContent>
             </Select>
           </div>
