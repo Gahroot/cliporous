@@ -4,7 +4,7 @@
 
 export { renderComposition, resolveHyperFramesCli } from './engine'
 export type { RenderCompositionOptions, RenderCompositionResult } from './engine'
-export { renderOverlay, renderOverlays } from './renderer'
+export { renderOverlay, renderOverlays, renderPreset, resolvePreset, listPresets } from './renderer'
 export type {
   OverlayBlockName,
   OverlayPosition,
@@ -12,10 +12,18 @@ export type {
   OverlayRequest,
   OverlayRenderResult,
   BaseOverlayProps,
-  PopupCardProps,
-  IconCalloutProps,
-  AnimatedLabelProps,
-  ProgressIndicatorProps,
-  GlowingBadgeProps,
-  OverlayPropsMap
+  OverlayPropsMap,
+  HyperFramePreset,
+  PresetCategory,
+  PresetMetadata,
+  GlassCardProps,
+  BigStatProps,
+  TerminalWindowProps,
+  ChecklistProps,
+  PillBadgeProps,
+  BeforeAfterProps,
+  IconLabelProps,
+  NumberedStepProps,
+  IconGridProps,
+  ProgressRingProps
 } from './types'
