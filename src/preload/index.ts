@@ -75,6 +75,9 @@ const api = {
   generateStitchedClips: invoke(I.AI_STITCH_TRANSCRIPT),
   onStitchProgress: listen(S.AI_STITCH_PROGRESS),
 
+  // Long-form (Hormozi 16:9) edit plan
+  generateLongformEditPlan: invoke(I.AI_GENERATE_LONGFORM_EDIT_PLAN),
+
   // Face detection
   detectFaceCrops: invoke(I.FACE_DETECT_CROPS),
   onFaceDetectionProgress: listen(S.FACE_PROGRESS),

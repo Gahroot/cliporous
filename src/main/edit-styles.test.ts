@@ -20,19 +20,23 @@ import {
 import { prestyjTemplates } from './edit-styles/prestyj'
 
 describe('edit-styles registry', () => {
-  it('registers exactly one edit style (prestyj) as the default', () => {
-    expect(EDIT_STYLES).toHaveLength(1)
+  it('keeps prestyj as the first/default edit style', () => {
+    // prestyj is the locked 9:16 short-form style and must remain the default.
+    // hormozi is additive (long-form 16:9 only) and must not displace it.
     expect(EDIT_STYLES[0].id).toBe('prestyj')
     expect(DEFAULT_EDIT_STYLE_ID).toBe('prestyj')
   })
 
-  it('exposes a single STYLE_TEMPLATES key for prestyj', () => {
-    const keys = Object.keys(STYLE_TEMPLATES)
-    expect(keys).toEqual(['prestyj'])
+  it('registers the additive hormozi long-form style without a 9:16 template set', () => {
+    expect(EDIT_STYLES.map((s) => s.id)).toEqual(['prestyj', 'hormozi'])
+    // The 9:16 STYLE_TEMPLATES (keyed on the Archetype union) stays prestyj-only;
+    // hormozi's long-form tuning lives in the separate LONGFORM_TEMPLATES map.
+    expect(Object.keys(STYLE_TEMPLATES)).toEqual(['prestyj'])
   })
 
   it('uses the brand violet (#9f75ff) as the prestyj accent color', () => {
-    expect(EDIT_STYLES[0].accentColor.toLowerCase()).toBe('#9f75ff')
+    const prestyj = EDIT_STYLES.find((s) => s.id === 'prestyj')!
+    expect(prestyj.accentColor.toLowerCase()).toBe('#9f75ff')
   })
 })
 

@@ -884,6 +884,104 @@ export type Archetype =
   | 'fullscreen-image'
   | 'fullscreen-quote'
 
+// ---------------------------------------------------------------------------
+// Long-form (16:9) output profile — additive, parallel to the locked 9:16 path
+// ---------------------------------------------------------------------------
+
+/**
+ * Output profile selector for the render pipeline.
+ *
+ *   • 'vertical' (or undefined) — the locked 1080×1920 @ 30fps short-form path.
+ *     Every existing code path executes identically when this is undefined.
+ *   • 'longform' — the 1920×1080 @ 30fps Hormozi-style long-form path.
+ */
+export type OutputProfile = 'vertical' | 'longform'
+
+/**
+ * Long-form archetypes. Kept INTENTIONALLY SEPARATE from `Archetype` (above):
+ * `Archetype` backs several exhaustive `Record<Archetype, X>` maps that must
+ * stay 9:16-only, so extending it would break the zero-regression invariant.
+ *
+ *   • 'speaker'        — full-frame 16:9 talking head (face-centered crop).
+ *   • 'concept-card'   — full-frame Remotion-rendered graphic card.
+ *   • 'section-header' — purple pill section divider (Remotion-rendered).
+ */
+export type LongformArchetype = 'speaker' | 'concept-card' | 'section-header'
+
+/** Visual layout variants for a long-form concept card. */
+export type ConceptCardLayout = 'quote' | 'list' | 'statistic' | 'section-title'
+
+/**
+ * A phrase-level emphasis beat — large floating text composited over the
+ * speaker at a specific time range. This is the Hormozi caption treatment;
+ * it replaces burned-in word captions for the long-form profile.
+ */
+export interface PhraseEmphasis {
+  /** Phrase text (2–6 words, punchy). */
+  text: string
+  /** Absolute source-video start time in seconds. */
+  startTime: number
+  /** Absolute source-video end time in seconds. */
+  endTime: number
+  /** Accent color (hex). Defaults to the Hormozi yellow when omitted. */
+  accentColor?: string
+}
+
+/**
+ * A full-frame concept card placement — replaces the speaker visuals for a
+ * time range while the source narration continues underneath.
+ */
+export interface ConceptCardPlacement {
+  /** Absolute source-video start time in seconds. */
+  startTime: number
+  /** Absolute source-video end time in seconds. */
+  endTime: number
+  /** Card visual layout. */
+  layout: ConceptCardLayout
+  /** Hero text for the card. */
+  text: string
+  /** Optional secondary line. */
+  subtitle?: string
+  /** List items (used when layout === 'list'). */
+  items?: string[]
+  /** Accent color (hex). */
+  accentColor?: string
+}
+
+/**
+ * A topic transition — rendered as a purple pill section header banner.
+ */
+export interface SectionBoundary {
+  /** Absolute source-video start time in seconds. */
+  startTime: number
+  /** Absolute source-video end time in seconds. */
+  endTime: number
+  /** Section title shown inside the pill. */
+  title: string
+  /** Optional leading emoji icon. */
+  iconEmoji?: string
+  /** Accent color (hex). Defaults to the section purple when omitted. */
+  accentColor?: string
+}
+
+/**
+ * The complete AI-generated long-form edit plan. Drives the 16:9 render:
+ * phrase overlays, concept cards, and section headers are all sequenced
+ * against absolute source-video timestamps.
+ */
+export interface LongformEditPlan {
+  /** Phrase-level emphasis overlays. */
+  phrases: PhraseEmphasis[]
+  /** Full-frame concept card placements. */
+  conceptCards: ConceptCardPlacement[]
+  /** Section header / chapter boundaries. */
+  sections: SectionBoundary[]
+  /** Brief editorial reasoning (for debugging / UI display). */
+  reasoning: string
+  /** Epoch millis when the plan was generated. */
+  generatedAt: number
+}
+
 /** A single segment within a clip, with its own style, captions, and zoom. */
 export interface VideoSegment {
   id: string

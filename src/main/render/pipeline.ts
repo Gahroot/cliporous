@@ -23,6 +23,7 @@ import type { RenderFeature, FilterContext, OverlayContext, PostProcessContext, 
 import { buildVideoFilter, renderClip, activeCommands } from './base-render'
 import { assembleStitchedVideo } from './stitched-render'
 import { renderSegmentedClip } from './segment-render'
+import { renderLongformVideo } from './longform-pipeline'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import type { SegmentRenderConfig, ResolvedSegment } from './segment-render'
@@ -163,6 +164,15 @@ export async function startBatchRender(
   onBatchDone?: BatchDoneHandler
 ): Promise<void> {
   cancelRequested = false
+
+  // ── Long-form (16:9) routing ──────────────────────────────────────────────
+  // When the caller requests the long-form profile, delegate to the dedicated
+  // 1920×1080 orchestrator and return. The 9:16 path below is untouched when
+  // outputProfile is undefined/'vertical'.
+  if (options.outputProfile === 'longform') {
+    await renderLongformVideo(options, window)
+    return
+  }
 
   const { jobs, outputDirectory } = options
   const total = jobs.length

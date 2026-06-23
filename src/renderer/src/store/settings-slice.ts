@@ -83,6 +83,7 @@ export interface SettingsSlice {
   setOutputAspectRatio: (ratio: OutputAspectRatio) => void
   setFilenameTemplate: (template: string) => void
   setRenderConcurrency: (concurrency: number) => void
+  setOutputMode: (mode: import('./types').OutputMode) => void
 
   // Template layout (on-screen text positioning)
   setTemplateLayout: (layout: TemplateLayout) => void
@@ -334,6 +335,9 @@ export const createSettingsSlice: StateCreator<
 
   setRenderConcurrency: (concurrency) =>
     set((state) => { state.settings.renderConcurrency = Math.max(1, Math.min(4, concurrency)) }),
+
+  setOutputMode: (mode) =>
+    set((state) => { state.settings.outputMode = mode }),
 
   // --- Template Layout (on-screen text positioning) ---
 

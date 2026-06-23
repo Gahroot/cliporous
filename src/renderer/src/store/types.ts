@@ -378,7 +378,16 @@ export interface AppSettings {
   templateLayout: TemplateLayout
   /** Platform whose UI dead-zones are previewed in the Template Editor. */
   targetPlatform: Platform
+  /**
+   * Output mode for a dropped source.
+   *   • 'short'    — the locked 9:16 clip-extraction pipeline (default).
+   *   • 'longform' — the Hormozi-style 16:9 single-video edit pipeline.
+   */
+  outputMode: OutputMode
 }
+
+/** Output mode for a dropped source video. */
+export type OutputMode = 'short' | 'longform'
 
 export interface ProcessingConfig {
   targetDuration: TargetDuration

@@ -36,5 +36,11 @@ export const PrestyjFonts: React.FC = () => (
       font-style: italic;
       font-display: block;
     }
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('${staticFile('fonts/JetBrainsMono.ttf')}') format('truetype');
+      font-weight: 400;
+      font-display: block;
+    }
   `}</style>
 )

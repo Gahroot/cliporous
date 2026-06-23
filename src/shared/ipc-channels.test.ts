@@ -209,6 +209,7 @@ import {
   registerSecretsHandlers,
   registerSystemHandlers,
   registerHyperFramesHandlers,
+  registerLongformHandlers,
 } from '../main/ipc'
 
 import { registerSettingsWindowHandlers } from '../main/settings-window'
@@ -284,6 +285,7 @@ beforeAll(() => {
   registerSecretsHandlers()
   registerSystemHandlers()
   registerHyperFramesHandlers()
+  registerLongformHandlers()
   // Settings-window handlers live outside src/main/ipc but still register
   // SETTINGS_WINDOW_OPEN/CLOSE/IS_OPEN — without them those Ch.Invoke values
   // would be falsely flagged as missing in main. The function only calls

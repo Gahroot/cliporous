@@ -6,6 +6,7 @@
  * (editStyleId, archetype) so other styles can opt in incrementally.
  */
 import type { Archetype } from '../edit-styles/shared/archetypes'
+import type { LongformArchetype } from '@shared/types'
 
 export interface RemotionCompositionRef {
   /** Composition id registered in Root.tsx. */
@@ -39,5 +40,39 @@ export function resolveRemotionComposition(
 ): RemotionCompositionRef | null {
   if (!editStyleId || !archetype) return null
   const map = STYLE_MAPS[editStyleId]
+  return map?.[archetype] ?? null
+}
+
+// ---------------------------------------------------------------------------
+// Long-form (16:9) composition registry
+//
+// Kept separate from STYLE_MAPS (which is keyed on the 9:16 `Archetype` union)
+// so the short-form resolver is untouched. `speaker` has no Remotion comp — it
+// renders through the segmented FFmpeg path — so it maps to null.
+// ---------------------------------------------------------------------------
+
+const HORMOZI_LONGFORM_MAP: Record<LongformArchetype, RemotionCompositionRef | null> = {
+  speaker: null,
+  'concept-card': { compositionId: 'HormoziConceptCard', needsImage: false },
+  'section-header': { compositionId: 'HormoziSectionHeader', needsImage: false }
+}
+
+const LONGFORM_STYLE_MAPS: Record<
+  string,
+  Record<LongformArchetype, RemotionCompositionRef | null>
+> = {
+  hormozi: HORMOZI_LONGFORM_MAP
+}
+
+/**
+ * Resolve a long-form archetype to its Remotion composition. Returns null for
+ * `speaker` (FFmpeg-rendered) or unknown styles/archetypes.
+ */
+export function resolveLongformRemotionComposition(
+  editStyleId: string | undefined,
+  archetype: LongformArchetype | undefined
+): RemotionCompositionRef | null {
+  if (!editStyleId || !archetype) return null
+  const map = LONGFORM_STYLE_MAPS[editStyleId]
   return map?.[archetype] ?? null
 }

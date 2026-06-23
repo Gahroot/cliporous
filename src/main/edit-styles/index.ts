@@ -16,18 +16,36 @@ import type {
 import { ARCHETYPE_META, ARCHETYPE_TO_CATEGORY } from './shared/archetypes'
 
 import { prestyjEditStyle, prestyjTemplates } from './prestyj'
+import { hormoziEditStyle, hormoziLongformTemplates } from './hormozi'
+import type { LongformArchetypeTemplate } from './hormozi/templates/types'
+import type { LongformArchetype } from '@shared/types'
 
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
 
-export const EDIT_STYLES: EditStyle[] = [prestyjEditStyle]
+export const EDIT_STYLES: EditStyle[] = [prestyjEditStyle, hormoziEditStyle]
 
+// STYLE_TEMPLATES stays prestyj-only: it is `Record<string, Record<Archetype,
+// EditStyleTemplate>>` and the 9:16 `Archetype` union must not gain long-form
+// keys. Hormozi's long-form tuning lives in the separate, `LongformArchetype`-
+// keyed LONGFORM_TEMPLATES map below.
 export const STYLE_TEMPLATES: Record<
   string,
   Record<Archetype, EditStyleTemplate>
 > = {
   prestyj: prestyjTemplates
+}
+
+/**
+ * Long-form (16:9) archetype tuning, keyed by edit-style id then
+ * `LongformArchetype`. Consumed only by the long-form render pipeline.
+ */
+export const LONGFORM_TEMPLATES: Record<
+  string,
+  Record<LongformArchetype, LongformArchetypeTemplate>
+> = {
+  hormozi: hormoziLongformTemplates
 }
 
 export const DEFAULT_EDIT_STYLE_ID = 'prestyj'

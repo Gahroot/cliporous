@@ -41,6 +41,19 @@ export const OUTPUT_HEIGHT = 1920
 export const OUTPUT_FPS = 30
 
 // ---------------------------------------------------------------------------
+// Long-form landscape dimensions (16:9) — additive, used ONLY by the
+// `outputProfile === 'longform'` render path. The vertical lock above is
+// untouched; these constants never alter the short-form pipeline.
+// ---------------------------------------------------------------------------
+
+/** Long-form output width in pixels (16:9 landscape). */
+export const LANDSCAPE_WIDTH = 1920
+/** Long-form output height in pixels (16:9 landscape). */
+export const LANDSCAPE_HEIGHT = 1080
+/** Long-form output frame rate. */
+export const LANDSCAPE_FPS = 30
+
+// ---------------------------------------------------------------------------
 // Config registry — only 9:16 is supported
 // ---------------------------------------------------------------------------
 
@@ -65,6 +78,21 @@ export const ASPECT_RATIO_CONFIGS: Record<OutputAspectRatio, AspectRatioConfig> 
  */
 export function getCanvasDimensions(_ratio?: OutputAspectRatio): { width: number; height: number } {
   return { width: OUTPUT_WIDTH, height: OUTPUT_HEIGHT }
+}
+
+/**
+ * Resolve canvas dimensions + fps for a given output profile. Returns the
+ * landscape 1920×1080 @ 30fps box for `'longform'`, otherwise the locked
+ * vertical 1080×1920 @ 30fps box. The short-form path never calls this with
+ * `'longform'`, so its behaviour is unchanged.
+ */
+export function getCanvasDimensionsForProfile(
+  profile?: 'vertical' | 'longform'
+): { width: number; height: number; fps: number } {
+  if (profile === 'longform') {
+    return { width: LANDSCAPE_WIDTH, height: LANDSCAPE_HEIGHT, fps: LANDSCAPE_FPS }
+  }
+  return { width: OUTPUT_WIDTH, height: OUTPUT_HEIGHT, fps: OUTPUT_FPS }
 }
 
 /**

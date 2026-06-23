@@ -24,7 +24,14 @@ export type SegmentRole =
   | 'main-payoff'
   | 'bonus-payoff'
   | 'bridge'
-import type { EmphasizedWord, ShotStyleConfig, ColorGradeConfig, ShotTransitionConfig } from '@shared/types'
+import type {
+  EmphasizedWord,
+  ShotStyleConfig,
+  ColorGradeConfig,
+  ShotTransitionConfig,
+  OutputProfile,
+  LongformEditPlan
+} from '@shared/types'
 
 // Re-export pass-through types so consumers can import from one place
 export type {
@@ -397,6 +404,18 @@ export interface RenderStitchedClipJob {
 export interface RenderBatchOptions {
   jobs: RenderClipJob[]
   outputDirectory: string
+  /**
+   * Output profile. `undefined` or `'vertical'` runs the locked 1080×1920
+   * short-form pipeline (default — every existing code path is unchanged).
+   * `'longform'` routes to the 1920×1080 Hormozi long-form pipeline.
+   */
+  outputProfile?: OutputProfile
+  /**
+   * AI-generated long-form edit plan. Required when `outputProfile` is
+   * `'longform'`; ignored otherwise. Drives phrase overlays, concept cards,
+   * and section headers.
+   */
+  longformEditPlan?: LongformEditPlan
   /** Global sound design settings — used by IPC handler to compute placements */
   soundDesign?: SoundDesignOptions
   /** Ken Burns auto-zoom settings applied to every rendered clip */

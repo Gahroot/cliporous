@@ -30,11 +30,18 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 
 import { useStore } from '@/store'
 import { loadProject, loadProjectFromPath } from '@/services'
-import { usePipeline } from '@/hooks'
+import { usePipeline, useLongformPipeline } from '@/hooks'
 import type { SourceVideo } from '@/store'
 import { PythonSetupCard } from '@/components/PythonSetupCard'
 
@@ -100,7 +107,10 @@ export function DropScreen(): React.JSX.Element {
   const setActiveSource = useStore((s) => s.setActiveSource)
   const addError = useStore((s) => s.addError)
   const pythonStatus = useStore((s) => s.pythonStatus)
+  const outputMode = useStore((s) => s.settings.outputMode)
+  const setOutputMode = useStore((s) => s.setOutputMode)
   const { processVideo } = usePipeline()
+  const { processLongform } = useLongformPipeline()
 
   // While the Python env is installing or has failed, replace the drop zone
   // with the install card. `'checking'` is the brief moment between mount and
@@ -171,9 +181,13 @@ export function DropScreen(): React.JSX.Element {
         }
         addSource(source)
         setActiveSource(source.id)
-        // Don't await — processVideo runs the full pipeline; the router will
-        // switch to ProcessingScreen as soon as stage leaves 'idle'.
-        void processVideo(source)
+        // Don't await — the pipeline runs in the background; the router
+        // switches to ProcessingScreen as soon as stage leaves 'idle'.
+        if (useStore.getState().settings.outputMode === 'longform') {
+          void processLongform(source)
+        } else {
+          void processVideo(source)
+        }
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         toast.error(`Couldn't read video: ${message}`)
@@ -182,7 +196,7 @@ export function DropScreen(): React.JSX.Element {
         setIsStarting(false)
       }
     },
-    [addError, addSource, isStarting, processVideo, setActiveSource]
+    [addError, addSource, isStarting, processLongform, processVideo, setActiveSource]
   )
 
   const startFromUrl = useCallback(
@@ -201,9 +215,13 @@ export function DropScreen(): React.JSX.Element {
       }
       addSource(source)
       setActiveSource(source.id)
-      void processVideo(source)
+      if (useStore.getState().settings.outputMode === 'longform') {
+        void processLongform(source)
+      } else {
+        void processVideo(source)
+      }
     },
-    [addSource, isStarting, processVideo, setActiveSource]
+    [addSource, isStarting, processLongform, processVideo, setActiveSource]
   )
 
   // ── Submit (Enter / blur) ───────────────────────────────────────────────────────
@@ -324,8 +342,11 @@ export function DropScreen(): React.JSX.Element {
 
   // ── Render ─────────────────────────────────────────────────────────────
   return (
-    <div className="flex h-full w-full items-center justify-center overflow-y-auto p-8">
-      <div className="flex w-full max-w-2xl flex-col gap-8">
+    <div className="flex h-full w-full justify-center overflow-y-auto p-8">
+      {/* my-auto centers the column when it fits but keeps the top reachable
+          when the content (mode selector + 60vh drop card + recents) overflows
+          the window — otherwise items-center clips the top off-screen. */}
+      <div className="my-auto flex w-full max-w-2xl flex-col gap-8">
         {/* Inline error — surfaces ingest / open failures so the user
             doesn't have to expand the bottom log to see what went wrong. */}
         {ingestError && (
@@ -336,6 +357,36 @@ export function DropScreen(): React.JSX.Element {
               {ingestError}
             </AlertDescription>
           </Alert>
+        )}
+
+        {/* Output mode selector — pick the short-form clip pipeline (9:16) or
+            the Hormozi long-form edit pipeline (16:9) before dropping. */}
+        {!showSetupCard && (
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="text-foreground text-sm font-semibold tracking-tight">
+                Output mode
+              </h3>
+              <p className="text-muted-foreground text-xs">
+                {outputMode === 'longform'
+                  ? 'One 16:9 long-form edit — phrase overlays, concept cards, section headers'
+                  : 'Multiple 9:16 short clips scored and styled for social'}
+              </p>
+            </div>
+            <Select
+              value={outputMode}
+              onValueChange={(v) => setOutputMode(v as 'short' | 'longform')}
+              disabled={isStarting}
+            >
+              <SelectTrigger className="w-[200px]" aria-label="Output mode">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="short">Short clips (9:16)</SelectItem>
+                <SelectItem value="longform">Long-form (16:9)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         )}
 
         {/* Python first-run install card — replaces the drop zone while the

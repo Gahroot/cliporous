@@ -27,8 +27,11 @@ export function registerRenderHandlers(): void {
       if (!win) throw new Error('No BrowserWindow found for render request')
 
       // ── Phase 1: B-Roll placement generation ────────────────────────────────
-      // When B-Roll is enabled, generate placements for each clip.
+      // When B-Roll is enabled, generate placements for each clip. Long-form
+      // (Hormozi 16:9) never uses stock B-Roll — its illustration is the
+      // concept cards / phrase overlays — so skip placement generation there.
       if (
+        options.outputProfile !== 'longform' &&
         options.broll?.enabled &&
         (options.broll.pexelsApiKey || options.broll.sourceMode === 'ai-generated')
       ) {

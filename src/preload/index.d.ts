@@ -45,6 +45,43 @@ interface TranscriptionResult {
   segments: SegmentTimestamp[]
 }
 
+// ---------------------------------------------------------------------------
+// Long-form (Hormozi 16:9) edit plan
+// ---------------------------------------------------------------------------
+
+interface LongformPhraseEmphasis {
+  text: string
+  startTime: number
+  endTime: number
+  accentColor?: string
+}
+
+interface LongformConceptCard {
+  startTime: number
+  endTime: number
+  layout: 'quote' | 'list' | 'statistic' | 'section-title'
+  text: string
+  subtitle?: string
+  items?: string[]
+  accentColor?: string
+}
+
+interface LongformSectionBoundary {
+  startTime: number
+  endTime: number
+  title: string
+  iconEmoji?: string
+  accentColor?: string
+}
+
+interface LongformEditPlan {
+  phrases: LongformPhraseEmphasis[]
+  conceptCards: LongformConceptCard[]
+  sections: LongformSectionBoundary[]
+  reasoning: string
+  generatedAt: number
+}
+
 interface TranscriptionProgress {
   stage: 'extracting-audio' | 'downloading-model' | 'loading-model' | 'transcribing'
   message: string
@@ -587,6 +624,13 @@ interface Api {
     targetAudience?: string
   ) => Promise<StitchGenerationResultIPC>
   onStitchProgress: (callback: (data: StitchGenerationProgressIPC) => void) => () => void
+
+  // Long-form (Hormozi 16:9) edit plan
+  generateLongformEditPlan: (
+    apiKey: string,
+    words: WordTimestamp[],
+    videoDuration: number
+  ) => Promise<LongformEditPlan>
 
   // Face detection
   detectFaceCrops: (

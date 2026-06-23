@@ -34,7 +34,8 @@ import {
   registerRenderHandlers,
   registerSecretsHandlers,
   registerSystemHandlers,
-  registerHyperFramesHandlers
+  registerHyperFramesHandlers,
+  registerLongformHandlers
 } from './ipc'
 import { registerSettingsWindowHandlers } from './settings-window'
 
@@ -265,6 +266,7 @@ if (!app.requestSingleInstanceLock()) {
     registerSecretsHandlers()
     registerSystemHandlers()
     registerHyperFramesHandlers()
+    registerLongformHandlers()
 
     mainWindow = createMainWindow()
     registerSettingsWindowHandlers(mainWindow)

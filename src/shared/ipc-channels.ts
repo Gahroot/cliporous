@@ -45,6 +45,7 @@ export const InvokeChannels = {
   AI_GENERATE_BATCH_DESCRIPTIONS: 'ai:generateBatchDescriptions',
   AI_ANALYZE_WORD_EMPHASIS: 'ai:analyzeWordEmphasis',
   AI_STITCH_TRANSCRIPT: 'ai:stitchTranscript',
+  AI_GENERATE_LONGFORM_EDIT_PLAN: 'ai:generateLongformEditPlan',
 
   // Face detection
   FACE_DETECT_CROPS: 'face:detectCrops',

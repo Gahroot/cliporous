@@ -126,6 +126,55 @@ function StatusBadge({ status }: { status: RowStatus }): React.JSX.Element {
 }
 
 // ---------------------------------------------------------------------------
+// Generic progress row — used by output modes without a ClipCandidate (e.g.
+// the long-form 16:9 pipeline, which renders a single whole-video job).
+// ---------------------------------------------------------------------------
+
+function GenericRow({
+  label,
+  progress,
+}: {
+  label: string
+  progress: RowProgress
+}): React.JSX.Element {
+  const isActive = progress.status === 'rendering' || progress.status === 'preparing'
+  const isDone = progress.status === 'done'
+  const isError = progress.status === 'error'
+  const showBar = isActive || isDone
+  const barValue = isDone ? 100 : Math.max(0, Math.min(100, progress.percent))
+
+  return (
+    <Card className="flex items-center gap-3 p-3">
+      <div className="bg-muted text-muted-foreground flex h-16 w-9 shrink-0 items-center justify-center overflow-hidden rounded">
+        <FileVideo className="h-4 w-4 opacity-60" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <p
+            className={cn('line-clamp-2 text-sm font-medium leading-snug', isError && 'text-destructive')}
+            title={label}
+          >
+            {label}
+          </p>
+          <StatusBadge status={progress.status} />
+        </div>
+        {showBar && (
+          <Progress
+            value={barValue}
+            className={cn('mt-2 h-1.5', isError && '[&>div]:bg-destructive')}
+          />
+        )}
+        {isError && progress.error && (
+          <p className="text-destructive mt-1.5 line-clamp-2 text-xs" title={progress.error}>
+            {progress.error}
+          </p>
+        )}
+      </div>
+    </Card>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Single clip row
 // ---------------------------------------------------------------------------
 
@@ -370,9 +419,13 @@ export function RenderScreen(): React.JSX.Element {
 
   // ── Render ────────────────────────────────────────────────────────────
   const isComplete = batchSummary !== null && !isRendering
-  const totalCount = approvedClips.length
+  // Long-form (16:9) renders a single whole-video job with no ClipCandidates,
+  // so fall back to the live render-progress rows for the count + labels.
+  const isLongform = approvedClips.length === 0 && renderProgress.length > 0
+  const totalCount = isLongform ? renderProgress.length : approvedClips.length
   const doneCount = renderProgress.filter((r) => r.status === 'done').length
   const failedCount = renderProgress.filter((r) => r.status === 'error').length
+  const itemNoun = isLongform ? 'video' : 'clip'
 
   return (
     <div className="mx-auto flex h-full w-full max-w-3xl flex-col px-6 py-6">
@@ -383,7 +436,7 @@ export function RenderScreen(): React.JSX.Element {
             Render
           </h2>
           <p className="text-muted-foreground mt-0.5 text-xs tabular-nums">
-            {totalCount} clip{totalCount === 1 ? '' : 's'}
+            {totalCount} {itemNoun}{totalCount === 1 ? '' : 's'}
             {isRendering && ` · ${doneCount} done`}
             {isRendering && failedCount > 0 && ` · ${failedCount} failed`}
           </p>
@@ -434,7 +487,7 @@ export function RenderScreen(): React.JSX.Element {
 
       {/* ── Clip list ───────────────────────────────────────────────── */}
       <div className="-mx-1 flex-1 space-y-2 overflow-y-auto px-1">
-        {approvedClips.length === 0 ? (
+        {approvedClips.length === 0 && renderProgress.length === 0 ? (
           <div className="flex h-full w-full items-center justify-center p-6">
             <Card className="flex w-full max-w-sm flex-col items-center gap-3 px-6 py-10 text-center">
               <FileVideo
@@ -450,6 +503,16 @@ export function RenderScreen(): React.JSX.Element {
               </p>
             </Card>
           </div>
+        ) : approvedClips.length === 0 ? (
+          // Output modes without ClipCandidates (long-form 16:9) — render the
+          // raw progress rows reported by the render:* events.
+          renderProgress.map((r) => (
+            <GenericRow
+              key={r.clipId}
+              label="Long-form edit (16:9)"
+              progress={{ status: r.status, percent: r.percent, error: r.error ?? renderErrors[r.clipId] }}
+            />
+          ))
         ) : (
           approvedClips.map((clip) => {
             const p = progressMap.get(clip.id) ?? { status: 'queued' as const, percent: 0 }

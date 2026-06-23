@@ -18,3 +18,4 @@ export {
   deleteBatchContentTempFiles
 } from './system-handlers'
 export { registerHyperFramesHandlers } from './hyperframes-handlers'
+export { registerLongformHandlers } from './longform-handlers'
