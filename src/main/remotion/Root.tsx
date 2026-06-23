@@ -11,7 +11,11 @@ import {
   ProgressRing,
   FlowDiagram,
   StatStack,
-  CategoryReveal
+  CategoryReveal,
+  BarChart,
+  Comparison,
+  StatGrid,
+  IconRow
 } from './compositions/blocks'
 import type {
   DataCardProps,
@@ -19,7 +23,11 @@ import type {
   ProgressRingProps,
   FlowDiagramProps,
   StatStackProps,
-  CategoryRevealProps
+  CategoryRevealProps,
+  BarChartProps,
+  ComparisonProps,
+  StatGridProps,
+  IconRowProps
 } from './compositions/blocks'
 import { PhraseOverlay, type PhraseOverlayProps } from './compositions/PhraseOverlay'
 import { SectionHeader, type SectionHeaderProps } from './compositions/SectionHeader'
@@ -249,6 +257,112 @@ export const RemotionRoot: React.FC = () => {
             ],
             accentColor: BRAND_ACCENT
           } satisfies TimelineProps}
+        />
+      ))}
+
+      {/* ---- BarChart block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`BarChart-${skinId}`}
+          id={`BarChart-${skinId}`}
+          component={BarChart as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'THE NUMBERS',
+            heading: 'Revenue By Quarter',
+            bars: [
+              { label: 'Q1', value: 0.42, valueLabel: '$84K' },
+              { label: 'Q2', value: 0.58, valueLabel: '$116K' },
+              { label: 'Q3', value: 0.74, valueLabel: '$148K' },
+              { label: 'Q4', value: 1.0, valueLabel: '$201K' }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies BarChartProps}
+        />
+      ))}
+
+      {/* ---- Comparison block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`Comparison-${skinId}`}
+          id={`Comparison-${skinId}`}
+          component={Comparison as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'THE FORK',
+            heading: 'Amateurs vs Operators',
+            leftTitle: 'OPERATORS',
+            rightTitle: 'AMATEURS',
+            leftItems: [
+              'Sell before they build',
+              'Raise prices on purpose',
+              'Measure what compounds'
+            ],
+            rightItems: [
+              'Polish in private',
+              'Compete on cheap',
+              'Chase vanity metrics'
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies ComparisonProps}
+        />
+      ))}
+
+      {/* ---- StatGrid block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`StatGrid-${skinId}`}
+          id={`StatGrid-${skinId}`}
+          component={StatGrid as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'BY THE NUMBERS',
+            heading: 'One Year In',
+            stats: [
+              { value: '3.4x', label: 'Revenue growth' },
+              { value: '12K', label: 'Active customers' },
+              { value: '98%', label: 'Retention rate' },
+              { value: '<2h', label: 'Support response' }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies StatGridProps}
+        />
+      ))}
+
+      {/* ---- IconRow block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`IconRow-${skinId}`}
+          id={`IconRow-${skinId}`}
+          component={IconRow as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'THE STACK',
+            heading: 'Built On Four Pillars',
+            items: [
+              { icon: 'Target', label: 'Positioning' },
+              { icon: 'Zap', label: 'Velocity' },
+              { icon: 'RefreshCw', label: 'Retention' },
+              { icon: 'TrendingUp', label: 'Leverage' }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies IconRowProps}
         />
       ))}
 

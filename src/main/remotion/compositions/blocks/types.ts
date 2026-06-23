@@ -1,3 +1,5 @@
+import type { SkinId } from '../../shared/skins'
+
 /* ------------------------------------------------------------------ */
 /*  Block prop interfaces — Westworld/Delos data card system            */
 /* ------------------------------------------------------------------ */
@@ -87,5 +89,76 @@ export interface CategoryRevealProps {
   /** Tagline beneath */
   tagline: string
   /** Accent colour override */
+  accentColor?: string
+}
+
+/* ------------------------------------------------------------------ */
+/*  Skin × block system — JSON-serializable props (skinId string)       */
+/* ------------------------------------------------------------------ */
+
+export interface BarChartBar {
+  /** Category label under the bar. */
+  label: string
+  /** Normalised height 0-1 (relative to the tallest bar). */
+  value: number
+  /** Display value drawn above the bar, e.g. "$84K". */
+  valueLabel: string
+}
+
+export interface BarChartProps {
+  /** Which visual skin to render in. */
+  skinId: SkinId
+  kicker: string
+  heading: string
+  bars: BarChartBar[]
+  accentColor?: string
+}
+
+export interface ComparisonProps {
+  /** Which visual skin to render in. */
+  skinId: SkinId
+  kicker: string
+  heading: string
+  /** Left (positive) column heading. */
+  leftTitle: string
+  /** Right (negative) column heading. */
+  rightTitle: string
+  /** Left column rows — marked with a ✓. */
+  leftItems: string[]
+  /** Right column rows — marked with a ✕. */
+  rightItems: string[]
+  accentColor?: string
+}
+
+export interface StatGridStat {
+  /** Big display number, e.g. "3.4x". */
+  value: string
+  /** Caption under the number. */
+  label: string
+}
+
+export interface StatGridProps {
+  /** Which visual skin to render in. */
+  skinId: SkinId
+  kicker: string
+  heading: string
+  /** Four metrics laid out 2×2. */
+  stats: StatGridStat[]
+  accentColor?: string
+}
+
+export interface IconRowItem {
+  /** Lucide icon name shown in the tile, e.g. "Target" (PascalCase). */
+  icon: string
+  /** Label under the icon. */
+  label: string
+}
+
+export interface IconRowProps {
+  /** Which visual skin to render in. */
+  skinId: SkinId
+  kicker: string
+  heading: string
+  items: IconRowItem[]
   accentColor?: string
 }
