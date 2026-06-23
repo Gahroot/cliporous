@@ -50,3 +50,10 @@ Screenshot*.png
 .ezcoder/plans/e2e-output/
 .ezcoder/plans/e2e-frames/
 scripts/e2e-smoke/*.bundle.cjs
+
+# HyperFrames E2E prototype artifacts (regenerable via scripts/test-hyperframes/run.sh)
+.ezcoder/plans/hyperframes-e2e/
+scripts/test-hyperframes/*.bundle.cjs
+demo-*.mov
+demo-*.mp4
+catalog-demo.mp4
