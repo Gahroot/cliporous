@@ -1,7 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
-  content: ['./src/renderer/index.html', './src/renderer/src/**/*.{ts,tsx}'],
+  content: [
+    './src/renderer/index.html',
+    './src/renderer/src/**/*.{ts,tsx}',
+    // Remotion skin×block compositions build their UI from shadcn primitives;
+    // include them so the utility classes they use are generated.
+    './src/main/remotion/**/*.{ts,tsx}'
+  ],
   theme: {
     container: {
       center: true,

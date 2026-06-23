@@ -13,6 +13,7 @@ import { bundle } from '@remotion/bundler'
 import { renderMedia, selectComposition } from '@remotion/renderer'
 import { app } from 'electron'
 import { join } from 'path'
+import { createWebpackOverride } from './webpack-override'
 import { tmpdir } from 'os'
 import { mkdtempSync, existsSync } from 'fs'
 
@@ -49,7 +50,11 @@ async function getBundle(): Promise<string> {
   if (!bundlePromise) {
     bundlePromise = bundle({
       entryPoint: resolveRemotionEntry(),
-      // Inherit webpack config from remotion.config.ts implicitly.
+      // Match the Studio/preview webpack config so headless renders are styled
+      // identically: enable Tailwind + resolve the `@` shadcn alias. The alias
+      // root is the app path (project root in dev, asar root when packaged),
+      // which is where the bundled `src/` tree lives.
+      webpackOverride: createWebpackOverride(app.getAppPath()),
       onProgress: () => undefined
     })
   }

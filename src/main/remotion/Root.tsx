@@ -15,7 +15,19 @@ import {
   BarChart,
   Comparison,
   StatGrid,
-  IconRow
+  IconRow,
+  NumberedList,
+  Checklist,
+  StatHero,
+  ProgressBars,
+  FeatureGrid,
+  ComparisonTable,
+  KpiTicker,
+  QuoteCard,
+  TweetCard,
+  DefinitionCard,
+  TimelineCards,
+  IconStatGrid
 } from './compositions/blocks'
 import type {
   DataCardProps,
@@ -27,7 +39,19 @@ import type {
   BarChartProps,
   ComparisonProps,
   StatGridProps,
-  IconRowProps
+  IconRowProps,
+  NumberedListProps,
+  ChecklistProps,
+  StatHeroProps,
+  ProgressBarsProps,
+  FeatureGridProps,
+  ComparisonTableProps,
+  KpiTickerProps,
+  QuoteCardProps,
+  TweetCardProps,
+  DefinitionCardProps,
+  TimelineCardsProps,
+  IconStatGridProps
 } from './compositions/blocks'
 import { PhraseOverlay, type PhraseOverlayProps } from './compositions/PhraseOverlay'
 import { SectionHeader, type SectionHeaderProps } from './compositions/SectionHeader'
@@ -363,6 +387,299 @@ export const RemotionRoot: React.FC = () => {
             ],
             accentColor: BRAND_ACCENT
           } satisfies IconRowProps}
+        />
+      ))}
+
+      {/* ===== shadcn + lucide block library × every skin ===== */}
+
+      {/* ---- NumberedList block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`NumberedList-${skinId}`}
+          id={`NumberedList-${skinId}`}
+          component={NumberedList as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'THE PLAYBOOK',
+            heading: 'Ship Your First Offer',
+            items: [
+              { text: 'Pick one painful problem', detail: 'Narrow beats clever every time' },
+              { text: 'Pre-sell before you build', detail: 'A deposit is the only real validation' },
+              { text: 'Deliver the ugly version', detail: 'Speed compounds, polish does not' }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies NumberedListProps}
+        />
+      ))}
+
+      {/* ---- Checklist block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`Checklist-${skinId}`}
+          id={`Checklist-${skinId}`}
+          component={Checklist as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'LAUNCH PREP',
+            heading: 'Before You Go Live',
+            items: [
+              { text: 'Landing page is live', done: true },
+              { text: 'Payment link tested', done: true },
+              { text: 'Waitlist emailed', done: true },
+              { text: 'Launch thread scheduled', done: false }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies ChecklistProps}
+        />
+      ))}
+
+      {/* ---- StatHero block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`StatHero-${skinId}`}
+          id={`StatHero-${skinId}`}
+          component={StatHero as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'ONE YEAR IN',
+            heading: 'Annual Recurring Revenue',
+            value: 1.2,
+            decimals: 1,
+            prefix: '$',
+            suffix: 'M',
+            label: 'Up from $310K last year',
+            trend: 'up',
+            delta: '+287% YoY',
+            accentColor: BRAND_ACCENT
+          } satisfies StatHeroProps}
+        />
+      ))}
+
+      {/* ---- ProgressBars block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`ProgressBars-${skinId}`}
+          id={`ProgressBars-${skinId}`}
+          component={ProgressBars as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'WHERE TIME GOES',
+            heading: 'How Founders Spend The Week',
+            bars: [
+              { label: 'Building product', value: 0.82, valueLabel: '82%' },
+              { label: 'Talking to users', value: 0.54, valueLabel: '54%' },
+              { label: 'Marketing', value: 0.38, valueLabel: '38%' },
+              { label: 'Admin & ops', value: 0.21, valueLabel: '21%' }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies ProgressBarsProps}
+        />
+      ))}
+
+      {/* ---- FeatureGrid block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`FeatureGrid-${skinId}`}
+          id={`FeatureGrid-${skinId}`}
+          component={FeatureGrid as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'WHY IT WORKS',
+            heading: 'Built For Operators',
+            items: [
+              { icon: 'Zap', title: 'Fast by default', description: 'Renders in seconds, not minutes' },
+              { icon: 'ShieldCheck', title: 'Private', description: 'Runs locally on your machine' },
+              { icon: 'Layers', title: 'Composable', description: 'Mix blocks and skins freely' },
+              { icon: 'TrendingUp', title: 'Proven', description: 'Tested across thousands of clips' }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies FeatureGridProps}
+        />
+      ))}
+
+      {/* ---- ComparisonTable block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`ComparisonTable-${skinId}`}
+          id={`ComparisonTable-${skinId}`}
+          component={ComparisonTable as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'THE FORK',
+            heading: 'Operators vs Amateurs',
+            leftTitle: 'OPERATORS',
+            rightTitle: 'AMATEURS',
+            leftItems: ['Sell before they build', 'Raise prices on purpose', 'Measure what compounds'],
+            rightItems: ['Polish in private', 'Compete on cheap', 'Chase vanity metrics'],
+            accentColor: BRAND_ACCENT
+          } satisfies ComparisonTableProps}
+        />
+      ))}
+
+      {/* ---- KpiTicker block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`KpiTicker-${skinId}`}
+          id={`KpiTicker-${skinId}`}
+          component={KpiTicker as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'THIS QUARTER',
+            heading: 'The Numbers That Matter',
+            items: [
+              { value: '4.8K', label: 'CUSTOMERS', delta: '+12%', trend: 'up' },
+              { value: '98%', label: 'RETENTION', delta: '+3%', trend: 'up' },
+              { value: '1.9%', label: 'CHURN', delta: '-0.4%', trend: 'down' }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies KpiTickerProps}
+        />
+      ))}
+
+      {/* ---- QuoteCard block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`QuoteCard-${skinId}`}
+          id={`QuoteCard-${skinId}`}
+          component={QuoteCard as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'IN THEIR WORDS',
+            heading: 'What Users Say',
+            quote: 'The compounding effect is invisible until it is undeniable.',
+            name: 'Jordan Rivera',
+            role: 'Founder, Latchkey',
+            accentColor: BRAND_ACCENT
+          } satisfies QuoteCardProps}
+        />
+      ))}
+
+      {/* ---- TweetCard block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`TweetCard-${skinId}`}
+          id={`TweetCard-${skinId}`}
+          component={TweetCard as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'THE RECEIPTS',
+            heading: 'It Spread On Its Own',
+            name: 'Mara Chen',
+            handle: 'marabuilds',
+            verified: true,
+            body: 'Spent the weekend rebuilding our launch video with this. Three clips, four looks each, zero After Effects. Wild.',
+            replies: '312',
+            reposts: '1.2K',
+            likes: '8.4K',
+            accentColor: BRAND_ACCENT
+          } satisfies TweetCardProps}
+        />
+      ))}
+
+      {/* ---- DefinitionCard block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`DefinitionCard-${skinId}`}
+          id={`DefinitionCard-${skinId}`}
+          component={DefinitionCard as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'DEFINE IT',
+            heading: 'Know The Term',
+            term: 'Leverage',
+            partOfSpeech: 'noun',
+            definition: 'Output that keeps producing after the work that created it is done — code, media, and brand.',
+            accentColor: BRAND_ACCENT
+          } satisfies DefinitionCardProps}
+        />
+      ))}
+
+      {/* ---- TimelineCards block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`TimelineCards-${skinId}`}
+          id={`TimelineCards-${skinId}`}
+          component={TimelineCards as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'THE ROADMAP',
+            heading: 'From Zero To Launch',
+            steps: [
+              { icon: 'Lightbulb', title: 'Validate', detail: 'Ten interviews before one line of code' },
+              { icon: 'Hammer', title: 'Build', detail: 'Ship the smallest useful version' },
+              { icon: 'Rocket', title: 'Launch', detail: 'Tell everyone, loudly, on one day' }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies TimelineCardsProps}
+        />
+      ))}
+
+      {/* ---- IconStatGrid block × every skin ---- */}
+      {(Object.keys(SKINS) as SkinId[]).map((skinId) => (
+        <Composition
+          key={`IconStatGrid-${skinId}`}
+          id={`IconStatGrid-${skinId}`}
+          component={IconStatGrid as any}
+          durationInFrames={FPS * 4}
+          fps={FPS}
+          width={LANDSCAPE_WIDTH}
+          height={LANDSCAPE_HEIGHT}
+          defaultProps={{
+            skinId,
+            kicker: 'BY THE NUMBERS',
+            heading: 'One Year Of Growth',
+            items: [
+              { icon: 'Users', value: '12K', label: 'Active customers' },
+              { icon: 'DollarSign', value: '3.4x', label: 'Revenue growth' },
+              { icon: 'Repeat', value: '98%', label: 'Retention rate' },
+              { icon: 'Clock', value: '<2h', label: 'Support response' }
+            ],
+            accentColor: BRAND_ACCENT
+          } satisfies IconStatGridProps}
         />
       ))}
 

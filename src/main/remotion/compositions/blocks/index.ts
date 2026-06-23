@@ -8,6 +8,18 @@ export { BarChart } from './BarChart'
 export { Comparison } from './Comparison'
 export { StatGrid } from './StatGrid'
 export { IconRow } from './IconRow'
+export { NumberedList } from './NumberedList'
+export { Checklist } from './Checklist'
+export { StatHero } from './StatHero'
+export { ProgressBars } from './ProgressBars'
+export { FeatureGrid } from './FeatureGrid'
+export { ComparisonTable } from './ComparisonTable'
+export { KpiTicker } from './KpiTicker'
+export { QuoteCard } from './QuoteCard'
+export { TweetCard } from './TweetCard'
+export { DefinitionCard } from './DefinitionCard'
+export { TimelineCards } from './TimelineCards'
+export { IconStatGrid } from './IconStatGrid'
 
 export type {
   DataCardProps,
@@ -24,5 +36,24 @@ export type {
   StatGridStat,
   StatGridProps,
   IconRowItem,
-  IconRowProps
+  IconRowProps,
+  NumberedListItem,
+  NumberedListProps,
+  ChecklistItem,
+  ChecklistProps,
+  StatHeroProps,
+  ProgressBar,
+  ProgressBarsProps,
+  FeatureGridItem,
+  FeatureGridProps,
+  ComparisonTableProps,
+  KpiTickerItem,
+  KpiTickerProps,
+  QuoteCardProps,
+  TweetCardProps,
+  DefinitionCardProps,
+  TimelineCardStep,
+  TimelineCardsProps,
+  IconStatGridItem,
+  IconStatGridProps
 } from './types'
