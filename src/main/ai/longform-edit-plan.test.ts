@@ -4,7 +4,8 @@
 // Drives `generateLongformEditPlan` with a mocked Gemini response so we can
 // assert that the CONTENT BLOCKS layer is validated correctly: valid blocks of
 // several kinds survive, malformed entries are dropped, arrays are clamped, and
-// the Hormozi accent is stamped onto blocks that omit one.
+// no accent is forced onto blocks that omit one (they inherit the brand palette
+// downstream — no Hormozi gold).
 // ---------------------------------------------------------------------------
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
@@ -24,8 +25,28 @@ vi.mock('@google/genai', () => ({
   }
 }))
 
-import { generateLongformEditPlan } from './longform-edit-plan'
-import { HORMOZI_ACCENT } from '../edit-styles/hormozi'
+import { generateLongformEditPlan, diversifyBlocks } from './longform-edit-plan'
+import type { BlockPlacement } from '@shared/types'
+
+/** Minimal valid bar-chart block for variety-pass tests. */
+function bar(startTime: number): BlockPlacement {
+  return {
+    kind: 'bar-chart',
+    startTime,
+    endTime: startTime + 4,
+    kicker: 'K',
+    heading: 'H',
+    bars: [
+      { label: 'A', value: 0.5, valueLabel: '1' },
+      { label: 'B', value: 0.6, valueLabel: '2' }
+    ]
+  }
+}
+
+/** Minimal valid callout block (a different kind) for variety-pass tests. */
+function callout(startTime: number): BlockPlacement {
+  return { kind: 'callout', startTime, endTime: startTime + 4, kicker: 'K', heading: 'H', body: 'Hi' }
+}
 
 function words(): WordTimestamp[] {
   // A handful of words spread across the first window (0–300s).
@@ -42,7 +63,7 @@ describe('generateLongformEditPlan — content blocks', () => {
     callMock.mockReset()
   })
 
-  it('keeps valid blocks of multiple kinds, drops malformed ones, stamps the accent', async () => {
+  it('keeps valid blocks of multiple kinds, drops malformed ones, leaves accent unset', async () => {
     callMock.mockResolvedValue(
       JSON.stringify({
         phrases: [],
@@ -115,8 +136,8 @@ describe('generateLongformEditPlan — content blocks', () => {
       expect(bar.bars).toHaveLength(2)
       expect(bar.bars[1].value).toBe(1) // clamped from 1.5
     }
-    // bar-chart had no accent → stamped with Hormozi accent.
-    expect(bar.accentColor).toBe(HORMOZI_ACCENT)
+    // bar-chart had no accent → left unset so it inherits the brand palette.
+    expect(bar.accentColor).toBeUndefined()
 
     // numbered-list provided its own accent → preserved.
     const list = plan.blocks[1]
@@ -128,10 +149,73 @@ describe('generateLongformEditPlan — content blocks', () => {
     }
   })
 
+  it('runs the variety pass on the merged plan (collapses clustered same-kind blocks)', async () => {
+    // Four bar-charts packed into ~40s with nothing between them.
+    callMock.mockResolvedValue(
+      JSON.stringify({
+        blocks: [
+          { kind: 'bar-chart', start: 10, end: 14, kicker: 'K', heading: 'A', bars: [{ label: 'a', value: 0.4, valueLabel: '1' }, { label: 'b', value: 0.6, valueLabel: '2' }] },
+          { kind: 'bar-chart', start: 18, end: 22, kicker: 'K', heading: 'B', bars: [{ label: 'a', value: 0.4, valueLabel: '1' }, { label: 'b', value: 0.6, valueLabel: '2' }] },
+          { kind: 'bar-chart', start: 26, end: 30, kicker: 'K', heading: 'C', bars: [{ label: 'a', value: 0.4, valueLabel: '1' }, { label: 'b', value: 0.6, valueLabel: '2' }] },
+          { kind: 'bar-chart', start: 34, end: 38, kicker: 'K', heading: 'D', bars: [{ label: 'a', value: 0.4, valueLabel: '1' }, { label: 'b', value: 0.6, valueLabel: '2' }] }
+        ]
+      })
+    )
+
+    const plan = await generateLongformEditPlan({ apiKey: 'fake', words: words(), videoDuration: 200 })
+
+    // The tight cluster collapses to a single bar-chart, never empty.
+    expect(plan.blocks).toHaveLength(1)
+    expect(plan.blocks[0].kind).toBe('bar-chart')
+    expect(plan.blocks[0].startTime).toBe(10) // earliest kept
+    expect(plan.blocks[0].accentColor).toBeUndefined()
+  })
+
   it('returns an empty blocks array when no words are present', async () => {
     const plan = await generateLongformEditPlan({ apiKey: 'fake', words: [], videoDuration: 0 })
     expect(plan.blocks).toEqual([])
     expect(callMock).not.toHaveBeenCalled()
+  })
+
+  it('injects an intro phrase quota into the first window prompt', async () => {
+    callMock.mockResolvedValue(JSON.stringify({ phrases: [], blocks: [] }))
+
+    await generateLongformEditPlan({ apiKey: 'fake', words: words(), videoDuration: 200 })
+
+    // The window starting at video time 0 must carry the denser intro phrase
+    // guidance; the prompt is the 3rd arg passed to the Gemini client.
+    const prompt = String(callMock.mock.calls[0][2])
+    expect(prompt).toContain('INTRO PHRASES')
+  })
+
+  it('drops a currency prefix whose suffix is a non-money unit (% / s / kg)', async () => {
+    callMock.mockResolvedValue(
+      JSON.stringify({
+        blocks: [
+          { kind: 'stat-hero', start: 10, end: 14, kicker: 'K', heading: 'Tuned Out', value: 90, decimals: 1, prefix: '$', suffix: '%', label: 'Ignore AI hype' },
+          { kind: 'stat-hero', start: 60, end: 64, kicker: 'K', heading: 'Sprint Pace', value: 5, prefix: '$', suffix: 's', label: 'Per rep' },
+          { kind: 'stat-hero', start: 130, end: 134, kicker: 'K', heading: 'Revenue', value: 1.2, decimals: 1, prefix: '$', suffix: 'M', label: 'ARR' }
+        ]
+      })
+    )
+
+    const plan = await generateLongformEditPlan({ apiKey: 'fake', words: words(), videoDuration: 200 })
+
+    const pct = plan.blocks[0]
+    if (pct.kind === 'stat-hero') {
+      expect(pct.suffix).toBe('%')
+      expect(pct.prefix).toBeUndefined() // '$' dropped — % is not money
+    }
+    const sec = plan.blocks[1]
+    if (sec.kind === 'stat-hero') {
+      expect(sec.suffix).toBe('s')
+      expect(sec.prefix).toBeUndefined() // '$' dropped — s is not money
+    }
+    const money = plan.blocks[2]
+    if (money.kind === 'stat-hero') {
+      expect(money.prefix).toBe('$') // kept — M is a magnitude multiplier
+      expect(money.suffix).toBe('M')
+    }
   })
 
   it('clamps over-long lists to the max length', async () => {
@@ -164,5 +248,57 @@ describe('generateLongformEditPlan — content blocks', () => {
     if (list.kind === 'numbered-list') {
       expect(list.items).toHaveLength(5) // sliced from 7
     }
+  })
+})
+
+describe('diversifyBlocks', () => {
+  it('collapses consecutive same-kind blocks that are close in time', () => {
+    const result = diversifyBlocks([bar(10), bar(18), bar(26)])
+    // All within MIN_SAME_KIND_GAP — only the first survives.
+    expect(result).toHaveLength(1)
+    expect(result[0].startTime).toBe(10)
+  })
+
+  it('keeps same-kind blocks once they are spaced far enough apart', () => {
+    // 0s and 100s are > the base 45s gap apart — both kept.
+    const result = diversifyBlocks([bar(0), bar(100)])
+    expect(result.map((b) => b.startTime)).toEqual([0, 100])
+  })
+
+  it('improves variety without dropping everything', () => {
+    // A tight cluster of 4 same-kind bars plus one different kind. A pure
+    // same-kind run would collapse to 1; the different kind survives so the mix
+    // is more varied than the input run — and never empty.
+    const input = [bar(10), bar(18), callout(22), bar(26), bar(34)]
+    const result = diversifyBlocks(input)
+
+    // Non-empty and chronological.
+    expect(result.length).toBeGreaterThan(1)
+    const starts = result.map((b) => b.startTime)
+    expect([...starts]).toEqual([...starts].sort((a, b) => a - b))
+
+    // Both kinds represented — variety improved vs. the clustered bar run.
+    const kinds = new Set(result.map((b) => b.kind))
+    expect(kinds.size).toBe(2)
+
+    // The packed bar-charts collapse to one; the lone callout is kept.
+    expect(result.filter((b) => b.kind === 'bar-chart')).toHaveLength(1)
+    expect(result.filter((b) => b.kind === 'callout')).toHaveLength(1)
+  })
+
+  it('preserves chronological order and is a no-op for 0 or 1 blocks', () => {
+    expect(diversifyBlocks([])).toEqual([])
+    const one = [bar(5)]
+    expect(diversifyBlocks(one)).toEqual(one)
+  })
+
+  it('escalates required spacing for over-used kinds', () => {
+    // Base gap 20s, escalating as 20*(uses+1).
+    //   bar@0   kept (1st use)
+    //   bar@50  needs >40 (2nd use)  — gap 50  → kept
+    //   bar@95  needs >60 (3rd use)  — gap 45  → dropped
+    //   bar@180 needs >60            — gap 130 → kept
+    const result = diversifyBlocks([bar(0), bar(50), bar(95), bar(180)])
+    expect(result.map((b) => b.startTime)).toEqual([0, 50, 180])
   })
 })
