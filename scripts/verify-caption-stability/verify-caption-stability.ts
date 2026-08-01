@@ -31,6 +31,7 @@ interface ParsedEvent {
   start: number;
   end: number;
   anchor: { x: number; y: number } | null;
+  alignment: number | null;
   lineCount: number;
   fontSize: number | null;
   hero: boolean;
@@ -57,6 +58,7 @@ function parseEvents(document: string): ParsedEvent[] {
       const fields = line.split(',');
       const payload = fields.slice(9).join(',');
       const anchorMatch = payload.match(/\\pos\((\d+),(\d+)\)/);
+      const alignmentMatch = payload.match(/\\an(\d)/);
       const fontSizeMatch = payload.match(/\\fs(\d+)/);
       return {
         line,
@@ -65,6 +67,7 @@ function parseEvents(document: string): ParsedEvent[] {
         start: assTimeToSeconds(fields[1]),
         end: assTimeToSeconds(fields[2]),
         anchor: anchorMatch ? { x: Number(anchorMatch[1]), y: Number(anchorMatch[2]) } : null,
+        alignment: alignmentMatch ? Number(alignmentMatch[1]) : null,
         lineCount: (payload.match(/\\N/g)?.length ?? 0) + 1,
         fontSize: fontSizeMatch ? Number(fontSizeMatch[1]) : null,
         hero: payload.includes('\\fnInstrument Serif'),
@@ -96,11 +99,15 @@ function assertAudit(document: string, events: ParsedEvent[]): string[] {
       failures.push(`Event ${index + 1} does not disable auto-wrap`);
 
     if (event.hero) {
+      if (event.alignment !== 5) failures.push(`Hero event ${index + 1} is not center-anchored`);
       if (event.anchor?.x !== FRAME_WIDTH / 2 || event.anchor?.y !== FRAME_HEIGHT / 2) {
         failures.push(`Hero event ${index + 1} is not frame-centered`);
       }
       if (event.fontSize === null) failures.push(`Hero event ${index + 1} has no size override`);
     } else {
+      if (event.alignment !== 2) {
+        failures.push(`Ordinary event ${index + 1} is not bottom-anchored`);
+      }
       if (
         event.anchor?.x !== expectedOrdinaryAnchor.x ||
         event.anchor?.y !== expectedOrdinaryAnchor.y

@@ -11,7 +11,12 @@ import { DEFAULT_AUTOSAVE_INTERVAL_MS } from '@shared/project';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { installApiStub } from '@/components/__tests__/test-utils';
 
-import { DEFAULT_SETTINGS, loadPersistedSettings } from './helpers';
+import {
+  DEFAULT_SETTINGS,
+  FILLER_PRESET_LET_IT_RIDE,
+  loadPersistedSettings,
+  migrateFillerRemoval,
+} from './helpers';
 import { useStore } from './index';
 import type { Palette } from './types';
 
@@ -48,6 +53,22 @@ describe('settings defaults — long-form skin & palette', () => {
     expect(DEFAULT_SETTINGS.longformSkin).toBe('editorial');
     expect(DEFAULT_SETTINGS.longformPaletteId).toBe('brand');
     expect(DEFAULT_SETTINGS.customPalettes).toEqual([]);
+  });
+});
+
+describe('short-form filler defaults', () => {
+  it('keeps a natural 600 ms pause before render-side breath padding', () => {
+    expect(FILLER_PRESET_LET_IT_RIDE.silenceTargetGap).toBe(0.6);
+  });
+
+  it('upgrades saved named presets to current canonical tuning', () => {
+    expect(
+      migrateFillerRemoval({
+        preset: 'let-it-ride',
+        enabled: false,
+        silenceTargetGap: 0.4,
+      }),
+    ).toEqual({ ...FILLER_PRESET_LET_IT_RIDE, enabled: false });
   });
 });
 

@@ -1,3 +1,4 @@
+import { stabilizeShortFormClipBoundary } from '@shared/clip-boundaries';
 import { v4 as uuidv4 } from 'uuid';
 import { MISSING_GEMINI_KEY_MESSAGE, resolveGeminiKey } from '../../lib/gemini-key';
 import { createStageReporter } from '../../lib/progress-reporter';
@@ -90,23 +91,32 @@ export async function clipMappingStage(
   }
   check();
 
+  const transcriptWords = transcription.transcriptionResult.words;
   const clips: ClipCandidate[] = scoringResult.segments
     .filter((segment) => segment.score >= processingConfig.minScore)
-    .map((seg) => ({
-      id: uuidv4(),
-      sourceId: source.id,
-      startTime: seg.startTime,
-      endTime: seg.endTime,
-      duration: seg.endTime - seg.startTime,
-      text: seg.text,
-      score: seg.score,
-      hookText: seg.hookText,
-      reasoning: seg.reasoning,
-      status: 'pending' as const,
-      wordTimestamps: transcription.transcriptionResult.words.filter(
-        (w: { start: number; end: number }) => w.start >= seg.startTime && w.end <= seg.endTime,
-      ),
-    }));
+    .map((seg) => {
+      const boundary = stabilizeShortFormClipBoundary(
+        seg.startTime,
+        seg.endTime,
+        transcriptWords,
+        source.duration,
+      );
+      return {
+        id: uuidv4(),
+        sourceId: source.id,
+        startTime: boundary.startTime,
+        endTime: boundary.endTime,
+        duration: boundary.endTime - boundary.startTime,
+        text: seg.text,
+        score: seg.score,
+        hookText: seg.hookText,
+        reasoning: seg.reasoning,
+        status: 'pending' as const,
+        wordTimestamps: transcriptWords.filter(
+          (word) => word.start >= boundary.startTime && word.end <= boundary.endTime,
+        ),
+      };
+    });
 
   store.setClips(source.id, clips);
   reporter.done(

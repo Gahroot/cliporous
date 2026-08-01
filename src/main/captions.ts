@@ -1,8 +1,9 @@
 // ---------------------------------------------------------------------------
 // Captions — three modes, one stable editorial track.
 //
-// Ordinary subtitle events share one explicit center anchor and one visual
-// font size for the whole clip. fullscreen-quote is the sole exception: the
+// Ordinary subtitle events share one explicit bottom anchor and one visual
+// font size for the whole clip, so one-line/two-line groups keep the same
+// baseline. fullscreen-quote is the sole exception: the
 // transcript becomes centered, full-frame hero typography for that window.
 // ---------------------------------------------------------------------------
 
@@ -95,7 +96,7 @@ export interface ArchetypeWindow {
 export interface CaptionGenerationOptions {
   frameWidth?: number;
   frameHeight?: number;
-  /** Center of the reserved ordinary subtitle block, in canvas percent. */
+  /** Bottom-center anchor of the ordinary subtitle block, in canvas percent. */
   position?: SubtitlePosition;
   shotOverrides?: ShotCaptionOverride[];
   archetypeWindows?: ArchetypeWindow[];
@@ -576,7 +577,8 @@ function renderCaptionGroup(group: CaptionGroup, ordinaryEncodedFontSize: number
   const standardASS = hexToASS(STANDARD_COLOR);
   const visual = presentation.visual;
   const blurValue = visual?.killHalo ? 0 : SHADOW_BLUR;
-  const positionTags = `\\an5\\pos(${presentation.anchor.x},${presentation.anchor.y})\\q2`;
+  const alignment = presentation.role === 'hero' ? 5 : 2;
+  const positionTags = `\\an${alignment}\\pos(${presentation.anchor.x},${presentation.anchor.y})\\q2`;
   const visualTags = [
     visual?.font ? `\\fn${visual.font}` : '',
     visual?.italic ? '\\i1' : '',

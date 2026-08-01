@@ -158,6 +158,43 @@ function mergeCloseSegments(segments: KeepSegment[], threshold: number): KeepSeg
   return merged;
 }
 
+/**
+ * Invert the final padded/merged keep timeline into the cuts actually encoded.
+ * These—not the raw detector segments—must drive timestamp remapping.
+ */
+export function buildAppliedCutSegments(
+  clipStart: number,
+  clipEnd: number,
+  keepSegments: KeepSegment[],
+): FillerSegment[] {
+  const appliedCuts: FillerSegment[] = [];
+  let cursor = 0;
+  const clipDuration = Math.max(0, clipEnd - clipStart);
+
+  for (const keep of keepSegments) {
+    if (keep.start > cursor + 0.001) {
+      appliedCuts.push({
+        start: clipStart + cursor,
+        end: clipStart + keep.start,
+        type: 'silence',
+        label: 'applied edit',
+      });
+    }
+    cursor = Math.max(cursor, keep.end);
+  }
+
+  if (cursor < clipDuration - 0.001) {
+    appliedCuts.push({
+      start: clipStart + cursor,
+      end: clipEnd,
+      type: 'silence',
+      label: 'applied edit',
+    });
+  }
+
+  return appliedCuts;
+}
+
 // ---------------------------------------------------------------------------
 // buildSelectFilter
 // ---------------------------------------------------------------------------

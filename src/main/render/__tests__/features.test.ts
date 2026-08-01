@@ -46,6 +46,7 @@ vi.mock('../../filler-detection', () => ({
 }));
 
 vi.mock('../../filler-cuts', () => ({
+  buildAppliedCutSegments: vi.fn(() => []),
   buildKeepSegments: vi.fn(() => []),
   remapWordTimestamps: vi.fn(() => []),
 }));
@@ -56,6 +57,7 @@ vi.mock('../../ffmpeg', () => {
     const command = {
       setStartTime: vi.fn(() => command),
       setDuration: vi.fn(() => command),
+      videoFilters: vi.fn(() => command),
       audioFilters: vi.fn(() => command),
       outputOptions: vi.fn(() => command),
       input: vi.fn(() => command),

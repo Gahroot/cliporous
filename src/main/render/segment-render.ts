@@ -317,14 +317,21 @@ async function encodeSegment(
     }
   }
 
-  let fullFilterComplex: string;
-  if (extras.length > 0) {
-    fullFilterComplex = `${filterComplex};${extras.join(';')}`;
-    fullFilterComplex += `;[${currentLabel}]format=yuv420p[finalv]`;
-    currentLabel = 'finalv';
-  } else {
-    fullFilterComplex = filterComplex;
-  }
+  // Normalize every intermediate to the exact requested duration. Source VFR,
+  // seek/GOP rounding, and AAC padding can otherwise leave video shorter than
+  // audio; concat then holds the last speaker frame while audio keeps playing.
+  const normalizedDuration = segDuration.toFixed(3);
+  const filterParts = [filterComplex, ...extras];
+  filterParts.push(
+    `[${currentLabel}]fps=${fps},tpad=stop_mode=clone:stop_duration=${normalizedDuration},` +
+      `trim=duration=${normalizedDuration},setpts=PTS-STARTPTS,format=yuv420p[finalv]`,
+  );
+  filterParts.push(
+    `[0:a]aresample=48000,apad=pad_dur=${normalizedDuration},` +
+      `atrim=duration=${normalizedDuration},asetpts=PTS-STARTPTS[finala]`,
+  );
+  const fullFilterComplex = filterParts.join(';');
+  currentLabel = 'finalv';
 
   // ── Pick encoder ──────────────────────────────────────────────────────
   // Per-segment outputs are *intermediates* — they will be re-decoded by
@@ -383,7 +390,7 @@ async function encodeSegment(
           '-map',
           `[${currentLabel}]`,
           '-map',
-          '0:a',
+          '[finala]',
           '-c:v',
           enc,
           ...flags,

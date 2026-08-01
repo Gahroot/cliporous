@@ -319,7 +319,7 @@ function FramingOverlay({
       )}
       {captionWords.length > 0 && (
         <div
-          className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-wrap items-center justify-center gap-x-1"
+          className="absolute flex -translate-x-1/2 -translate-y-full flex-wrap items-center justify-center gap-x-1"
           style={{
             left: `${layout.subtitles.x}%`,
             top: `${layout.subtitles.y}%`,

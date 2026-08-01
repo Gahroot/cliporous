@@ -2,10 +2,9 @@
  * TemplateEditor — drag-to-position editor for the two on-screen text overlays
  * burned into every clip: the hook title and the reserved subtitle block.
  *
- * Coordinates are stored in `settings.templateLayout` as center percentages of
- * the locked 1080×1920 canvas, measured from the top-left. Captions use that
- * center directly as an ASS `\an5\pos(x,y)` anchor; hook and rehook overlays
- * resolve the same percentage contract to pixels.
+ * Coordinates are stored in `settings.templateLayout` as percentages of the
+ * locked 1080×1920 canvas, measured from the top-left. Captions use the point
+ * as a stable ASS bottom-center anchor; hook and rehook use a center anchor.
  *
  * Ported from the ultra-clip TemplateEditor with the "media" element removed
  * (BatchClip ships only single-source clips \u2014 no per-segment image / B-roll
@@ -61,12 +60,14 @@ function DraggableElement({
   label,
   position,
   onNudge,
+  verticalAnchor = 'center',
   children,
 }: {
   id: DraggableId;
   label: string;
   position: { x: number; y: number };
   onNudge: (axis: 'x' | 'y', amount: number) => void;
+  verticalAnchor?: 'center' | 'bottom';
   children: React.ReactNode;
 }): React.JSX.Element {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
@@ -79,7 +80,7 @@ function DraggableElement({
         position: 'absolute',
         left: `${position.x}%`,
         top: `${position.y}%`,
-        transform: `translate(-50%, -50%)${
+        transform: `translate(-50%, ${verticalAnchor === 'bottom' ? '-100%' : '-50%'})${
           transform ? ` translate(${transform.x}px, ${transform.y}px)` : ''
         }`,
         cursor: 'grab',
@@ -466,6 +467,7 @@ export function TemplateEditor({
                 label="Subtitles position"
                 position={templateLayout.subtitles}
                 onNudge={(axis, amount) => nudgePosition('subtitles', axis, amount)}
+                verticalAnchor="bottom"
               >
                 <div className="flex items-center gap-1.5 whitespace-nowrap text-lg font-bold text-white drop-shadow-lg select-none">
                   <Captions className="h-4 w-4" aria-hidden="true" />

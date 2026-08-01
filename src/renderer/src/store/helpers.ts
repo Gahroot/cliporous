@@ -109,8 +109,8 @@ export const DEFAULT_PROMO: PromoSettings = {
 
 /**
  * "Let It Ride" preset — the default. Trims only obvious hesitation sounds
- * (um, uh, etc.) and pauses longer than 1.5 s. Leaves discourse markers,
- * natural thinking pauses, and breath — prioritises coherence over pace.
+ * (um, uh, etc.) and pauses longer than 1.5 s. Keeps 0.6 s of each long pause
+ * plus render-side breath padding, prioritising coherence over pace.
  */
 export const FILLER_PRESET_LET_IT_RIDE: FillerRemovalSettings = {
   enabled: true,
@@ -119,7 +119,7 @@ export const FILLER_PRESET_LET_IT_RIDE: FillerRemovalSettings = {
   trimSilences: true,
   removeRepeats: true,
   silenceThreshold: 1.5,
-  silenceTargetGap: 0.4,
+  silenceTargetGap: 0.6,
   fillerWords: ['um', 'uh', 'erm', 'er', 'ah', 'hm', 'hmm', 'mm', 'mhm'],
 };
 
@@ -166,8 +166,8 @@ export const DEFAULT_FILLER_REMOVAL: FillerRemovalSettings = FILLER_PRESET_LET_I
  * into the new shape.
  *
  * Behaviour:
- *  1. Saved values already carry a `preset` field → overlay them onto the
- *     named preset base (or onto "let-it-ride" if preset is "custom").
+ *  1. Saved named presets adopt current canonical tuning while preserving the
+ *     enabled toggle; custom values remain untouched.
  *  2. No `preset` field AND values match the old aggressive auto-saved
  *     defaults exactly → silently upgrade to "Let It Ride" (the user never
  *     made an explicit choice; the app's default just changed).
@@ -180,10 +180,10 @@ export function migrateFillerRemoval(
   if (!saved) return { ...FILLER_PRESET_LET_IT_RIDE };
 
   if (saved.preset === 'tight') {
-    return { ...FILLER_PRESET_TIGHT, ...saved, preset: 'tight' };
+    return { ...FILLER_PRESET_TIGHT, enabled: saved.enabled ?? true };
   }
   if (saved.preset === 'let-it-ride') {
-    return { ...FILLER_PRESET_LET_IT_RIDE, ...saved, preset: 'let-it-ride' };
+    return { ...FILLER_PRESET_LET_IT_RIDE, enabled: saved.enabled ?? true };
   }
   if (saved.preset === 'custom') {
     return { ...FILLER_PRESET_LET_IT_RIDE, ...saved, preset: 'custom' };

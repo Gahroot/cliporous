@@ -1,10 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`caption visual modes > snapshots one complete emphasis dialogue event 1`] = `"Dialogue: 0,0:00:00.00,0:00:01.60,Default,,0,0,0,,{\\an5\\pos(540,1632)\\q2\\blur12}this {\\1c&H00FF759F}is{\\1c&H00FFFFFF}\\N{\\1c&H00FF759F}very{\\1c&H00FFFFFF} cool"`;
+exports[`caption visual modes > snapshots one complete emphasis dialogue event 1`] = `"Dialogue: 0,0:00:00.00,0:00:01.60,Default,,0,0,0,,{\\an2\\pos(540,1632)\\q2\\blur12}this {\\1c&H00FF759F}is{\\1c&H00FFFFFF}\\N{\\1c&H00FF759F}very{\\1c&H00FFFFFF} cool"`;
 
-exports[`caption visual modes > snapshots one complete emphasis_highlight dialogue event 1`] = `"Dialogue: 0,0:00:00.00,0:00:01.60,Default,,0,0,0,,{\\an5\\pos(540,1632)\\q2\\blur12}this {\\fnBebas Neue\\1c&H00FF759F}is{\\fnInter\\1c&H00FFFFFF}\\N{\\fnBebas Neue\\1c&H00FF759F}very{\\fnInter\\1c&H00FFFFFF} cool"`;
+exports[`caption visual modes > snapshots one complete emphasis_highlight dialogue event 1`] = `"Dialogue: 0,0:00:00.00,0:00:01.60,Default,,0,0,0,,{\\an2\\pos(540,1632)\\q2\\blur12}this {\\fnBebas Neue\\1c&H00FF759F}is{\\fnInter\\1c&H00FFFFFF}\\N{\\fnBebas Neue\\1c&H00FF759F}very{\\fnInter\\1c&H00FFFFFF} cool"`;
 
-exports[`caption visual modes > snapshots one complete standard dialogue event 1`] = `"Dialogue: 0,0:00:00.00,0:00:01.60,Default,,0,0,0,,{\\an5\\pos(540,1632)\\q2\\blur12}this is\\Nvery cool"`;
+exports[`caption visual modes > snapshots one complete standard dialogue event 1`] = `"Dialogue: 0,0:00:00.00,0:00:01.60,Default,,0,0,0,,{\\an2\\pos(540,1632)\\q2\\blur12}this is\\Nvery cool"`;
 
 exports[`single-pass timing > snapshots a complete ordinary-to-hero document 1`] = `
 "[Script Info]
@@ -20,7 +20,7 @@ Style: Default,Inter,106,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,11
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:00.02,0:00:00.60,Default,,0,0,0,,{\\an5\\pos(486,1536)\\q2\\blur12}stable
+Dialogue: 0,0:00:00.02,0:00:00.60,Default,,0,0,0,,{\\an2\\pos(486,1536)\\q2\\blur12}stable
 Dialogue: 0,0:00:01.02,0:00:01.60,Default,,0,0,0,,{\\an5\\pos(540,960)\\q2\\blur0\\fs155\\fnInstrument Serif\\i1\\1c&H000C1023\\bord0}quote
 "
 `;

@@ -1,3 +1,4 @@
+import { stabilizeShortFormClipBoundary } from '@shared/clip-boundaries';
 import { v4 as uuidv4 } from 'uuid';
 import { createStageReporter } from '../../lib/progress-reporter';
 import type {
@@ -103,7 +104,7 @@ export async function stitchingStage(
     reporter.update(message, STITCH_PROGRESS_PERCENTS[stage] ?? 50);
   });
 
-  let result;
+  let result: Awaited<ReturnType<typeof window.api.generateStitchedClips>>;
   try {
     result = await window.api.generateStitchedClips(
       geminiApiKey,
@@ -130,11 +131,19 @@ export async function stitchingStage(
   const stitchedClips: StitchedClipCandidate[] = result.clips
     .filter((plan) => plan.score >= processingConfig.minScore)
     .map((plan) => {
-      const sourceRanges: SourceRange[] = plan.ranges.map((r) => ({
-        startTime: r.startTime,
-        endTime: r.endTime,
-        role: coerceRole(r.role),
-      }));
+      const sourceRanges: SourceRange[] = plan.ranges.map((range) => {
+        const boundary = stabilizeShortFormClipBoundary(
+          range.startTime,
+          range.endTime,
+          words,
+          source.duration,
+        );
+        return {
+          startTime: boundary.startTime,
+          endTime: boundary.endTime,
+          role: coerceRole(range.role),
+        };
+      });
       const duration = sourceRanges.reduce((s, r) => s + (r.endTime - r.startTime), 0);
       const wordTimestamps: WordTimestamp[] = words.filter((w) =>
         sourceRanges.some((r) => w.start >= r.startTime && w.end <= r.endTime),

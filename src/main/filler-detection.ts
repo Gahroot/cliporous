@@ -35,7 +35,7 @@ export interface FillerDetectionSettings {
   silenceThreshold: number;
   /**
    * Target silence duration (seconds) to leave after trimming.
-   * "Let It Ride" default: 0.4 — preserve breath; "Tight" uses 0.15.
+   * "Let It Ride" default: 0.6 — preserve breath; "Tight" uses 0.15.
    */
   silenceTargetGap: number;
   /** Custom filler word list */
@@ -97,7 +97,7 @@ const _DEFAULT_FILLER_DETECTION_SETTINGS: FillerDetectionSettings = {
   trimSilences: true,
   removeRepeats: true,
   silenceThreshold: 1.5,
-  silenceTargetGap: 0.4,
+  silenceTargetGap: 0.6,
   fillerWords: DEFAULT_FILLER_WORDS,
 };
 

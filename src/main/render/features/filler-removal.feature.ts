@@ -28,7 +28,7 @@ import {
   isGpuEncoderDisabled,
   isGpuSessionError,
 } from '../../ffmpeg';
-import { buildKeepSegments, remapWordTimestamps } from '../../filler-cuts';
+import { buildAppliedCutSegments, buildKeepSegments, remapWordTimestamps } from '../../filler-cuts';
 import { detectFillers, type FillerSegment } from '../../filler-detection';
 import { toFFmpegPath } from '../helpers';
 import type { RenderBatchOptions, RenderClipJob } from '../types';
@@ -59,9 +59,36 @@ function trimSegment(
 ): Promise<void> {
   const { encoder, presetFlag } = isGpuEncoderDisabled() ? getSoftwareEncoder() : getEncoder();
   const fadeOutStart = Math.max(0, duration - SEAM_FADE_DURATION_SEC);
-  const seamFades = [
+  const normalizedVideo = [
+    'fps=30',
+    `tpad=stop_mode=clone:stop_duration=${duration}`,
+    `trim=duration=${duration}`,
+    'setpts=PTS-STARTPTS',
+    'format=yuv420p',
+  ];
+  const normalizedAudio = [
+    'aresample=48000',
+    `apad=pad_dur=${duration}`,
+    `atrim=duration=${duration}`,
+    'asetpts=PTS-STARTPTS',
     `afade=t=in:st=0:d=${SEAM_FADE_DURATION_SEC}:curve=${SEAM_FADE_CURVE}`,
     `afade=t=out:st=${fadeOutStart}:d=${SEAM_FADE_DURATION_SEC}:curve=${SEAM_FADE_CURVE}`,
+  ];
+  const sinkOptions = [
+    '-r',
+    '30',
+    '-fps_mode',
+    'cfr',
+    '-pix_fmt',
+    'yuv420p',
+    '-c:a',
+    'aac',
+    '-b:a',
+    '192k',
+    '-ar',
+    '48000',
+    '-movflags',
+    '+faststart',
   ];
 
   return new Promise<void>((resolve, reject) => {
@@ -69,8 +96,9 @@ function trimSegment(
     createFfmpeg(sourcePath)
       .setStartTime(startTime)
       .setDuration(duration)
-      .audioFilters(seamFades)
-      .outputOptions(['-y', '-c:v', encoder, ...presetFlag, '-c:a', 'aac', '-b:a', '192k'])
+      .videoFilters(normalizedVideo.join(','))
+      .audioFilters(normalizedAudio)
+      .outputOptions(['-y', '-c:v', encoder, ...presetFlag, ...sinkOptions])
       .on('stderr', (line: string) => {
         stderrOutput += `${line}\n`;
       })
@@ -83,17 +111,9 @@ function trimSegment(
           createFfmpeg(sourcePath)
             .setStartTime(startTime)
             .setDuration(duration)
-            .audioFilters(seamFades)
-            .outputOptions([
-              '-y',
-              '-c:v',
-              sw.encoder,
-              ...sw.presetFlag,
-              '-c:a',
-              'aac',
-              '-b:a',
-              '192k',
-            ])
+            .videoFilters(normalizedVideo.join(','))
+            .audioFilters(normalizedAudio)
+            .outputOptions(['-y', '-c:v', sw.encoder, ...sw.presetFlag, ...sinkOptions])
             .on('end', () => resolve())
             .on('error', reject)
             .save(toFFmpegPath(outputPath));
@@ -224,7 +244,7 @@ export async function runFillerRemoval(
       trimSilences: fr.trimSilences,
       removeRepeats: fr.removeRepeats,
       silenceThreshold: fr.silenceThreshold,
-      silenceTargetGap: fr.silenceTargetGap ?? 0.15,
+      silenceTargetGap: fr.silenceTargetGap ?? 0.6,
       fillerWords: fr.fillerWords,
     };
 
@@ -242,23 +262,14 @@ export async function runFillerRemoval(
     );
   }
 
-  // Breath padding & merge tuning: preserve coarticulation and suppress
-  // micro-cuts so trims feel like edits, not chops. Tuned for the "Let It
-  // Ride" defaults; Tight preset still passes its own threshold values via
-  // `silenceThreshold` / `silenceTargetGap`, so this is safe across presets.
-  //
-  //   paddingHead 50 ms  — keep the lead-in (consonant onset) of every word
-  //   paddingTail 90 ms  — keep the trailing breath / plosive release
-  //   mergeGapThreshold 200 ms — if a cut would be smaller than this, skip
-  //                              it; the saved time isn't worth the seam
-  //
-  // 200 ms is the largest threshold that still allows individual "um" cuts
-  // (≈250–300 ms) while killing rapid-fire chopping from clustered fillers.
+  // Preserve enough air around every edit for consonant onsets, word tails,
+  // and a natural breath. Cuts shorter than 300 ms after padding are not worth
+  // the visual/audio seam and are kept intact.
   const keepSegments = buildKeepSegments(job.startTime, job.endTime, fillerSegments, {
-    paddingHead: 0.05,
-    paddingTail: 0.09,
-    mergeGapThreshold: 0.2,
-    minKeepDuration: 0.1,
+    paddingHead: 0.1,
+    paddingTail: 0.15,
+    mergeGapThreshold: 0.3,
+    minKeepDuration: 0.12,
   });
   if (keepSegments.length === 0) {
     console.warn(`[FillerRemoval] Clip ${job.clipId}: no keep segments — skipping`);
@@ -317,6 +328,10 @@ export async function runFillerRemoval(
 
     const intermediateFile = trimmedPaths.length === 1 ? trimmedPaths[0] : cleanPath;
 
+    // Padding and micro-cut merging change the cut list. Downstream timelines
+    // must use these applied cuts—not the raw detector output—or captions and
+    // segment boundaries progressively jump ahead of the actual video.
+    const appliedCuts = buildAppliedCutSegments(job.startTime, job.endTime, keepSegments);
     const totalKeptDuration = keepSegments.reduce((sum, seg) => sum + (seg.end - seg.start), 0);
 
     // Snapshot the original time range BEFORE mutating the job — callers
@@ -331,7 +346,7 @@ export async function runFillerRemoval(
     // Remap wordTimestamps onto the cleaned 0-based timeline so downstream
     // features (captions, segmented render's clip-level caption pass) see
     // times consistent with the new source.
-    const remapped = remapWordTimestamps(clipWords, originalStart, originalEnd, fillerSegments);
+    const remapped = remapWordTimestamps(clipWords, originalStart, originalEnd, appliedCuts);
     job.wordTimestamps = remapped.map((w) => ({
       text: w.text,
       start: w.start,
@@ -345,7 +360,7 @@ export async function runFillerRemoval(
 
     return {
       modified: true,
-      fillerSegments,
+      fillerSegments: appliedCuts,
       originalStart,
       originalEnd,
       tempFiles,

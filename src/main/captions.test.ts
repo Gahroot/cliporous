@@ -104,8 +104,8 @@ describe('caption visual modes', () => {
   });
 });
 
-describe('stable center geometry and deterministic wrapping', () => {
-  it('uses the same explicit center anchor for one-line and two-line ordinary events', () => {
+describe('stable baseline geometry and deterministic wrapping', () => {
+  it('uses the same bottom anchor for one-line and two-line ordinary events', () => {
     const oneLine = dialogueLines(
       buildCaptionASSDocument([{ text: 'Stable', start: 0, end: 0.3 }], STYLE, {
         position: { x: 42, y: 73 },
@@ -115,8 +115,8 @@ describe('stable center geometry and deterministic wrapping', () => {
       buildCaptionASSDocument(MODE_FIXTURE, STYLE, { position: { x: 42, y: 73 } }),
     )[0];
 
-    expect(oneLine).toContain('\\an5\\pos(454,1402)');
-    expect(twoLine).toContain('\\an5\\pos(454,1402)');
+    expect(oneLine).toContain('\\an2\\pos(454,1402)');
+    expect(twoLine).toContain('\\an2\\pos(454,1402)');
     expect(twoLine.match(/\\N/g)).toHaveLength(1);
   });
 
@@ -194,7 +194,7 @@ describe('archetype presentation windows', () => {
     expect(lines).toHaveLength(ORDINARY_ARCHETYPES.length);
     expect(styleFontSize).toBe('106');
     for (const line of lines) {
-      expect(line).toContain('\\an5\\pos(508,1517)');
+      expect(line).toContain('\\an2\\pos(508,1517)');
       expect(line).not.toMatch(/\\fs\d/);
       expect(line).not.toContain('Instrument Serif');
     }
@@ -223,13 +223,13 @@ describe('archetype presentation windows', () => {
     );
 
     expect(lines).toHaveLength(3);
-    expect(lines[0]).toContain('\\pos(454,1402)');
+    expect(lines[0]).toContain('\\an2\\pos(454,1402)');
     expect(lines[1]).toContain('\\an5\\pos(540,960)');
     expect(lines[1]).toContain('\\fs155');
     expect(lines[1]).toContain('\\fnInstrument Serif\\i1\\1c&H000C1023\\bord0');
     expect(lines[1]).toContain('\\blur0');
     expect(lines[1]).not.toContain(DEFAULT_ACCENT.replace('#', ''));
-    expect(lines[2]).toContain('\\pos(454,1402)');
+    expect(lines[2]).toContain('\\an2\\pos(454,1402)');
     expect(lines[2]).not.toContain('\\fs');
     expectNoEventOverlap(lines);
   });

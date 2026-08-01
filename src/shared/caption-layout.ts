@@ -1,10 +1,10 @@
-/** Percentage coordinates for the center of the reserved subtitle block. */
+/** Percentage coordinates for the bottom-center of the reserved subtitle block. */
 export interface SubtitlePosition {
   x: number;
   y: number;
 }
 
-/** Pixel coordinates for the center of the reserved subtitle block. */
+/** Pixel coordinates for the bottom-center of the reserved subtitle block. */
 export interface SubtitleAnchor {
   x: number;
   y: number;
@@ -32,7 +32,7 @@ function finiteCanvasExtent(value: number): number {
 }
 
 /**
- * Convert a percentage center position into a clamped pixel anchor.
+ * Convert a percentage subtitle position into a clamped pixel anchor.
  * Invalid position axes fall back independently so one bad persisted value
  * cannot invalidate the other axis.
  */
