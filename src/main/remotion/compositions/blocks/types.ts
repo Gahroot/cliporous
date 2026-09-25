@@ -1,5 +1,5 @@
 import type { Palette } from '@shared/palettes';
-import type { LongformSkinId as SkinId } from '@shared/types';
+import type { ComparisonPositiveSide, LongformSkinId as SkinId } from '@shared/types';
 
 /* ------------------------------------------------------------------ */
 /*  Block prop interfaces — Westworld/Delos data card system            */
@@ -138,14 +138,16 @@ export interface ComparisonProps {
   skinId: SkinId;
   kicker: string;
   heading: string;
-  /** Left (positive) column heading. */
+  /** Left column heading. */
   leftTitle: string;
-  /** Right (negative) column heading. */
+  /** Right column heading. */
   rightTitle: string;
-  /** Left column rows — marked with a ✓. */
+  /** Left column rows. */
   leftItems: string[];
-  /** Right column rows — marked with a ✕. */
+  /** Right column rows. */
   rightItems: string[];
+  /** Column marked with checks and positive emphasis. Defaults to left for legacy callers. */
+  positiveSide?: ComparisonPositiveSide;
   accentColor?: string;
   palette?: Palette;
 }
@@ -290,14 +292,16 @@ export interface ComparisonTableProps {
   skinId: SkinId;
   kicker: string;
   heading: string;
-  /** Left (positive) column heading. */
+  /** Left column heading. */
   leftTitle: string;
-  /** Right (negative) column heading. */
+  /** Right column heading. */
   rightTitle: string;
-  /** Left column rows — marked with a lucide Check. */
+  /** Left column rows. */
   leftItems: string[];
-  /** Right column rows — marked with a lucide X. */
+  /** Right column rows. */
   rightItems: string[];
+  /** Column marked with checks and positive emphasis. Defaults to left for legacy callers. */
+  positiveSide?: ComparisonPositiveSide;
   accentColor?: string;
   palette?: Palette;
 }

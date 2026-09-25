@@ -131,11 +131,11 @@ export const Comparison: React.FC<ComparisonProps> = ({
   rightTitle,
   leftItems,
   rightItems,
+  positiveSide = 'left',
   accentColor,
   palette,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
   const skin = SKINS[skinId];
   const pal: Palette = palette ?? {
     id: 'brand',
@@ -147,6 +147,7 @@ export const Comparison: React.FC<ComparisonProps> = ({
   };
   const accent = accentColor ?? palette?.accent ?? skin.accent;
   const motion = useBlockMotion();
+  const leftIsPositive = positiveSide === 'left';
   const cw = SKIN_CONTENT_WIDTH[skinId];
   // Two columns separated by an 80px gap.
   const colWidth = Math.round((cw - 80) / 2);
@@ -178,8 +179,8 @@ export const Comparison: React.FC<ComparisonProps> = ({
             <Column
               title={leftTitle}
               items={leftItems}
-              kind="check"
-              markColor={accent}
+              kind={leftIsPositive ? 'check' : 'cross'}
+              markColor={leftIsPositive ? accent : NEGATIVE}
               accent={accent}
               startFrame={18}
               bg={pal.background}
@@ -203,8 +204,8 @@ export const Comparison: React.FC<ComparisonProps> = ({
             <Column
               title={rightTitle}
               items={rightItems}
-              kind="cross"
-              markColor={NEGATIVE}
+              kind={leftIsPositive ? 'cross' : 'check'}
+              markColor={leftIsPositive ? NEGATIVE : accent}
               accent={accent}
               startFrame={24}
               bg={pal.background}

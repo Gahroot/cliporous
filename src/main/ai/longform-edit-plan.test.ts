@@ -274,6 +274,41 @@ describe('generateLongformEditPlan — content blocks', () => {
     expect(prompt).toContain('INTRO PHRASES');
   });
 
+  it('preserves which comparison side is recommended in the generated plan', async () => {
+    callMock.mockResolvedValue(
+      JSON.stringify({
+        phrases: [],
+        blocks: [
+          {
+            kind: 'comparison',
+            start: 10,
+            end: 14,
+            kicker: 'STRATEGY',
+            heading: 'The Logic Flip',
+            leftTitle: 'CURRENT WAY',
+            rightTitle: 'BETTER WAY',
+            leftItems: ['Interpret rules', 'Search data'],
+            rightItems: ['Exact code', 'Narrow judgment'],
+            positiveSide: 'right',
+          },
+        ],
+      }),
+    );
+
+    const plan = await generateLongformEditPlan({
+      apiKey: 'test-key',
+      words: words(),
+      videoDuration: 200,
+    });
+
+    const comparison = plan.blocks[0];
+    expect(comparison?.kind).toBe('comparison');
+    if (comparison?.kind === 'comparison') {
+      expect(comparison.positiveSide).toBe('right');
+    }
+    expect(String(callMock.mock.calls[0][2])).toContain('positiveSide MUST identify');
+  });
+
   it('passes focused creator feedback into every designed window prompt', async () => {
     callMock.mockResolvedValue(JSON.stringify({ phrases: [], blocks: [] }));
 

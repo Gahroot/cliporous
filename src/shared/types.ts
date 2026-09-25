@@ -1152,6 +1152,9 @@ export interface TimelineCardStep {
   detail?: string;
 }
 
+/** Which comparison column receives checks and positive emphasis. */
+export type ComparisonPositiveSide = 'left' | 'right';
+
 /**
  * A full-frame content-block placement — a discriminated union on `kind`.
  * Every member carries an absolute source-video `[startTime, endTime]` range,
@@ -1180,6 +1183,8 @@ export type BlockPlacement =
       rightTitle: string;
       leftItems: string[];
       rightItems: string[];
+      /** Side the narration recommends; omitted legacy plans are inferred at render time. */
+      positiveSide?: ComparisonPositiveSide;
       accentColor?: string;
       palette?: Palette;
     }
@@ -1193,6 +1198,8 @@ export type BlockPlacement =
       rightTitle: string;
       leftItems: string[];
       rightItems: string[];
+      /** Side the narration recommends; omitted legacy plans are inferred at render time. */
+      positiveSide?: ComparisonPositiveSide;
       accentColor?: string;
       palette?: Palette;
     }

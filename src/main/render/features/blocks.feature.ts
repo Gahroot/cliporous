@@ -17,7 +17,7 @@ import { join } from 'node:path';
 import { MAX_LONGFORM_BLOCK_SECONDS } from '@shared/longform-plan-timing';
 import type { Palette } from '@shared/palettes';
 import { getPaletteById } from '@shared/palettes';
-import type { BlockPlacement, LongformSkinId } from '@shared/types';
+import type { BlockPlacement, ComparisonPositiveSide, LongformSkinId } from '@shared/types';
 import type {
   BarChartProps,
   CalloutProps,
@@ -57,6 +57,64 @@ import type { PrepareResult, RenderFeature } from './feature';
 // build FAIL if the shared `BlockPlacement` contract ever drifts from the
 // main-side `*Props` interfaces — without touching either definition.
 // ---------------------------------------------------------------------------
+const POSITIVE_COMPARISON_TITLE_SIGNALS = [
+  /\bbetter\b/i,
+  /\bbest\b/i,
+  /\brecommended\b/i,
+  /\bpreferred\b/i,
+  /\bimproved\b/i,
+  /\bmodern\b/i,
+  /\bnew\b/i,
+  /\bfuture\b/i,
+  /\bideal\b/i,
+  /\bright\b/i,
+  /\boperators?\b/i,
+  /\bpros?\b/i,
+  /\bautomated\b/i,
+  /\befficient\b/i,
+  /\bwinning\b/i,
+  /\bworks?\b/i,
+  /\bafter\b/i,
+  /\bwith\b/i,
+];
+
+const NEGATIVE_COMPARISON_TITLE_SIGNALS = [
+  /\bworse\b/i,
+  /\bworst\b/i,
+  /\bavoid\b/i,
+  /\btraditional\b/i,
+  /\bold\b/i,
+  /\blegacy\b/i,
+  /\boutdated\b/i,
+  /\bwrong\b/i,
+  /\bamateurs?\b/i,
+  /\bcons?\b/i,
+  /\bmanual\b/i,
+  /\binefficient\b/i,
+  /\bbroken\b/i,
+  /\bproblems?\b/i,
+  /\bbefore\b/i,
+  /\bwithout\b/i,
+];
+
+function scoreComparisonTitle(title: string): number {
+  const positive = POSITIVE_COMPARISON_TITLE_SIGNALS.filter((signal) => signal.test(title)).length;
+  const negative = NEGATIVE_COMPARISON_TITLE_SIGNALS.filter((signal) => signal.test(title)).length;
+  return positive - negative;
+}
+
+/**
+ * Resolve comparison semantics from the AI-authored side first, then recover
+ * legacy plans from recognizable headings such as "Current Way / Better Way".
+ */
+export function resolveComparisonPositiveSide(
+  positiveSide: ComparisonPositiveSide | undefined,
+  leftTitle: string,
+  rightTitle: string,
+): ComparisonPositiveSide {
+  if (positiveSide) return positiveSide;
+  return scoreComparisonTitle(rightTitle) > scoreComparisonTitle(leftTitle) ? 'right' : 'left';
+}
 
 /**
  * Map a block placement to the Remotion composition inputProps for `skinId`.
@@ -95,6 +153,11 @@ export function buildBlockInputProps(
         rightTitle: placement.rightTitle,
         leftItems: placement.leftItems,
         rightItems: placement.rightItems,
+        positiveSide: resolveComparisonPositiveSide(
+          placement.positiveSide,
+          placement.leftTitle,
+          placement.rightTitle,
+        ),
       } satisfies ComparisonProps;
     case 'comparison-table':
       return {
@@ -105,6 +168,11 @@ export function buildBlockInputProps(
         rightTitle: placement.rightTitle,
         leftItems: placement.leftItems,
         rightItems: placement.rightItems,
+        positiveSide: resolveComparisonPositiveSide(
+          placement.positiveSide,
+          placement.leftTitle,
+          placement.rightTitle,
+        ),
       } satisfies ComparisonTableProps;
     case 'stat-grid':
       return {

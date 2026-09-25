@@ -31,6 +31,7 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({
   rightTitle,
   leftItems,
   rightItems,
+  positiveSide = 'left',
   accentColor,
   palette,
 }) => {
@@ -170,8 +171,8 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({
             {heading}
           </Heading>
           <div style={{ display: 'flex', gap: 32, marginTop: 56, alignItems: 'stretch' }}>
-            {column(leftTitle, leftItems, true, -40)}
-            {column(rightTitle, rightItems, false, 40)}
+            {column(leftTitle, leftItems, positiveSide === 'left', -40)}
+            {column(rightTitle, rightItems, positiveSide === 'right', 40)}
           </div>
         </skin.Surface>
       </div>

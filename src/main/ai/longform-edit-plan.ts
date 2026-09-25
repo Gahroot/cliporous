@@ -196,7 +196,11 @@ PRODUCE:
      drives each stage width and should DESCEND from top (1) to bottom.
    - "kpi-ticker": items:[{value, label, delta?, trend?}] (3-4). KPI strip.
    - "comparison" / "comparison-table": leftTitle, rightTitle,
-     leftItems:[string] (2-4), rightItems:[string] (2-4). Use for X vs Y.
+     leftItems:[string] (2-4), rightItems:[string] (2-4),
+     positiveSide:("left"|"right"). Use for X vs Y. positiveSide MUST identify
+     the recommended, improved, or desirable side that receives green checks;
+     the other side receives red X marks and muted styling. For a traditional/current
+     way on the left versus a better way on the right, positiveSide is "right".
    - "quote-card": quote, name, role?. Use for a strong attributed quote.
    - "portrait-quote": quote, name, role?. A large pull-quote beside a portrait of the speaker (initials shown when no image). Use for a marquee attributed quote that deserves a face.
    - "definition-card": term, definition, partOfSpeech?. Use to define a term.
@@ -515,7 +519,17 @@ function parseBlocks(
         const rightItems = strList(b.rightItems, 4);
         if (leftTitle.length === 0 || rightTitle.length === 0) continue;
         if (leftItems.length === 0 || rightItems.length === 0) continue;
-        out.push({ kind, ...common, leftTitle, rightTitle, leftItems, rightItems });
+        const positiveSide =
+          b.positiveSide === 'left' || b.positiveSide === 'right' ? b.positiveSide : undefined;
+        out.push({
+          kind,
+          ...common,
+          leftTitle,
+          rightTitle,
+          leftItems,
+          rightItems,
+          ...(positiveSide ? { positiveSide } : {}),
+        });
         break;
       }
       case 'quote-card': {

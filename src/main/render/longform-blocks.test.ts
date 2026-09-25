@@ -303,6 +303,40 @@ describe('resolveLongformBlockCompositionId', () => {
   });
 });
 
+describe('buildBlockInputProps — comparison semantics', () => {
+  const comparison = (
+    leftTitle: string,
+    rightTitle: string,
+    positiveSide?: 'left' | 'right',
+  ): BlockPlacement => ({
+    kind: 'comparison',
+    startTime: 0,
+    endTime: 4,
+    kicker: 'STRATEGY',
+    heading: 'The Logic Flip',
+    leftTitle,
+    rightTitle,
+    leftItems: ['Left item'],
+    rightItems: ['Right item'],
+    ...(positiveSide ? { positiveSide } : {}),
+  });
+
+  it('recovers legacy Current Way / Better Way plans with the positive side on the right', () => {
+    const props = buildBlockInputProps(comparison('CURRENT WAY', 'BETTER WAY'), 'ezcoder');
+    expect(props.positiveSide).toBe('right');
+  });
+
+  it('keeps the legacy left-positive default when titles do not establish a better right side', () => {
+    const props = buildBlockInputProps(comparison('OPERATORS', 'AMATEURS'), 'ezcoder');
+    expect(props.positiveSide).toBe('left');
+  });
+
+  it('treats the AI-authored positive side as authoritative', () => {
+    const props = buildBlockInputProps(comparison('OPTION A', 'OPTION B', 'right'), 'ezcoder');
+    expect(props.positiveSide).toBe('right');
+  });
+});
+
 describe('buildBlockInputProps — palette wiring', () => {
   const numberedList: BlockPlacement = {
     kind: 'numbered-list',
