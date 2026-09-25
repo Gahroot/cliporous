@@ -140,6 +140,7 @@ assert_release_contents() {
   [ -d "$app" ] || fail "DMG does not contain BatchClip.app"
   [ -L "$MOUNT_POINT/Applications" ] || fail "DMG does not contain the Applications link"
   [ -f "$asar" ] || fail "DMG app is missing app.asar"
+  [ -f "$app_resources/remotion/index.html" ] || fail "Missing prebuilt Remotion browser bundle"
   [ -f "$app_resources/LICENSE.electron.txt" ] || fail "Missing Electron license"
   [ -f "$app_resources/LICENSES.chromium.html" ] || fail "Missing Chromium third-party notices"
   cmp -s "$ROOT/build/icon.icns" "$app_resources/icon.icns" \
@@ -151,15 +152,9 @@ assert_release_contents() {
   "$STAGE/node_modules/.bin/asar" list "$asar" > "$STAGE/asar-contents.txt"
   node "$STAGE/scripts/assert-clean-release-payload.mjs" "$app_resources" "$STAGE/asar-contents.txt"
   assert_asar_path "out/main/index.js"
-  assert_asar_path "tailwind.config.js"
-  assert_asar_path "src/main/remotion/index.ts"
-  assert_asar_path "src/main/remotion/styles.css"
-  assert_asar_path "src/shared/palettes.ts"
-  assert_asar_path "src/shared/types.ts"
-  assert_asar_path "src/renderer/src/components/ui/card.tsx"
-  assert_asar_path "src/renderer/src/lib/utils.ts"
-  assert_asar_path "node_modules/@remotion/bundler/package.json"
   assert_asar_path "node_modules/@remotion/renderer/package.json"
+  assert_asar_path "node_modules/react/package.json"
+  assert_asar_path "node_modules/react-dom/package.json"
   assert_asar_path "out/main/catalog/presets.json"
 
   local sqlite="$unpacked/better-sqlite3/build/Release/better_sqlite3.node"
@@ -167,20 +162,14 @@ assert_release_contents() {
   local ffmpeg="$unpacked/ffmpeg-static/ffmpeg"
   local ffprobe="$unpacked/@ffprobe-installer/darwin-arm64/ffprobe"
   local compositor="$compositor_dir/remotion"
-  local rspack
-  rspack="$(find "$unpacked/@rspack" -type f -name 'rspack.darwin-arm64.node' -print -quit)"
-  local esbuild="$unpacked/@esbuild/darwin-arm64/bin/esbuild"
 
   assert_arm64_macho "$sqlite"
   assert_arm64_macho "$ffmpeg"
   assert_arm64_macho "$ffprobe"
   assert_arm64_macho "$compositor"
-  assert_arm64_macho "$rspack"
-  assert_arm64_macho "$esbuild"
   [ -x "$ffmpeg" ] || fail "Packaged FFmpeg is not executable"
   [ -x "$ffprobe" ] || fail "Packaged ffprobe is not executable"
   [ -x "$compositor" ] || fail "Packaged Remotion compositor is not executable"
-  [ -x "$esbuild" ] || fail "Packaged esbuild is not executable"
   "$ffmpeg" -hide_banner -filters 2>/dev/null | grep ' ass ' >/dev/null \
     || fail "Packaged FFmpeg is missing the libass subtitle filter"
   "$ffmpeg" -hide_banner -filters 2>/dev/null | grep ' overlay ' >/dev/null \

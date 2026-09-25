@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "electron-vite dev",
-    "build": "electron-vite build",
+    "build": "electron-vite build && node scripts/build-remotion-bundle.mjs",
     "preview": "electron-vite preview",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run audit:third-party -- --release && npm run build && electron-builder --dir",
@@ -33,9 +33,9 @@
     "shellcheck": "shellcheck scripts/*.sh scripts/**/*.sh",
     "verify": "npm run check && npm run typecheck && npm test",
     "audit:third-party": "node scripts/audit-third-party-assets.mjs",
-    "verify:captions": "bash scripts/verify-caption-stability/run.sh",
     "setup:python": "bash scripts/setup-python.sh",
     "verify:blocks": "bash scripts/verify-blocks/run.sh",
+    "verify:captions": "bash scripts/verify-caption-stability/run.sh",
     "verify:longform-render": "bash scripts/verify-longform-render/run.sh",
     "deploy": "bash scripts/deploy-windows.sh",
     "deploy:fast": "bash scripts/deploy-windows.sh --fast --yes",
@@ -67,9 +67,7 @@
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
-    "@remotion/bundler": "4.0.496",
     "@remotion/renderer": "4.0.496",
-    "@remotion/tailwind": "4.0.496",
     "better-sqlite3": "^12.9.0",
     "electron-updater": "^6.8.9",
     "ffmpeg-static": "^5.3.0",
@@ -77,6 +75,8 @@
     "immer": "^11.1.4",
     "lucide-react": "^0.475.0",
     "next-themes": "^0.4.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "remotion": "4.0.496",
     "sonner": "^2.0.7",
     "uuid": "^11.0.0",
@@ -86,7 +86,9 @@
     "@biomejs/biome": "^2.4.15",
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "@remotion/bundler": "4.0.496",
     "@remotion/cli": "4.0.496",
+    "@remotion/tailwind": "4.0.496",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/better-sqlite3": "^7.6.13",
@@ -103,8 +105,6 @@
     "electron-vite": "^5.0.0",
     "jsdom": "^28.1.0",
     "postcss": "^8.5.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.0",
     "tailwindcss": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
@@ -138,12 +138,16 @@
     "asarUnpack": [
       "node_modules/better-sqlite3/**",
       "node_modules/@ffprobe-installer/**",
-      "node_modules/@remotion/compositor-*/**",
-      "node_modules/@rspack/binding-*/**",
-      "node_modules/@esbuild/**",
-      "node_modules/esbuild/**"
+      "node_modules/@remotion/compositor-*/**"
     ],
     "extraResources": [
+      {
+        "from": "out/remotion",
+        "to": "remotion",
+        "filter": [
+          "**/*"
+        ]
+      },
       {
         "from": "resources/fonts",
         "to": "fonts",
@@ -203,13 +207,8 @@
     },
     "files": [
       "out/**/*",
+      "!out/remotion/**/*",
       "package.json",
-      "tailwind.config.js",
-      "src/main/remotion/**/*",
-      "src/main/edit-styles/shared/brand.ts",
-      "src/shared/**/*",
-      "src/renderer/src/components/ui/**/*",
-      "src/renderer/src/lib/utils.ts",
       {
         "from": "src/main/hyperframes/catalog",
         "to": "out/main/catalog",

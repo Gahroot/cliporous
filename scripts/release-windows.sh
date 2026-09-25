@@ -114,6 +114,7 @@ assert_release_contents() {
   local ffmpeg="$resources/bin/ffmpeg.exe"
   local ffprobe="$resources/bin/ffprobe.exe"
   local sqlite="$resources/app.asar.unpacked/node_modules/better-sqlite3/build/Release/better_sqlite3.node"
+  local compositor="$resources/app.asar.unpacked/node_modules/@remotion/compositor-win32-x64-msvc/remotion.exe"
 
   [ -f "$installer" ] || fail "Missing installer: $installer"
   [ -f "$installer.blockmap" ] || fail "Missing installer blockmap"
@@ -126,6 +127,8 @@ assert_release_contents() {
   [ -f "$resources/bin/FFMPEG-GPL-3.0.txt" ] || fail "Missing FFmpeg GPL license"
   [ -f "$resources/bin/FFMPEG-BUILDS-MIT.txt" ] || fail "Missing FFmpeg-Builds license"
   [ -f "$sqlite" ] || fail "Missing packaged better-sqlite3 native module"
+  [ -f "$compositor" ] || fail "Missing packaged Remotion compositor"
+  [ -f "$resources/remotion/index.html" ] || fail "Missing prebuilt Remotion browser bundle"
 
   "$STAGE/node_modules/.bin/asar" list "$resources/app.asar" > "$STAGE/asar-contents.txt"
   node "$STAGE/scripts/assert-clean-release-payload.mjs" "$resources" "$STAGE/asar-contents.txt"
@@ -134,6 +137,7 @@ assert_release_contents() {
   assert_pe_x64 "$ffmpeg"
   assert_pe_x64 "$ffprobe"
   assert_pe_x64 "$sqlite"
+  assert_pe_x64 "$compositor"
   [ "$(sha256_file "$ffmpeg")" = "9959487dde724f9b3b997a2353517f43c12e1d96b6225029d0f0453242b4a370" ] \
     || fail "FFmpeg does not match the audited GPL build"
   [ "$(sha256_file "$ffprobe")" = "39b64ebddfc338436f2c1d9e5f691a3d82565f37a092349cbd07ea5397bb2651" ] \
