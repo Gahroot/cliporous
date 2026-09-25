@@ -113,6 +113,14 @@ const EZCODER_HEADING_TYPOGRAPHY: HeadingTypography = {
   letterSpacing: -3,
 };
 
+const EDITORIAL_HEADING_TYPOGRAPHY: HeadingTypography = {
+  fontFamily: 'Geist',
+  fontWeight: 700,
+  scale: 0.75,
+  charWidthRatio: CHAR_WIDTH_RATIO.geist,
+  letterSpacing: -2,
+};
+
 const HeadingTypographyContext = React.createContext(DEFAULT_HEADING_TYPOGRAPHY);
 
 type Rgb = readonly [number, number, number];
@@ -267,16 +275,14 @@ const Editorial: BlockSkin = {
   id: 'editorial',
   name: 'Editorial Bold',
   accent: BRAND_ACCENT,
-  Background: ({ accent, fg = BRAND_FG }) => (
-    <>
-      <GridOverlay color={accent} opacity={0.05} cellSize={80} />
-      <Grain opacity={0.05} fg={fg} />
-    </>
-  ),
+  // Data graphics own their rules; a decorative full-frame grid competes with them.
+  Background: () => null,
   Surface: ({ accent, bg = BRAND_BG, fg = BRAND_FG, children, width = 1620 }) => (
-    <div style={{ ...paletteCssVariables({ accent, bg, fg }), width, padding: '0 24px' }}>
-      {children}
-    </div>
+    <HeadingTypographyContext.Provider value={EDITORIAL_HEADING_TYPOGRAPHY}>
+      <div style={{ ...paletteCssVariables({ accent, bg, fg }), width, padding: '0 24px' }}>
+        {children}
+      </div>
+    </HeadingTypographyContext.Provider>
   ),
   Chip: ({ accent, index, size = 96 }) => (
     <span
@@ -1035,8 +1041,8 @@ export const Kicker: React.FC<{ children: string; accent?: string; maxWidth?: nu
     minFontSize={18}
     maxLines={2}
     charWidthRatio={CHAR_WIDTH_RATIO.mono}
-    letterSpacing={8}
-    style={{ fontFamily: 'JetBrains Mono', letterSpacing: 8, color: accent, marginBottom: 20 }}
+    letterSpacing={3}
+    style={{ fontFamily: 'JetBrains Mono', letterSpacing: 3, color: accent, marginBottom: 24 }}
   >
     {children}
   </FitText>
@@ -1062,7 +1068,7 @@ export const Heading: React.FC<{
       style={{
         fontFamily: typography.fontFamily,
         fontWeight: typography.fontWeight,
-        lineHeight: 0.95,
+        lineHeight: typography.fontFamily === 'Geist' ? 1.08 : 0.95,
         color: fg,
         letterSpacing: typography.letterSpacing,
       }}

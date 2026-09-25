@@ -1,22 +1,17 @@
-/**
- * BarChart — a row of vertical bars that grow from the baseline.
- *
- * A *content block*: it knows nothing about color or surface. It composes a
- * `BlockSkin` (via `skinId`) for its look so the same block renders in every
- * skin. All motion is driven by the frame clock through spring()/interpolate().
- */
-
+/** Bars grow from one baseline; labels keep their final, readable positions. */
 import type { Palette } from '@shared/palettes';
 import type React from 'react';
-import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from 'remotion';
 import { BRAND_ACCENT, BRAND_BG, BRAND_FG } from '../../../edit-styles/shared/brand';
-import { useBlockMotion } from '../../shared/block-motion';
+import { getBlockReveal, useBlockMotion } from '../../shared/block-motion';
 import { CHAR_WIDTH_RATIO, FitText } from '../../shared/fit-text';
 import { PrestyjFonts } from '../../shared/fonts';
 import { Heading, Kicker, SKIN_CONTENT_WIDTH, SKINS } from '../../shared/skins';
 import type { BarChartProps } from './types';
 
-const CHART_HEIGHT = 380;
+const CHART_HEIGHT = 360;
+const VALUE_SPACE = 64;
+const COLUMN_GAP = 28;
 
 export const BarChart: React.FC<BarChartProps> = ({
   skinId,
@@ -27,7 +22,7 @@ export const BarChart: React.FC<BarChartProps> = ({
   palette,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, durationInFrames } = useVideoConfig();
   const skin = SKINS[skinId];
   const pal: Palette = palette ?? {
     id: 'brand',
@@ -40,6 +35,7 @@ export const BarChart: React.FC<BarChartProps> = ({
   const accent = accentColor ?? palette?.accent ?? skin.accent;
   const motion = useBlockMotion();
   const cw = SKIN_CONTENT_WIDTH[skinId];
+  const columnWidth = Math.max(1, (cw - COLUMN_GAP * (bars.length - 1)) / Math.max(1, bars.length));
 
   return (
     <AbsoluteFill
@@ -47,11 +43,7 @@ export const BarChart: React.FC<BarChartProps> = ({
     >
       <PrestyjFonts />
       <skin.Background accent={accent} bg={pal.background} fg={pal.foreground} />
-      <div
-        style={{
-          ...motion,
-        }}
-      >
+      <div style={{ ...motion }}>
         <skin.Surface accent={accent} bg={pal.background} fg={pal.foreground}>
           <Kicker accent={accent} maxWidth={cw}>
             {kicker}
@@ -59,83 +51,87 @@ export const BarChart: React.FC<BarChartProps> = ({
           <Heading fg={pal.foreground} maxWidth={cw}>
             {heading}
           </Heading>
-
           <div
             style={{
+              position: 'relative',
               display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'space-between',
-              gap: 28,
-              marginTop: 64,
-              height: CHART_HEIGHT,
-              borderBottom: `2px solid ${accent}3a`,
-              paddingBottom: 0,
+              gap: COLUMN_GAP,
+              marginTop: 56,
             }}
           >
+            {/* The rule intersects the bar bottoms, never the category labels. */}
+            <div
+              style={{
+                position: 'absolute',
+                top: CHART_HEIGHT,
+                left: 0,
+                right: 0,
+                height: 2,
+                background: `${pal.foreground}55`,
+              }}
+            />
             {bars.map((bar, i) => {
-              const grow = spring({
-                frame: frame - 16 - i * 6,
-                fps,
-                config: { damping: 18, stiffness: 110, mass: 0.8 },
-              });
+              const grow = getBlockReveal(frame, fps, durationInFrames, i, bars.length);
               const value = Math.max(0, Math.min(1, bar.value));
-              const barHeight = value * (CHART_HEIGHT - 64) * grow;
+              const barHeight = value * (CHART_HEIGHT - VALUE_SPACE);
               return (
-                <div
-                  key={i}
-                  style={{
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                    height: '100%',
-                  }}
-                >
-                  {/* Value label */}
+                <div key={i} style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ height: CHART_HEIGHT, position: 'relative' }}>
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: barHeight + 16,
+                        width: '100%',
+                        opacity: grow,
+                      }}
+                    >
+                      <FitText
+                        maxWidth={columnWidth}
+                        maxFontSize={40}
+                        minFontSize={24}
+                        maxLines={1}
+                        charWidthRatio={CHAR_WIDTH_RATIO.geist}
+                        style={{
+                          fontFamily: 'Geist',
+                          fontWeight: 700,
+                          fontVariantNumeric: 'tabular-nums',
+                          lineHeight: 1.15,
+                          color: pal.foreground,
+                          textAlign: 'center',
+                        }}
+                      >
+                        {bar.valueLabel}
+                      </FitText>
+                    </div>
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: '50%',
+                        width: '60%',
+                        maxWidth: 156,
+                        height: barHeight,
+                        borderRadius: '4px 4px 0 0',
+                        background: accent,
+                        transformOrigin: 'center bottom',
+                        transform: `translateX(-50%) scaleY(${grow})`,
+                      }}
+                    />
+                  </div>
                   <FitText
-                    maxWidth={160}
-                    maxFontSize={46}
-                    minFontSize={26}
-                    maxLines={1}
-                    charWidthRatio={CHAR_WIDTH_RATIO.bebas}
-                    style={{
-                      fontFamily: 'Bebas Neue',
-                      lineHeight: 1,
-                      color: pal.foreground,
-                      marginBottom: 14,
-                      textAlign: 'center',
-                      opacity: grow,
-                      transform: `translateY(${interpolate(grow, [0, 1], [12, 0])}px)`,
-                    }}
-                  >
-                    {bar.valueLabel}
-                  </FitText>
-                  {/* Bar */}
-                  <div
-                    style={{
-                      width: '100%',
-                      maxWidth: 132,
-                      height: barHeight,
-                      borderRadius: '14px 14px 0 0',
-                      background: `linear-gradient(180deg, ${accent} 0%, ${accent}aa 100%)`,
-                      boxShadow: `0 0 28px ${accent}44, inset 0 1px 0 ${pal.foreground}33`,
-                    }}
-                  />
-                  {/* Category label */}
-                  <FitText
-                    maxWidth={160}
-                    maxFontSize={26}
-                    minFontSize={16}
+                    maxWidth={columnWidth}
+                    maxFontSize={30}
+                    minFontSize={22}
                     maxLines={2}
                     charWidthRatio={CHAR_WIDTH_RATIO.geist}
                     style={{
                       fontFamily: 'Geist',
                       fontWeight: 700,
-                      color: `${pal.foreground}cc`,
-                      marginTop: 20,
+                      color: pal.foreground,
+                      paddingTop: 24,
+                      minHeight: 96,
+                      lineHeight: 1.25,
                       textAlign: 'center',
-                      opacity: grow,
                     }}
                   >
                     {bar.label}

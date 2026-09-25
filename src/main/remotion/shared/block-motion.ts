@@ -1,55 +1,57 @@
-/**
- * useBlockMotion — the shared enter/exit container motion for every content
- * block.
- *
- * Blocks replace the speaker for a few seconds and previously sprang IN but
- * hard-cut OUT, which read as cheap. This hook gives every block an identical,
- * frame-clock-driven entrance + exit so they all feel deliberate:
- *
- *   1. Entrance — spring fade + translateY up (damping 20 / stiffness 90),
- *      matching the long-standing `cardIn` feel.
- *   2. Exit — fade out + slight translateY up and scale down over the final
- *      frames before the cut, timed off `useVideoConfig().durationInFrames`.
- *
- * All motion runs through useCurrentFrame()/useVideoConfig() so it renders
- * correctly in Remotion (CSS transitions are inert in a rendered frame).
- *
- * Apply the returned `{ opacity, transform }` to the block's outer wrapper —
- * keep each block's internal staggered element animations untouched.
- */
-import { interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
-import { EASE } from './easing';
+/** Frame-clock motion shared by content blocks. No bounce, zoom, or wall time. */
+import { Easing, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
-/** Container style produced by {@link useBlockMotion}. */
 export interface BlockMotion {
   opacity: number;
   transform: string;
 }
 
-/** Frames over which the block eases out before the cut. */
-const EXIT_FRAMES = 10;
+const CLAMP = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
+
+/** Keep most of an insert still for reading, even when its duration is short. */
+export function getBlockMotion(frame: number, fps: number, durationInFrames: number): BlockMotion {
+  const lastFrame = Math.max(0, durationInFrames - 1);
+  if (lastFrame < 3) return { opacity: 1, transform: 'translateY(0px)' };
+
+  const enterFrames = Math.max(1, Math.min(Math.round(fps * 0.4), Math.floor(lastFrame * 0.25)));
+  const exitFrames = Math.max(1, Math.min(Math.round(fps * 0.2), Math.floor(lastFrame * 0.2)));
+  const enter = interpolate(frame, [0, enterFrames], [0, 1], {
+    ...CLAMP,
+    easing: Easing.out(Easing.cubic),
+  });
+  const exit = interpolate(frame, [lastFrame - exitFrames, lastFrame], [0, 1], {
+    ...CLAMP,
+    easing: Easing.inOut(Easing.quad),
+  });
+
+  return {
+    opacity: enter * (1 - exit),
+    transform: `translateY(${18 * (1 - enter)}px)`,
+  };
+}
+
+/** Bounded stagger: every item settles before the reading hold, without overshoot. */
+export function getBlockReveal(
+  frame: number,
+  fps: number,
+  durationInFrames: number,
+  index = 0,
+  count = 1,
+): number {
+  if (durationInFrames < 4) return 1;
+  const finish = Math.max(1, Math.min(fps * 0.9, Math.floor((durationInFrames - 1) * 0.55)));
+  const delay = Math.min(fps * 0.12, finish * 0.15);
+  const stagger = count > 1 ? Math.min(fps * 0.06, (finish * 0.25) / (count - 1)) : 0;
+  const start = delay + Math.max(0, Math.min(index, count - 1)) * stagger;
+
+  return interpolate(frame, [start, finish], [0, 1], {
+    ...CLAMP,
+    easing: Easing.out(Easing.cubic),
+  });
+}
 
 export function useBlockMotion(): BlockMotion {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
-
-  // Entrance: spring fade + rise (matches the original hand-rolled `cardIn`).
-  const enter = spring({ frame, fps, config: { damping: 20, stiffness: 90, mass: 0.9 } });
-  const enterY = interpolate(enter, [0, 1], [50, 0]);
-
-  // Exit: ramp 0 → 1 across the final EXIT_FRAMES (clamped for short blocks).
-  const exitFrames = Math.min(EXIT_FRAMES, Math.max(1, durationInFrames - 1));
-  const exitStart = durationInFrames - exitFrames;
-  const exit = interpolate(frame, [exitStart, durationInFrames], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: EASE.inExpo,
-  });
-  const exitY = interpolate(exit, [0, 1], [0, -28]);
-  const exitScale = interpolate(exit, [0, 1], [1, 0.96]);
-
-  return {
-    opacity: enter * (1 - exit),
-    transform: `translateY(${enterY + exitY}px) scale(${exitScale})`,
-  };
+  return getBlockMotion(frame, fps, durationInFrames);
 }

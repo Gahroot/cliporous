@@ -2,6 +2,8 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  // Match the automatic JSX runtime used by the Remotion production bundle.
+  esbuild: { jsx: 'automatic' },
   resolve: {
     alias: {
       '@shared': resolve(__dirname, 'src/shared'),
