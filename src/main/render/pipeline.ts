@@ -672,6 +672,9 @@ export async function startBatchRender(
           sourceVideoPath: job.sourceVideoPath,
           segments: resolvedSegments,
           editStyle,
+          transitionsEnabled:
+            options.shotTransitionsEnabled !== false &&
+            job.clipOverrides?.enableShotTransitions !== false,
           width: effectiveResolution.width,
           height: effectiveResolution.height,
           fps: OUTPUT_FPS,

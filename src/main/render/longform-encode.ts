@@ -23,7 +23,9 @@ import {
 } from '../ffmpeg';
 import type { SegmentLayoutResult } from '../layouts/segment-layouts';
 import { toFFmpegPath } from './helpers';
+import { xfadeTransitionFor } from './layout-transitions';
 import { getIntermediateQuality } from './quality';
+import { quantizeToFrames } from './transition-easing';
 
 // ---------------------------------------------------------------------------
 // Shared output options
@@ -258,21 +260,103 @@ export interface NormalizedConcatSegment {
   path: string;
   /** Authoritative timeline duration; media metadata must not extend this span. */
   duration: number;
+  /**
+   * What the segment shows. Boundaries touching a `graphic` segment get an
+   * eased dissolve (when transitions are enabled); speaker→speaker stays a cut.
+   */
+  visual?: 'speaker' | 'graphic';
 }
 
-/** Build an A/V concat graph that resets timestamps and enforces every planned span. */
+export interface NormalizedConcatOptions {
+  /** Dissolve length at speaker↔graphic boundaries. Omit / 0 = hard cuts. */
+  transitionSeconds?: number;
+}
+
+/** Seconds → fixed-precision filter arg. */
+const s3 = (n: number): string => n.toFixed(3);
+
+interface ConcatBoundary {
+  /** Dissolve length in seconds (one frame for a hard cut). */
+  duration: number;
+  soft: boolean;
+  /**
+   * Which side is freeze-padded so the dissolve consumes no timeline:
+   * `head` clones the incoming segment's first frame before it,
+   * `tail` clones the outgoing segment's last frame after it.
+   */
+  pad: 'head' | 'tail';
+}
+
+/**
+ * Plan every boundary. The speaker side always stays LIVE (lip-sync and the
+ * 1:1 source-time mapping hold); the graphic side is the one frozen for the
+ * length of the dissolve.
+ */
+function planBoundaries(
+  segments: readonly NormalizedConcatSegment[],
+  fps: number,
+  transitionSeconds: number,
+): ConcatBoundary[] {
+  const frame = 1 / Math.max(1, fps);
+  const boundaries: ConcatBoundary[] = [];
+  for (let i = 1; i < segments.length; i++) {
+    const prev = segments[i - 1];
+    const next = segments[i];
+    if (!prev || !next) continue;
+    const touchesGraphic = prev.visual === 'graphic' || next.visual === 'graphic';
+    const pad = next.visual === 'graphic' ? 'head' : 'tail';
+    // A head-padded dissolve starts inside the outgoing segment's live span,
+    // so it can never be longer than a third of either neighbour.
+    const limit = Math.min(prev.duration, next.duration) / 3;
+    const want = quantizeToFrames(Math.min(transitionSeconds, limit), fps);
+    const soft = touchesGraphic && transitionSeconds > 0 && want >= 2 * frame;
+    boundaries.push({ duration: soft ? want : frame, soft, pad: soft ? pad : 'tail' });
+  }
+  return boundaries;
+}
+
+/**
+ * Build an A/V graph that resets timestamps and enforces every planned span.
+ *
+ * Without transitions this is a plain `concat`. With `transitionSeconds`, the
+ * video is chained through `xfade` (eased dissolve at graphic boundaries, a
+ * one-frame blend elsewhere) while audio is still concatenated sample-exact.
+ * Every dissolve is covered by a freeze-pad on the graphic side, so each
+ * segment's LIVE content starts at exactly the same output time as with a
+ * plain concat — the final timeline still equals source time.
+ */
 export function buildNormalizedConcatFilter(
   segments: readonly NormalizedConcatSegment[],
   fps: number,
+  options: NormalizedConcatOptions = {},
 ): string {
   const steps: string[] = [];
   const inputs: string[] = [];
+  const boundaries = planBoundaries(segments, fps, options.transitionSeconds ?? 0);
+  const useXfade = segments.length > 1 && boundaries.some((b) => b.soft);
 
   segments.forEach((segment, index) => {
-    const duration = Math.max(0.001, segment.duration).toFixed(3);
+    const duration = s3(Math.max(0.001, segment.duration));
+    let pads = '';
+    if (useXfade) {
+      const incoming = boundaries[index - 1];
+      const outgoing = boundaries[index];
+      const headFrames = incoming?.pad === 'head' ? Math.round(incoming.duration * fps) : 0;
+      const tailFrames = outgoing?.pad === 'tail' ? Math.round(outgoing.duration * fps) : 0;
+      if (headFrames > 0 || tailFrames > 0) {
+        // Pad in whole frames, then renumber timestamps by frame index and cut
+        // to an exact frame count. On FFmpeg 6.0, duration-based `tpad` leaves
+        // a timestamp hole and chained pads overshoot by a frame, which shifts
+        // every later xfade offset.
+        const total = Math.round(Math.max(0.001, segment.duration) * fps) + headFrames + tailFrames;
+        pads +=
+          `,tpad=start_mode=clone:start=${headFrames}:stop_mode=clone:stop=${tailFrames}` +
+          `,setpts=N/${fps}/TB,trim=end_frame=${total}`;
+      }
+    }
     steps.push(
       `[${index}:v]fps=${fps},tpad=stop_mode=clone:stop_duration=${duration},` +
-        `trim=duration=${duration},setpts=PTS-STARTPTS,format=yuv420p[v${index}]`,
+        `trim=duration=${duration},setpts=PTS-STARTPTS${pads},format=yuv420p[v${index}]`,
     );
     steps.push(
       `[${index}:a]aresample=48000,apad=pad_dur=${duration},` +
@@ -281,7 +365,32 @@ export function buildNormalizedConcatFilter(
     inputs.push(`[v${index}][a${index}]`);
   });
 
-  steps.push(`${inputs.join('')}concat=n=${segments.length}:v=1:a=1[outv][outa]`);
+  if (!useXfade) {
+    steps.push(`${inputs.join('')}concat=n=${segments.length}:v=1:a=1[outv][outa]`);
+    return steps.join(';');
+  }
+
+  // Video: xfade chain. `cumulative` is the plain-concat start of segment i.
+  const dissolve = xfadeTransitionFor('smooth-dissolve') ?? 'fade';
+  let label = 'v0';
+  let cumulative = 0;
+  boundaries.forEach((b, k) => {
+    const i = k + 1;
+    cumulative += segments[k]?.duration ?? 0;
+    const offset = b.pad === 'head' ? cumulative - b.duration : cumulative;
+    const out = i === segments.length - 1 ? 'outv' : `vx${i}`;
+    steps.push(
+      `[${label}][v${i}]xfade=transition=${b.soft ? dissolve : 'fade'}:` +
+        `duration=${s3(b.duration)}:offset=${s3(Math.max(0, offset))}` +
+        `${out === 'outv' ? ',format=yuv420p' : ''}[${out}]`,
+    );
+    label = out;
+  });
+
+  // Audio: sample-exact concat, untouched by the video transitions.
+  steps.push(
+    `${segments.map((_, i) => `[a${i}]`).join('')}concat=n=${segments.length}:v=0:a=1[outa]`,
+  );
   return steps.join(';');
 }
 
@@ -294,12 +403,13 @@ export function concatNormalizedSegments(
   segments: readonly NormalizedConcatSegment[],
   outputPath: string,
   fps: number,
+  options: NormalizedConcatOptions = {},
 ): Promise<void> {
   if (segments.length === 0) {
     return Promise.reject(new Error('Cannot concatenate an empty segment list.'));
   }
 
-  const filterComplex = buildNormalizedConcatFilter(segments, fps);
+  const filterComplex = buildNormalizedConcatFilter(segments, fps, options);
   const qp = getIntermediateQuality();
 
   return new Promise<void>((resolve, reject) => {

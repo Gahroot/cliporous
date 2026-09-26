@@ -8,6 +8,8 @@
 //      typos that would make a block fail to `selectComposition` at render.
 // ---------------------------------------------------------------------------
 
+import { spawnSync } from 'node:child_process';
+import ffmpegPath from 'ffmpeg-static';
 import { describe, expect, it, vi } from 'vitest';
 
 // longform-pipeline pulls in electron/ffmpeg at module load; stub electron so
@@ -185,6 +187,112 @@ describe('buildNormalizedConcatFilter', () => {
     expect(filter).toContain('trim=duration=2.000,setpts=PTS-STARTPTS');
     expect(filter).toContain('trim=duration=4.250,setpts=PTS-STARTPTS');
     expect(filter).toContain('[v0][a0][v1][a1]concat=n=2:v=1:a=1[outv][outa]');
+  });
+
+  it('stays a plain concat when transitions are off or no graphic is involved', () => {
+    const segs = [
+      { path: 'a', duration: 2, visual: 'speaker' as const },
+      { path: 'b', duration: 2, visual: 'graphic' as const },
+    ];
+    expect(buildNormalizedConcatFilter(segs, 30)).not.toContain('xfade');
+    expect(buildNormalizedConcatFilter(segs, 30, { transitionSeconds: 0 })).not.toContain('xfade');
+    expect(
+      buildNormalizedConcatFilter(
+        [
+          { path: 'a', duration: 2, visual: 'speaker' },
+          { path: 'b', duration: 2, visual: 'speaker' },
+        ],
+        30,
+        { transitionSeconds: 0.4 },
+      ),
+    ).not.toContain('xfade');
+  });
+
+  it('dissolves speaker↔graphic with the graphic side frozen, audio concatenated', () => {
+    const filter = buildNormalizedConcatFilter(
+      [
+        { path: 'a', duration: 2, visual: 'speaker' },
+        { path: 'b', duration: 3, visual: 'graphic' },
+        { path: 'c', duration: 2, visual: 'speaker' },
+      ],
+      30,
+      { transitionSeconds: 0.4 },
+    );
+    // Graphic gets a head freeze (entering) and a tail freeze (leaving).
+    expect(filter).toContain(
+      'tpad=start_mode=clone:start=12:stop_mode=clone:stop=12,setpts=N/30/TB,trim=end_frame=114',
+    );
+    // Into the graphic: dissolve ends where the graphic's live span starts.
+    expect(filter).toMatch(
+      /\[v0\]\[v1\]xfade=transition=custom:expr='.+':duration=0\.400:offset=1\.600/,
+    );
+    // Out of the graphic: dissolve starts where the speaker's live span starts.
+    expect(filter).toMatch(
+      /\[vx1\]\[v2\]xfade=.+:duration=0\.400:offset=5\.000,format=yuv420p\[outv\]/,
+    );
+    expect(filter).toContain('[a0][a1][a2]concat=n=3:v=0:a=1[outa]');
+  });
+
+  it('never lets a dissolve exceed a third of a short neighbour', () => {
+    const filter = buildNormalizedConcatFilter(
+      [
+        { path: 'a', duration: 0.6, visual: 'speaker' },
+        { path: 'b', duration: 3, visual: 'graphic' },
+      ],
+      30,
+      { transitionSeconds: 0.4 },
+    );
+    expect(filter).toContain('duration=0.200:offset=0.400');
+  });
+
+  it('keeps video and audio exactly the planned length on the bundled FFmpeg', () => {
+    const segs = [
+      { path: 'a', duration: 1, visual: 'speaker' as const },
+      { path: 'b', duration: 1, visual: 'graphic' as const },
+      { path: 'c', duration: 1, visual: 'speaker' as const },
+    ];
+    const filter = buildNormalizedConcatFilter(segs, 30, { transitionSeconds: 0.3 });
+    const inputs = segs.flatMap((_, i) => [
+      '-f',
+      'lavfi',
+      '-i',
+      `testsrc2=size=64x36:rate=30:duration=1,hue=h=${i * 120}`,
+    ]);
+    // lavfi video sources carry no audio: give each segment a silent track.
+    const audioFix = segs
+      .map((_, i) => `anullsrc=r=48000:cl=mono,atrim=duration=1[s${i}]`)
+      .join(';');
+    const graph = `${audioFix};${filter.replace(/\[(\d+):a\]/g, '[s$1]')}`;
+    expect(ffmpegPath).toBeTruthy();
+    const r = spawnSync(
+      ffmpegPath as string,
+      [
+        '-hide_banner',
+        '-loglevel',
+        'error',
+        ...inputs,
+        '-filter_complex',
+        graph,
+        '-map',
+        '[outv]',
+        '-map',
+        '[outa]',
+        '-f',
+        'framemd5',
+        '-',
+      ],
+      { encoding: 'utf8', maxBuffer: 1 << 22 },
+    );
+    expect(r.status, r.stderr).toBe(0);
+    const lines = r.stdout.split('\n');
+    // 3 × 1s at 30fps: exactly the plain-concat frame count.
+    expect(lines.filter((l) => /^0,/.test(l))).toHaveLength(90);
+    // Audio is concatenated sample-exact: 3s at 48 kHz, untouched by the dissolves.
+    // framemd5 columns: stream, dts, pts, duration (samples), size, hash.
+    const samples = lines
+      .filter((l) => /^1,/.test(l))
+      .reduce((sum, l) => sum + Number(l.split(',')[3]?.trim() ?? 0), 0);
+    expect(samples).toBe(3 * 48000);
   });
 });
 

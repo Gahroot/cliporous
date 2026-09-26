@@ -172,6 +172,7 @@ async function renderSegmentedPreview(
     sourceVideoPath: config.sourceVideoPath,
     segments: resolvedSegments,
     editStyle,
+    transitionsEnabled: config.shotTransitionsEnabled !== false,
     width: PREVIEW_WIDTH,
     height: PREVIEW_HEIGHT,
     fps: PREVIEW_FPS,

@@ -9,6 +9,7 @@ import { OUTPUT_FPS, OUTPUT_HEIGHT, OUTPUT_WIDTH } from '../../aspect-ratios';
 import type { BRollDisplayMode, BRollPlacement, BRollTransition } from '../../broll-placement';
 import { ffmpeg as createFfmpeg, getSoftwareEncoder } from '../../ffmpeg';
 import { toFFmpegPath } from '../helpers';
+import { buildEasedAlphaEnvelope, buildEasedMotionExpr } from '../transition-easing';
 import type { RenderBatchOptions, RenderClipJob } from '../types';
 import type { PostProcessContext, PrepareResult, RenderFeature } from './feature';
 
@@ -144,8 +145,28 @@ function roundEven(n: number): number {
   return v % 2 === 0 ? v : v - 1;
 }
 
-/** Transition fade / swipe duration in seconds */
-const TRANSITION_DUR = 0.3;
+/** Transition fade / swipe duration in seconds (eased, so it can run a touch
+ *  longer than the old linear 0.3s without feeling sluggish). */
+const TRANSITION_DUR = 0.35;
+
+/** Floating cards rise this many pixels into place on entry (and sink on exit). */
+const CARD_RISE_PX = 72;
+
+/**
+ * Filter-chain suffix (leading comma, or '') giving an RGBA stream an eased
+ * entry/exit opacity for `crossfade`. Swipes stay opaque (motion is in the
+ * overlay expr) and hard cuts rely on the overlay's enable window.
+ */
+function entryExitAlpha(
+  transition: BRollTransition,
+  start: number,
+  end: number,
+  tDur: number,
+): string {
+  if (transition !== 'crossfade') return '';
+  const envelope = buildEasedAlphaEnvelope(start, end, tDur, CANVAS_FPS);
+  return envelope === 'null' ? '' : `,${envelope}`;
+}
 
 /**
  * Compute the overlay X, Y position for a PiP box placed in the given corner.
@@ -343,7 +364,6 @@ function buildFullscreenComposed(
   tDur: number,
 ): void {
   const start = p.startTime;
-  const fadeOutSt = start + p.duration - tDur;
 
   // Trim → shift PTS → scale/crop to 1080×1920 → fps → format
   let chain =
@@ -354,15 +374,9 @@ function buildFullscreenComposed(
     `crop=${CANVAS_W}:${CANVAS_H},` +
     `fps=${CANVAS_FPS},format=rgba`;
 
-  // Apply transition (alpha fade for crossfade, no alpha for swipe/hard-cut)
-  if (transition === 'crossfade') {
-    chain +=
-      `,fade=t=in:st=${start.toFixed(3)}:d=${tDur.toFixed(3)}:alpha=1` +
-      `,fade=t=out:st=${fadeOutSt.toFixed(3)}:d=${tDur.toFixed(3)}:alpha=1`;
-  } else if (transition === 'hard-cut') {
-    // No fade — instant appear/disappear handled by overlay enable
-  }
-  // For swipe transitions, the alpha is opaque; position animation is in the overlay expr
+  // Crossfade → eased alpha envelope. Swipe motion lives in the overlay expr;
+  // hard-cut appears/disappears via the overlay's enable window.
+  chain += entryExitAlpha(transition, start, start + p.duration, tDur);
 
   parts.push(`${chain}[${outLabel}]`);
 }
@@ -383,7 +397,6 @@ function buildFloatingCardComposed(
   tDur: number,
 ): void {
   const start = p.startTime;
-  const fadeOutSt = start + p.duration - tDur;
 
   // Card width as a fraction of canvas (leaves a margin either side).
   const cardW = roundEven(Math.round(CANVAS_W * 0.86));
@@ -437,16 +450,16 @@ function buildFloatingCardComposed(
   const compedLabel = `fccomp${idx}`;
   parts.push(`[${shadowLabel}][${cardFullLabel}]overlay=0:0[${compedLabel}]`);
 
-  // Apply entry/exit fade for crossfade (alpha), else leave opaque.
-  let chain = `[${compedLabel}]`;
-  if (transition === 'crossfade') {
-    chain +=
-      `fade=t=in:st=${start.toFixed(3)}:d=${tDur.toFixed(3)}:alpha=1,` +
-      `fade=t=out:st=${fadeOutSt.toFixed(3)}:d=${tDur.toFixed(3)}:alpha=1`;
-  } else {
-    chain += `null`;
-  }
-  parts.push(`${chain}[${outLabel}]`);
+  // Cards always ease their opacity alongside the rise in `buildOverlayExpr`
+  // (a card popping in at full opacity reads as a glitch). Hard-cut stays
+  // instant.
+  const alpha = entryExitAlpha(
+    transition === 'hard-cut' ? 'hard-cut' : 'crossfade',
+    start,
+    start + p.duration,
+    tDur,
+  );
+  parts.push(`[${compedLabel}]null${alpha}[${outLabel}]`);
 }
 
 /**
@@ -466,7 +479,6 @@ function buildSplitComposed(
   speakerLabel: string,
 ): void {
   const start = p.startTime;
-  const fadeOutSt = start + p.duration - tDur;
 
   const brollH = roundEven(Math.round(CANVAS_H * 0.65));
   const speakerH = roundEven(CANVAS_H - brollH);
@@ -506,13 +518,7 @@ function buildSplitComposed(
   }
 
   // Convert to rgba and apply transition
-  let chain = `[${vstackLabel}]format=rgba`;
-  if (transition === 'crossfade') {
-    chain +=
-      `,fade=t=in:st=${start.toFixed(3)}:d=${tDur.toFixed(3)}:alpha=1` +
-      `,fade=t=out:st=${fadeOutSt.toFixed(3)}:d=${tDur.toFixed(3)}:alpha=1`;
-  }
-
+  const chain = `[${vstackLabel}]format=rgba${entryExitAlpha(transition, start, start + p.duration, tDur)}`;
   parts.push(`${chain}[${outLabel}]`);
 }
 
@@ -530,7 +536,6 @@ function buildPipComposed(
   speakerLabel: string,
 ): void {
   const start = p.startTime;
-  const fadeOutSt = start + p.duration - tDur;
   const pipFrac = p.pipSize ?? 0.25;
   const pipPos = p.pipPosition ?? 'bottom-right';
 
@@ -567,13 +572,7 @@ function buildPipComposed(
   parts.push(`[${brLabel}][${spLabel}]overlay=${pipX}:${pipY}:eof_action=pass[${pipOverLabel}]`);
 
   // Convert to rgba and apply transition
-  let chain = `[${pipOverLabel}]format=rgba`;
-  if (transition === 'crossfade') {
-    chain +=
-      `,fade=t=in:st=${start.toFixed(3)}:d=${tDur.toFixed(3)}:alpha=1` +
-      `,fade=t=out:st=${fadeOutSt.toFixed(3)}:d=${tDur.toFixed(3)}:alpha=1`;
-  }
-
+  const chain = `[${pipOverLabel}]format=rgba${entryExitAlpha(transition, start, start + p.duration, tDur)}`;
   parts.push(`${chain}[${outLabel}]`);
 }
 
@@ -585,48 +584,62 @@ function buildPipComposed(
  * Returns the `x:y` portion of the overlay filter for each placement.
  *
  * - hard-cut / crossfade: static 0:0
- * - swipe-up: Y animates from H to 0 on entry, 0 to -H on exit
- * - swipe-down: Y animates from -H to 0 on entry, 0 to H on exit
+ * - swipe-up: Y eases H → 0 on entry (decelerating), 0 → -H on exit (accelerating)
+ * - swipe-down: Y eases -H → 0 on entry, 0 → H on exit
+ * - floating-card (any non hard-cut): rises CARD_RISE_PX into place and sinks
+ *   back out, paired with the eased alpha envelope from the card builder
+ *
+ * Motion uses easeOutCubic on entry and easeInCubic on exit so elements
+ * glide in and accelerate away instead of moving at constant speed.
  */
-function buildOverlayExpr(
+export function buildOverlayExpr(
   mode: BRollDisplayMode,
   transition: BRollTransition,
   start: number,
   end: number,
   tDur: number,
 ): string {
-  // Floating-card is already positioned inside its composed full-canvas frame,
-  // so it always overlays statically at 0:0 (swipe would move the whole frame).
-  if (mode === 'floating-card') return '0:0';
+  if (transition === 'hard-cut') return '0:0';
+
+  // Floating-card is positioned inside its composed full-canvas frame, so a
+  // swipe would move the whole frame. Every soft transition becomes a short
+  // rise instead (small offset — the card never leaves the canvas).
+  if (mode === 'floating-card') {
+    const y = buildEasedMotionExpr({
+      start,
+      end,
+      dur: tDur,
+      from: CARD_RISE_PX,
+      rest: 0,
+      to: CARD_RISE_PX,
+    });
+    return `0:'${y}'`;
+  }
 
   if (transition === 'swipe-up') {
-    // Entry: Y goes from H → 0 over tDur after start
-    // Exit: Y goes from 0 → -H over tDur before end
-    const entryEnd = start + tDur;
-    const exitStart = end - tDur;
-    const yExpr =
-      `'if(lt(t,${entryEnd.toFixed(3)}),` +
-      `${CANVAS_H}*(1-(t-${start.toFixed(3)})/${tDur.toFixed(3)}),` +
-      `if(gt(t,${exitStart.toFixed(3)}),` +
-      `-${CANVAS_H}*(t-${exitStart.toFixed(3)})/${tDur.toFixed(3)},` +
-      `0))'`;
-    return `0:${yExpr}`;
+    const y = buildEasedMotionExpr({
+      start,
+      end,
+      dur: tDur,
+      from: CANVAS_H,
+      rest: 0,
+      to: -CANVAS_H,
+    });
+    return `0:'${y}'`;
   }
 
   if (transition === 'swipe-down') {
-    // Entry: Y goes from -H → 0 over tDur after start
-    // Exit: Y goes from 0 → H over tDur before end
-    const entryEnd = start + tDur;
-    const exitStart = end - tDur;
-    const yExpr =
-      `'if(lt(t,${entryEnd.toFixed(3)}),` +
-      `-${CANVAS_H}+${CANVAS_H}*(t-${start.toFixed(3)})/${tDur.toFixed(3)},` +
-      `if(gt(t,${exitStart.toFixed(3)}),` +
-      `${CANVAS_H}*(t-${exitStart.toFixed(3)})/${tDur.toFixed(3)},` +
-      `0))'`;
-    return `0:${yExpr}`;
+    const y = buildEasedMotionExpr({
+      start,
+      end,
+      dur: tDur,
+      from: -CANVAS_H,
+      rest: 0,
+      to: CANVAS_H,
+    });
+    return `0:'${y}'`;
   }
 
-  // hard-cut and crossfade: static position
+  // crossfade: static position (opacity is eased in the composed stream)
   return '0:0';
 }

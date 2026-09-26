@@ -40,6 +40,12 @@ import { buildEditStyleColorGradeFilter } from './color-grade-filter';
 import { generateHookTitleASSFile } from './features/hook-title.feature';
 import { generateRehookASSFile } from './features/rehook.feature';
 import { buildASSFilter, toFFmpegPath } from './helpers';
+import {
+  type BoundaryTransition,
+  boundaryStepSeconds,
+  resolveSegmentTransitions,
+  xfadeTransitionFor,
+} from './layout-transitions';
 import { applyFilterPass } from './overlay-runner';
 import { getIntermediateQuality } from './quality';
 import type { HookTitleConfig } from './types';
@@ -132,6 +138,22 @@ export interface SegmentRenderConfig {
    * (CRF 20, medium preset).
    */
   qualityParams?: QualityParams;
+  /**
+   * When `false` (user disabled shot transitions globally or for this clip),
+   * every segment boundary is a hard cut — including layout changes that
+   * would otherwise get a layout-aware panel/dissolve transition.
+   */
+  transitionsEnabled?: boolean;
+}
+
+/**
+ * The archetype a segment will actually render as. Media archetypes without
+ * an available b-roll file degrade to talking-head (see `encodeSegment`).
+ */
+function renderedArchetype(seg: ResolvedSegment): Archetype {
+  const needsMedia = seg.archetype === 'split-image' || seg.archetype === 'fullscreen-image';
+  if (needsMedia && (!seg.videoPath || !existsSync(seg.videoPath))) return 'talking-head';
+  return seg.archetype;
 }
 
 // ---------------------------------------------------------------------------
@@ -258,8 +280,7 @@ async function encodeSegment(
 
   // ── Image-archetype fallback: degrade to talking-head when no image ──
   let archetype: Archetype = seg.archetype;
-  const needsMedia = archetype === 'split-image' || archetype === 'fullscreen-image';
-  if (needsMedia && (!seg.videoPath || !existsSync(seg.videoPath))) {
+  if (renderedArchetype(seg) !== archetype) {
     const reason = 'No b-roll video available; showing talking-head instead';
     console.warn(
       `[SegmentRender] Segment ${segIndex} requested '${archetype}' but b-roll is ` +
@@ -508,51 +529,15 @@ async function concatWithDemuxer(
 }
 
 /**
- * Pick fadewhite vs fadeblack based on the perceived brightness of a hex color.
- * Used as a fallback for FFmpeg builds (e.g. ffmpeg-static 6.0) that do not
- * ship the `fadecolor` xfade transition (added in FFmpeg 7.1).
- */
-function pickFadeByBrightness(hex: string): 'fadewhite' | 'fadeblack' {
-  const m = hex.replace(/^#/, '').match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-  if (!m) return 'fadewhite';
-  const r = parseInt(m[1], 16);
-  const g = parseInt(m[2], 16);
-  const b = parseInt(m[3], 16);
-  const luma = 0.299 * r + 0.587 * g + 0.114 * b;
-  return luma >= 128 ? 'fadewhite' : 'fadeblack';
-}
-
-/**
- * Get the xfade transition name for a TransitionType.
- * Returns null for hard-cut (use concat demuxer instead).
- */
-function getXfadeType(transition: TransitionType, flashColor?: string): string | null {
-  switch (transition) {
-    case 'crossfade':
-      return 'fade';
-    case 'flash-cut': {
-      if (flashColor) return pickFadeByBrightness(flashColor);
-      return 'fadewhite';
-    }
-    case 'color-wash': {
-      if (flashColor) return pickFadeByBrightness(flashColor);
-      return 'fadeblack';
-    }
-    default:
-      return null;
-  }
-}
-
-/**
  * Concatenate segment files using xfade filter_complex for non-hard transitions.
  * Chains segments pairwise with transition filters.
  *
- * NOTE: the trailing `_xfQuality` parameter is intentionally ignored. The
- * concat output is an *intermediate* — the overlay pass immediately re-decodes
- * it to burn captions / hook title — so we always encode near-losslessly here
- * (CRF 12, veryfast). Honouring the user's CRF/preset at this layer baked a
- * second generation of H.264 loss into every clip. The parameter is retained
- * to avoid churning callers; remove it once all call sites are updated.
+ * The concat output is an *intermediate* — the overlay pass immediately
+ * re-decodes it to burn captions / hook title — so it is always encoded
+ * near-losslessly (CRF 12, veryfast) regardless of the user's CRF/preset.
+ *
+ * `transitions` / `stepDurations` come from `resolveSegmentTransitions` and
+ * `computeStepDurations`; the caption timeline subtracts the same overlaps.
  *
  * `requestedDurations` is the per-segment duration we asked FFmpeg to produce
  * for each input file (i.e. `seg.endTime - seg.startTime`). We combine that
@@ -577,12 +562,11 @@ function getXfadeType(transition: TransitionType, flashColor?: string): string |
  */
 async function concatWithXfade(
   segmentFiles: string[],
-  transitions: TransitionType[],
+  transitions: BoundaryTransition[],
+  stepDurations: number[],
   outputPath: string,
   onProgress: (percent: number) => void,
   flashColor?: string,
-  transitionDuration?: number,
-  _xfQuality?: QualityParams,
   requestedDurations?: number[],
 ): Promise<void> {
   if (segmentFiles.length === 0) throw new Error('No segments to concatenate');
@@ -622,14 +606,9 @@ async function concatWithXfade(
   // mirrors xfade's crossfade duration so audio fades through transitions.
   const filterParts: string[] = [];
   const audioParts: string[] = [];
-  const xfadeDuration = transitionDuration ?? 0.3;
-  // Minimum duration the xfade filter can resolve at the output framerate.
-  // We pick exactly one output frame (1/fps) so a "hard-cut inside an xfade
-  // chain" looks frame-identical to a true butt-splice while still being a
-  // legal xfade slice that doesn't truncate the second segment. At 30 fps
-  // that's ~0.033 s; the previous 0.05 s ceiling drifted captions by 17 ms
-  // per join because the chain shrank by more than one frame per cut.
-  const hardCutXfade = Math.max(1 / 30, 0.005);
+  // Per-boundary overlap comes from `computeStepDurations` (the same values the
+  // caption timeline subtracts). Hard cuts inside the chain are a one-frame
+  // fade — frame-identical to a butt splice but a legal xfade slice.
 
   let inputLabel = '0:v';
   let outputLabel = 'v0';
@@ -639,22 +618,12 @@ async function concatWithXfade(
 
   for (let i = 1; i < segmentFiles.length; i++) {
     const transition = transitions[i] ?? 'hard-cut';
-    const xfadeType = getXfadeType(transition, flashColor);
-
-    let stepDuration: number;
-    if (xfadeType === null) {
-      stepDuration = hardCutXfade;
-      const offset = Math.max(0, accumulatedDuration - stepDuration);
-      filterParts.push(
-        `[${inputLabel}][${i}:v]xfade=transition=fade:duration=${stepDuration.toFixed(3)}:offset=${offset.toFixed(3)}[${outputLabel}]`,
-      );
-    } else {
-      stepDuration = xfadeDuration;
-      const offset = Math.max(0, accumulatedDuration - stepDuration);
-      filterParts.push(
-        `[${inputLabel}][${i}:v]xfade=transition=${xfadeType}:duration=${stepDuration.toFixed(3)}:offset=${offset.toFixed(3)}[${outputLabel}]`,
-      );
-    }
+    const xfadeType = xfadeTransitionFor(transition, flashColor);
+    const stepDuration = stepDurations[i] ?? 1 / 30;
+    const offset = Math.max(0, accumulatedDuration - stepDuration);
+    filterParts.push(
+      `[${inputLabel}][${i}:v]xfade=transition=${xfadeType ?? 'fade'}:duration=${stepDuration.toFixed(3)}:offset=${offset.toFixed(3)}[${outputLabel}]`,
+    );
     // Audio crossfade. For hard-cuts inside the xfade chain we want a
     // clean butt-splice (no soft fade) so the speaker's voice doesn't
     // soften every time the visual barely cuts. `c1=nofade:c2=nofade`
@@ -794,25 +763,28 @@ async function concatWithXfade(
  * butt-spliced timeline exactly.
  */
 function computeStepDurations(
-  transitions: TransitionType[],
+  transitions: BoundaryTransition[],
   transitionDuration: number,
   fps: number,
-  flashColor: string | undefined,
   useXfadeConcat: boolean,
+  segmentDurations: readonly number[],
 ): number[] {
   // No xfade pass → demuxer concat → zero overlap at every join.
   if (!useXfadeConcat) return transitions.map(() => 0);
 
-  // Minimum xfade slice the filter can resolve at the output framerate —
-  // one full frame (1/fps). This is effectively a single-frame crossfade,
-  // visually indistinguishable from a hard cut, and matches what
-  // `concatWithXfade` emits for hard-cut entries inside an xfade chain.
-  const hardCutXfade = Math.max(1 / Math.max(1, fps), 0.005);
-
+  // Hard cuts are one output frame (1/fps) — a single-frame crossfade,
+  // visually indistinguishable from a butt splice. Soft transitions use their
+  // own frame-quantized duration (layout changes run slightly longer), capped
+  // at a third of the shorter neighbour so a brief segment is never swallowed
+  // by the blends on either side of it.
+  const safeFps = Math.max(1, fps);
+  const frame = 1 / safeFps;
   return transitions.map((t, i) => {
     if (i === 0) return 0;
-    const xfadeType = getXfadeType(t, flashColor);
-    return xfadeType === null ? hardCutXfade : transitionDuration;
+    const want = boundaryStepSeconds(t, transitionDuration, fps);
+    const neighbour = Math.min(segmentDurations[i - 1] ?? want, segmentDurations[i] ?? want);
+    const cap = Math.floor((neighbour / 3) * safeFps) / safeFps;
+    return Math.max(frame, Math.min(want, cap));
   });
 }
 
@@ -1035,9 +1007,17 @@ export async function renderSegmentedClip(
   const balancedSegments = rebalanceSegmentBoundaries(config.segments, config.wordTimestamps);
 
   // Transitions are indexed by segment; transitions[0] is for the first
-  // segment (= ignored at concat time).
-  const transitions: TransitionType[] = balancedSegments.map((s) => s.transitionIn);
-  const needsXfade = transitions.slice(1).some((t) => t !== 'hard-cut' && t !== 'none');
+  // segment (= ignored at concat time). Each boundary is resolved from the
+  // (outgoing, incoming) layout pair using the archetype that will ACTUALLY
+  // render — a media archetype without b-roll degrades to talking-head.
+  const transitions: BoundaryTransition[] = resolveSegmentTransitions(
+    balancedSegments.map((s) => ({
+      archetype: renderedArchetype(s),
+      transitionIn: s.transitionIn,
+    })),
+    config.transitionsEnabled !== false,
+  );
+  const needsXfade = transitions.slice(1).some((t) => t !== 'hard-cut');
 
   // Per-transition xfade overlap durations. MUST match what the concat path
   // below actually emits, or captions / archetype windows drift forward of
@@ -1046,8 +1026,8 @@ export async function renderSegmentedClip(
     transitions,
     config.editStyle.transitionDuration ?? 0.3,
     config.fps,
-    config.editStyle.flashColor,
     needsXfade,
+    balancedSegments.map((s) => s.endTime - s.startTime),
   );
 
   // Archetype windows must reflect the shifted boundaries AND the xfade
@@ -1098,11 +1078,10 @@ export async function renderSegmentedClip(
       await concatWithXfade(
         segmentOutputFiles,
         transitions,
+        stepDurations,
         concatOutputPath,
         (percent) => onProgress(concatBase + (percent - concatBase) * 0.05),
         config.editStyle.flashColor,
-        config.editStyle.transitionDuration,
-        config.qualityParams,
         requestedSegDurations,
       );
     } else {

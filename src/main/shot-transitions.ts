@@ -1,13 +1,33 @@
 // ---------------------------------------------------------------------------
 // Shot Transitions — FFmpeg filter builder for between-shot visual transitions
 //
-// Generates time-limited FFmpeg filter expressions (fade, overlay position
-// animation) at shot boundaries within a single clip. Each transition is
-// implemented as an effect on the base video stream using enable expressions
-// so no segment splitting is required.
+// Generates time-limited FFmpeg filters at shot boundaries within a single
+// continuous clip stream (no segment splitting, so no true two-stream
+// dissolve). Every effect is shaped by an eased bell envelope that rises into
+// the cut and settles out of it, instead of the old linear triangle.
+//
+//   Luma (per boundary, timeline-gated `enable`):
+//     crossfade  → eased partial dip (brightness + saturation) — reads as a
+//                  soft dissolve through the cut without going to black
+//     dip-black  → eased full dip to black
+//     glitch     → RGB split + noise burst
+//
+//   Motion (ALL boundaries folded into ONE zoompan pass — one resample of
+//   the clip regardless of how many motion transitions it has):
+//     zoom-in    → gentle eased push into the cut
+//     zoom-punch → sharper, bigger push
+//     swipe-*    → whip-pan: accelerates toward one edge into the cut,
+//                  decelerates in from the opposite edge after it
+//
+// FFmpeg constraints this is built around (verified on ffmpeg-static 6.0):
+//   - `crop` has no timeline (`enable`) support and its w/h are init-only,
+//     so crop cannot animate a zoom — zoompan evaluates per input frame.
+//   - `rgbashift` shift options are constants, not expressions.
+//   - `eq` supports `enable` and per-frame expressions via `eval=frame`.
 // ---------------------------------------------------------------------------
 
-import type { ShotStyleConfig, ShotTransitionConfig } from '@shared/types';
+import type { ShotStyleConfig, ShotTransitionConfig, ShotTransitionType } from '@shared/types';
+import { easeExpr } from './render/transition-easing';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -17,22 +37,126 @@ const DEFAULT_TRANSITION_DURATION = 0.3;
 const MIN_TRANSITION_DURATION = 0.15;
 const MAX_TRANSITION_DURATION = 1.0;
 
+/** Peak brightness drop for the in-stream `crossfade` (0 = none, 1 = black). */
+const SOFT_DIP_DEPTH = 0.35;
+/** Peak zoom added by `zoom-in` / `zoom-punch`. */
+const ZOOM_IN_AMOUNT = 0.06;
+const ZOOM_PUNCH_AMOUNT = 0.12;
+/** Zoom headroom that gives the whip-pan room to travel. */
+const SWIPE_ZOOM_AMOUNT = 0.1;
+
 function clampDuration(d: number | undefined): number {
   const dur = d ?? DEFAULT_TRANSITION_DURATION;
   return Math.max(MIN_TRANSITION_DURATION, Math.min(MAX_TRANSITION_DURATION, dur));
 }
 
-// ---------------------------------------------------------------------------
-// Single transition builder
-// ---------------------------------------------------------------------------
+/** Output geometry, required to build the zoompan pass for motion transitions. */
+export interface ShotTransitionFrame {
+  width: number;
+  height: number;
+  fps: number;
+}
+
+interface TransitionWindow {
+  type: ShotTransitionType;
+  /** Window start / boundary / end in clip-relative seconds. */
+  start: number;
+  boundary: number;
+  end: number;
+}
+
+function transitionWindow(
+  transition: ShotTransitionConfig,
+  boundaryTime: number,
+  clipDuration: number,
+): TransitionWindow {
+  const dur = clampDuration(transition.duration);
+  return {
+    type: transition.type,
+    start: Math.max(0, boundaryTime - dur / 2),
+    boundary: boundaryTime,
+    end: Math.min(clipDuration, boundaryTime + dur / 2),
+  };
+}
+
+const f3 = (n: number): string => n.toFixed(3);
+
+/** Clamped 0→1 progress of `tv` across [a, b]. */
+function progress(tv: string, a: number, b: number): string {
+  return `clip((${tv}-${f3(a)})/${Math.max(b - a, 1e-3).toFixed(4)},0,1)`;
+}
 
 /**
- * Build FFmpeg filter expression(s) for a single transition at a shot boundary.
- *
- * @param transition  Transition config
- * @param boundaryTime  The time in seconds where the shot boundary occurs
- * @param clipDuration  Total clip duration in seconds
- * @returns           FFmpeg filter string segment(s), or empty string for 'none'
+ * Eased bell: 0 at the window edges, 1 at the boundary. Smoothstep up into
+ * the cut and back down out of it (zero velocity at every edge, so there's
+ * no visible "kick" where the effect starts or stops).
+ */
+function bellExpr(w: TransitionWindow, tv: string): string {
+  const up = easeExpr('smoothstep', progress(tv, w.start, w.boundary));
+  const down = easeExpr('smoothstep', progress(tv, w.boundary, w.end));
+  return `if(lt(${tv},${f3(w.boundary)}),${up},1-${down})`;
+}
+
+/** Sharper bell for zoom-punch: fast attack into the cut, eased release. */
+function punchBellExpr(w: TransitionWindow, tv: string): string {
+  const up = easeExpr('easeInCubic', progress(tv, w.start, w.boundary));
+  const down = easeExpr('easeOutCubic', progress(tv, w.boundary, w.end));
+  return `if(lt(${tv},${f3(w.boundary)}),${up},1-${down})`;
+}
+
+/**
+ * Whip-pan direction: 0 → +1 accelerating into the cut, then −1 → 0
+ * decelerating out of it. The jump from +1 to −1 lands exactly on the cut,
+ * so the motion reads as one continuous camera move across two shots.
+ */
+function whipExpr(w: TransitionWindow, tv: string): string {
+  const into = easeExpr('easeInCubic', progress(tv, w.start, w.boundary));
+  const outOf = easeExpr('easeOutCubic', progress(tv, w.boundary, w.end));
+  return `if(lt(${tv},${f3(w.boundary)}),${into},${outOf}-1)`;
+}
+
+function gate(w: TransitionWindow, tv: string): string {
+  return `between(${tv},${f3(w.start)},${f3(w.end)})`;
+}
+
+// ---------------------------------------------------------------------------
+// Luma / texture transitions (one filter per boundary)
+// ---------------------------------------------------------------------------
+
+function buildLumaFilter(w: TransitionWindow): string {
+  const enable = `enable='${gate(w, 't')}'`;
+  switch (w.type) {
+    case 'crossfade': {
+      const env = bellExpr(w, 't');
+      return (
+        `eq=brightness='-${SOFT_DIP_DEPTH}*${env}':saturation='1-0.5*${env}'` +
+        `:eval=frame:${enable}`
+      );
+    }
+    case 'dip-black': {
+      const env = bellExpr(w, 't');
+      return `eq=brightness='-${env}':saturation='1-${env}':eval=frame:${enable}`;
+    }
+    case 'glitch': {
+      // Strongest split in the middle half of the window, noise across all of it.
+      const q = (w.end - w.start) / 4;
+      const core = `enable='between(t,${f3(w.boundary - q)},${f3(w.boundary + q)})'`;
+      return [
+        `rgbashift=rh=6:bh=-6:${enable}`,
+        `rgbashift=rh=6:bh=-6:${core}`,
+        `noise=alls=30:allf=t:${enable}`,
+      ].join(',');
+    }
+    default:
+      return '';
+  }
+}
+
+/**
+ * Build the luma/texture filter for a single boundary. Motion transitions
+ * (zoom/swipe) need the output geometry and are built by
+ * `buildShotTransitionFilters` as one combined zoompan pass — this returns ''
+ * for them.
  */
 export function buildTransitionFilter(
   transition: ShotTransitionConfig,
@@ -40,135 +164,70 @@ export function buildTransitionFilter(
   clipDuration: number,
 ): string {
   if (transition.type === 'none') return '';
+  return buildLumaFilter(transitionWindow(transition, boundaryTime, clipDuration));
+}
 
-  const dur = clampDuration(transition.duration);
+// ---------------------------------------------------------------------------
+// Motion transitions (one zoompan for the whole clip)
+// ---------------------------------------------------------------------------
 
-  // Clamp to avoid transitions that extend beyond clip boundaries
-  const fadeOutStart = Math.max(0, boundaryTime - dur / 2);
-  const fadeInStart = boundaryTime;
-  const fadeInEnd = Math.min(clipDuration, boundaryTime + dur / 2);
+const MOTION_TYPES: ReadonlySet<ShotTransitionType> = new Set([
+  'zoom-in',
+  'zoom-punch',
+  'swipe-left',
+  'swipe-up',
+  'swipe-down',
+]);
 
-  switch (transition.type) {
-    case 'crossfade': {
-      // Approximate crossfade within a single stream using brief fade-out + fade-in
-      // at the boundary point. Not a true dissolve (that requires xfade with two
-      // streams), but visually similar for fast transitions.
-      return [
-        `fade=t=out:st=${fadeOutStart.toFixed(3)}:d=${(dur / 2).toFixed(3)}:enable='between(t\\,${fadeOutStart.toFixed(3)}\\,${boundaryTime.toFixed(3)})'`,
-        `fade=t=in:st=${fadeInStart.toFixed(3)}:d=${(dur / 2).toFixed(3)}:enable='between(t\\,${fadeInStart.toFixed(3)}\\,${fadeInEnd.toFixed(3)})'`,
-      ].join(',');
+function sumTerms(terms: string[]): string {
+  return terms.length === 0 ? '0' : terms.join('+');
+}
+
+/**
+ * One zoompan evaluating every motion window. Outside all windows z = 1 and
+ * x/y are centered, i.e. an identity pass-through.
+ */
+function buildMotionFilter(windows: TransitionWindow[], frame: ShotTransitionFrame): string {
+  const tv = 'in_time';
+  const zoomTerms: string[] = [];
+  const xTerms: string[] = [];
+  const yTerms: string[] = [];
+
+  for (const w of windows) {
+    const g = gate(w, tv);
+    switch (w.type) {
+      case 'zoom-in':
+        zoomTerms.push(`${g}*${ZOOM_IN_AMOUNT}*(${bellExpr(w, tv)})`);
+        break;
+      case 'zoom-punch':
+        zoomTerms.push(`${g}*${ZOOM_PUNCH_AMOUNT}*(${punchBellExpr(w, tv)})`);
+        break;
+      case 'swipe-left':
+      case 'swipe-up':
+      case 'swipe-down': {
+        // Zoom headroom eases in/out on the same bell as the pan so the window
+        // edges don't pop from 1.0× to the headroom zoom. At the edges the whip
+        // offset is 0 too, and at the cut (full pan) the headroom is full.
+        zoomTerms.push(`${g}*${SWIPE_ZOOM_AMOUNT}*(${bellExpr(w, tv)})`);
+        const dir = `${g}*(${whipExpr(w, tv)})`;
+        if (w.type === 'swipe-left') xTerms.push(dir);
+        else if (w.type === 'swipe-up') yTerms.push(dir);
+        else yTerms.push(`-(${dir})`);
+        break;
+      }
+      default:
+        break;
     }
-
-    case 'dip-black': {
-      // Fade to black before the boundary, then fade from black after
-      return [
-        `fade=t=out:st=${fadeOutStart.toFixed(3)}:d=${(dur / 2).toFixed(3)}`,
-        `fade=t=in:st=${fadeInStart.toFixed(3)}:d=${(dur / 2).toFixed(3)}`,
-      ]
-        .map((f, i) => {
-          const s = i === 0 ? fadeOutStart : fadeInStart;
-          const e = i === 0 ? boundaryTime : fadeInEnd;
-          return `${f}:enable='between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})'`;
-        })
-        .join(',');
-    }
-
-    case 'swipe-left': {
-      // Brief crop + position shift illusion at the boundary
-      // Uses a rapid crop pan from right to left
-      const s = fadeOutStart;
-      const e = fadeInEnd;
-      const cropExpr =
-        `crop=iw:ih:` +
-        `'if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,` +
-        `(iw*0.05)*(1-abs(2*(t-${boundaryTime.toFixed(3)})/${dur.toFixed(3)}))\\,0)':0:` +
-        `enable='between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})'`;
-      return cropExpr;
-    }
-
-    case 'swipe-up': {
-      // Vertical crop shift at the boundary
-      const s = fadeOutStart;
-      const e = fadeInEnd;
-      const cropExpr =
-        `crop=iw:ih:0:` +
-        `'if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,` +
-        `(ih*0.05)*(1-abs(2*(t-${boundaryTime.toFixed(3)})/${dur.toFixed(3)}))\\,0)':` +
-        `enable='between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})'`;
-      return cropExpr;
-    }
-
-    case 'zoom-in': {
-      // Brief zoom push at the boundary using zoompan-style crop expression
-      const s = fadeOutStart;
-      const e = fadeInEnd;
-      const zoomFactor = 0.05; // 5% zoom push
-      const zExpr =
-        `crop=` +
-        `'iw-iw*${zoomFactor}*if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,` +
-        `(1-abs(2*(t-${boundaryTime.toFixed(3)})/${dur.toFixed(3)}))\\,0)':` +
-        `'ih-ih*${zoomFactor}*if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,` +
-        `(1-abs(2*(t-${boundaryTime.toFixed(3)})/${dur.toFixed(3)}))\\,0)':` +
-        `'iw*${zoomFactor / 2}*if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,` +
-        `(1-abs(2*(t-${boundaryTime.toFixed(3)})/${dur.toFixed(3)}))\\,0)':` +
-        `'ih*${zoomFactor / 2}*if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,` +
-        `(1-abs(2*(t-${boundaryTime.toFixed(3)})/${dur.toFixed(3)}))\\,0)'`;
-      return zExpr;
-    }
-
-    case 'swipe-down': {
-      // Vertical crop shift downward at the boundary (inverse of swipe-up)
-      const s = fadeOutStart;
-      const e = fadeInEnd;
-      const cropExpr =
-        `crop=iw:ih:0:` +
-        `'if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,` +
-        `-(ih*0.05)*(1-abs(2*(t-${boundaryTime.toFixed(3)})/${dur.toFixed(3)}))\\,0)':` +
-        `enable='between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})'`;
-      return cropExpr;
-    }
-
-    case 'zoom-punch': {
-      // Aggressive snap-zoom — punchy, energetic feel.
-      // Ramps up faster and snaps back harder than zoom-in.
-      // Uses a sharper ease curve (quadratic) and 10% zoom for impact.
-      const s = fadeOutStart;
-      const e = fadeInEnd;
-      const zoomFactor = 0.1; // 10% zoom — double the gentle zoom-in
-      // Quadratic ease: pow((1-abs(2*(t-boundary)/dur)), 2) — sharp snap-back
-      const easeExpr = `pow((1-abs(2*(t-${boundaryTime.toFixed(3)})/${dur.toFixed(3)}))\\,2)`;
-      const zExpr =
-        `crop=` +
-        `'iw-iw*${zoomFactor}*if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,${easeExpr}\\,0)':` +
-        `'ih-ih*${zoomFactor}*if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,${easeExpr}\\,0)':` +
-        `'iw*${zoomFactor / 2}*if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,${easeExpr}\\,0)':` +
-        `'ih*${zoomFactor / 2}*if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,${easeExpr}\\,0)'`;
-      return zExpr;
-    }
-
-    case 'glitch': {
-      // Digital glitch distortion — RGB channel shift + brief brightness spike.
-      // Implemented as: rgbashift (horizontal RGB separation) + noise burst,
-      // all time-limited to the transition window.
-      const s = fadeOutStart;
-      const e = fadeInEnd;
-      // rgbashift shifts red/blue channels horizontally for chromatic aberration
-      // The shift amount pulses from 0→max→0 across the transition
-      const shiftExpr =
-        `if(between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})\\,` +
-        `8*(1-abs(2*(t-${boundaryTime.toFixed(3)})/${dur.toFixed(3)}))\\,0)`;
-      const glitchFilter = [
-        `rgbashift=rh='${shiftExpr}':bh='-${shiftExpr}':` +
-          `enable='between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})'`,
-        // Brief noise burst at the boundary — digital static feel
-        `noise=alls=30:allf=t:enable='between(t\\,${s.toFixed(3)}\\,${e.toFixed(3)})'`,
-      ].join(',');
-      return glitchFilter;
-    }
-
-    default:
-      return '';
   }
+
+  // Pan ranges over [0, iw - iw/zoom]; centre ± half-range × direction.
+  const z = `1+${sumTerms(zoomTerms)}`;
+  const x = `(iw-iw/zoom)/2*(1+clip(${sumTerms(xTerms)},-1,1))`;
+  const y = `(ih-ih/zoom)/2*(1+clip(${sumTerms(yTerms)},-1,1))`;
+  return (
+    `zoompan=z='if(isnan(${tv}),1,${z})':x='${x}':y='${y}'` +
+    `:d=1:s=${frame.width}x${frame.height}:fps=${frame.fps}`
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -182,34 +241,53 @@ export function buildTransitionFilter(
  * and the incoming shot's `transitionIn`. If both are specified, `transitionOut`
  * takes precedence (the outgoing shot "owns" the boundary).
  *
- * @param shots        Per-shot style configs sorted by shotIndex
+ * Luma/texture transitions emit one timeline-gated filter per boundary;
+ * motion transitions are folded into a single zoompan appended at the end.
+ * Motion transitions are skipped when `frame` is not supplied.
+ *
+ * @param shots        Per-shot style configs (clip-relative times)
  * @param clipDuration Total clip duration in seconds
+ * @param frame        Output geometry for the motion (zoompan) pass
  * @returns            Chained FFmpeg filter string or empty string
  */
-export function buildShotTransitionFilters(shots: ShotStyleConfig[], clipDuration: number): string {
+export function buildShotTransitionFilters(
+  shots: ShotStyleConfig[],
+  clipDuration: number,
+  frame?: ShotTransitionFrame,
+): string {
   if (shots.length < 2) return '';
 
   // Sort by shotIndex to ensure correct boundary ordering
   const sorted = [...shots].sort((a, b) => a.shotIndex - b.shotIndex);
 
-  const segments: string[] = [];
+  const filters: string[] = [];
+  const motionWindows: TransitionWindow[] = [];
 
   for (let i = 0; i < sorted.length - 1; i++) {
     const outgoing = sorted[i];
     const incoming = sorted[i + 1];
-
-    // Boundary time is the end of the outgoing shot (= start of incoming)
-    const boundaryTime = outgoing.endTime;
+    if (!outgoing || !incoming) continue;
 
     // Outgoing shot's transitionOut takes precedence over incoming's transitionIn
     const transition: ShotTransitionConfig | null | undefined =
       outgoing.transitionOut ?? incoming.transitionIn;
-
     if (!transition || transition.type === 'none') continue;
 
-    const filter = buildTransitionFilter(transition, boundaryTime, clipDuration);
-    if (filter) segments.push(filter);
+    // Boundary time is the end of the outgoing shot (= start of incoming)
+    const w = transitionWindow(transition, outgoing.endTime, clipDuration);
+    if (w.end <= w.start) continue;
+
+    if (MOTION_TYPES.has(w.type)) {
+      motionWindows.push(w);
+    } else {
+      const filter = buildLumaFilter(w);
+      if (filter) filters.push(filter);
+    }
   }
 
-  return segments.join(',');
+  if (frame && motionWindows.length > 0) {
+    filters.push(buildMotionFilter(motionWindows, frame));
+  }
+
+  return filters.join(',');
 }

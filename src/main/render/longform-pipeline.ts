@@ -409,7 +409,11 @@ export async function renderLongformVideo(
           emitSegmentProgress,
         );
         segmentFiles.push(out);
-        concatInputs.push({ path: out, duration: block.endTime - block.startTime });
+        concatInputs.push({
+          path: out,
+          duration: block.endTime - block.startTime,
+          visual: 'speaker',
+        });
         tempFiles.push(out);
       } else {
         window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
@@ -429,7 +433,11 @@ export async function renderLongformVideo(
             onProgress: emitSegmentProgress,
           });
           segmentFiles.push(out);
-          concatInputs.push({ path: out, duration: block.endTime - block.startTime });
+          concatInputs.push({
+            path: out,
+            duration: block.endTime - block.startTime,
+            visual: 'graphic',
+          });
           tempFiles.push(out);
         } catch (err) {
           // Graceful degrade (RF-003): a single content-block render failure
@@ -450,7 +458,11 @@ export async function renderLongformVideo(
             emitSegmentProgress,
           );
           segmentFiles.push(out);
-          concatInputs.push({ path: out, duration: block.endTime - block.startTime });
+          concatInputs.push({
+            path: out,
+            duration: block.endTime - block.startTime,
+            visual: 'speaker',
+          });
           tempFiles.push(out);
         }
       }
@@ -471,7 +483,14 @@ export async function renderLongformVideo(
     window.webContents.send(Ch.Send.RENDER_CLIP_PROGRESS, { clipId: job.clipId, percent: 72 });
     const concatPath = join(tmpdir(), `batchcontent-lf-concat-${Date.now()}.mp4`);
     tempFiles.push(concatPath);
-    await concatNormalizedSegments(concatInputs, concatPath, LANDSCAPE_FPS);
+    // Eased dissolves at speaker↔graphic boundaries (the graphic side is
+    // freeze-padded, so the timeline still maps 1:1 onto source time).
+    const transitionsEnabled =
+      options.shotTransitionsEnabled !== false &&
+      job.clipOverrides?.enableShotTransitions !== false;
+    await concatNormalizedSegments(concatInputs, concatPath, LANDSCAPE_FPS, {
+      transitionSeconds: transitionsEnabled ? (editStyle?.transitionDuration ?? 0.3) + 0.1 : 0,
+    });
 
     // ── Phrase overlay pass ──────────────────────────────────────────────────
     const sourceName = options.sourceMeta?.name

@@ -8,6 +8,7 @@
 //   videoFilter() — builds FFmpeg fade/swipe/zoom filters at shot boundaries
 // ---------------------------------------------------------------------------
 
+import { OUTPUT_FPS } from '../../aspect-ratios';
 import { buildShotTransitionFilters } from '../../shot-transitions';
 import type { RenderBatchOptions, RenderClipJob } from '../types';
 import type { FilterContext, PrepareResult, RenderFeature } from './feature';
@@ -87,7 +88,11 @@ export const shotTransitionFeature: RenderFeature = {
     if (!hasTransitions) return null;
 
     try {
-      const filter = buildShotTransitionFilters(job.shotStyleConfigs, context.clipDuration);
+      const filter = buildShotTransitionFilters(job.shotStyleConfigs, context.clipDuration, {
+        width: context.targetWidth,
+        height: context.targetHeight,
+        fps: OUTPUT_FPS,
+      });
       return filter || null;
     } catch (err) {
       console.error(
