@@ -295,7 +295,7 @@ interface CaptionStyleInput {
   borderStyle: number;
   wordsPerLine: number;
   animation: string;
-  captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight';
+  captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight' | 'editorial';
   accentColor?: string;
   emphasisColor?: string;
   supersizeColor?: string;
@@ -426,7 +426,7 @@ interface RenderClipJob {
     /** Per-clip accent color — overrides highlight colors across all visual elements. */
     accentColor?: string;
     /** Per-clip caption mode — forces one of the three V2 caption modes. */
-    captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight';
+    captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight' | 'editorial';
   };
 }
 

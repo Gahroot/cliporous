@@ -1,41 +1,63 @@
 /**
- * Explainer-scene planner.
+ * Explainer-scene planner (v2).
  *
  * Reads a clip's timed transcript and asks Gemini for a short list of animated
- * "explainer" scenes (checklist, versus, stamp, 3D flow, 3D stack) whose text
- * comes from the speaker's own words. The model references WORD INDICES, never
- * times; this module converts indices to exact word timestamps so every beat
- * (a tick, a stamp, a layer drop) lands on the spoken word.
+ * explainer scenes. The model references WORD INDICES, never times; each
+ * scene kind's spec (src/main/ai/explainer/kinds-*.ts) converts indices to
+ * exact word timestamps so every beat lands on the spoken word.
  *
- * Everything the model returns is untrusted: `parseExplainerPlan` validates
- * shapes, lengths, icons, index ranges, durations and spacing, and drops
- * anything that does not fit rather than guessing.
+ * Pipeline: prompt → parse/validate → second review pass (Gemini critiques
+ * and rewrites its own plan, re-validated by the same parser) → variety rules
+ * → emphasis reactions + sound cues.
+ *
+ * Everything the model returns is untrusted: invalid scenes are dropped, never
+ * guessed at.
  */
 
 import { GoogleGenAI } from '@google/genai';
 import { log } from '../logger';
 import {
   EXPLAINER_ICONS,
-  type ExplainerIcon,
+  EXPLAINER_LAYOUTS,
+  type ExplainerLayout,
   type ExplainerScene,
+  type ExplainerSceneBody,
+  type ExplainerSceneKind,
+  mapSceneTimes,
+  type SceneCue,
+  type SceneExtras,
+  type SceneTransitionKind,
 } from '../remotion/compositions/explainer/types';
+import {
+  isRec,
+  makeParseContext,
+  type ParseContext,
+  type PlannerWord,
+  type Rec,
+  type SceneWindow,
+  idx as wordIdx,
+} from './explainer/kind-spec';
+import { ALL_KIND_SPECS, getKindSpec } from './explainer/kinds';
+import { applyVarietyRules } from './explainer/variety';
 import { callGeminiWithRetry, MODELS } from './gemini-client';
 
-export interface PlannerWord {
-  text: string;
-  start: number;
-  end: number;
-}
+export type { PlannerWord } from './explainer/kind-spec';
 
 /**
- * A planned scene. `startTime`/`endTime` and every beat inside `scene` are in
- * the SAME time basis as the input words (absolute). Call
+ * A planned scene. `startTime`/`endTime`, every beat inside `scene` and every
+ * cue time are in the SAME (absolute) basis as the input words. Call
  * {@link toSceneRelative} after the window is final to get render props.
  */
 export interface PlannedExplainerScene {
   startTime: number;
   endTime: number;
   scene: ExplainerScene;
+  layout: ExplainerLayout;
+  /** True when this scene continues the previous one on the same stage. */
+  chained: boolean;
+  /** Transition INTO this scene when chained. */
+  transition: SceneTransitionKind;
+  cues: SceneCue[];
 }
 
 export interface PlanBounds {
@@ -43,6 +65,15 @@ export interface PlanBounds {
   minStart: number;
   /** Latest time a scene may end. */
   maxEnd: number;
+}
+
+export interface PlanOptions {
+  /** 9:16 shorts (default) or 16:9 long-form. */
+  aspect?: '9:16' | '16:9';
+  /** Absolute times of stressed/emphasised words (for emphasis reactions). */
+  emphasisTimes?: readonly number[];
+  /** Run the second review pass (default true). */
+  review?: boolean;
 }
 
 export type PlanResult =
@@ -54,122 +85,118 @@ export type PlanResult =
 // ---------------------------------------------------------------------------
 
 export const EXPLAINER_LIMITS = {
-  minSceneSec: 2.5,
-  maxSceneSec: 12,
-  /** Talking-head gap kept between scenes. */
-  minGapSec: 1.5,
+  minSceneSec: 2,
+  maxSceneSec: 14,
   /** Lead-in before the first spoken word so the entrance plays first. */
-  leadInSec: 0.2,
-  tailSec: 0.3,
-  /** Beats never land in the first/last this-many seconds of a scene. */
-  beatEdgeSec: 0.3,
-  checklistItems: [2, 5],
-  stackLayers: [2, 4],
-  text: {
-    checklistLabel: 26,
-    versusLabel: 18,
-    stampWord: 10,
-    flowLabel: 10,
-    flowText: 16,
-    engineLabel: 8,
-    stackLabel: 18,
-  },
+  leadInSec: 0.25,
+  tailSec: 0.35,
+  /** A chained scene may start at most this long after the previous ends. */
+  chainGapSec: 1,
+  maxReactionsPerScene: 3,
 } as const;
 
-const ICON_SET: ReadonlySet<string> = new Set(EXPLAINER_ICONS);
+const LAYOUT_SET: ReadonlySet<string> = new Set(EXPLAINER_LAYOUTS);
+const TRANSITIONS: readonly SceneTransitionKind[] = ['grow', 'slide', 'fade'];
 
 // ---------------------------------------------------------------------------
 // Prompt
 // ---------------------------------------------------------------------------
 
-export function buildExplainerPrompt(words: PlannerWord[], bounds: PlanBounds): string {
+function layoutGuide(aspect: '9:16' | '16:9'): string {
+  const lines = [
+    '"stack": animation on the top half, speaker below (the default look).',
+    aspect === '9:16'
+      ? '"stack-flipped": speaker on top, animation below — use occasionally for variety in longer clips.'
+      : null,
+    '"takeover": the animation fills the whole screen for 1-3.5 s — only for huge statements or big 3D moments.',
+    '"pip": the animation fills the frame with the speaker in a small rounded window — for longer processes.',
+    '"over": the speaker stays full screen and a compact card floats over them — numbers, questions, chats, short notes.',
+  ];
+  return lines
+    .filter((l): l is string => l !== null)
+    .map((l) => `  - ${l}`)
+    .join('\n');
+}
+
+export function buildExplainerPrompt(
+  words: readonly PlannerWord[],
+  bounds: PlanBounds,
+  aspect: '9:16' | '16:9' = '9:16',
+): string {
   const indexed = words.map((w, i) => `${i}:${w.text}`).join(' ');
-  const firstAllowed = words.findIndex((w) => w.start >= bounds.minStart);
-  const L = EXPLAINER_LIMITS.text;
-  return `You are a motion designer for short-form explainer videos. The top half of the screen is an animated "stage"; the speaker is on the bottom half. Turn what the speaker is SAYING into simple animated diagrams.
+  const firstAllowed = Math.max(
+    0,
+    words.findIndex((w) => w.start >= bounds.minStart),
+  );
+  const kinds = ALL_KIND_SPECS.map(
+    (s) =>
+      `- "${s.kind}": ${s.describe}\n    JSON: ${s.schema}\n    Limits: ${s.limits}. Layouts: ${s.layouts.join(', ')}.`,
+  ).join('\n');
+
+  return `You are a senior motion designer making PREMIUM explainer edits (calm, confident, Apple-keynote quality — never cheesy). Turn what the speaker is SAYING into simple animated diagrams that appear exactly as they say it.
 
 Transcript as index:word pairs:
 ${indexed}
 
-Pick moments where the speaker explains something concrete and choose ONE scene type per moment:
-- "checklist": they list steps/tasks/items (2-5 items). Each item ticks off on the word where they say it.
-- "versus": they contrast two things (A vs B, AI vs people, before vs after).
-- "stamp": a strong verdict or rule ("never", "yes, but", "stop", "always"). A hero icon plus a stamped word; optionally the icon gets crossed out.
-- "flow": an input goes through a system/process and comes out as something else (prompt -> AI -> answer, lead -> call -> deal).
-- "stack": layers or levels that build on each other (2-4 layers, listed bottom to top).
+Scene types:
+${kinds}
 
-Return JSON only:
-{"scenes":[
- {"kind":"checklist","startWord":N,"endWord":N,"items":[{"label":"...","icon":"Icon","word":N}]},
- {"kind":"versus","startWord":N,"endWord":N,"left":{"label":"...","icon":"Icon","word":N},"right":{"label":"...","icon":"Icon","word":N}},
- {"kind":"stamp","startWord":N,"endWord":N,"icon":"Icon","word":"NEVER","stampWord":N,"strikeWord":N or null},
- {"kind":"flow","startWord":N,"endWord":N,"inputLabel":"Prompt","inputText":"...","engineLabel":"AI","outputLabel":"Answer","outputText":"...","inputWord":N,"outputWord":N},
- {"kind":"stack","startWord":N,"endWord":N,"layers":[{"label":"...","word":N}],"dimWord":N or null}
-]}
+Layouts (pick the best one per scene from that scene's allowed list):
+${layoutGuide(aspect)}
+
+Every scene object ALSO has these common fields:
+  "startWord":N, "endWord":N, "layout":"...",
+  "continues": true|false  — true when this scene directly carries on from the previous scene (the next beat of the same story, starting right where it ended); the stage morphs instead of cutting,
+  "transition": "grow"|"slide"|"fade" — only for continues:true ("grow" = the previous scene's focus item grows into this one),
+  "laterStamp": {"text":"YES, BUT","word":N} or null — a stamp that lands on top of the running scene later (lets one scene keep going across several sentences),
+  "dimWord": N or null — the whole scene dims on this word (e.g. "broken", "fails"),
+  "reactions": [{"word":N,"item":index or null,"strength":"pulse"|"shake"}] — when the speaker stresses or repeats a word that matches an element (item = index in that scene's list, null = whole scene). Max 3. "shake" only for negative words ("wrong", "broken").
+
+Return JSON only: {"scenes":[ ... ]}
 
 Rules:
-- Every "word"/"...Word" value is the index of the word where that beat should happen, and must lie between the scene's startWord and endWord.
-- Use the speaker's own words for labels. Max lengths: checklist label ${L.checklistLabel} chars, versus label ${L.versusLabel}, stamp word ${L.stampWord}, flow labels ${L.flowLabel}, flow texts ${L.flowText}, engine label ${L.engineLabel}, stack label ${L.stackLabel}.
+- Every "word"/"...Word" value is the index of the word where that beat happens, inside that scene's startWord..endWord. Beats in chronological order.
+- Labels: use the speaker's own words, SHORT and concrete (2-4 words). No filler ("The", "Very"), no full sentences unless the limit allows it. Respect every max length.
 - icon must be one of: ${EXPLAINER_ICONS.join(', ')}.
-- A scene lasts 3-10 seconds of speech. Do not start before word ${Math.max(0, firstAllowed)}.
-- Leave at least 2 seconds of plain speaker between scenes. Never overlap scenes.
-- Only make a scene when a diagram genuinely helps; returning fewer (or zero) scenes is fine. Aim to cover roughly half the clip at most.
-- Beats inside a scene must be in chronological order.`;
+- Do not start before word ${firstAllowed}. Never overlap scenes.
+- Prefer ONE scene that keeps going (more beats, a laterStamp, a dim) over several short separate ones — like keeping the same object on screen across two sentences.
+- Variety: never the same scene type twice in a row; mix 2D and 3D; vary layouts.
+- Leave at least 1.5 s of plain speaker between separate scenes (continues:true scenes are exempt).
+- Only make a scene when a diagram genuinely helps. Cover at most about half of the clip. Fewer, better scenes beat many weak ones.`;
+}
+
+export function buildReviewPrompt(
+  words: readonly PlannerWord[],
+  plan: readonly Rec[],
+  bounds: PlanBounds,
+  aspect: '9:16' | '16:9' = '9:16',
+): string {
+  return `${buildExplainerPrompt(words, bounds, aspect)}
+
+A first draft plan was produced:
+${JSON.stringify({ scenes: plan })}
+
+Now act as the creative director reviewing this draft before anything renders. Fix it:
+- Rewrite weak, vague, wordy or generic labels into short, punchy ones from the speaker's own words.
+- Swap a scene to a better-fitting type or layout when it would explain the idea more clearly.
+- Remove scenes that do not genuinely help; merge back-to-back scenes that tell one story using "continues".
+- Check every word index lands on the word where that beat is actually said.
+- Keep all limits and rules above.
+Return the FINAL plan as JSON only, same schema: {"scenes":[ ... ]}`;
 }
 
 // ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
 
-type Rec = Record<string, unknown>;
-
-function isRec(v: unknown): v is Rec {
-  return typeof v === 'object' && v !== null && !Array.isArray(v);
-}
-
-function str(v: unknown, max: number): string | null {
-  if (typeof v !== 'string') return null;
-  const s = v.replace(/\s+/g, ' ').trim();
-  return s.length > 0 && s.length <= max ? s : null;
-}
-
-function icon(v: unknown): ExplainerIcon {
-  return typeof v === 'string' && ICON_SET.has(v) ? (v as ExplainerIcon) : 'Circle';
-}
-
-function idx(v: unknown, lo: number, hi: number): number | null {
-  return typeof v === 'number' && Number.isInteger(v) && v >= lo && v <= hi ? v : null;
-}
-
-interface Window {
-  startWord: number;
-  endWord: number;
-  startTime: number;
-  endTime: number;
-}
-
-/** Word index → beat time, clamped inside the window's safe zone. */
-function beatTime(words: PlannerWord[], i: number, win: Window): number {
-  const w = words[i];
-  const t = w ? w.start : win.startTime;
-  const lo = win.startTime + EXPLAINER_LIMITS.beatEdgeSec;
-  const hi = win.endTime - EXPLAINER_LIMITS.beatEdgeSec;
-  return Math.min(hi, Math.max(lo, t));
-}
-
-/** Force a list of beat times to be non-decreasing. */
-function monotonic(times: number[]): number[] {
-  let prev = Number.NEGATIVE_INFINITY;
-  return times.map((t) => {
-    prev = Math.max(prev, t);
-    return prev;
-  });
-}
-
-function parseWindow(raw: Rec, words: PlannerWord[], bounds: PlanBounds): Window | null {
+function parseWindow(
+  raw: Rec,
+  words: readonly PlannerWord[],
+  bounds: PlanBounds,
+): SceneWindow | null {
   const last = words.length - 1;
-  const startWord = idx(raw.startWord, 0, last);
-  const endWord = idx(raw.endWord, 0, last);
+  const startWord = wordIdx(raw.startWord, 0, last);
+  const endWord = wordIdx(raw.endWord, 0, last);
   if (startWord === null || endWord === null || endWord <= startWord) return null;
   const first = words[startWord];
   const final = words[endWord];
@@ -181,206 +208,310 @@ function parseWindow(raw: Rec, words: PlannerWord[], bounds: PlanBounds): Window
   return { startWord, endWord, startTime, endTime };
 }
 
-function parseScene(raw: Rec, words: PlannerWord[], win: Window): ExplainerScene | null {
-  const L = EXPLAINER_LIMITS.text;
-  const inWin = (v: unknown): number | null => idx(v, win.startWord, win.endWord);
-  const at = (i: number): number => beatTime(words, i, win);
-
-  switch (raw.kind) {
-    case 'checklist': {
-      if (!Array.isArray(raw.items)) return null;
-      const items = raw.items.flatMap((it) => {
-        if (!isRec(it)) return [];
-        const label = str(it.label, L.checklistLabel);
-        const w = inWin(it.word);
-        return label && w !== null ? [{ label, icon: icon(it.icon), t: at(w) }] : [];
-      });
-      const [min, max] = EXPLAINER_LIMITS.checklistItems;
-      if (items.length < min) return null;
-      const kept = items.slice(0, max);
-      const times = monotonic(kept.map((i) => i.t));
-      return {
-        kind: 'checklist',
-        items: kept.map((it, n) => ({ label: it.label, icon: it.icon, doneAt: times[n] ?? it.t })),
-      };
-    }
-    case 'versus': {
-      if (!isRec(raw.left) || !isRec(raw.right)) return null;
-      const side = (s: Rec): { label: string; icon: ExplainerIcon; at: number } | null => {
-        const label = str(s.label, L.versusLabel);
-        const w = inWin(s.word);
-        return label && w !== null ? { label, icon: icon(s.icon), at: at(w) } : null;
-      };
-      const left = side(raw.left);
-      const right = side(raw.right);
-      if (!left || !right) return null;
-      return { kind: 'versus', left, right: { ...right, at: Math.max(right.at, left.at) } };
-    }
-    case 'stamp': {
-      const word = str(raw.word, L.stampWord);
-      const stampW = inWin(raw.stampWord);
-      if (!word || stampW === null) return null;
-      const stampAt = at(stampW);
-      const strikeW = raw.strikeWord === null ? null : inWin(raw.strikeWord);
-      return {
-        kind: 'stamp',
-        icon: icon(raw.icon),
-        word: word.toUpperCase(),
-        stampAt,
-        ...(strikeW === null ? {} : { strikeAt: Math.max(stampAt, at(strikeW)) }),
-      };
-    }
-    case 'flow': {
-      const inputLabel = str(raw.inputLabel, L.flowLabel);
-      const inputText = str(raw.inputText, L.flowText);
-      const engineLabel = str(raw.engineLabel, L.engineLabel);
-      const outputLabel = str(raw.outputLabel, L.flowLabel);
-      const outputText = str(raw.outputText, L.flowText);
-      const inW = inWin(raw.inputWord);
-      const outW = inWin(raw.outputWord);
-      if (!inputLabel || !inputText || !engineLabel || !outputLabel || !outputText) return null;
-      if (inW === null || outW === null) return null;
-      const inputAt = at(inW);
-      // The engine needs ~1s between input and output for its spin to read.
-      const outputAt = Math.min(
-        win.endTime - EXPLAINER_LIMITS.beatEdgeSec,
-        Math.max(at(outW), inputAt + 1),
-      );
-      if (outputAt - inputAt < 0.6) return null;
-      return {
-        kind: 'flow',
-        inputLabel,
-        inputText,
-        engineLabel,
-        outputLabel,
-        outputText,
-        inputAt,
-        outputAt,
-      };
-    }
-    case 'stack': {
-      if (!Array.isArray(raw.layers)) return null;
-      const layers = raw.layers.flatMap((l) => {
-        if (!isRec(l)) return [];
-        const label = str(l.label, L.stackLabel);
-        const w = inWin(l.word);
-        return label && w !== null ? [{ label, at: at(w) }] : [];
-      });
-      const [min, max] = EXPLAINER_LIMITS.stackLayers;
-      if (layers.length < min) return null;
-      const kept = layers.slice(0, max);
-      const times = monotonic(kept.map((l) => l.at));
-      const dimW = raw.dimWord === null ? null : inWin(raw.dimWord);
-      const lastLayer = times[times.length - 1] ?? win.startTime;
-      return {
-        kind: 'stack',
-        layers: kept.map((l, n) => ({ label: l.label, at: times[n] ?? l.at })),
-        ...(dimW === null ? {} : { dimAt: Math.max(lastLayer + 0.4, at(dimW)) }),
-      };
-    }
+/** Number of addressable elements for emphasis `item` targets. */
+export function reactionTargetCount(scene: ExplainerSceneBody): number {
+  switch (scene.kind) {
+    case 'checklist':
+      return scene.items.length;
+    case 'versus':
+      return 2;
+    case 'flow':
+      return 3;
+    case 'stack':
+      return scene.layers.length;
+    case 'timeline':
+      return scene.steps.length;
+    case 'notes':
+      return scene.lines.length;
+    case 'chart':
+      return scene.points.length;
+    case 'chat':
+      return scene.messages.length;
+    case 'network':
+      return scene.nodes.length;
+    case 'loop':
+      return scene.stages.length;
+    case 'funnel':
+      return scene.stages.length;
     default:
-      return null;
+      return 0;
   }
+}
+
+function parseExtras(raw: Rec, ctx: ParseContext, body: ExplainerSceneBody): SceneExtras {
+  const extras: SceneExtras = {};
+  if (isRec(raw.laterStamp)) {
+    const text = ctx.str(raw.laterStamp.text, 12);
+    const w = ctx.inWin(raw.laterStamp.word);
+    if (text && w !== null) extras.overlayStamp = { word: text.toUpperCase(), at: ctx.at(w) };
+  }
+  const dimW = raw.dimWord === null || body.kind === 'stack' ? null : ctx.inWin(raw.dimWord);
+  if (dimW !== null) extras.dimAt = ctx.at(dimW);
+  if (Array.isArray(raw.reactions)) {
+    const count = reactionTargetCount(body);
+    const pulses = raw.reactions.flatMap((r) => {
+      if (!isRec(r)) return [];
+      const w = ctx.inWin(r.word);
+      if (w === null) return [];
+      const item = wordIdx(r.item, 0, Math.max(0, count - 1));
+      const strength = r.strength === 'shake' ? ('shake' as const) : ('pulse' as const);
+      return [
+        {
+          at: ctx.at(w),
+          strength,
+          ...(item !== null && count > 0 ? { target: item } : {}),
+        },
+      ];
+    });
+    if (pulses.length > 0) {
+      extras.pulses = pulses
+        .sort((a, b) => a.at - b.at)
+        .slice(0, EXPLAINER_LIMITS.maxReactionsPerScene);
+    }
+  }
+  return extras;
+}
+
+interface Candidate extends PlannedExplainerScene {
+  kind: ExplainerSceneKind;
+  layouts: readonly ExplainerLayout[];
+  raw: Rec;
+}
+
+function parseCandidate(
+  raw: Rec,
+  words: readonly PlannerWord[],
+  bounds: PlanBounds,
+): Candidate | null {
+  const spec = typeof raw.kind === 'string' ? getKindSpec(raw.kind) : undefined;
+  if (!spec) return null;
+  const win = parseWindow(raw, words, bounds);
+  if (!win) return null;
+  const ctx = makeParseContext(words, win);
+  // Each spec narrows its own kind; the registry erases K, so call through a
+  // widened signature (the spec only ever returns its own kind).
+  const parse = spec.parse as (r: Rec, c: ParseContext) => ExplainerSceneBody | null;
+  const body = parse(raw, ctx);
+  if (!body) return null;
+  const extras = parseExtras(raw, ctx, body);
+  const scene = { ...body, ...extras } as ExplainerScene;
+  const requested =
+    typeof raw.layout === 'string' && LAYOUT_SET.has(raw.layout)
+      ? (raw.layout as ExplainerLayout)
+      : undefined;
+  const layout = requested && spec.layouts.includes(requested) ? requested : spec.layouts[0];
+  const transition =
+    typeof raw.transition === 'string' &&
+    (TRANSITIONS as readonly string[]).includes(raw.transition)
+      ? (raw.transition as SceneTransitionKind)
+      : 'grow';
+  return {
+    startTime: win.startTime,
+    endTime: win.endTime,
+    scene,
+    layout: layout ?? 'stack',
+    chained: raw.continues === true,
+    transition,
+    cues: [],
+    kind: scene.kind,
+    layouts: spec.layouts,
+    raw,
+  };
+}
+
+/** Sound cues for a scene: the kind's own cues + extras. Absolute times. */
+export function sceneCues(planned: Pick<PlannedExplainerScene, 'scene' | 'chained'>): SceneCue[] {
+  const spec = getKindSpec(planned.scene.kind);
+  const cuesOf = spec?.cues as ((s: ExplainerSceneBody) => SceneCue[]) | undefined;
+  const kindCues = cuesOf ? cuesOf(planned.scene) : [];
+  const extra: SceneCue[] = [];
+  if (planned.scene.overlayStamp) {
+    extra.push({ kind: 'thump', at: planned.scene.overlayStamp.at + 0.12 });
+  }
+  if (planned.scene.dimAt !== undefined && planned.scene.kind !== 'stack') {
+    extra.push({ kind: 'whoosh', at: planned.scene.dimAt, gain: 0.4 });
+  }
+  return [...kindCues, ...extra].sort((a, b) => a.at - b.at);
+}
+
+/**
+ * Whole-scene pulses on stressed words (from the word-emphasis pass) that the
+ * model did not already react to. Max 2 per scene, never within 0.5 s of any
+ * existing beat, so they read as reactions, not noise.
+ */
+function addEmphasisPulses(
+  planned: PlannedExplainerScene,
+  emphasisTimes: readonly number[],
+): PlannedExplainerScene {
+  const lo = planned.startTime + 0.6;
+  const hi = planned.endTime - 0.4;
+  const beats: number[] = [];
+  mapSceneTimes(planned.scene, (t) => {
+    beats.push(t);
+    return t;
+  });
+  const existing = planned.scene.pulses ?? [];
+  const added: { at: number; strength: 'pulse' }[] = [];
+  for (const t of emphasisTimes) {
+    if (
+      added.length >= 2 ||
+      existing.length + added.length >= EXPLAINER_LIMITS.maxReactionsPerScene
+    )
+      break;
+    if (t < lo || t > hi) continue;
+    if (beats.some((b) => Math.abs(b - t) < 0.5)) continue;
+    if (added.some((a) => Math.abs(a.at - t) < 1.2)) continue;
+    added.push({ at: t, strength: 'pulse' });
+  }
+  if (added.length === 0) return planned;
+  const pulses = [...existing, ...added].sort((a, b) => a.at - b.at);
+  return { ...planned, scene: { ...planned.scene, pulses } };
 }
 
 /**
  * Validate a raw model response into planned scenes. Pure and deterministic:
- * invalid scenes are dropped, overlapping/too-close scenes are dropped in
- * chronological order, and the count is capped by clip length.
+ * invalid scenes are dropped, chains are snapped together, then the variety
+ * rules pick the final set.
  */
 export function parseExplainerPlan(
   raw: unknown,
-  words: PlannerWord[],
+  words: readonly PlannerWord[],
   bounds: PlanBounds,
+  options: Pick<PlanOptions, 'emphasisTimes'> = {},
 ): PlannedExplainerScene[] {
+  return parseCandidates(raw, words, bounds, options).map(
+    ({ kind: _k, layouts: _l, raw: _r, ...p }) => p,
+  );
+}
+
+function parseCandidates(
+  raw: unknown,
+  words: readonly PlannerWord[],
+  bounds: PlanBounds,
+  options: Pick<PlanOptions, 'emphasisTimes'>,
+): Candidate[] {
   if (!isRec(raw) || !Array.isArray(raw.scenes) || words.length === 0) return [];
+  const candidates = raw.scenes
+    .flatMap((s) => {
+      if (!isRec(s)) return [];
+      const c = parseCandidate(s, words, bounds);
+      return c ? [c] : [];
+    })
+    .sort((a, b) => a.startTime - b.startTime);
 
-  const candidates: PlannedExplainerScene[] = [];
-  for (const s of raw.scenes) {
-    if (!isRec(s)) continue;
-    const win = parseWindow(s, words, bounds);
-    if (!win) continue;
-    const scene = parseScene(s, words, win);
-    if (!scene) continue;
-    candidates.push({ startTime: win.startTime, endTime: win.endTime, scene });
-  }
-
-  candidates.sort((a, b) => a.startTime - b.startTime);
-  const maxScenes = Math.max(1, Math.floor((bounds.maxEnd - bounds.minStart) / 7) + 1);
-  const accepted: PlannedExplainerScene[] = [];
+  // Snap chains: a `continues` scene starting within chainGapSec of the
+  // previous scene's end starts exactly where it ends.
+  const snapped: Candidate[] = [];
   for (const c of candidates) {
-    const prev = accepted[accepted.length - 1];
-    if (prev && c.startTime < prev.endTime + EXPLAINER_LIMITS.minGapSec) continue;
-    accepted.push(c);
-    if (accepted.length >= maxScenes) break;
+    const prev = snapped[snapped.length - 1];
+    if (
+      c.chained &&
+      prev &&
+      c.startTime >= prev.endTime - 0.6 &&
+      c.startTime - prev.endTime <= EXPLAINER_LIMITS.chainGapSec &&
+      c.endTime - prev.endTime >= EXPLAINER_LIMITS.minSceneSec
+    ) {
+      snapped.push({ ...c, startTime: prev.endTime });
+    } else {
+      snapped.push({ ...c, chained: false });
+    }
   }
-  return accepted;
+
+  const varied = applyVarietyRules(snapped, bounds);
+  const emphasis = [...(options.emphasisTimes ?? [])].sort((a, b) => a - b);
+  return varied.map((c) => {
+    const withPulses: Candidate =
+      emphasis.length > 0 ? { ...c, ...addEmphasisPulses(c, emphasis) } : c;
+    return { ...withPulses, cues: sceneCues(withPulses) };
+  });
 }
 
-/** Shift every beat so it is relative to the scene window start. */
-export function toSceneRelative(scene: ExplainerScene, windowStart: number): ExplainerScene {
-  const r = (t: number): number => Math.max(0, Math.round((t - windowStart) * 1000) / 1000);
-  switch (scene.kind) {
-    case 'checklist':
-      return { ...scene, items: scene.items.map((it) => ({ ...it, doneAt: r(it.doneAt) })) };
-    case 'versus':
-      return {
-        ...scene,
-        left: { ...scene.left, at: r(scene.left.at) },
-        right: { ...scene.right, at: r(scene.right.at) },
-      };
-    case 'stamp':
-      return {
-        ...scene,
-        stampAt: r(scene.stampAt),
-        ...(scene.strikeAt === undefined ? {} : { strikeAt: r(scene.strikeAt) }),
-      };
-    case 'flow':
-      return { ...scene, inputAt: r(scene.inputAt), outputAt: r(scene.outputAt) };
-    case 'stack':
-      return {
-        ...scene,
-        layers: scene.layers.map((l) => ({ ...l, at: r(l.at) })),
-        ...(scene.dimAt === undefined ? {} : { dimAt: r(scene.dimAt) }),
-      };
-  }
+/** Shift every beat so it is relative to `windowStart` (ms precision, ≥ 0). */
+export function toSceneRelative<T extends ExplainerScene>(scene: T, windowStart: number): T {
+  return mapSceneTimes(scene, (t) => Math.max(0, Math.round((t - windowStart) * 1000) / 1000));
 }
 
 // ---------------------------------------------------------------------------
-// Gemini call
+// Gemini calls
 // ---------------------------------------------------------------------------
+
+async function askForPlan(ai: GoogleGenAI, prompt: string, label: string): Promise<unknown> {
+  const text = await callGeminiWithRetry(
+    ai,
+    {
+      model: MODELS.BALANCED[0],
+      fallbacks: MODELS.BALANCED.slice(1),
+      config: { responseMimeType: 'application/json' },
+      thinking: 'high',
+    },
+    prompt,
+    label,
+  );
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
 
 export async function planExplainerScenes(
   apiKey: string,
-  words: PlannerWord[],
+  words: readonly PlannerWord[],
   bounds: PlanBounds,
+  options: PlanOptions = {},
 ): Promise<PlanResult> {
   if (words.length < 8) return { ok: true, value: [] };
+  const aspect = options.aspect ?? '9:16';
   const started = Date.now();
   try {
     const ai = new GoogleGenAI({ apiKey });
-    const text = await callGeminiWithRetry(
+    const draftRaw = await askForPlan(
       ai,
-      {
-        model: MODELS.BALANCED[0],
-        fallbacks: MODELS.BALANCED.slice(1),
-        config: { responseMimeType: 'application/json', temperature: 0.4 },
-      },
-      buildExplainerPrompt(words, bounds),
+      buildExplainerPrompt(words, bounds, aspect),
       'explainer-scenes',
     );
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(text);
-    } catch {
+    if (draftRaw === null) {
       return { ok: false, error: 'Gemini returned unparseable JSON for explainer scenes' };
     }
-    const value = parseExplainerPlan(parsed, words, bounds);
+    let final = parseCandidates(draftRaw, words, bounds, options);
+    let reviewed = false;
+
+    if (options.review !== false && final.length > 0) {
+      try {
+        const reviewRaw = await askForPlan(
+          ai,
+          buildReviewPrompt(
+            words,
+            final.map((c) => c.raw),
+            bounds,
+            aspect,
+          ),
+          'explainer-review',
+        );
+        const revised =
+          reviewRaw === null ? [] : parseCandidates(reviewRaw, words, bounds, options);
+        // Keep the review only when it still yields a usable plan.
+        if (revised.length > 0) {
+          final = revised;
+          reviewed = true;
+        }
+      } catch (err) {
+        log(
+          'warn',
+          'explainer',
+          `review pass failed, keeping draft: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+    }
+
+    const value = final.map(({ layouts: _l, raw: _r, ...p }) => p);
     log(
       'info',
       'explainer',
-      `planned ${value.length} scene(s) [${value.map((s) => s.scene.kind).join(', ')}] ` +
-        `from ${words.length} words in ${Date.now() - started}ms`,
+      `planned ${value.length} scene(s) [${value
+        .map((s) => `${s.scene.kind}/${s.layout}${s.chained ? '+' : ''}`)
+        .join(', ')}] from ${words.length} words in ${Date.now() - started}ms` +
+        (reviewed ? ' (reviewed)' : ''),
     );
     return { ok: true, value };
   } catch (err) {

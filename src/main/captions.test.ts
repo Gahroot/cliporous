@@ -342,3 +342,163 @@ describe('single-pass timing', () => {
     expect(document).toMatchSnapshot();
   });
 });
+
+describe('editorial mode', () => {
+  const EDITORIAL_STYLE: CaptionStyleInput = { ...STYLE, captionMode: 'editorial' };
+  const pillLines = (lines: string[]): string[] => lines.filter((line) => line.includes('\\p1'));
+  const textLines = (lines: string[]): string[] =>
+    lines.filter((line) => line.startsWith('Dialogue: 1,'));
+
+  it('declares an Instrument Serif style only when editorial groups exist', () => {
+    const editorial = buildCaptionASSDocument(MODE_FIXTURE, EDITORIAL_STYLE);
+    expect(editorial).toMatch(/^Style: Editorial,Instrument Serif,119,/m);
+    for (const line of dialogueLines(editorial)) {
+      expect(line.split(',')[3]).toBe('Editorial');
+    }
+    const standard = buildCaptionASSDocument(MODE_FIXTURE, STYLE);
+    expect(standard).not.toContain('Style: Editorial');
+    expect(standard).not.toContain('\\p1');
+  });
+
+  it('emits one pill drawing (layer 0) and one text event (layer 1) per spoken word', () => {
+    const lines = buildAssLines(MODE_FIXTURE, 'editorial', DEFAULT_ACCENT, 4);
+    const pills = pillLines(lines);
+    expect(pills).toHaveLength(MODE_FIXTURE.length);
+    expect(textLines(lines)).toHaveLength(MODE_FIXTURE.length);
+    for (const pill of pills) {
+      expect(pill.startsWith('Dialogue: 0,')).toBe(true);
+      expect(pill).toMatch(/\\an7\\pos\(\d+,\d+\)\\fscx100\\fscy100\\bord0\\shad0\\blur/);
+      expect(pill).toContain('\\1a&HCC&');
+      expect(pill).toMatch(/\}m [\d.]+ 0 l .* b .*\{\\p0\}$/);
+    }
+    // Slices tile the group: each event ends where the next begins.
+    const pillTimes = pills.map(eventTimes);
+    expect(pillTimes[0].start).toBe(0);
+    for (let index = 0; index < pillTimes.length - 1; index++) {
+      expect(pillTimes[index].end).toBe(pillTimes[index + 1].start);
+    }
+    // Pills move left-to-right across a one-line group.
+    const xs = pills.map((pill) => Number(pill.match(/\\pos\((\d+),/)?.[1]));
+    expect([...xs].sort((a, b) => a - b)).toEqual(xs);
+  });
+
+  it.each([
+    [0, 'this', 'is'],
+    [1, 'is', 'very'],
+    [2, 'very', 'cool'],
+  ] as const)('dims words after the active word (slice %i)', (slice, active, firstUpcoming) => {
+    const text = textLines(buildAssLines(MODE_FIXTURE, 'editorial', DEFAULT_ACCENT, 4))[slice];
+    const payload = eventPayload(text);
+    const dimAt = payload.indexOf('\\alpha&H8C&');
+    expect(dimAt).toBeGreaterThan(payload.indexOf(active));
+    expect(payload.indexOf(firstUpcoming, dimAt)).toBeGreaterThan(dimAt);
+    expect(payload.slice(0, dimAt)).not.toContain('\\alpha');
+  });
+
+  it('keeps every word at full opacity once the last word is spoken', () => {
+    const lines = textLines(buildAssLines(MODE_FIXTURE, 'editorial', DEFAULT_ACCENT, 4));
+    expect(lines.at(-1)).not.toContain('\\alpha&H8C&');
+    expect(plainEventText(lines.at(-1) as string)).toBe('this is very cool');
+  });
+
+  it('renders emphasis words in italic accent and ordinary words upright', () => {
+    const [text] = textLines(buildAssLines(MODE_FIXTURE, 'editorial', '#ff0000', 4));
+    expect(text).toContain('{\\i1\\1c&H000000FF}is{\\i0\\1c&H00FFFFFF}');
+    expect(text).toContain('{\\i1\\1c&H000000FF}very{\\i0\\1c&H00FFFFFF}');
+    expect(text).not.toMatch(/\\i1[^}]*\}this\b/);
+    expect(text).not.toMatch(/\\i1[^}]*\}cool\b/);
+    expect(text).not.toContain('\\fn');
+  });
+
+  it('keeps sentence case and a soft halo instead of a thick outline', () => {
+    const document = buildCaptionASSDocument(
+      [{ text: 'Sentence', start: 0, end: 0.3 }, ...MODE_FIXTURE.slice(1)],
+      EDITORIAL_STYLE,
+    );
+    const style = document.split('\n').find((line) => line.startsWith('Style: Editorial'));
+    const fields = style?.split(',') ?? [];
+    expect(fields[7]).toBe('0'); // not bold
+    expect(Number(fields[16])).toBeLessThanOrEqual(3); // outline
+    expect(fields[5]).toBe('&HB4000000'); // mostly transparent halo
+    expect(plainEventText(textLines(dialogueLines(document))[0])).toBe('Sentence is very cool');
+  });
+
+  it('places pills on the correct line of a two-line group', () => {
+    const words = timedWords(['Conservative', 'typographic', 'measurement', 'stabilizes'], 0.3);
+    const lines = dialogueLines(buildCaptionASSDocument(words, EDITORIAL_STYLE));
+    const [text] = textLines(lines);
+    expect(text.match(/\\N/g)).toHaveLength(1);
+    const breakAfter = plainEventText(text.replace('\\N', '|')).split('|')[0].split(' ').length;
+    const anchorY = Number(text.match(/\\pos\(\d+,(\d+)\)/)?.[1]);
+    const pillYs = pillLines(lines).map((pill) => Number(pill.match(/\\pos\(\d+,(\d+)\)/)?.[1]));
+    expect(pillYs).toHaveLength(words.length);
+    const firstLine = pillYs.slice(0, breakAfter);
+    const secondLine = pillYs.slice(breakAfter);
+    expect(new Set(firstLine).size).toBe(1);
+    expect(new Set(secondLine).size).toBe(1);
+    expect(secondLine[0] - firstLine[0]).toBe(140);
+    for (const y of pillYs) expect(y).toBeLessThan(anchorY);
+  });
+
+  it.each([
+    ['stack', '\\an8\\pos(540,989)'],
+    ['stack-flipped', '\\an2\\pos(540,931)'],
+    ['takeover', '\\an2\\pos(540,1498)'],
+    ['pip', '\\an2\\pos(540,1306)'],
+    ['over', '\\an2\\pos(540,1632)'],
+  ] as const)('anchors captions for the %s layout', (layout, expected) => {
+    const lines = dialogueLines(
+      buildCaptionASSDocument(MODE_FIXTURE, EDITORIAL_STYLE, {
+        layoutWindows: [{ startTime: 0, endTime: 5, layout }],
+      }),
+    );
+    for (const text of textLines(lines)) expect(text).toContain(expected);
+  });
+
+  it('moves the anchor for other modes too and splits groups at layout changes', () => {
+    const lines = dialogueLines(
+      buildCaptionASSDocument(MODE_FIXTURE, STYLE, {
+        layoutWindows: [{ startTime: 0.5, endTime: 5, layout: 'takeover' }],
+      }),
+    );
+    expect(lines).toHaveLength(2);
+    expect(lines[0]).toContain('\\an2\\pos(540,1632)');
+    expect(plainEventText(lines[0])).toBe('this is');
+    expect(lines[1]).toContain('\\an2\\pos(540,1498)');
+    expectNoEventOverlap(lines);
+  });
+
+  it('keeps fullscreen-quote as its own hero look in editorial mode', () => {
+    const lines = dialogueLines(
+      buildCaptionASSDocument(
+        [
+          { text: 'ordinary', start: 0.1, end: 0.4 },
+          { text: 'hero', start: 1.1, end: 1.4, emphasis: 'emphasis' },
+        ],
+        EDITORIAL_STYLE,
+        {
+          archetypeWindows: [
+            { startTime: 0, endTime: 1, archetype: 'talking-head' },
+            { startTime: 1, endTime: 2, archetype: 'fullscreen-quote' },
+          ],
+        },
+      ),
+    );
+    const hero = lines.at(-1) as string;
+    expect(hero).toContain(',Default,');
+    expect(hero).toContain('\\an5\\pos(540,960)');
+    expect(hero).toContain('\\fnInstrument Serif\\i1\\1c&H000C1023\\bord0');
+    expect(hero).not.toContain('\\p1');
+    expect(pillLines(lines)).toHaveLength(1);
+  });
+
+  it('never overlaps text events across groups', () => {
+    const words = timedWords(
+      ['One', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'],
+      0.3,
+    );
+    const lines = textLines(dialogueLines(buildCaptionASSDocument(words, EDITORIAL_STYLE)));
+    expect(lines).toHaveLength(words.length);
+    expectNoEventOverlap(lines);
+  });
+});

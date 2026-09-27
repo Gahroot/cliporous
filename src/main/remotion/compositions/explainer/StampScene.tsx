@@ -7,14 +7,16 @@
 import type React from 'react';
 import { interpolate } from 'remotion';
 import { resolveIcon } from '../blocks/icon';
-import { ramp, STAGE, usePop, useSceneTime } from './stage';
+import { Burst, floatTransform, useBreath, useFloat } from './motion';
+import { ramp, usePop, useSceneTime, useStage } from './stage';
 import type { StampScene as StampSceneData } from './types';
 
-export const StampScene: React.FC<{ scene: StampSceneData; accent: string }> = ({
-  scene,
-  accent,
-}) => {
+export const StampScene: React.FC<{ scene: StampSceneData }> = ({ scene }) => {
+  const STAGE = useStage();
+  const accent = STAGE.accent;
   const { t } = useSceneTime();
+  const float = useFloat('stamp-icon', 7);
+  const breath = useBreath('stamp');
   const iconIn = usePop(0.05, 150, 16);
   const Icon = resolveIcon(scene.icon);
 
@@ -51,8 +53,8 @@ export const StampScene: React.FC<{ scene: StampSceneData; accent: string }> = (
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transform: `scale(${iconIn})`,
-          filter: `drop-shadow(0 0 28px rgba(255,255,255,${0.35 * (1 - strike * 0.6)}))`,
+          transform: `${floatTransform(float)} scale(${iconIn})`,
+          filter: `drop-shadow(0 0 ${22 + breath * 16}px rgba(255,255,255,${(0.25 + breath * 0.15) * (1 - strike * 0.6)}))`,
         }}
       >
         <Icon size={220} strokeWidth={1.6} color={STAGE.text} />
@@ -103,6 +105,14 @@ export const StampScene: React.FC<{ scene: StampSceneData; accent: string }> = (
           {scene.word}
         </div>
       )}
+      <Burst
+        atSec={scene.stampAt + 0.12}
+        x={540}
+        y={640}
+        color={accent}
+        seed="stamp"
+        radius={260}
+      />
     </div>
   );
 };

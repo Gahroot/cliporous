@@ -31,6 +31,68 @@ export interface PalettePickerProps {
   onPaletteChange?: (paletteId: string) => void;
   showProfileDefault?: boolean;
   showProjectPreview?: boolean;
+  /**
+   * `'full'` (default) is the long-form picker: skins, preview, palette cards
+   * and custom-palette management. `'compact'` renders only palette swatches
+   * and names, for surfaces where the skin axis doesn't apply (short-form).
+   */
+  variant?: 'full' | 'compact';
+  /** Group label for the compact variant. */
+  title?: string;
+  /** Helper text shown under the compact variant's label. */
+  description?: string;
+}
+
+interface PaletteSwatchButtonProps {
+  palette: Palette;
+  selected: boolean;
+  disabled?: boolean | undefined;
+  onSelect: () => void;
+}
+
+function PaletteSwatchButton({
+  palette,
+  selected,
+  disabled,
+  onSelect,
+}: PaletteSwatchButtonProps): React.JSX.Element {
+  const colors = [
+    { role: 'background', value: palette.background },
+    { role: 'foreground', value: palette.foreground },
+    { role: 'accent', value: palette.accent },
+    { role: 'accent2', value: palette.accent2 },
+  ].filter((color): color is { role: string; value: string } => typeof color.value === 'string');
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      disabled={disabled}
+      aria-pressed={selected}
+      aria-label={`Use ${palette.name} palette`}
+      className={cn(
+        'flex min-h-11 min-w-0 items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left transition-[border-color,box-shadow,opacity] duration-150',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        'disabled:pointer-events-none disabled:opacity-50',
+        selected
+          ? 'border-transparent ring-2 ring-primary'
+          : 'border-border hover:border-foreground/35',
+      )}
+    >
+      <span className="flex shrink-0 -space-x-1" aria-hidden>
+        {colors.map((color) => (
+          <span
+            key={color.role}
+            className="h-4 w-4 rounded-full border border-border"
+            style={{ backgroundColor: color.value }}
+          />
+        ))}
+      </span>
+      <span className="min-w-0 flex-1 truncate text-xs font-medium text-foreground">
+        {palette.name}
+      </span>
+      {selected && <Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />}
+    </button>
+  );
 }
 
 interface PaletteCardProps {
@@ -130,6 +192,9 @@ export function PalettePicker({
   onPaletteChange,
   showProfileDefault = true,
   showProjectPreview = true,
+  variant = 'full',
+  title = 'Palette',
+  description,
 }: PalettePickerProps): React.JSX.Element {
   const storedPaletteId = useStore((state) => state.settings.longformPaletteId);
   const customPalettes = useStore((state) => state.settings.customPalettes);
@@ -218,6 +283,32 @@ export function PalettePicker({
     if (wasSelected && onPaletteChange) onPaletteChange(DEFAULT_PALETTE_ID);
     setDeletingPalette(null);
   };
+
+  if (variant === 'compact') {
+    return (
+      <fieldset className={cn('grid gap-2', className)}>
+        <legend className="text-sm font-semibold text-foreground">{title}</legend>
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
+        {paletteMissing && (
+          <p role="status" className="flex items-start gap-1.5 text-xs text-muted-foreground">
+            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden />
+            The selected palette is unavailable, so {fallbackPalette.name} will be used.
+          </p>
+        )}
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+          {allPalettes.map((option) => (
+            <PaletteSwatchButton
+              key={option.id}
+              palette={option}
+              selected={option.id === previewPalette.id}
+              disabled={disabled}
+              onSelect={() => commitPalette(option.id)}
+            />
+          ))}
+        </div>
+      </fieldset>
+    );
+  }
 
   return (
     <div className={cn('flex flex-col gap-5', className)}>

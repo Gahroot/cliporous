@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { emitUsageFromResponse } from '../ai-usage';
+import { callGeminiWithRetry, MODELS } from '../ai/gemini-client';
 import { escapeDrawtext, resolveHookFont } from '../hook-title';
 
 // ---------------------------------------------------------------------------
@@ -253,12 +253,12 @@ ${contextBlock}Transcript: "${transcript.slice(0, 600)}"
 
 Return ONLY the re-hook text, nothing else.`;
 
-    const result = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-    });
-    emitUsageFromResponse('rehook', 'gemini-2.5-flash', result);
-    const raw = (result.text ?? '').trim();
+    const raw = await callGeminiWithRetry(
+      ai,
+      { model: MODELS.FAST[0], fallbacks: MODELS.FAST.slice(1) },
+      prompt,
+      'rehook',
+    );
     const firstLine = raw
       .split('\n')[0]
       .replace(/^["']|["']$/g, '')

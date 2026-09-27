@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { AI_VALIDATION_MODEL } from '@shared/constants';
 import { Ch } from '@shared/ipc-channels';
 import type { WordTimestamp } from '@shared/types';
 import { ipcMain } from 'electron';
@@ -22,8 +23,6 @@ import { buildPromoClips, type PromoClipOptions } from '../promo/promo-clips';
 import { validatePexelsKey } from '../provider-connections';
 import type { TranscriptionResult } from '../transcription';
 import { analyzeWordEmphasis } from '../word-emphasis';
-
-const AI_VALIDATION_MODEL = 'gemini-2.5-flash-lite';
 
 export function registerAiHandlers(): void {
   // AI — score transcript segments for viral potential

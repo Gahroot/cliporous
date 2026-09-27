@@ -6,7 +6,15 @@
 import { Check } from 'lucide-react';
 import type React from 'react';
 import { resolveIcon } from '../blocks/icon';
-import { ramp, STAGE, usePop, useSceneTime } from './stage';
+import {
+  floatTransform,
+  Glow,
+  reactionTransform,
+  useFloat,
+  useLivingShadow,
+  useReaction,
+} from './motion';
+import { ramp, usePop, useSceneTime, useStage } from './stage';
 import type { ChecklistItem, ChecklistScene as ChecklistSceneData } from './types';
 
 const ROW_HEIGHT = 104;
@@ -16,7 +24,9 @@ const Row: React.FC<{ item: ChecklistItem; index: number; focused: boolean }> = 
   index,
   focused,
 }) => {
+  const STAGE = useStage();
   const { t } = useSceneTime();
+  const reaction = useReaction(index);
   const enter = ramp(t, 0.1 + index * 0.08, 0.45);
   const tick = usePop(item.doneAt, 220, 14);
   const strike = ramp(t, item.doneAt + 0.05, 0.35);
@@ -33,13 +43,15 @@ const Row: React.FC<{ item: ChecklistItem; index: number; focused: boolean }> = 
         alignItems: 'center',
         gap: 28,
         padding: '0 32px',
+        position: 'relative',
         opacity: enter,
-        transform: `translateX(${(1 - enter) * -30}px)`,
+        transform: `translateX(${(1 - enter) * -30}px) ${reactionTransform(reaction)}`,
         boxShadow: focused
-          ? 'inset 0 0 0 2px rgba(255,255,255,0.28)'
+          ? `inset 0 0 0 2px ${STAGE.accent}88, 0 0 36px ${STAGE.accentSoft}`
           : 'inset 0 0 0 1px rgba(255,255,255,0.04)',
       }}
     >
+      <Glow color={STAGE.accentSoft} intensity={reaction.glow} radius={90} />
       <div style={{ width: 48, height: 48, position: 'relative', flexShrink: 0 }}>
         <Icon
           size={44}
@@ -91,7 +103,10 @@ const Row: React.FC<{ item: ChecklistItem; index: number; focused: boolean }> = 
 };
 
 export const ChecklistScene: React.FC<{ scene: ChecklistSceneData }> = ({ scene }) => {
+  const STAGE = useStage();
   const { t } = useSceneTime();
+  const float = useFloat('checklist', 5);
+  const shadow = useLivingShadow('checklist');
   const nextIndex = scene.items.findIndex((it) => t < it.doneAt);
 
   return (
@@ -101,17 +116,30 @@ export const ChecklistScene: React.FC<{ scene: ChecklistSceneData }> = ({ scene 
         left: 110,
         right: 110,
         top: '50%',
-        transform: 'translateY(-50%)',
+        transform: `translateY(-50%) ${floatTransform(float)}`,
         borderRadius: 34,
         padding: 26,
         background: STAGE.card,
         border: `1px solid ${STAGE.cardBorder}`,
-        boxShadow: '0 40px 90px rgba(0,0,0,0.45)',
+        boxShadow: shadow,
         display: 'flex',
         flexDirection: 'column',
         gap: 16,
       }}
     >
+      {scene.title && (
+        <div
+          style={{
+            fontFamily: STAGE.font,
+            fontWeight: 700,
+            fontSize: 40,
+            color: STAGE.text,
+            padding: '6px 10px 4px',
+          }}
+        >
+          {scene.title}
+        </div>
+      )}
       {scene.items.map((item, i) => (
         <Row key={`${i}-${item.label}`} item={item} index={i} focused={i === nextIndex} />
       ))}

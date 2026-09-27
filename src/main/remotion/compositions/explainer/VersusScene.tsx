@@ -5,17 +5,22 @@
 
 import type React from 'react';
 import { resolveIcon } from '../blocks/icon';
-import { ramp, STAGE, usePop, useSceneTime } from './stage';
+import { floatTransform, Glow, reactionTransform, useFloat, useReaction } from './motion';
+import { ramp, usePop, useSceneTime, useStage } from './stage';
 import type { VersusScene as VersusSceneData, VersusSide } from './types';
 
 const PANEL = 360;
 
-const Panel: React.FC<{ side: VersusSide; accent: string; delay: number }> = ({
+const Panel: React.FC<{ side: VersusSide; index: number; delay: number }> = ({
   side,
-  accent,
+  index,
   delay,
 }) => {
+  const STAGE = useStage();
+  const accent = STAGE.accent;
   const { t } = useSceneTime();
+  const float = useFloat(`versus${index}`, 6);
+  const reaction = useReaction(index);
   const enter = ramp(t, delay, 0.5);
   const lit = usePop(side.at, 200, 13);
   const Icon = resolveIcon(side.icon);
@@ -38,10 +43,16 @@ const Panel: React.FC<{ side: VersusSide; accent: string; delay: number }> = ({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 36,
+        position: 'relative',
         opacity: enter * (0.55 + 0.45 * Math.min(lit, 1)),
-        transform: `scale(${scale})`,
+        transform: `${floatTransform(float)} scale(${scale}) ${reactionTransform(reaction)}`,
       }}
     >
+      <Glow
+        color={STAGE.accentSoft}
+        intensity={reaction.glow + (lit > 0.5 ? 0.25 : 0)}
+        radius={150}
+      />
       <Icon size={128} strokeWidth={1.5} color={lit > 0.5 ? accent : STAGE.text} />
       <div
         style={{
@@ -60,10 +71,8 @@ const Panel: React.FC<{ side: VersusSide; accent: string; delay: number }> = ({
   );
 };
 
-export const VersusScene: React.FC<{ scene: VersusSceneData; accent: string }> = ({
-  scene,
-  accent,
-}) => {
+export const VersusScene: React.FC<{ scene: VersusSceneData }> = ({ scene }) => {
+  const STAGE = useStage();
   const { t } = useSceneTime();
   const vs = ramp(t, 0.25, 0.4);
   return (
@@ -77,7 +86,7 @@ export const VersusScene: React.FC<{ scene: VersusSceneData; accent: string }> =
         gap: 30,
       }}
     >
-      <Panel side={scene.left} accent={accent} delay={0} />
+      <Panel side={scene.left} index={0} delay={0} />
       <div
         style={{
           fontFamily: STAGE.font,
@@ -90,7 +99,7 @@ export const VersusScene: React.FC<{ scene: VersusSceneData; accent: string }> =
       >
         VS
       </div>
-      <Panel side={scene.right} accent={accent} delay={0.12} />
+      <Panel side={scene.right} index={1} delay={0.12} />
     </div>
   );
 };

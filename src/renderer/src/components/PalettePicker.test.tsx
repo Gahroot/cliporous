@@ -156,6 +156,53 @@ describe('PalettePicker', () => {
     expect(getCreatorProfiles()[0]?.longformPaletteId).toBe('brand');
   });
 
+  it('compact variant renders only palette swatches and changes selection', () => {
+    useStore.getState().addCustomPalette(CUSTOM_PALETTE);
+    render(
+      <PalettePicker
+        variant="compact"
+        title="Animation colours"
+        description="Used for animated scenes and caption highlights."
+      />,
+    );
+
+    const group = screen.getByRole('group', { name: 'Animation colours' });
+    expect(
+      screen.getByText('Used for animated scenes and caption highlights.'),
+    ).toBeInTheDocument();
+    // No skin selector, preview, or custom-palette management in compact mode.
+    expect(screen.queryByText('Block style')).toBeNull();
+    expect(screen.queryByText('Project preview')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'New palette' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Editorial' })).toBeNull();
+
+    const brand = screen.getByRole('button', { name: 'Use Brand Default palette' });
+    const custom = screen.getByRole('button', { name: 'Use Studio Sunrise palette' });
+    expect(group).toContainElement(custom);
+    expect(brand).toHaveAttribute('aria-pressed', 'true');
+    expect(custom).toHaveAttribute('aria-pressed', 'false');
+
+    custom.focus();
+    expect(custom).toHaveFocus();
+    fireEvent.click(custom);
+
+    expect(useStore.getState().settings.longformPaletteId).toBe(CUSTOM_PALETTE.id);
+    expect(custom).toHaveAttribute('aria-pressed', 'true');
+    expect(brand).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('compact variant shows the fallback palette when the saved one is missing', () => {
+    useStore.getState().setLongformPaletteId('deleted-palette');
+    render(<PalettePicker variant="compact" title="Animation colours" />);
+
+    expect(screen.getByRole('status')).toHaveTextContent('Brand Default will be used');
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Use Brand Default palette' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
   it('shows a repair action for a missing saved palette', () => {
     useStore.getState().setLongformPaletteId('deleted-palette');
     render(<PalettePicker />);

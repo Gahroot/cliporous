@@ -6,13 +6,20 @@
  * out and the output card types its text on `outputAt`.
  */
 
-import { ThreeCanvas } from '@remotion/three';
 import type React from 'react';
 import { useMemo } from 'react';
 import { interpolate } from 'remotion';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { EASE } from '../../shared/easing';
-import { ramp, STAGE, shade, usePop, useSceneTime } from './stage';
+import {
+  floatTransform,
+  reactionTransform,
+  useFloat,
+  useLivingShadow,
+  useReaction,
+} from './motion';
+import { Stage3D } from './Stage3D';
+import { ramp, usePop, useSceneTime, useStage } from './stage';
 import { type CameraSpec, worldUnitsPerPixel } from './three-helpers';
 import {
   EXPLAINER_STAGE_HEIGHT,
@@ -38,8 +45,12 @@ const Card: React.FC<{
   labelColor: string;
   enterDelay: number;
 }> = ({ side, label, text, labelColor, enterDelay }) => {
+  const STAGE = useStage();
   const { t } = useSceneTime();
   const enter = ramp(t, enterDelay, 0.5);
+  const float = useFloat(`flow-card${side}`, 5);
+  const shadow = useLivingShadow(`flow-card${side}`, 0.9);
+  const reaction = useReaction(side < 0 ? 0 : 2);
   return (
     <div
       style={{
@@ -50,10 +61,10 @@ const Card: React.FC<{
         height: CARD_H,
         borderRadius: 18,
         background: STAGE.paper,
-        boxShadow: '0 30px 60px rgba(0,0,0,0.45)',
+        boxShadow: shadow,
         padding: '26px 26px',
         opacity: enter,
-        transform: `translateX(${(1 - enter) * side * 40}px) rotateY(${side * -8}deg)`,
+        transform: `translateX(${(1 - enter) * side * 40}px) ${floatTransform(float)} rotateY(${side * -8}deg) ${reactionTransform(reaction)}`,
       }}
     >
       <div
@@ -98,6 +109,7 @@ const Engine: React.FC<{ scene: FlowSceneData; color: string }> = ({ scene, colo
   });
   const idle = t * 0.25;
   const bob = Math.sin(t * 1.6) * 0.06;
+  const reaction = useReaction(1);
 
   // Travelling particles (world x). Cards sit at ±CARD_CENTER_X px.
   const unit = worldUnitsPerPixel(CAMERA);
@@ -111,15 +123,11 @@ const Engine: React.FC<{ scene: FlowSceneData; color: string }> = ({ scene, colo
 
   return (
     <>
-      <ambientLight intensity={0.35} />
-      <hemisphereLight args={['#ffffff', '#1b2036', 0.9]} />
-      <directionalLight position={[-3, 5, 6]} intensity={2.4} />
-      <directionalLight position={[4, -2, 3]} intensity={0.4} />
       <mesh
         geometry={geometry}
         position={[0, bob, 0]}
-        rotation={[0.45, 0.6 + idle + spin, 0.1]}
-        scale={pop}
+        rotation={[0.45, 0.6 + idle + spin, 0.1 + reaction.rotate * 0.02]}
+        scale={pop * reaction.scale}
       >
         <meshStandardMaterial color={color} roughness={0.55} metalness={0.02} />
       </mesh>
@@ -137,28 +145,15 @@ const Engine: React.FC<{ scene: FlowSceneData; color: string }> = ({ scene, colo
   );
 };
 
-export const FlowScene: React.FC<{ scene: FlowSceneData; accent: string }> = ({
-  scene,
-  accent,
-}) => {
+export const FlowScene: React.FC<{ scene: FlowSceneData }> = ({ scene }) => {
+  const STAGE = useStage();
+  const accent = STAGE.accent;
   const { t } = useSceneTime();
-  const engineColor = shade(accent, 0.45);
+  const engineColor = STAGE.clay[0];
   const pill = ramp(t, 0.35, 0.4);
 
   return (
     <div style={{ position: 'absolute', inset: 0, perspective: 1400 }}>
-      {/* Soft contact shadow under the engine */}
-      <div
-        style={{
-          position: 'absolute',
-          left: EXPLAINER_STAGE_WIDTH / 2 - 260,
-          top: EXPLAINER_STAGE_HEIGHT / 2 + 120,
-          width: 520,
-          height: 70,
-          borderRadius: '50%',
-          background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.45), transparent 70%)',
-        }}
-      />
       <Card
         side={-1}
         label={scene.inputLabel}
@@ -173,16 +168,9 @@ export const FlowScene: React.FC<{ scene: FlowSceneData; accent: string }> = ({
         labelColor={accent}
         enterDelay={0.1}
       />
-      <ThreeCanvas
-        width={EXPLAINER_STAGE_WIDTH}
-        height={EXPLAINER_STAGE_HEIGHT}
-        camera={{ position: CAMERA.position, fov: CAMERA.fov }}
-        flat
-        gl={{ alpha: true, antialias: true }}
-        style={{ position: 'absolute', inset: 0 }}
-      >
+      <Stage3D camera={CAMERA} focusAt={scene.outputAt} driftDeg={3} groundY={-0.95}>
         <Engine scene={scene} color={engineColor} />
-      </ThreeCanvas>
+      </Stage3D>
       <div
         style={{
           position: 'absolute',

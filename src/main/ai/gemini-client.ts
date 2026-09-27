@@ -1,4 +1,4 @@
-import type { GenerateContentConfig, GoogleGenAI } from '@google/genai';
+import { type GenerateContentConfig, type GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { emitUsageFromResponse } from '../ai-usage';
 import { log } from '../logger';
 
@@ -13,22 +13,58 @@ export interface GeminiCall {
    */
   fallbacks?: readonly string[];
   config?: GenerateContentConfig;
+  /**
+   * Reasoning depth for Gemini 3 models. Defaults to `low` for the FAST chain
+   * (extraction / classification) and the model default (dynamic high) for
+   * everything else. An explicit `config.thinkingConfig` always wins.
+   */
+  thinking?: 'low' | 'medium' | 'high';
 }
 
 /**
- * Curated free-tier-eligible model chains (verified May 2026 against
- * ai.google.dev/gemini-api/docs/pricing). Order = preference, head first.
+ * Curated model chains (verified 27 Sep 2026 against
+ * ai.google.dev/gemini-api/docs/models + /deprecations). Order = preference.
  *
  *   FAST     — short prompts, JSON extraction, classification.
- *   BALANCED — heavier reasoning (edit plans, hook generation, scoring).
+ *   BALANCED — heavier reasoning (edit plans, scene planning, scoring).
  *
- * `gemini-3-flash-preview` is the new default workhorse; 2.5 models stay in
- * the chain as fallbacks because 3.x is preview and occasionally overloaded.
+ * `gemini-3.8-flash` (GA 2 Sep 2026) is the workhorse; `gemini-3.7-flash` is
+ * the same price tier and a stable fallback. The 2.5 family is access-limited
+ * for new users and scheduled for shutdown, so it is no longer in any chain.
  */
 export const MODELS = {
-  FAST: ['gemini-3-flash-preview', 'gemini-2.5-flash-lite', 'gemini-2.5-flash'] as const,
-  BALANCED: ['gemini-3-flash-preview', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'] as const,
+  FAST: ['gemini-3.5-flash-lite', 'gemini-3.8-flash', 'gemini-3.7-flash'] as const,
+  BALANCED: ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.5-flash-lite'] as const,
 } as const;
+
+/** Image generation model (B-roll stills). `gemini-2.5-flash-image` shuts down 2 Oct 2026. */
+export const IMAGE_MODEL = 'gemini-3.1-flash-image';
+
+const THINKING_LEVELS: Record<NonNullable<GeminiCall['thinking']>, ThinkingLevel> = {
+  low: ThinkingLevel.LOW,
+  medium: ThinkingLevel.MEDIUM,
+  high: ThinkingLevel.HIGH,
+};
+
+/**
+ * Normalise a request config for Gemini 3 models:
+ *  - drop `temperature` below 1.0 (Google: Gemini 3 is tuned for the default
+ *    1.0; lower values can cause looping / degraded output);
+ *  - apply the requested thinking level unless the caller set one explicitly.
+ * Pure — exported for tests.
+ */
+export function resolveGeminiConfig(call: GeminiCall): GenerateContentConfig | undefined {
+  const thinking = call.thinking ?? (call.model === MODELS.FAST[0] ? 'low' : undefined);
+  const base = call.config;
+  if (!base && !thinking) return undefined;
+  const { temperature, ...rest } = base ?? {};
+  const config: GenerateContentConfig = { ...rest };
+  if (temperature !== undefined && temperature >= 1) config.temperature = temperature;
+  if (thinking && !config.thinkingConfig) {
+    config.thinkingConfig = { thinkingLevel: THINKING_LEVELS[thinking] };
+  }
+  return config;
+}
 
 /**
  * Map a raw Gemini API error to a user-facing message and rethrow.
@@ -91,6 +127,7 @@ export async function callGeminiWithRetry(
   usageSource: string,
 ): Promise<string> {
   const chain = [call.model, ...(call.fallbacks ?? [])];
+  const config = resolveGeminiConfig(call);
   const maxAttemptsPerModel = 3;
   let lastErr: unknown;
 
@@ -101,7 +138,7 @@ export async function callGeminiWithRetry(
         const result = await ai.models.generateContent({
           model,
           contents: prompt,
-          config: call.config,
+          config,
         });
         emitUsageFromResponse(usageSource, model, result);
         if (m > 0 || attempt > 0) {

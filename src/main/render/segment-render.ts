@@ -13,7 +13,12 @@ import { existsSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { EmphasizedWord } from '@shared/types';
-import type { ArchetypeWindow, CaptionStyleInput, WordInput } from '../captions';
+import type {
+  ArchetypeWindow,
+  CaptionLayoutWindow,
+  CaptionStyleInput,
+  WordInput,
+} from '../captions';
 import { generateCaptions } from '../captions';
 import { DEFAULT_EDIT_STYLE_ID, isSpeakerFullscreen, resolveTemplate } from '../edit-styles';
 import {
@@ -29,6 +34,7 @@ import {
 import { resolveFontsDir } from '../font-registry';
 import { buildArchetypeLayout, type SegmentLayoutParams } from '../layouts/segment-layouts';
 import type { OverlayVisualSettings, RehookConfig } from '../overlays/rehook';
+import type { ExplainerLayout, SceneCue } from '../remotion/compositions/explainer/types';
 import { analyzeEmphasisHeuristic } from '../word-emphasis';
 import {
   buildDriftZoom,
@@ -48,6 +54,7 @@ import {
 } from './layout-transitions';
 import { applyFilterPass } from './overlay-runner';
 import { getIntermediateQuality } from './quality';
+import { mixSceneSfx } from './scene-sfx';
 import type { HookTitleConfig } from './types';
 
 // ---------------------------------------------------------------------------
@@ -74,6 +81,20 @@ export interface ResolvedSegment {
   videoPath?: string;
   /** Per-segment face crop override on the source video. */
   cropRect?: { x: number; y: number; width: number; height: number };
+  /**
+   * Explainer stage placement for `split-image` segments whose `videoPath` is
+   * a Remotion stage render (ignored for every other archetype):
+   *   - `'stack'` / undefined — stage top half, speaker bottom half (classic
+   *     split; identical filter graph to before this field existed).
+   *   - `'stack-flipped'` — speaker top half, stage bottom half.
+   *   - `'takeover'` — stage fills the frame; speaker hidden, audio kept.
+   *   - `'pip'` — stage fills the frame; speaker in a rounded bottom-right
+   *     window (shadow + border) that slides in from the right.
+   *   - `'over'` — speaker full frame like talking-head (zoom included); the
+   *     transparent stage (ProRes 4444 alpha) is composited on top.
+   * Render sizes per layout come from `stageCanvasFor()`.
+   */
+  explainerLayout?: ExplainerLayout;
   /**
    * Set when a requested archetype could not be honored at render time
    * (e.g. split-image / fullscreen-image with no image) and was degraded
@@ -107,6 +128,10 @@ export interface SegmentRenderConfig {
   captionsEnabled?: boolean;
   /** Archetype windows for presentation boundaries and the quote-hero exception. */
   archetypeWindows?: ArchetypeWindow[];
+  /** Explainer-scene sound cues in SOURCE time; mixed under the voice post-concat. */
+  sceneCues?: SceneCue[];
+  /** Mix `sceneCues` (default true). */
+  sceneSfxEnabled?: boolean;
   /** Percentage centers shared by subtitles, hook title, and rehook overlays. */
   templateLayout?: {
     titleText: { x: number; y: number };
@@ -154,6 +179,36 @@ function renderedArchetype(seg: ResolvedSegment): Archetype {
   const needsMedia = seg.archetype === 'split-image' || seg.archetype === 'fullscreen-image';
   if (needsMedia && (!seg.videoPath || !existsSync(seg.videoPath))) return 'talking-head';
   return seg.archetype;
+}
+
+/**
+ * Explainer stage layout that actually renders: only for a split-image that
+ * keeps its media. `undefined` means the classic stack.
+ */
+export function renderedExplainerLayout(seg: ResolvedSegment): ExplainerLayout | undefined {
+  if (renderedArchetype(seg) !== 'split-image') return undefined;
+  return seg.explainerLayout === 'stack' ? undefined : seg.explainerLayout;
+}
+
+/**
+ * Archetype used to resolve boundary transitions. The panel-in/out wipes
+ * assume the stage occupies the top half, so non-stack explainer layouts
+ * resolve as the layout they visually resemble: `over` is a full-frame
+ * speaker (same family → the style's cut; the stage animates itself in),
+ * `takeover` / `pip` / `stack-flipped` resolve like a full-frame graphic
+ * (eased dissolve against the speaker).
+ */
+export function transitionArchetype(seg: ResolvedSegment): Archetype {
+  switch (renderedExplainerLayout(seg)) {
+    case 'over':
+      return 'talking-head';
+    case 'takeover':
+    case 'pip':
+    case 'stack-flipped':
+      return 'fullscreen-image';
+    default:
+      return renderedArchetype(seg);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -302,6 +357,26 @@ async function encodeSegment(
     sourceHeight,
     cropRect: seg.cropRect,
   };
+  const explainerLayout = archetype === 'split-image' ? renderedExplainerLayout(seg) : undefined;
+
+  // Zoom for the whole composed frame (classic path). Explainer stage
+  // layouts must not scale the stage: `over` zooms only the speaker inside
+  // the layout; takeover / pip / stack-flipped skip zoom.
+  const segmentZoom = buildSegmentZoomFilter(
+    seg,
+    segDuration,
+    tw,
+    th,
+    fps,
+    config.wordTimestamps,
+    config.wordEmphasis,
+  );
+  if (explainerLayout) {
+    layoutParams.explainerLayout = explainerLayout;
+    if (explainerLayout === 'over' && segmentZoom) layoutParams.speakerZoomFilter = segmentZoom;
+  }
+  const zoomFilter = explainerLayout ? '' : segmentZoom;
+
   const layout = buildArchetypeLayout(archetype, layoutParams);
   const filterComplex = layout.filterComplex;
 
@@ -315,15 +390,6 @@ async function encodeSegment(
   const extras: string[] = [];
 
   // Zoom after the layout, before color grade.
-  const zoomFilter = buildSegmentZoomFilter(
-    seg,
-    segDuration,
-    tw,
-    th,
-    fps,
-    config.wordTimestamps,
-    config.wordEmphasis,
-  );
   if (zoomFilter) {
     extras.push(`[${currentLabel}]${zoomFilter}[zoom]`);
     currentLabel = 'zoom';
@@ -796,7 +862,7 @@ function computeStepDurations(
  * with overlap `d` shrinks the output timeline by `d` seconds; captions
  * must subtract the same amount or they drift forward of the audio.
  */
-function buildClipLevelWords(
+export function buildClipLevelWords(
   segments: ResolvedSegment[],
   wordTimestamps: { text: string; start: number; end: number }[] | undefined,
   wordEmphasis: EmphasizedWord[] | undefined,
@@ -810,6 +876,15 @@ function buildClipLevelWords(
   // time by walking the segments in order and accumulating each segment's
   // local offset, MINUS the xfade overlap consumed by the transition into
   // that segment (`stepDurations[i]`).
+  // A word that straddles a segment cut belongs to exactly ONE segment — the
+  // one containing its midpoint — so it is never captioned twice (explainer
+  // scenes start slightly before their first word, i.e. mid-word). Words
+  // whose midpoint falls in no segment (source gap) keep the overlap rule.
+  const belongsTo = (w: { start: number; end: number }, i: number): boolean => {
+    const mid = (w.start + w.end) / 2;
+    const owner = segments.findIndex((s) => mid >= s.startTime && mid < s.endTime);
+    return owner === -1 || owner === i;
+  };
   const clipWords: WordInput[] = [];
   let cumulative = 0;
   for (let i = 0; i < segments.length; i++) {
@@ -821,6 +896,7 @@ function buildClipLevelWords(
     cumulative -= step;
     for (const w of wordTimestamps) {
       if (w.end <= seg.startTime || w.start >= seg.endTime) continue;
+      if (!belongsTo(w, i)) continue;
       const localStart = Math.max(0, w.start - seg.startTime);
       const localEnd = Math.min(segDuration, w.end - seg.startTime);
       clipWords.push({
@@ -846,6 +922,7 @@ function buildClipLevelWords(
       cum2 -= step;
       for (const w of wordTimestamps) {
         if (w.end <= seg.startTime || w.start >= seg.endTime) continue;
+        if (!belongsTo(w, i)) continue;
         const localStart = Math.max(0, w.start - seg.startTime);
         const localEnd = Math.min(segDuration, w.end - seg.startTime);
         const match = wordEmphasis.find((ov) => Math.abs(ov.start - w.start) < 0.05);
@@ -966,6 +1043,66 @@ function buildClipArchetypeWindows(
 }
 
 /**
+ * Master level for scene SFX. The per-kind defaults sit ~23 dB under a
+ * −22 LUFS bed; real voices are mastered hotter (~−14 LUFS), so lift the cues
+ * enough to be felt while staying well under speech.
+ */
+const SCENE_SFX_MASTER_DB = 7;
+
+/**
+ * Clip-relative explainer layout windows (for caption placement), using the
+ * same xfade-aware walk as {@link buildClipArchetypeWindows}. Only rendered
+ * explainer segments produce a window.
+ */
+export function buildClipLayoutWindows(
+  segments: ResolvedSegment[],
+  stepDurations: number[],
+): CaptionLayoutWindow[] {
+  const windows: CaptionLayoutWindow[] = [];
+  let cumulative = 0;
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    const segDuration = seg.endTime - seg.startTime;
+    cumulative -= stepDurations[i] ?? 0;
+    if (seg.explainerLayout && renderedArchetype(seg) === 'split-image') {
+      windows.push({
+        startTime: cumulative,
+        endTime: cumulative + segDuration,
+        layout: seg.explainerLayout,
+      });
+    }
+    cumulative += segDuration;
+  }
+  return windows;
+}
+
+/**
+ * Map source-time cues onto the concatenated clip timeline (xfade-aware).
+ * Cues outside every segment are dropped. Pure.
+ */
+export function mapCuesToClipTime(
+  cues: readonly SceneCue[],
+  segments: ResolvedSegment[],
+  stepDurations: number[],
+): SceneCue[] {
+  const out: SceneCue[] = [];
+  let cumulative = 0;
+  const starts: number[] = [];
+  for (let i = 0; i < segments.length; i++) {
+    cumulative -= stepDurations[i] ?? 0;
+    starts.push(cumulative);
+    cumulative += segments[i].endTime - segments[i].startTime;
+  }
+  for (const cue of cues) {
+    const i = segments.findIndex((s) => cue.at >= s.startTime && cue.at < s.endTime);
+    if (i < 0) continue;
+    const seg = segments[i];
+    out.push({ ...cue, at: (starts[i] ?? 0) + (cue.at - seg.startTime) });
+  }
+  return out.sort((a, b) => a.at - b.at);
+}
+
+/**
  * Find the archetype of the segment window that covers a given clip-relative
  * timestamp. Falls back to the last window's archetype if no window covers
  * `t` (e.g. when `t` lands exactly on a boundary), or to 'talking-head' if
@@ -1012,7 +1149,7 @@ export async function renderSegmentedClip(
   // render — a media archetype without b-roll degrades to talking-head.
   const transitions: BoundaryTransition[] = resolveSegmentTransitions(
     balancedSegments.map((s) => ({
-      archetype: renderedArchetype(s),
+      archetype: transitionArchetype(s),
       transitionIn: s.transitionIn,
     })),
     config.transitionsEnabled !== false,
@@ -1118,12 +1255,14 @@ export async function renderSegmentedClip(
         try {
           const windows = balancedArchetypeWindows;
           const editStyleId = config.editStyle?.id ?? DEFAULT_EDIT_STYLE_ID;
+          const layoutWindows = buildClipLayoutWindows(balancedSegments, stepDurations);
           const captionAssPath = await generateCaptions(clipWords, config.captionStyle, undefined, {
             frameWidth: tw,
             frameHeight: th,
             position: config.templateLayout?.subtitles,
             archetypeWindows: windows,
             editStyleId,
+            ...(layoutWindows.length > 0 ? { layoutWindows } : {}),
           });
           tempFiles.push(captionAssPath);
           // Pass fontsDir so libass can find bundled faces (Inter, Bebas,
@@ -1238,6 +1377,27 @@ export async function renderSegmentedClip(
         onProgress(postConcatBase + 14);
       } catch (err) {
         console.warn(`[SegmentRender] Combined overlay pass failed, skipping:`, err);
+      }
+    }
+
+    // 3d. Explainer-scene sound cues — soft beats mixed under the voice.
+    if (config.sceneSfxEnabled !== false && config.sceneCues && config.sceneCues.length > 0) {
+      const clipCues = mapCuesToClipTime(config.sceneCues, balancedSegments, stepDurations);
+      const clipDuration = balancedSegments.reduce(
+        (sum, s, i) => sum + (s.endTime - s.startTime) - (stepDurations[i] ?? 0),
+        0,
+      );
+      const sfxPath = join(tempDir, `batchcontent-seg-sfx-${Date.now()}.mp4`);
+      const mixed = await mixSceneSfx(currentPath, clipCues, {
+        clipDuration,
+        outputPath: sfxPath,
+        masterDb: SCENE_SFX_MASTER_DB,
+      });
+      if (mixed.ok && mixed.placed > 0) {
+        tempFiles.push(sfxPath);
+        currentPath = sfxPath;
+      } else if (!mixed.ok) {
+        console.warn(`[SegmentRender] Scene SFX mix failed, keeping clip audio: ${mixed.error}`);
       }
     }
 

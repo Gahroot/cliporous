@@ -1,13 +1,16 @@
 /**
  * Explainer scenes on the segmented (9:16 shorts) render path.
  *
- *   plan (Gemini, word-indexed)  →  splice into the segment list as
- *   `split-image` segments  →  render each scene with Remotion (1080×960 H.264)
- *   →  the existing split layout vstacks it above the speaker.
+ *   plan (Gemini, word-indexed, reviewed)  →  group chained scenes  →  splice
+ *   each group into the segment list as ONE `split-image` segment  →  render
+ *   the group with the `ExplainerSequence` Remotion composition (continuous
+ *   stage, scene-to-scene transitions, layout-sized canvas, alpha for `over`)
+ *   →  segment-render composites it with the group's `explainerLayout`.
  *
  * Scenes win over whatever archetype the segment had inside their window
  * (including b-roll). Any failure degrades that window to the speaker; a
- * planner failure leaves the segment list untouched.
+ * planner failure leaves the segment list untouched. Sound cues for every
+ * rendered beat are returned in SOURCE time for the post-concat SFX mix.
  */
 
 import { randomUUID } from 'node:crypto';
@@ -23,10 +26,15 @@ import {
 import { log } from '../logger';
 import {
   EXPLAINER_FPS,
-  EXPLAINER_STAGE_HEIGHT,
-  EXPLAINER_STAGE_WIDTH,
+  type ExplainerAspect,
+  type ExplainerLayout,
+  type ExplainerPalette,
   type ExplainerScene,
-  type ExplainerSceneProps,
+  type ExplainerSequenceProps,
+  mapSceneTimes,
+  type SceneCue,
+  type SceneTransitionKind,
+  stageCanvasFor,
 } from '../remotion/compositions/explainer/types';
 import type { ResolvedSegment } from './segment-render';
 
@@ -37,11 +45,42 @@ const MIN_SCENE_SEC = 2;
 /** Extra render length so boundary rebalancing (≤0.15s) never loops the scene. */
 const RENDER_PAD_SEC = 0.3;
 const CONTIGUOUS_EPS = 1e-3;
+/** Scene-to-scene transition length inside a chained group. */
+const CHAIN_TRANSITION_FRAMES = 14;
+
+/** One or more chained scenes that share a stage and render as one video. */
+export interface SceneGroup {
+  startTime: number;
+  endTime: number;
+  layout: ExplainerLayout;
+  /** Scenes in order; each keeps its own absolute window + beats. */
+  scenes: PlannedExplainerScene[];
+}
 
 export interface SplicedPiece {
   segment: ResolvedSegment;
-  /** Present when this piece is an explainer scene (beats in absolute time). */
-  scene?: ExplainerScene;
+  /** Present when this piece is an explainer group (beats in absolute time). */
+  group?: SceneGroup;
+}
+
+/** Merge chained planned scenes into groups. Pure. */
+export function groupPlannedScenes(planned: readonly PlannedExplainerScene[]): SceneGroup[] {
+  const groups: SceneGroup[] = [];
+  for (const p of planned) {
+    const prev = groups[groups.length - 1];
+    if (
+      p.chained &&
+      prev &&
+      prev.layout === p.layout &&
+      Math.abs(p.startTime - prev.endTime) < 0.05
+    ) {
+      prev.scenes.push(p);
+      prev.endTime = p.endTime;
+    } else {
+      groups.push({ startTime: p.startTime, endTime: p.endTime, layout: p.layout, scenes: [p] });
+    }
+  }
+  return groups;
 }
 
 function snapEdge(t: number, boundaries: number[], floor: number): number {
@@ -75,29 +114,29 @@ function coversContiguously(segments: ResolvedSegment[], start: number, end: num
 }
 
 /**
- * Splice planned scene windows into a segment list. Pure.
+ * Splice scene groups into a segment list. Pure.
  *
- * Window edges snap to nearby segment boundaries (so no sliver segments are
- * created); windows that cross a gap in the source timeline, overlap an
- * earlier window, or become shorter than {@link MIN_SCENE_SEC} are dropped.
+ * Group edges snap to nearby segment boundaries (so no sliver segments are
+ * created); groups that cross a gap in the source timeline, overlap an
+ * earlier group, or become shorter than {@link MIN_SCENE_SEC} are dropped.
  * Speaker pieces that resume after a scene hard-cut back in.
  */
 export function spliceExplainerScenes(
   segments: ResolvedSegment[],
-  planned: PlannedExplainerScene[],
+  groups: readonly SceneGroup[],
   minStart: number,
 ): SplicedPiece[] {
   const boundaries = segments.flatMap((s) => [s.startTime, s.endTime]);
-  const windows: PlannedExplainerScene[] = [];
-  for (const p of planned) {
-    const startTime = snapEdge(p.startTime, boundaries, minStart);
-    const endTime = snapEdge(p.endTime, boundaries, startTime + MIN_SCENE_SEC);
+  const windows: SceneGroup[] = [];
+  for (const g of groups) {
+    const startTime = snapEdge(g.startTime, boundaries, minStart);
+    const endTime = snapEdge(g.endTime, boundaries, startTime + MIN_SCENE_SEC);
     const prev = windows[windows.length - 1];
     if (endTime - startTime < MIN_SCENE_SEC) continue;
     if (startTime < minStart - CONTIGUOUS_EPS) continue;
     if (prev && startTime < prev.endTime) continue;
     if (!coversContiguously(segments, startTime, endTime)) continue;
-    windows.push({ ...p, startTime, endTime });
+    windows.push({ ...g, startTime, endTime });
   }
   if (windows.length === 0) return segments.map((segment) => ({ segment }));
 
@@ -119,17 +158,18 @@ export function spliceExplainerScenes(
       }
       const pieceEnd = Math.min(seg.endTime, win.endTime);
       const tail = out[out.length - 1];
-      if (tail?.scene === win.scene) {
+      if (tail?.group === win) {
         // Same window continuing across a segment boundary — extend it.
         tail.segment = { ...tail.segment, endTime: pieceEnd };
       } else {
         out.push({
-          scene: win.scene,
+          group: win,
           segment: {
             ...seg,
             startTime: Math.max(cursor, win.startTime),
             endTime: pieceEnd,
             archetype: 'split-image',
+            explainerLayout: win.layout,
             zoom: { style: 'none', intensity: 1 },
             transitionIn: 'hard-cut',
             videoPath: undefined,
@@ -154,37 +194,83 @@ export function spliceExplainerScenes(
   return out;
 }
 
-/** Beats relative to the final window, clamped inside it. */
-function relativeScene(piece: SplicedPiece): ExplainerScene | null {
-  if (!piece.scene) return null;
-  const { startTime, endTime } = piece.segment;
-  const rel = toSceneRelative(piece.scene, startTime);
-  const max = Math.max(0, endTime - startTime - 0.15);
-  const c = (t: number): number => Math.min(max, t);
-  switch (rel.kind) {
-    case 'checklist':
-      return { ...rel, items: rel.items.map((it) => ({ ...it, doneAt: c(it.doneAt) })) };
-    case 'versus':
-      return {
-        ...rel,
-        left: { ...rel.left, at: c(rel.left.at) },
-        right: { ...rel.right, at: c(rel.right.at) },
-      };
-    case 'stamp':
-      return {
-        ...rel,
-        stampAt: c(rel.stampAt),
-        ...(rel.strikeAt === undefined ? {} : { strikeAt: c(rel.strikeAt) }),
-      };
-    case 'flow':
-      return { ...rel, inputAt: c(rel.inputAt), outputAt: c(rel.outputAt) };
-    case 'stack':
-      return {
-        ...rel,
-        layers: rel.layers.map((l) => ({ ...l, at: c(l.at) })),
-        ...(rel.dimAt === undefined ? {} : { dimAt: c(rel.dimAt) }),
-      };
+/** Clamp every beat time into [0, max]. */
+function clampScene<T extends ExplainerScene>(scene: T, max: number): T {
+  return mapSceneTimes(scene, (t) => Math.min(max, Math.max(0, t)));
+}
+
+export interface GroupRenderPlan {
+  props: ExplainerSequenceProps;
+  durationSec: number;
+  /** Cues in absolute (source) time, clipped to the rendered window. */
+  cues: SceneCue[];
+}
+
+/**
+ * Build the composition props for a spliced group. Pure.
+ *
+ * Scene i's TransitionSeries sequence starts exactly at its own window start
+ * (relative to the group start): each non-final sequence is lengthened by the
+ * transition that overlaps the next one, so beats stay locked to the words.
+ */
+export function buildGroupRenderPlan(
+  group: SceneGroup,
+  window: { startTime: number; endTime: number },
+  palette: ExplainerPalette,
+  aspect: ExplainerAspect = '9:16',
+): GroupRenderPlan {
+  const fps = EXPLAINER_FPS;
+  const total = window.endTime - window.startTime;
+  const starts = group.scenes.map((s, i) =>
+    i === 0 ? window.startTime : Math.min(window.endTime, Math.max(window.startTime, s.startTime)),
+  );
+  const totalFrames = Math.max(1, Math.round((total + RENDER_PAD_SEC) * fps));
+  const scenes: ExplainerSequenceProps['scenes'] = [];
+  const transitions: { kind: SceneTransitionKind; durationInFrames: number }[] = [];
+  let usedFrames = 0;
+  for (let i = 0; i < group.scenes.length; i++) {
+    const planned = group.scenes[i];
+    const start = starts[i];
+    if (!planned || start === undefined) continue;
+    const nextStart = starts[i + 1];
+    const isLast = nextStart === undefined;
+    const spanFrames = isLast
+      ? Math.max(1, totalFrames - usedFrames)
+      : Math.max(1, Math.round((nextStart - start) * fps));
+    const next = group.scenes[i + 1];
+    const trFrames = isLast ? 0 : Math.min(CHAIN_TRANSITION_FRAMES, Math.floor(spanFrames / 2));
+    const durationSec = (spanFrames + trFrames) / fps;
+    const rel = toSceneRelative(planned.scene, start);
+    scenes.push({
+      scene: clampScene(rel, Math.max(0, durationSec - 0.15)),
+      durationInFrames: spanFrames + trFrames,
+    });
+    if (!isLast && next) {
+      transitions.push({ kind: next.transition, durationInFrames: trFrames });
+    }
+    usedFrames += spanFrames;
   }
+
+  const cues = group.scenes
+    .flatMap((s) => s.cues)
+    .filter((c) => c.at >= window.startTime - 0.05 && c.at <= window.endTime - 0.05);
+  // Stage entrance/exit get a soft air cue.
+  cues.push({ kind: 'whoosh', at: window.startTime + 0.02, gain: 0.45 });
+
+  return {
+    props: {
+      scenes,
+      transitions,
+      layout: group.layout,
+      aspect,
+      palette,
+      enter: true,
+      exit: true,
+      visibleSec: total,
+    },
+    durationSec: totalFrames / fps,
+    cues: cues.sort((a, b) => a.at - b.at),
+  };
 }
 
 export interface ApplyExplainerOptions {
@@ -192,7 +278,9 @@ export interface ApplyExplainerOptions {
   segments: ResolvedSegment[];
   words: PlannerWord[];
   bounds: PlanBounds;
-  accentColor: string;
+  palette: ExplainerPalette;
+  /** Absolute times of stressed words, for emphasis reactions. */
+  emphasisTimes?: readonly number[];
   onProgress?: (message: string, fraction: number) => void;
   isCancelled?: () => boolean;
 }
@@ -200,6 +288,8 @@ export interface ApplyExplainerOptions {
 export interface ApplyExplainerResult {
   segments: ResolvedSegment[];
   tempFiles: string[];
+  /** Sound cues (source time) for every successfully rendered group. */
+  cues: SceneCue[];
   rendered: number;
   failed: number;
 }
@@ -214,6 +304,7 @@ export async function applyExplainerScenes(
   const unchanged: ApplyExplainerResult = {
     segments: opts.segments,
     tempFiles: [],
+    cues: [],
     rendered: 0,
     failed: 0,
   };
@@ -223,73 +314,86 @@ export async function applyExplainerScenes(
   );
 
   opts.onProgress?.('Planning animated scenes…', 0);
-  const plan = await planExplainerScenes(opts.apiKey, words, opts.bounds);
+  const plan = await planExplainerScenes(opts.apiKey, words, opts.bounds, {
+    aspect: '9:16',
+    ...(opts.emphasisTimes ? { emphasisTimes: opts.emphasisTimes } : {}),
+  });
   if (!plan.ok) {
     log('warn', 'explainer', `planning failed, keeping original segments: ${plan.error}`);
     return unchanged;
   }
   if (plan.value.length === 0) return unchanged;
 
-  const pieces = spliceExplainerScenes(opts.segments, plan.value, opts.bounds.minStart);
-  const scenePieces = pieces.filter((p) => p.scene);
+  const pieces = spliceExplainerScenes(
+    opts.segments,
+    groupPlannedScenes(plan.value),
+    opts.bounds.minStart,
+  );
+  const scenePieces = pieces.filter((p) => p.group);
   if (scenePieces.length === 0) return unchanged;
 
   const { renderRemotionSegment } = await import('../remotion/render');
   const tempFiles: string[] = [];
+  const cues: SceneCue[] = [];
   let rendered = 0;
   let failed = 0;
 
   for (const piece of pieces) {
-    const scene = relativeScene(piece);
-    if (!scene) continue;
+    const group = piece.group;
+    if (!group) continue;
     if (opts.isCancelled?.()) {
-      piece.segment = { ...piece.segment, archetype: 'talking-head' };
+      piece.segment = { ...piece.segment, archetype: 'talking-head', explainerLayout: undefined };
       continue;
     }
-    const durationSec = piece.segment.endTime - piece.segment.startTime + RENDER_PAD_SEC;
-    const outputPath = join(tmpdir(), `batchcontent-explainer-${randomUUID()}.mp4`);
-    const inputProps: ExplainerSceneProps = { scene, accentColor: opts.accentColor };
+    const plan = buildGroupRenderPlan(group, piece.segment, opts.palette, '9:16');
+    const canvas = stageCanvasFor(group.layout, '9:16');
+    const ext = canvas.transparent ? 'mov' : 'mp4';
+    const outputPath = join(tmpdir(), `batchcontent-explainer-${randomUUID()}.${ext}`);
+    const label = group.scenes.map((s) => s.scene.kind).join('→');
     const started = Date.now();
     const base = rendered + failed;
-    opts.onProgress?.(
-      `Animating scene ${base + 1}/${scenePieces.length} (${scene.kind})…`,
-      base / scenePieces.length,
-    );
+    const message = `Animating scene ${base + 1}/${scenePieces.length} (${label})…`;
+    opts.onProgress?.(message, base / scenePieces.length);
     try {
       await renderRemotionSegment({
-        compositionId: 'ExplainerScene',
-        inputProps: inputProps as unknown as Record<string, unknown>,
-        durationSec,
+        compositionId: 'ExplainerSequence',
+        inputProps: plan.props as unknown as Record<string, unknown>,
+        durationSec: plan.durationSec,
         fps: EXPLAINER_FPS,
-        width: EXPLAINER_STAGE_WIDTH,
-        height: EXPLAINER_STAGE_HEIGHT,
+        width: canvas.width,
+        height: canvas.height,
+        transparent: canvas.transparent,
         outputPath,
-        onProgress: (p) =>
-          opts.onProgress?.(
-            `Animating scene ${base + 1}/${scenePieces.length} (${scene.kind})…`,
-            (base + p) / scenePieces.length,
-          ),
+        onProgress: (p) => opts.onProgress?.(message, (base + p) / scenePieces.length),
       });
       tempFiles.push(outputPath);
       piece.segment = { ...piece.segment, videoPath: outputPath };
+      cues.push(...plan.cues);
       rendered++;
       log(
         'info',
         'explainer',
-        `rendered ${scene.kind} scene ${durationSec.toFixed(2)}s in ${Date.now() - started}ms`,
+        `rendered ${label} [${group.layout}] ${plan.durationSec.toFixed(2)}s ` +
+          `${canvas.width}x${canvas.height} in ${Date.now() - started}ms`,
       );
     } catch (err) {
       failed++;
-      piece.segment = { ...piece.segment, archetype: 'talking-head' };
+      piece.segment = { ...piece.segment, archetype: 'talking-head', explainerLayout: undefined };
       log(
         'warn',
         'explainer',
-        `scene render failed (${scene.kind}), using speaker instead: ${
+        `scene render failed (${label}), using speaker instead: ${
           err instanceof Error ? err.message : String(err)
         }`,
       );
     }
   }
 
-  return { segments: pieces.map((p) => p.segment), tempFiles, rendered, failed };
+  return {
+    segments: pieces.map((p) => p.segment),
+    tempFiles,
+    cues: cues.sort((a, b) => a.at - b.at),
+    rendered,
+    failed,
+  };
 }

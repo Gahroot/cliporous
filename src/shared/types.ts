@@ -280,7 +280,7 @@ export interface CaptionStyleInput {
    * 'standard' (uniform text). Mirrors the type declared in main/captions.ts;
    * kept here so EditStyle.captionStyle can carry it through to the renderer.
    */
-  captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight';
+  captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight' | 'editorial';
   /** V2 accent colour for 'emphasis_highlight' mode. */
   accentColor?: string;
   /** Emphasis-level word color. Defaults to highlightColor. */

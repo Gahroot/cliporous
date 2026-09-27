@@ -1,8 +1,14 @@
 import type { Archetype } from '@shared/types';
 import { describe, expect, it } from 'vitest';
 import type { PlannedExplainerScene } from '../ai/explainer-scenes';
-import type { ExplainerScene } from '../remotion/compositions/explainer/types';
-import { spliceExplainerScenes } from './explainer-scenes';
+import { deriveExplainerPalette } from '../remotion/compositions/explainer/palette';
+import type { ExplainerLayout, ExplainerScene } from '../remotion/compositions/explainer/types';
+import {
+  buildGroupRenderPlan,
+  groupPlannedScenes,
+  type SceneGroup,
+  spliceExplainerScenes,
+} from './explainer-scenes';
 import type { ResolvedSegment } from './segment-render';
 
 function seg(
@@ -23,20 +29,37 @@ function seg(
 
 const STAMP: ExplainerScene = { kind: 'stamp', icon: 'Ban', word: 'NEVER', stampAt: 14 };
 
-function planned(startTime: number, endTime: number, scene = STAMP): PlannedExplainerScene {
-  return { startTime, endTime, scene };
+function planned(
+  startTime: number,
+  endTime: number,
+  extra: Partial<PlannedExplainerScene> = {},
+): PlannedExplainerScene {
+  return {
+    startTime,
+    endTime,
+    scene: STAMP,
+    layout: 'stack',
+    chained: false,
+    transition: 'grow',
+    cues: [],
+    ...extra,
+  };
+}
+
+function group(startTime: number, endTime: number, layout: ExplainerLayout = 'stack'): SceneGroup {
+  return { startTime, endTime, layout, scenes: [planned(startTime, endTime, { layout })] };
 }
 
 function shape(pieces: ReturnType<typeof spliceExplainerScenes>): string[] {
   return pieces.map(
     (p) =>
-      `${p.scene ? 'SCENE' : p.segment.archetype} ${p.segment.startTime}-${p.segment.endTime} ${p.segment.transitionIn}`,
+      `${p.group ? 'SCENE' : p.segment.archetype} ${p.segment.startTime}-${p.segment.endTime} ${p.segment.transitionIn}`,
   );
 }
 
 describe('spliceExplainerScenes', () => {
   it('cuts a scene out of the middle of one segment and hard-cuts back', () => {
-    const out = spliceExplainerScenes([seg('talking-head', 10, 30)], [planned(14, 20)], 12);
+    const out = spliceExplainerScenes([seg('talking-head', 10, 30)], [group(14, 20, 'pip')], 12);
     expect(shape(out)).toEqual([
       'talking-head 10-14 crossfade',
       'SCENE 14-20 hard-cut',
@@ -44,6 +67,7 @@ describe('spliceExplainerScenes', () => {
     ]);
     const scene = out[1];
     expect(scene?.segment.archetype).toBe('split-image');
+    expect(scene?.segment.explainerLayout).toBe('pip');
     expect(scene?.segment.zoom).toEqual({ style: 'none', intensity: 1 });
   });
 
@@ -54,7 +78,7 @@ describe('spliceExplainerScenes', () => {
         seg('split-image', 14.3, 18, { videoPath: '/tmp/broll.mp4' }),
         seg('tight-punch', 18, 25),
       ],
-      [planned(14, 21.6)],
+      [group(14, 21.6)],
       12,
     );
     expect(shape(out)).toEqual([
@@ -68,11 +92,9 @@ describe('spliceExplainerScenes', () => {
   it('never snaps a scene start before the protected opening', () => {
     const out = spliceExplainerScenes(
       [seg('talking-head', 10, 12.2), seg('talking-head', 12.2, 30)],
-      [planned(12.5, 18)],
+      [group(12.5, 18)],
       12.5,
     );
-    // The 12.2 boundary is closer, but snapping to it would eat the protected
-    // opening; the scene stays at 12.5 and a short speaker piece fills the gap.
     expect(shape(out)).toEqual([
       'talking-head 10-12.2 crossfade',
       'talking-head 12.2-12.5 crossfade',
@@ -83,21 +105,85 @@ describe('spliceExplainerScenes', () => {
 
   it('drops windows that cross a gap in the source timeline or overlap', () => {
     const segments = [seg('talking-head', 10, 16), seg('talking-head', 40, 50)];
-    expect(shape(spliceExplainerScenes(segments, [planned(13, 42.5)], 12))).toEqual([
+    expect(shape(spliceExplainerScenes(segments, [group(13, 42.5)], 12))).toEqual([
       'talking-head 10-16 crossfade',
       'talking-head 40-50 crossfade',
     ]);
 
     const overlapping = spliceExplainerScenes(
       [seg('talking-head', 10, 40)],
-      [planned(14, 20), planned(19, 25), planned(27, 31)],
+      [group(14, 20), group(19, 25), group(27, 31)],
       12,
     );
-    expect(overlapping.filter((p) => p.scene).map((p) => p.segment.startTime)).toEqual([14, 27]);
+    expect(overlapping.filter((p) => p.group).map((p) => p.segment.startTime)).toEqual([14, 27]);
   });
 
   it('returns the input unchanged when nothing is planned', () => {
     const segments = [seg('talking-head', 10, 20)];
     expect(spliceExplainerScenes(segments, [], 12).map((p) => p.segment)).toEqual(segments);
+  });
+});
+
+describe('groupPlannedScenes', () => {
+  it('merges chained scenes on the same layout into one group', () => {
+    const groups = groupPlannedScenes([
+      planned(10, 14),
+      planned(14, 19, { chained: true }),
+      planned(22, 26),
+      planned(26, 30, { chained: true, layout: 'over' }),
+    ]);
+    expect(groups.map((g) => [g.startTime, g.endTime, g.scenes.length])).toEqual([
+      [10, 19, 2],
+      [22, 26, 1],
+      [26, 30, 1],
+    ]);
+  });
+});
+
+describe('buildGroupRenderPlan', () => {
+  const palette = deriveExplainerPalette();
+
+  it('rebases beats per scene and keeps each scene starting on its own window', () => {
+    const first = planned(10, 14, {
+      scene: { kind: 'stamp', icon: 'Ban', word: 'NEVER', stampAt: 11 },
+      cues: [{ kind: 'thump', at: 11.1 }],
+    });
+    const second = planned(14, 20, {
+      chained: true,
+      transition: 'slide',
+      scene: {
+        kind: 'stack',
+        layers: [
+          { label: 'Tools', at: 15 },
+          { label: 'Workflow', at: 16 },
+        ],
+      },
+      cues: [{ kind: 'tick', at: 15.25 }],
+    });
+    const plan = buildGroupRenderPlan(
+      { startTime: 10, endTime: 20, layout: 'stack', scenes: [first, second] },
+      { startTime: 10, endTime: 20 },
+      palette,
+    );
+    const [a, b] = plan.props.scenes;
+    expect(a?.scene).toMatchObject({ kind: 'stamp', stampAt: 1 });
+    expect(b?.scene).toMatchObject({ kind: 'stack', layers: [{ at: 1 }, { at: 2 }] });
+    // Scene 2 starts at frame (14-10)*30 = 120: scene 1 spans 120 + the transition overlap.
+    const tr = plan.props.transitions[0];
+    expect(tr?.kind).toBe('slide');
+    expect(a?.durationInFrames).toBe(120 + (tr?.durationInFrames ?? 0));
+    expect(plan.props.visibleSec).toBe(10);
+    // Cues kept in absolute time, plus the stage entrance whoosh.
+    expect(plan.cues.map((c) => c.kind)).toEqual(['whoosh', 'thump', 'tick']);
+  });
+
+  it('uses the layout canvas', () => {
+    const plan = buildGroupRenderPlan(
+      group(10, 14, 'over'),
+      { startTime: 10, endTime: 14 },
+      palette,
+    );
+    expect(plan.props.layout).toBe('over');
+    expect(plan.props.palette).toBe(palette);
   });
 });

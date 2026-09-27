@@ -4,12 +4,13 @@
  * stack dims on a "broken"/"fails" beat.
  */
 
-import { ThreeCanvas } from '@remotion/three';
 import type React from 'react';
 import { useMemo } from 'react';
 import { spring, useCurrentFrame, useVideoConfig } from 'remotion';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
-import { ramp, STAGE, shade, useSceneTime } from './stage';
+import { mixHex } from './palette';
+import { Stage3D, useRigCamera } from './Stage3D';
+import { ramp, type StageStyle, useSceneTime, useStage } from './stage';
 import { type CameraSpec, projectToStage } from './three-helpers';
 import {
   EXPLAINER_STAGE_HEIGHT,
@@ -23,8 +24,9 @@ const SLAB = { w: 2.4, h: 0.28, d: 1.7 } as const;
 const GAP = 0.72;
 const DROP_HEIGHT = 2.2;
 
-function layerColors(accent: string): string[] {
-  return ['#4f6aa8', shade(accent, 0.5), '#f2f2f5', shade(accent, 0.2), '#9fb3dc'];
+/** Bottom → top slab colours: a cool base, the palette clay tones, paper on top. */
+function layerColors(S: StageStyle): string[] {
+  return [mixHex(S.accent2, S.bgInner, 0.35), S.clay[0], S.paper, S.clay[1], S.clay[2]];
 }
 
 function restY(index: number, count: number): number {
@@ -66,16 +68,18 @@ const Slab: React.FC<{
   );
 };
 
-const Label: React.FC<{ layer: StackLayer; index: number; count: number; dim: number }> = ({
-  layer,
-  index,
-  count,
-  dim,
-}) => {
+const Label: React.FC<{
+  layer: StackLayer;
+  index: number;
+  count: number;
+  dim: number;
+  camera: CameraSpec;
+}> = ({ layer, index, count, dim, camera }) => {
+  const STAGE = useStage();
   const { t } = useSceneTime();
   const show = ramp(t, layer.at + 0.2, 0.35);
   // Anchor just right of the slab's front corner.
-  const p = projectToStage(CAMERA, [SLAB.w / 2, restY(index, count), SLAB.d / 2]);
+  const p = projectToStage(camera, [SLAB.w / 2, restY(index, count), SLAB.d / 2]);
   return (
     <div
       style={{
@@ -101,30 +105,20 @@ const Label: React.FC<{ layer: StackLayer; index: number; count: number; dim: nu
   );
 };
 
-export const StackScene: React.FC<{ scene: StackSceneData; accent: string }> = ({
-  scene,
-  accent,
-}) => {
+export const StackScene: React.FC<{ scene: StackSceneData }> = ({ scene }) => {
+  const STAGE = useStage();
   const { t } = useSceneTime();
   const geometry = useMemo(() => new RoundedBoxGeometry(SLAB.w, SLAB.h, SLAB.d, 4, 0.12), []);
-  const colors = layerColors(accent);
+  const colors = layerColors(STAGE);
   const count = scene.layers.length;
   const dim = scene.dimAt === undefined ? 0 : ramp(t, scene.dimAt, 0.5);
+  const focusAt = scene.dimAt ?? scene.layers[scene.layers.length - 1]?.at;
+  const rig = { focusAt, driftDeg: 5 };
+  const camera = useRigCamera(CAMERA, rig);
 
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <ThreeCanvas
-        width={EXPLAINER_STAGE_WIDTH}
-        height={EXPLAINER_STAGE_HEIGHT}
-        camera={{ position: CAMERA.position, fov: CAMERA.fov }}
-        flat
-        gl={{ alpha: true, antialias: true }}
-        style={{ position: 'absolute', inset: 0 }}
-      >
-        <ambientLight intensity={0.35} />
-        <hemisphereLight args={['#ffffff', '#1b2036', 0.9]} />
-        <directionalLight position={[-3, 6, 4]} intensity={2.4} />
-        <directionalLight position={[5, 1, -2]} intensity={0.3} />
+      <Stage3D camera={CAMERA} {...rig} groundY={restY(0, count) - 0.45}>
         <group>
           {scene.layers.map((layer, i) => (
             <Slab
@@ -138,9 +132,16 @@ export const StackScene: React.FC<{ scene: StackSceneData; accent: string }> = (
             />
           ))}
         </group>
-      </ThreeCanvas>
+      </Stage3D>
       {scene.layers.map((layer, i) => (
-        <Label key={`${i}-${layer.label}`} layer={layer} index={i} count={count} dim={dim} />
+        <Label
+          key={`${i}-${layer.label}`}
+          layer={layer}
+          index={i}
+          count={count}
+          dim={dim}
+          camera={camera}
+        />
       ))}
     </div>
   );

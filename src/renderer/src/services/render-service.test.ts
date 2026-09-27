@@ -1,3 +1,4 @@
+import type { Palette } from '@shared/palettes';
 import { beforeEach, describe, expect, it, type vi } from 'vitest';
 import { installApiStub, resetStore } from '@/components/__tests__/test-utils';
 import {
@@ -8,7 +9,20 @@ import {
 } from '@/services/creator-profiles';
 import { useStore } from '@/store';
 import type { ClipCandidate } from '@/store/types';
-import { buildPromoRenderOptions, startApprovedRender } from './render-service';
+import {
+  buildPromoRenderOptions,
+  resolveShortformPalette,
+  startApprovedRender,
+} from './render-service';
+
+const CUSTOM_PALETTE: Palette = {
+  id: 'studio-sunrise',
+  name: 'Studio Sunrise',
+  background: '#111111',
+  foreground: '#FFFFFF',
+  accent: '#FFAA00',
+  builtin: false,
+};
 
 function makeClip(id: string, status: ClipCandidate['status']): ClipCandidate {
   return {
@@ -51,6 +65,8 @@ beforeEach(() => {
       ],
     };
     state.settings.outputDirectory = '/virtual/output';
+    state.settings.customPalettes = [];
+    state.settings.longformPaletteId = 'brand';
   });
 });
 
@@ -147,6 +163,39 @@ describe('startApprovedRender', () => {
           mediaPath: '/virtual/cta.png',
         },
       ],
+    });
+  });
+
+  it('sends the selected palette and custom palettes with a short-form batch', async () => {
+    useStore.getState().addCustomPalette(CUSTOM_PALETTE);
+    useStore.getState().setLongformPaletteId(CUSTOM_PALETTE.id);
+    const api = window.api as unknown as { startBatchRender: ReturnType<typeof vi.fn> };
+
+    await startApprovedRender();
+
+    const payload = api.startBatchRender.mock.calls[0]?.[0] as {
+      longformPaletteId?: string;
+      customPalettes?: Palette[];
+      outputProfile?: string;
+    };
+    expect(payload.outputProfile).toBeUndefined();
+    expect(payload.longformPaletteId).toBe(CUSTOM_PALETTE.id);
+    expect(payload.customPalettes).toEqual([CUSTOM_PALETTE]);
+    expect(() => structuredClone(payload.customPalettes)).not.toThrow();
+  });
+
+  it('falls back to the default palette when the selected palette no longer exists', async () => {
+    useStore.getState().setLongformPaletteId('deleted-palette');
+    const api = window.api as unknown as { startBatchRender: ReturnType<typeof vi.fn> };
+
+    const result = await startApprovedRender();
+
+    expect(result).toEqual({ started: true });
+    const payload = api.startBatchRender.mock.calls[0]?.[0] as { longformPaletteId?: string };
+    expect(payload.longformPaletteId).toBe('brand');
+    expect(resolveShortformPalette({ longformPaletteId: undefined })).toEqual({
+      longformPaletteId: 'brand',
+      customPalettes: [],
     });
   });
 

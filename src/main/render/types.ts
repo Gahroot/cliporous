@@ -190,7 +190,7 @@ export interface RenderClipJob {
      * this clip only, overriding the mode resolved from the global
      * `captionStyle`. When absent, the global style's mode applies.
      */
-    captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight';
+    captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight' | 'editorial';
   };
   /**
    * Metadata used when generating the export manifest (manifest.json / manifest.csv).
@@ -452,15 +452,16 @@ export interface RenderBatchOptions {
    */
   longformSkinId?: LongformSkinId;
   /**
-   * User-chosen color palette id (background / foreground / accent axis) for
-   * long-form content blocks. Resolved via `getPaletteById`, searching
-   * `customPalettes` then built-ins, falling back to the brand palette.
-   * Ignored outside `'longform'`.
+   * User-chosen color palette id (background / foreground / accent axis).
+   * Resolved via `getPaletteById`, searching `customPalettes` then built-ins,
+   * falling back to the brand palette. Drives long-form content blocks and is
+   * also sent with short-form (vertical) batches for animated scenes and
+   * caption highlights.
    */
   longformPaletteId?: string;
   /**
    * User-created custom palettes, searched first when resolving
-   * `longformPaletteId`. Ignored outside `'longform'`.
+   * `longformPaletteId`. Sent for both long-form and short-form batches.
    */
   customPalettes?: Palette[];
   /** Global sound design settings — used by IPC handler to compute placements */
@@ -471,6 +472,8 @@ export interface RenderBatchOptions {
   shotTransitionsEnabled?: boolean;
   /** Whether shorts get transcript-driven animated explainer scenes (needs a Gemini key). */
   explainerScenesEnabled?: boolean;
+  /** Soft sound cues on explainer-scene beats (default true). */
+  sceneSfxEnabled?: boolean;
   /** Whether queued HyperFrames overlays are composited. */
   hyperframesEnabled?: boolean;
   /** Ken Burns auto-zoom settings applied to every rendered clip */

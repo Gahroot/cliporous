@@ -14,7 +14,7 @@
 // ---------------------------------------------------------------------------
 
 /** Lightweight model used to validate a Gemini API key. */
-export const AI_VALIDATION_MODEL = 'gemini-2.5-flash-lite';
+export const AI_VALIDATION_MODEL = 'gemini-3.5-flash-lite';
 
 // ---------------------------------------------------------------------------
 // Scoring & Clip Defaults

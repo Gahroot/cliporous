@@ -32,6 +32,8 @@ const expectedAssets = new Map(
       'f032f37d12e82a37977fd1159c01e1a14415672244d2e6865d57e28c74886d03',
     'resources/fonts/InstrumentSerif-Italic.ttf':
       '08939b8bdf534afec24ae0ef5e03f948940cd9a8fe08e7fecbad040e62327385',
+    'resources/fonts/InstrumentSerif-Regular.ttf':
+      '498efd461f6ddfcb7a111bf9a565709d2085d48201d501ead960d93e84ffbb88',
     'resources/fonts/Inter-Bold.ttf':
       'b37284b5701b6b168dfc770aa1a4ac492106422fd3ba76bc7641e37434e8019c',
     'resources/fonts/Inter.ttf': '29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031',

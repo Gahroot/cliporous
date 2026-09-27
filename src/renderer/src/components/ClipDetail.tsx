@@ -103,20 +103,30 @@ const TRIM_SLIDER_STEP = 0.1;
 const HOOK_TEXT_TARGET = 80;
 
 /** Caption modes — values match the main-side V2 caption builder exactly. */
-type CaptionsMode = 'standard' | 'emphasis' | 'emphasis_highlight';
+type CaptionsMode = 'standard' | 'emphasis' | 'emphasis_highlight' | 'editorial';
 
 const CAPTIONS_MODE_LABELS: Record<CaptionsMode, string> = {
   standard: 'Standard',
   emphasis: 'Emphasis',
   emphasis_highlight: 'Emphasis + Highlight',
+  editorial: 'Editorial',
+};
+
+/** One-line plain-English summary shown under the captions mode picker. */
+const CAPTIONS_MODE_DESCRIPTIONS: Record<CaptionsMode, string> = {
+  standard: 'Bold white words, no highlights.',
+  emphasis: 'Key words switch to your accent color.',
+  emphasis_highlight: 'Key words get the accent color in a bold display font.',
+  editorial:
+    'Elegant serif text. A soft pill follows each word as it is spoken, and key words turn italic in your accent color.',
 };
 
 /**
  * Default caption mode shown when a clip has no explicit override. Mirrors
- * `PRESTYJ_CAPTION_STYLE.captionMode` in render-defaults.ts, which is what the
- * render path actually applies — so the control reflects the real output.
+ * `DEFAULT_CAPTION_MODE` in store/helpers.ts — the global setting the render
+ * service sends for new settings — so the control reflects the real output.
  */
-const DEFAULT_CAPTIONS_MODE: CaptionsMode = 'emphasis_highlight';
+const DEFAULT_CAPTIONS_MODE: CaptionsMode = 'editorial';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -1317,8 +1327,12 @@ export function ClipDetail({
                       <SelectItem value="emphasis_highlight">
                         {CAPTIONS_MODE_LABELS.emphasis_highlight}
                       </SelectItem>
+                      <SelectItem value="editorial">{CAPTIONS_MODE_LABELS.editorial}</SelectItem>
                     </SelectContent>
                   </Select>
+                  <p className="text-xs text-muted-foreground">
+                    {CAPTIONS_MODE_DESCRIPTIONS[captionsMode]}
+                  </p>
                 </section>
 
                 <Separator />

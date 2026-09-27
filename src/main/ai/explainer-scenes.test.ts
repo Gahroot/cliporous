@@ -35,8 +35,11 @@ describe('parseExplainerPlan', () => {
 
     expect(plan).toHaveLength(1);
     const [scene] = plan;
-    expect(scene?.startTime).toBeCloseTo(13 - 0.2);
-    expect(scene?.endTime).toBeCloseTo(18.4 + 0.3);
+    expect(scene?.startTime).toBeCloseTo(13 - 0.25);
+    expect(scene?.endTime).toBeCloseTo(18.4 + 0.35);
+    expect(scene?.layout).toBe('stack');
+    expect(scene?.chained).toBe(false);
+    expect(scene?.cues.map((c) => c.kind)).toEqual(['slide', 'tick', 'tick']);
     expect(scene?.scene).toEqual({
       kind: 'checklist',
       items: [
@@ -103,7 +106,7 @@ describe('parseExplainerPlan', () => {
     expect(plan).toEqual([]);
   });
 
-  it('clamps the start to minStart and drops scenes that come too close together', () => {
+  it('clamps the start to minStart and applies variety rules (no repeat kind, gap)', () => {
     const plan = parseExplainerPlan(
       {
         scenes: [
@@ -140,7 +143,9 @@ describe('parseExplainerPlan', () => {
       BOUNDS,
     );
 
-    expect(plan.map((p) => p.startTime)).toEqual([12, 21.8]);
+    // 2nd stamp is too close AND a repeat kind; 3rd is a repeat of the kept 1st
+    // (same kind back-to-back after the drop) — only the first survives.
+    expect(plan.map((p) => p.startTime)).toEqual([12]);
     expect(plan[0]?.scene).toMatchObject({ stampAt: 14, strikeAt: 15 });
   });
 
@@ -172,6 +177,104 @@ describe('parseExplainerPlan', () => {
     expect(parseExplainerPlan(null, words(), BOUNDS)).toEqual([]);
     expect(parseExplainerPlan({ scenes: 'nope' }, words(), BOUNDS)).toEqual([]);
     expect(parseExplainerPlan({ scenes: [] }, [], BOUNDS)).toEqual([]);
+  });
+});
+
+/** Long clip so the 55% coverage budget never interferes. */
+const WIDE = { minStart: 12, maxEnd: 60 };
+
+describe('parseExplainerPlan v2 extras', () => {
+  it('snaps a continuing scene onto the previous one and keeps the shared layout', () => {
+    const plan = parseExplainerPlan(
+      {
+        scenes: [
+          {
+            kind: 'stamp',
+            startWord: 6,
+            endWord: 14,
+            layout: 'stack',
+            icon: 'Ban',
+            word: 'never',
+            stampWord: 9,
+            strikeWord: null,
+          },
+          {
+            kind: 'stack',
+            startWord: 15,
+            endWord: 26,
+            layout: 'stack',
+            continues: true,
+            transition: 'slide',
+            layers: [
+              { label: 'Tools', word: 17 },
+              { label: 'Workflow', word: 20 },
+            ],
+            dimWord: null,
+          },
+        ],
+      },
+      words(100),
+      WIDE,
+    );
+    expect(plan).toHaveLength(2);
+    expect(plan[1]?.chained).toBe(true);
+    expect(plan[1]?.transition).toBe('slide');
+    expect(plan[1]?.startTime).toBeCloseTo(plan[0]?.endTime ?? 0);
+  });
+
+  it('parses laterStamp, dimWord and reactions into scene extras', () => {
+    const plan = parseExplainerPlan(
+      {
+        scenes: [
+          {
+            kind: 'flow',
+            startWord: 6,
+            endWord: 30,
+            layout: 'stack',
+            inputLabel: 'Prompt',
+            inputText: 'Closed deal',
+            engineLabel: 'AI',
+            outputLabel: 'Answer',
+            outputText: 'Delivery plan',
+            inputWord: 8,
+            outputWord: 12,
+            laterStamp: { text: 'Yes, but', word: 20 },
+            dimWord: 26,
+            reactions: [{ word: 14, item: 1, strength: 'pulse' }],
+          },
+        ],
+      },
+      words(100),
+      WIDE,
+    );
+    expect(plan[0]?.scene).toMatchObject({
+      overlayStamp: { word: 'YES, BUT', at: 20 },
+      dimAt: 23,
+      pulses: [{ at: 17, target: 1, strength: 'pulse' }],
+    });
+    expect(plan[0]?.cues.some((c) => c.kind === 'thump' && c.at > 20)).toBe(true);
+  });
+
+  it('falls back to the preferred layout when the model picks one the kind does not allow', () => {
+    const plan = parseExplainerPlan(
+      {
+        scenes: [
+          {
+            kind: 'checklist',
+            startWord: 6,
+            endWord: 16,
+            layout: 'takeover',
+            items: [
+              { label: 'One', icon: 'Check', word: 8 },
+              { label: 'Two', icon: 'Check', word: 12 },
+            ],
+          },
+        ],
+      },
+      words(100),
+      WIDE,
+    );
+    expect(plan[0]?.layout).toBe('stack');
   });
 });
 

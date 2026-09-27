@@ -27,9 +27,11 @@ import { LANDSCAPE_FPS, LANDSCAPE_HEIGHT, LANDSCAPE_WIDTH } from '../aspect-rati
 import { getEditStyleById, LONGFORM_TEMPLATES } from '../edit-styles/index';
 import { ffmpeg, getEncoder, getVideoMetadata, isHardwareEncoder } from '../ffmpeg';
 import { buildLongformLayout } from '../layouts/longform-layouts';
+import { deriveExplainerPalette } from '../remotion/compositions/explainer/palette';
 import { DEFAULT_LONGFORM_BLOCK_SKIN } from '../remotion/registry';
 import { buildDriftZoom, buildSnapZoom } from '../zoom-filters';
 import { buildEditStyleColorGradeFilter } from './color-grade-filter';
+import { applyLongformExplainerScenes } from './explainer-longform';
 import { extendBlockPlacementEndTime, renderBlockSegment } from './features/blocks.feature';
 import {
   applyDelosCards,
@@ -51,6 +53,7 @@ import {
 import type { WordTimestamp } from './point-coverage';
 import { resolveQualityParams } from './quality';
 import { classifyRenderError } from './render-error-map';
+import { mixSceneSfx } from './scene-sfx';
 import type { RenderBatchOptions } from './types';
 
 const HORMOZI_STYLE_ID = 'hormozi';
@@ -194,6 +197,21 @@ export function mergeSpeakerRanges(ranges: SpeakerRange[]): SpeakerRange[] {
   }
 
   return merged;
+}
+
+/** `ranges` minus every `busy` interval (both sorted-agnostic). Pure. */
+export function subtractRanges(ranges: SpeakerRange[], busy: SpeakerRange[]): SpeakerRange[] {
+  let out = ranges.map((r) => ({ ...r }));
+  for (const b of busy) {
+    out = out.flatMap((r) => {
+      if (b.end <= r.start || b.start >= r.end) return [r];
+      const parts: SpeakerRange[] = [];
+      if (b.start > r.start) parts.push({ start: r.start, end: b.start });
+      if (b.end < r.end) parts.push({ start: b.end, end: r.end });
+      return parts;
+    });
+  }
+  return out.sort((a, b) => a.start - b.start);
 }
 
 // ---------------------------------------------------------------------------
@@ -525,6 +543,62 @@ export async function renderLongformVideo(
     const cards = filterCardsToSpeakerRanges(plan.cards ?? [], speakerRanges);
     const haveCards = cards.length > 0;
 
+    // ── Explainer scenes (floating cards / short takeovers over the speaker) ──
+    // Composited onto the concat first so phrases and pop-up cards stay on top.
+    // Speaker ranges already used by phrase/card overlays are excluded so two
+    // overlays never fight for the same moment.
+    const explainerKey = options.geminiApiKey?.trim();
+    let explainerBase = concatPath;
+    if (
+      options.explainerScenesEnabled !== false &&
+      explainerKey &&
+      job.wordTimestamps &&
+      job.wordTimestamps.length > 0
+    ) {
+      const busy = [
+        ...phrases.map((p) => ({ start: p.startTime - 0.5, end: p.endTime + 0.5 })),
+        ...cards.map((c) => ({ start: c.startTime - 0.5, end: c.endTime + 0.5 })),
+      ];
+      const freeRanges = subtractRanges(speakerRanges, busy).filter((r) => r.end - r.start >= 3);
+      const explainerOut = join(tmpdir(), `batchcontent-lf-explained-${Date.now()}.mp4`);
+      const explained = await applyLongformExplainerScenes({
+        apiKey: explainerKey,
+        inputPath: concatPath,
+        outputPath: explainerOut,
+        words: job.wordTimestamps,
+        speakerRanges: freeRanges,
+        palette: deriveExplainerPalette(palette),
+        emphasisTimes: (job.wordEmphasis ?? [])
+          .filter((w) => w.emphasis !== 'normal')
+          .map((w) => w.start),
+        fps: LANDSCAPE_FPS,
+        qualityParams,
+        onProgress: (message, fraction) =>
+          window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
+            clipId: job.clipId,
+            message,
+            percent: 72 + Math.round(fraction * 5),
+          }),
+      });
+      tempFiles.push(...explained.tempFiles);
+      if (explained.outputPath === explainerOut) {
+        tempFiles.push(explainerOut);
+        explainerBase = explainerOut;
+        if (options.sceneSfxEnabled !== false && explained.cues.length > 0) {
+          const sfxOut = join(tmpdir(), `batchcontent-lf-sfx-${Date.now()}.mp4`);
+          const mixed = await mixSceneSfx(explainerOut, explained.cues, {
+            clipDuration: videoDuration,
+            outputPath: sfxOut,
+            masterDb: 7,
+          });
+          if (mixed.ok && mixed.placed > 0) {
+            tempFiles.push(sfxOut);
+            explainerBase = sfxOut;
+          }
+        }
+      }
+    }
+
     window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
       clipId: job.clipId,
       message: `Compositing ${phrases.length} phrase overlay(s)…`,
@@ -540,10 +614,10 @@ export async function renderLongformVideo(
 
     let overlayTempFiles: string[] = [];
     let phraseStats: PhraseOverlayStats = { rendered: 0, dropped: 0 };
-    let cardBase = concatPath;
+    let cardBase = explainerBase;
     if (phrases.length > 0) {
       const result = await applyPhraseOverlays({
-        inputPath: concatPath,
+        inputPath: explainerBase,
         outputPath: phraseTarget,
         phrases,
         width: LANDSCAPE_WIDTH,
@@ -564,14 +638,14 @@ export async function renderLongformVideo(
         // phraseTarget was never written. Fall back to the speaker concat as
         // the card base; if there are no cards either, finalize it directly so
         // the render still completes (RF-003).
-        cardBase = concatPath;
+        cardBase = explainerBase;
         if (!haveCards) {
-          await reencodeToFinal(concatPath, outputPath, qualityParams);
+          await reencodeToFinal(explainerBase, outputPath, qualityParams);
         }
       }
     } else if (!haveCards) {
       // No phrases and no cards — re-encode the concat to the user's quality.
-      await reencodeToFinal(concatPath, outputPath, qualityParams);
+      await reencodeToFinal(explainerBase, outputPath, qualityParams);
     }
 
     let cardTempFiles: string[] = [];
@@ -601,8 +675,8 @@ export async function renderLongformVideo(
       if (result.outputPath !== outputPath) {
         // Every card render failed → nothing was written to the final path.
         // Finalize the card pass's base instead so the render still completes.
-        if (cardBase === concatPath) {
-          await reencodeToFinal(concatPath, outputPath, qualityParams);
+        if (cardBase === concatPath || cardBase === explainerBase) {
+          await reencodeToFinal(cardBase, outputPath, qualityParams);
         } else {
           copyFileSync(cardBase, outputPath);
         }

@@ -1092,7 +1092,8 @@ export async function generateLongformEditPlan(
   const call: GeminiCall = {
     model: MODELS.BALANCED[0],
     fallbacks: MODELS.BALANCED.slice(1),
-    config: { responseMimeType: 'application/json', temperature: 0.4 },
+    config: { responseMimeType: 'application/json' },
+    thinking: 'high',
   };
 
   const totalDuration = Math.max(videoDuration, words[words.length - 1]?.end ?? 0);

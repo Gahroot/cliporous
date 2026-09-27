@@ -31,7 +31,7 @@ import { join } from 'node:path';
 import { URL } from 'node:url';
 import { GoogleGenAI } from '@google/genai';
 import type { VideoSegment } from '@shared/types';
-import { callGeminiWithRetry, type GeminiCall, MODELS } from './gemini-client';
+import { callGeminiWithRetry, type GeminiCall, IMAGE_MODEL, MODELS } from './gemini-client';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -269,8 +269,7 @@ async function downloadPexelsImage(
 // Gemini image generation fallback
 // ---------------------------------------------------------------------------
 
-const GEMINI_IMAGE_API_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent';
+const GEMINI_IMAGE_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent`;
 
 const STYLE_IMAGE_GUIDANCE: Record<string, string> = {
   viral: 'Vibrant, high-contrast, bold colors, dynamic composition, eye-catching',

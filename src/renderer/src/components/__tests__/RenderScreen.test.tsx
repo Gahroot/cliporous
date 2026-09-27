@@ -157,6 +157,47 @@ describe('RenderScreen', () => {
     expect(screen.getAllByText('Pending')).toHaveLength(CLIPS.length);
   });
 
+  it('shows compact animation colours for short-form and changes the selected palette', async () => {
+    useStore.getState().setLongformPaletteId('brand');
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+
+    const group = screen.getByRole('group', { name: 'Animation colours' });
+    expect(
+      within(group).getByText('Used for animated scenes and caption highlights.'),
+    ).toBeInTheDocument();
+    // Compact mode hides the long-form skin selector.
+    expect(within(group).queryByRole('button', { name: 'Editorial' })).toBeNull();
+    expect(
+      within(group).getByRole('button', { name: 'Use Brand Default palette' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+
+    fireEvent.click(within(group).getByRole('button', { name: 'Use Midnight Cyan palette' }));
+
+    expect(useStore.getState().settings.longformPaletteId).toBe('midnight-cyan');
+    expect(
+      within(group).getByRole('button', { name: 'Use Midnight Cyan palette' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('does not block short-form rendering when the saved palette is missing', async () => {
+    useStore.getState().setLongformPaletteId('deleted-palette');
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+
+    const group = screen.getByRole('group', { name: 'Animation colours' });
+    expect(within(group).getByRole('status')).toHaveTextContent('Brand Default will be used');
+    expect(
+      within(group).getByRole('button', { name: 'Use Brand Default palette' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+    // The palette gate only exists on the long-form "Prepare export" button
+    // (surfaced via its title); nothing on the short-form screen carries it.
+    expect(
+      document.querySelector('[title="Restore or select a palette before rendering"]'),
+    ).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Prepare export' })).toBeNull();
+  });
+
   it('updates the row when a render:clipProgress event fires', async () => {
     const { RenderScreen } = await import('@/components/screens/RenderScreen');
     render(<RenderScreen />);

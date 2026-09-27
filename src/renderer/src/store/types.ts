@@ -158,7 +158,7 @@ export interface ClipRenderSettings {
    * Per-clip caption mode. Overrides the global PRESTYJ caption mode at
    * render time for this clip only. One of the three V2 caption modes.
    */
-  captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight';
+  captionMode?: 'standard' | 'emphasis' | 'emphasis_highlight' | 'editorial';
 }
 
 export interface ClipCandidate {
@@ -431,7 +431,7 @@ export interface RenderQualitySettings {
 }
 
 export type CreatorPresetId = 'clean' | 'signature' | 'visual' | 'custom';
-export type CaptionMode = 'standard' | 'emphasis' | 'emphasis_highlight';
+export type CaptionMode = 'standard' | 'emphasis' | 'emphasis_highlight' | 'editorial';
 
 export interface AppSettings {
   geminiApiKey: string;

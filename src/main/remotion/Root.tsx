@@ -71,11 +71,14 @@ import {
 import { Timeline, type TimelineProps } from './compositions/blocks/Timeline';
 import { DelosEvidenceCard, type DelosEvidenceCardProps } from './compositions/DelosEvidenceCard';
 import { ExplainerScene } from './compositions/explainer/ExplainerScene';
+import { ExplainerSequence } from './compositions/explainer/ExplainerSequence';
+import { deriveExplainerPalette } from './compositions/explainer/palette';
 import {
   EXPLAINER_FPS,
   EXPLAINER_STAGE_HEIGHT,
   EXPLAINER_STAGE_WIDTH,
   type ExplainerSceneProps,
+  type ExplainerSequenceProps,
 } from './compositions/explainer/types';
 import { FullscreenQuote, type FullscreenQuoteProps } from './compositions/FullscreenQuote';
 import {
@@ -137,6 +140,56 @@ export const RemotionRoot: React.FC = () => {
               outputAt: 2.4,
             },
           } satisfies ExplainerSceneProps
+        }
+      />
+
+      {/* Explainer sequence: chained scenes, any layout. Size/duration set per render. */}
+      <Composition
+        id="ExplainerSequence"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        component={ExplainerSequence as any}
+        durationInFrames={EXPLAINER_FPS * 9}
+        fps={EXPLAINER_FPS}
+        width={EXPLAINER_STAGE_WIDTH}
+        height={EXPLAINER_STAGE_HEIGHT}
+        defaultProps={
+          {
+            layout: 'stack',
+            aspect: '9:16',
+            palette: deriveExplainerPalette(),
+            enter: true,
+            exit: true,
+            transitions: [{ kind: 'grow', durationInFrames: 14 }],
+            scenes: [
+              {
+                durationInFrames: EXPLAINER_FPS * 4,
+                scene: {
+                  kind: 'checklist',
+                  title: 'Human calls',
+                  items: [
+                    { label: 'Commitments', icon: 'Handshake', doneAt: 0.8 },
+                    { label: 'Unusual asks', icon: 'MessageSquare', doneAt: 1.6 },
+                    { label: 'Client relationships', icon: 'Users', doneAt: 2.4 },
+                  ],
+                  pulses: [{ at: 2.9, target: 2, strength: 'pulse' }],
+                },
+              },
+              {
+                durationInFrames: EXPLAINER_FPS * 5,
+                scene: {
+                  kind: 'flow',
+                  inputLabel: 'Prompt',
+                  inputText: 'Closed deal',
+                  engineLabel: 'AI',
+                  outputLabel: 'Answer',
+                  outputText: 'Delivery plan',
+                  inputAt: 0.6,
+                  outputAt: 2.2,
+                  overlayStamp: { word: 'Yes, but', at: 3.4 },
+                },
+              },
+            ],
+          } satisfies ExplainerSequenceProps
         }
       />
 

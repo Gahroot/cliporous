@@ -60,7 +60,7 @@ export function updateItemById<T extends { id: string }>(
 // ---------------------------------------------------------------------------
 
 export const DEFAULT_CREATOR_PRESET: CreatorPresetId = 'signature';
-export const DEFAULT_CAPTION_MODE: CaptionMode = 'emphasis_highlight';
+export const DEFAULT_CAPTION_MODE: CaptionMode = 'editorial';
 
 export const DEFAULT_AUTO_ZOOM: ZoomSettings = {
   enabled: true,

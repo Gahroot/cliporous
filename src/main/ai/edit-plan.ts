@@ -375,10 +375,8 @@ export async function generateEditPlan(options: GenerateEditPlanOptions): Promis
   const call: GeminiCall = {
     model: MODELS.BALANCED[0],
     fallbacks: MODELS.BALANCED.slice(1),
-    config: {
-      responseMimeType: 'application/json',
-      temperature: 0.3, // lower temperature for consistent, structured output
-    },
+    config: { responseMimeType: 'application/json' },
+    thinking: 'high',
   };
   const raw = await callGeminiWithRetry(ai, call, prompt, 'edit-plan');
 

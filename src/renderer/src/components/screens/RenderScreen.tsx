@@ -1245,6 +1245,17 @@ export function RenderScreen(): React.JSX.Element {
         </div>
       )}
 
+      {showPreflight && !isLongform && (
+        <Card className="mb-4 p-4">
+          <PalettePicker
+            variant="compact"
+            title="Animation colours"
+            description="Used for animated scenes and caption highlights."
+            disabled={isRendering}
+          />
+        </Card>
+      )}
+
       {showPreflight && activeSource && (
         <div className="mb-4">
           <ExportPreflight

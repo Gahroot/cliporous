@@ -11,6 +11,7 @@ import { existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, extname, join } from 'node:path';
 import { Ch } from '@shared/ipc-channels';
+import { getPaletteById } from '@shared/palettes';
 import type { VideoSegment } from '@shared/types';
 import type { BrowserWindow } from 'electron';
 import { writeDescriptionFile } from '../ai/description-generator';
@@ -23,11 +24,13 @@ import {
   ARCHETYPE_DEFAULT_TRANSITION_IN,
   ARCHETYPE_TO_CATEGORY,
 } from './../edit-styles/shared/archetypes';
-import { BRAND_ACCENT } from '../edit-styles/shared/brand';
 import type { ManifestJobMeta } from '../export-manifest';
 import type { FfmpegCommand } from '../ffmpeg';
 import { getEncoder, getVideoMetadata, isHardwareEncoder } from '../ffmpeg';
 import { remapTimeAfterFillers } from '../filler-cuts';
+import { deriveExplainerPalette } from '../remotion/compositions/explainer/palette';
+import type { SceneCue } from '../remotion/compositions/explainer/types';
+import { analyzeEmphasisHeuristic, type EmphasizedWord } from '../word-emphasis';
 import { activeCommands, buildVideoFilter, renderClip } from './base-render';
 import { applyExplainerScenes } from './explainer-scenes';
 import { accentColorFeature, restoreBatchOptions } from './features/accent-color.feature';
@@ -165,6 +168,18 @@ function remapWordEmphasis<T extends { start: number; end: number }>(
   return out;
 }
 
+/**
+ * Start times (source seconds) of stressed words for explainer emphasis
+ * reactions: the upstream AI emphasis when present, else the local heuristic.
+ */
+function explainerEmphasisTimes(
+  emphasis: EmphasizedWord[] | undefined,
+  words: { text: string; start: number; end: number }[],
+): number[] {
+  const source = emphasis && emphasis.length > 0 ? emphasis : analyzeEmphasisHeuristic(words);
+  return source.filter((w) => w.emphasis !== 'normal').map((w) => w.start);
+}
+
 // ---------------------------------------------------------------------------
 // Main orchestrator
 // ---------------------------------------------------------------------------
@@ -234,6 +249,15 @@ export async function startBatchRender(
 
   const { jobs, outputDirectory } = options;
   const total = jobs.length;
+
+  // ── Brand palette ─────────────────────────────────────────────────────────
+  // The palette the user selected before rendering drives explainer scenes
+  // and the caption accent (a per-clip accent override still wins, applied
+  // later by the accent-color feature / explainer seed).
+  const selectedPalette = getPaletteById(options.longformPaletteId, options.customPalettes);
+  if (options.captionStyle) {
+    options.captionStyle = { ...options.captionStyle, accentColor: selectedPalette.accent };
+  }
 
   // Ensure output directory exists
   if (!existsSync(outputDirectory)) {
@@ -651,6 +675,7 @@ export async function startBatchRender(
         // replace whatever layout their window had, and fall back to the
         // speaker on any failure.
         const explainerKey = options.geminiApiKey?.trim();
+        let sceneCues: SceneCue[] = [];
         const firstSeg = resolvedSegments[0];
         const lastSeg = resolvedSegments[resolvedSegments.length - 1];
         if (
@@ -665,6 +690,7 @@ export async function startBatchRender(
             options.hookTitleOverlay?.enabled && job.hookTitleText
               ? (options.hookTitleOverlay.displayDuration ?? 2.5)
               : 0;
+          const clipAccent = job.clipOverrides?.accentColor;
           const explainer = await applyExplainerScenes({
             apiKey: explainerKey,
             segments: resolvedSegments,
@@ -673,7 +699,13 @@ export async function startBatchRender(
               minStart: firstSeg.startTime + Math.max(MIN_FACE_LEAD_SECONDS, hookLead),
               maxEnd: lastSeg.endTime,
             },
-            accentColor: job.clipOverrides?.accentColor ?? BRAND_ACCENT,
+            palette: deriveExplainerPalette({
+              background: selectedPalette.background,
+              foreground: selectedPalette.foreground,
+              accent: clipAccent ?? selectedPalette.accent,
+              ...(selectedPalette.accent2 ? { accent2: selectedPalette.accent2 } : {}),
+            }),
+            emphasisTimes: explainerEmphasisTimes(job.wordEmphasis, job.wordTimestamps),
             isCancelled: () => cancelRequested,
             onProgress: (message, fraction) => {
               if (!cancelRequested) {
@@ -687,6 +719,7 @@ export async function startBatchRender(
           });
           allTempFiles.push(...explainer.tempFiles);
           resolvedSegments = explainer.segments;
+          sceneCues = explainer.cues;
         }
 
         // Clip-relative archetype windows for the post-concat caption pass.
@@ -728,7 +761,12 @@ export async function startBatchRender(
           sourceHeight: segMeta.height,
           wordTimestamps: job.wordTimestamps,
           wordEmphasis: job.wordEmphasis,
-          captionStyle: options.captionStyle,
+          captionStyle:
+            options.captionStyle && job.clipOverrides?.captionMode
+              ? { ...options.captionStyle, captionMode: job.clipOverrides.captionMode }
+              : options.captionStyle,
+          sceneCues,
+          sceneSfxEnabled: options.sceneSfxEnabled !== false,
           captionsEnabled:
             options.captionsEnabled !== false && job.clipOverrides?.enableCaptions !== false,
           archetypeWindows,

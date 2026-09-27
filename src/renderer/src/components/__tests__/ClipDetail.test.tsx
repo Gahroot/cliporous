@@ -93,12 +93,12 @@ describe('ClipDetail', () => {
     const { ClipDetail } = await import('@/components/ClipDetail');
     render(<ClipDetail clip={CLIP} source={SOURCE} open onOpenChange={() => {}} />);
 
-    // Default mode is PRESTYJ's Emphasis + Highlight mode.
+    // Default mode is the serif Editorial mode.
     // Radix's <Select> trigger doesn't pick up htmlFor/id label association,
     // so we look it up by its DOM id directly.
     const trigger = document.getElementById('captions-mode') as HTMLElement;
     expect(trigger).not.toBeNull();
-    expect(trigger).toHaveTextContent(/emphasis/i);
+    expect(trigger).toHaveTextContent(/editorial/i);
 
     // Open the Select. Radix Selects respond to keyboard activation.
     fireEvent.keyDown(trigger, { key: 'ArrowDown' });

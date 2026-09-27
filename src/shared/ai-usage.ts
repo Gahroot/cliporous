@@ -30,11 +30,28 @@ export interface ModelPricing {
  * checked date, version, and focused tests together when Google changes prices.
  */
 export const AI_PRICING = {
-  version: 'google-gemini-api-2026-07-17',
-  checkedDate: '17 July 2026',
+  version: 'google-gemini-api-2026-09-27',
+  checkedDate: '27 September 2026',
   sourceUrl: 'https://ai.google.dev/gemini-api/docs/pricing',
   currency: 'USD',
   models: {
+    // 3.8 / 3.7 Flash: introductory price through 31 Dec 2026 ($1.50 / $7.50 from 1 Jan 2027).
+    'gemini-3.8-flash': {
+      modelId: 'gemini-3.8-flash',
+      inputUsdPerMillionTokens: 0.75,
+      outputUsdPerMillionTokens: 3.75,
+    },
+    'gemini-3.7-flash': {
+      modelId: 'gemini-3.7-flash',
+      inputUsdPerMillionTokens: 0.75,
+      outputUsdPerMillionTokens: 3.75,
+    },
+    'gemini-3.5-flash-lite': {
+      modelId: 'gemini-3.5-flash-lite',
+      inputUsdPerMillionTokens: 0.3,
+      outputUsdPerMillionTokens: 2.5,
+    },
+    // Legacy ids kept so historical usage records still price correctly.
     'gemini-3-flash-preview': {
       modelId: 'gemini-3-flash-preview',
       inputUsdPerMillionTokens: 0.5,

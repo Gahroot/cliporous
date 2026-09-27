@@ -6,6 +6,7 @@
  * pending or rejected decisions.
  */
 
+import { BUILTIN_PALETTES, DEFAULT_PALETTE_ID, type Palette } from '@shared/palettes';
 import { toast } from 'sonner';
 
 import { useStore } from '@/store';
@@ -37,6 +38,26 @@ interface StartApprovedRenderOptions {
 interface SelectedRenderItems {
   regular: ClipCandidate[];
   stitched: StitchedClipCandidate[];
+}
+
+/**
+ * Palette forwarded with a short-form batch. A selected id that no longer
+ * exists (e.g. deleted in another window) falls back to the default palette so
+ * short-form renders are never blocked by a stale palette choice.
+ */
+export function resolveShortformPalette(settings: {
+  longformPaletteId?: string | undefined;
+  customPalettes?: Palette[] | undefined;
+}): { longformPaletteId: string; customPalettes: Palette[] } {
+  const customPalettes = (settings.customPalettes ?? []).map((palette) => ({ ...palette }));
+  const selected = settings.longformPaletteId;
+  const exists =
+    selected !== undefined &&
+    [...BUILTIN_PALETTES, ...customPalettes].some((palette) => palette.id === selected);
+  return {
+    longformPaletteId: exists ? selected : DEFAULT_PALETTE_ID,
+    customPalettes,
+  };
 }
 
 type PromoBrandAsset = NonNullable<
@@ -384,6 +405,7 @@ export async function startApprovedRender(
   // stock B-Roll (see the Phase 1a block in render-handlers.ts). Only forward
   // the block when enabled so the main side's default path is untouched.
   const promoOptions = buildPromoRenderOptions(state);
+  const paletteOptions = resolveShortformPalette(settings);
 
   try {
     await window.api.startBatchRender({
@@ -406,6 +428,10 @@ export async function startApprovedRender(
       shotTransitionsEnabled: settings.shotTransitionsEnabled,
       explainerScenesEnabled: settings.explainerScenesEnabled,
       hyperframesEnabled: settings.promo.enabled,
+
+      // ── Palette (animated scenes + caption highlights) ─────────────────
+      longformPaletteId: paletteOptions.longformPaletteId,
+      customPalettes: paletteOptions.customPalettes,
 
       // ── Visual features ─────────────────────────────────────────────
       autoZoom: settings.autoZoom,
