@@ -23,11 +23,13 @@ import {
   ARCHETYPE_DEFAULT_TRANSITION_IN,
   ARCHETYPE_TO_CATEGORY,
 } from './../edit-styles/shared/archetypes';
+import { BRAND_ACCENT } from '../edit-styles/shared/brand';
 import type { ManifestJobMeta } from '../export-manifest';
 import type { FfmpegCommand } from '../ffmpeg';
 import { getEncoder, getVideoMetadata, isHardwareEncoder } from '../ffmpeg';
 import { remapTimeAfterFillers } from '../filler-cuts';
 import { activeCommands, buildVideoFilter, renderClip } from './base-render';
+import { applyExplainerScenes } from './explainer-scenes';
 import { accentColorFeature, restoreBatchOptions } from './features/accent-color.feature';
 import { autoZoomFeature } from './features/auto-zoom.feature';
 import { brollFeature } from './features/broll.feature';
@@ -47,7 +49,7 @@ import { shotTransitionFeature } from './features/shot-transition.feature';
 import { wordEmphasisFeature } from './features/word-emphasis.feature';
 import { buildOutputPath } from './filename';
 import { renderLongformVideo } from './longform-pipeline';
-import { enforceSpeakerOpening } from './opening-guard';
+import { enforceSpeakerOpening, MIN_FACE_LEAD_SECONDS } from './opening-guard';
 import { resolveQualityParams } from './quality';
 import { classifyRenderError } from './render-error-map';
 import type { ResolvedSegment, SegmentRenderConfig } from './segment-render';
@@ -641,7 +643,51 @@ export async function startBatchRender(
         // archetype (fullscreen image/quote card, split-image), it is split or
         // demoted so a face is visible from frame 0 and any media/card overlay
         // is delayed past the lead.
-        const resolvedSegments: ResolvedSegment[] = enforceSpeakerOpening(builtSegments);
+        let resolvedSegments: ResolvedSegment[] = enforceSpeakerOpening(builtSegments);
+
+        // ── Explainer scenes ────────────────────────────────────────────────────
+        // Transcript-driven animated diagrams on the top half (speaker on the
+        // bottom). Scenes start after the speaker opening and the hook title,
+        // replace whatever layout their window had, and fall back to the
+        // speaker on any failure.
+        const explainerKey = options.geminiApiKey?.trim();
+        const firstSeg = resolvedSegments[0];
+        const lastSeg = resolvedSegments[resolvedSegments.length - 1];
+        if (
+          options.explainerScenesEnabled !== false &&
+          explainerKey &&
+          firstSeg &&
+          lastSeg &&
+          job.wordTimestamps &&
+          job.wordTimestamps.length > 0
+        ) {
+          const hookLead =
+            options.hookTitleOverlay?.enabled && job.hookTitleText
+              ? (options.hookTitleOverlay.displayDuration ?? 2.5)
+              : 0;
+          const explainer = await applyExplainerScenes({
+            apiKey: explainerKey,
+            segments: resolvedSegments,
+            words: job.wordTimestamps,
+            bounds: {
+              minStart: firstSeg.startTime + Math.max(MIN_FACE_LEAD_SECONDS, hookLead),
+              maxEnd: lastSeg.endTime,
+            },
+            accentColor: job.clipOverrides?.accentColor ?? BRAND_ACCENT,
+            isCancelled: () => cancelRequested,
+            onProgress: (message, fraction) => {
+              if (!cancelRequested) {
+                window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
+                  clipId: job.clipId,
+                  message,
+                  percent: 6 + Math.round(fraction * 14),
+                });
+              }
+            },
+          });
+          allTempFiles.push(...explainer.tempFiles);
+          resolvedSegments = explainer.segments;
+        }
 
         // Clip-relative archetype windows for the post-concat caption pass.
         const archetypeWindows: ArchetypeWindow[] = [];

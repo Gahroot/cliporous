@@ -399,6 +399,7 @@ function expectedProjectSettings(): ProjectSettings {
     captionMode: SETTINGS_FIXTURE.captionMode,
     wordEmphasisEnabled: SETTINGS_FIXTURE.wordEmphasisEnabled,
     shotTransitionsEnabled: SETTINGS_FIXTURE.shotTransitionsEnabled,
+    explainerScenesEnabled: SETTINGS_FIXTURE.explainerScenesEnabled,
     autoZoom: SETTINGS_FIXTURE.autoZoom,
     hookTitleOverlay: SETTINGS_FIXTURE.hookTitleOverlay,
     rehookOverlay: SETTINGS_FIXTURE.rehookOverlay,

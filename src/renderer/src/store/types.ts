@@ -449,6 +449,8 @@ export interface AppSettings {
   captionMode: CaptionMode;
   wordEmphasisEnabled: boolean;
   shotTransitionsEnabled: boolean;
+  /** Transcript-driven animated explainer scenes on the top half of shorts. */
+  explainerScenesEnabled: boolean;
   autoZoom: ZoomSettings;
   hookTitleOverlay: HookTitleOverlaySettings;
   rehookOverlay: RehookOverlaySettings;

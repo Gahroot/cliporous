@@ -460,6 +460,8 @@ interface RenderBatchOptions {
   wordEmphasisEnabled?: boolean;
   /** Whether segmented and per-shot edits use transitions instead of hard cuts. */
   shotTransitionsEnabled?: boolean;
+  /** Whether shorts get transcript-driven animated explainer scenes (needs a Gemini key). */
+  explainerScenesEnabled?: boolean;
   /** Whether queued HyperFrames overlays are composited. */
   hyperframesEnabled?: boolean;
   /** Ken Burns auto-zoom settings applied to every rendered clip */

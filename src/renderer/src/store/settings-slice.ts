@@ -248,6 +248,7 @@ export const createSettingsSlice: StateCreator<
         state.settings.captionMode = 'standard';
         state.settings.wordEmphasisEnabled = false;
         state.settings.shotTransitionsEnabled = false;
+        state.settings.explainerScenesEnabled = false;
         state.settings.fillerRemoval = { ...FILLER_PRESET_LET_IT_RIDE, enabled: true };
         state.settings.hookTitleOverlay.enabled = false;
         state.settings.rehookOverlay.enabled = false;
@@ -260,6 +261,7 @@ export const createSettingsSlice: StateCreator<
         state.settings.captionMode = 'emphasis_highlight';
         state.settings.wordEmphasisEnabled = true;
         state.settings.shotTransitionsEnabled = true;
+        state.settings.explainerScenesEnabled = true;
         state.settings.fillerRemoval = { ...FILLER_PRESET_LET_IT_RIDE, enabled: true };
         state.settings.hookTitleOverlay.enabled = true;
         state.settings.rehookOverlay.enabled = true;
@@ -277,6 +279,7 @@ export const createSettingsSlice: StateCreator<
       state.settings.captionMode = 'emphasis_highlight';
       state.settings.wordEmphasisEnabled = true;
       state.settings.shotTransitionsEnabled = true;
+      state.settings.explainerScenesEnabled = true;
       state.settings.fillerRemoval = { ...FILLER_PRESET_TIGHT, enabled: true };
       state.settings.hookTitleOverlay.enabled = true;
       state.settings.rehookOverlay.enabled = true;

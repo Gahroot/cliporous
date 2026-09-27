@@ -21,7 +21,10 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "files": ["src/main/remotion/compositions/blocks/types.ts"],
+  "files": [
+    "src/main/remotion/compositions/blocks/types.ts",
+    "src/main/remotion/compositions/explainer/types.ts"
+  ],
   "include": ["electron-vite.config.ts", "src/main/**/*", "src/preload/**/*", "src/shared/**/*"],
   "exclude": [
     "src/main/remotion/Root.tsx",

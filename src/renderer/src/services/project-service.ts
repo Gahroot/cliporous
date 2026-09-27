@@ -79,6 +79,7 @@ function projectSettingsFrom(settings: Partial<AppSettings> | undefined): Projec
     captionMode: merged.captionMode,
     wordEmphasisEnabled: merged.wordEmphasisEnabled,
     shotTransitionsEnabled: merged.shotTransitionsEnabled,
+    explainerScenesEnabled: merged.explainerScenesEnabled,
     autoZoom: merged.autoZoom,
     hookTitleOverlay: merged.hookTitleOverlay,
     rehookOverlay: merged.rehookOverlay,

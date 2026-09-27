@@ -251,6 +251,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   captionMode: DEFAULT_CAPTION_MODE,
   wordEmphasisEnabled: true,
   shotTransitionsEnabled: true,
+  explainerScenesEnabled: true,
   autoZoom: DEFAULT_AUTO_ZOOM,
   hookTitleOverlay: DEFAULT_HOOK_TITLE_OVERLAY,
   rehookOverlay: DEFAULT_REHOOK_OVERLAY,
@@ -308,6 +309,7 @@ export type ProjectSettings = Pick<
   | 'captionMode'
   | 'wordEmphasisEnabled'
   | 'shotTransitionsEnabled'
+  | 'explainerScenesEnabled'
   | 'autoZoom'
   | 'hookTitleOverlay'
   | 'rehookOverlay'
@@ -389,6 +391,7 @@ export function loadPersistedSettings(): AppSettings {
         captionMode: saved.captionMode ?? DEFAULT_CAPTION_MODE,
         wordEmphasisEnabled: saved.wordEmphasisEnabled ?? true,
         shotTransitionsEnabled: saved.shotTransitionsEnabled ?? true,
+        explainerScenesEnabled: saved.explainerScenesEnabled ?? true,
         autoZoom: { ...DEFAULT_AUTO_ZOOM, ...(saved.autoZoom ?? {}) },
         hookTitleOverlay: { ...DEFAULT_HOOK_TITLE_OVERLAY, ...(saved.hookTitleOverlay ?? {}) },
         rehookOverlay: { ...DEFAULT_REHOOK_OVERLAY, ...(saved.rehookOverlay ?? {}) },

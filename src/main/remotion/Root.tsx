@@ -70,6 +70,13 @@ import {
 } from './compositions/blocks';
 import { Timeline, type TimelineProps } from './compositions/blocks/Timeline';
 import { DelosEvidenceCard, type DelosEvidenceCardProps } from './compositions/DelosEvidenceCard';
+import { ExplainerScene } from './compositions/explainer/ExplainerScene';
+import {
+  EXPLAINER_FPS,
+  EXPLAINER_STAGE_HEIGHT,
+  EXPLAINER_STAGE_WIDTH,
+  type ExplainerSceneProps,
+} from './compositions/explainer/types';
 import { FullscreenQuote, type FullscreenQuoteProps } from './compositions/FullscreenQuote';
 import {
   FullscreenQuotePlusBroll,
@@ -108,6 +115,31 @@ const PRESTYJ_QUOTE_DEFAULTS = {
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* Explainer stage: top half of a split short. Opaque, 1080×960. */}
+      <Composition
+        id="ExplainerScene"
+        component={ExplainerScene as any}
+        durationInFrames={EXPLAINER_FPS * 6}
+        fps={EXPLAINER_FPS}
+        width={EXPLAINER_STAGE_WIDTH}
+        height={EXPLAINER_STAGE_HEIGHT}
+        defaultProps={
+          {
+            accentColor: BRAND_ACCENT,
+            scene: {
+              kind: 'flow',
+              inputLabel: 'Prompt',
+              inputText: 'Closed deal',
+              engineLabel: 'AI',
+              outputLabel: 'Answer',
+              outputText: 'Delivery plan',
+              inputAt: 0.6,
+              outputAt: 2.4,
+            },
+          } satisfies ExplainerSceneProps
+        }
+      />
+
       <Composition
         id="FullscreenQuote"
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

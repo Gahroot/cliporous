@@ -98,6 +98,7 @@ function renderOptionsHash(state: AppState): string {
     },
     wordEmphasis: state.settings.wordEmphasisEnabled,
     shotTransitions: state.settings.shotTransitionsEnabled,
+    explainerScenes: state.settings.explainerScenesEnabled,
     autoZoom: state.settings.autoZoom,
     hook: state.settings.hookTitleOverlay,
     rehook: state.settings.rehookOverlay,
@@ -403,6 +404,7 @@ export async function startApprovedRender(
       },
       wordEmphasisEnabled: settings.wordEmphasisEnabled,
       shotTransitionsEnabled: settings.shotTransitionsEnabled,
+      explainerScenesEnabled: settings.explainerScenesEnabled,
       hyperframesEnabled: settings.promo.enabled,
 
       // ── Visual features ─────────────────────────────────────────────
