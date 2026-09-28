@@ -1,0 +1,6 @@
+[
+  { "name": "hero-target", "scene": { "kind": "hero", "prop": "target", "label": "Nail your niche", "at": 0.4 }, "frames": [18, 29, 41, 110], "durationSec": 5 },
+  { "name": "hero-piggybank", "scene": { "kind": "hero", "prop": "piggybank", "label": "Save 20% monthly", "at": 0.4 }, "frames": [18, 30, 42, 110], "durationSec": 5 },
+  { "name": "hero-trophy", "scene": { "kind": "hero", "prop": "trophy", "label": "First place", "at": 0.4 }, "frames": [18, 23, 35, 110], "durationSec": 5 },
+  { "name": "hero-briefcase", "scene": { "kind": "hero", "prop": "briefcase", "label": "Land the client", "at": 0.4 }, "frames": [18, 27, 39, 110], "durationSec": 5 }
+]

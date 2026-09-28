@@ -31,7 +31,7 @@ import type { RenderBatchOptions, RenderClipJob } from '../types';
 import type { OverlayContext, OverlayPassResult, PrepareResult, RenderFeature } from './feature';
 
 /**
- * Pick the V2 caption mode for a clip. Only three values are possible.
+ * Pick the caption mode for a clip.
  *
  * The decision is driven by:
  *   1. An explicit `captionMode` on the style object (strongest signal).
@@ -39,11 +39,12 @@ import type { OverlayContext, OverlayPassResult, PrepareResult, RenderFeature } 
  *   3. Whether the style provides an accent color distinct from the standard
  *      cream. An accent present → 'emphasis_highlight'; otherwise 'emphasis'.
  */
-function resolveCaptionMode(style: CaptionStyleInput, words: WordInput[]): CaptionMode {
+export function resolveCaptionMode(style: CaptionStyleInput, words: WordInput[]): CaptionMode {
   if (
     style.captionMode === 'standard' ||
     style.captionMode === 'emphasis' ||
-    style.captionMode === 'emphasis_highlight'
+    style.captionMode === 'emphasis_highlight' ||
+    style.captionMode === 'editorial'
   ) {
     return style.captionMode;
   }

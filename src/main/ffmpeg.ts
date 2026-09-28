@@ -18,6 +18,15 @@ function findOnSystemPath(name: string): string | null {
   return null;
 }
 
+function resolveDevFfmpegStatic(): string | null {
+  try {
+    const p = require('ffmpeg-static') as string | null;
+    return p && existsSync(p) ? p : null;
+  } catch {
+    return null;
+  }
+}
+
 function resolveBinaryPath(name: string): string | null {
   const ext = process.platform === 'win32' ? '.exe' : '';
   const binary = `${name}${ext}`;
@@ -72,7 +81,20 @@ function resolveBinaryPath(name: string): string | null {
     }
   }
 
-  // Development uses the operator-installed FFmpeg toolchain on PATH.
+  // Development ffmpeg: prefer the npm ffmpeg-static build — the same binary
+  // macOS releases ship, with libass for burned-in captions. Homebrew's ffmpeg
+  // formula no longer links libass, so a PATH ffmpeg silently drops captions
+  // and hook titles.
+  if (!app.isPackaged && name === 'ffmpeg') {
+    const devStatic = resolveDevFfmpegStatic();
+    searchedPaths.push(`npm ffmpeg-static: ${devStatic ?? 'not found'}`);
+    if (devStatic) {
+      console.log(`[FFmpeg] Found ffmpeg via npm ffmpeg-static: ${devStatic}`);
+      return devStatic;
+    }
+  }
+
+  // Otherwise use the operator-installed FFmpeg toolchain on PATH.
   // Release builds bundle an audited matching ffmpeg/ffprobe pair in resources/bin.
   const systemPath = findOnSystemPath(name);
   searchedPaths.push(`system PATH: ${systemPath ?? 'not found'}`);

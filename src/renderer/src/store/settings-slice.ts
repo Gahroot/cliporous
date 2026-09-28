@@ -258,7 +258,7 @@ export const createSettingsSlice: StateCreator<
       }
       if (preset === 'signature') {
         state.settings.captionsEnabled = true;
-        state.settings.captionMode = 'emphasis_highlight';
+        state.settings.captionMode = 'editorial';
         state.settings.wordEmphasisEnabled = true;
         state.settings.shotTransitionsEnabled = true;
         state.settings.explainerScenesEnabled = true;
@@ -276,7 +276,7 @@ export const createSettingsSlice: StateCreator<
         return;
       }
       state.settings.captionsEnabled = true;
-      state.settings.captionMode = 'emphasis_highlight';
+      state.settings.captionMode = 'editorial';
       state.settings.wordEmphasisEnabled = true;
       state.settings.shotTransitionsEnabled = true;
       state.settings.explainerScenesEnabled = true;

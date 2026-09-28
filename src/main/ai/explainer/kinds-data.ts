@@ -51,6 +51,9 @@ export const beforeAfterSpec: KindSpec<'before-after'> = {
   limits: `before/after title ≤ ${L.baTitle}, each point ≤ ${L.baPoint} (1-3 points per side)`,
   layouts: ['stack', 'pip', 'takeover'],
   durationSec: [3.5, 9],
+  family: 'compare',
+  triggers: [/\b(before|after|used to|old way|new way|nowadays|back then|without)\b/],
+  avoid: 'two rival options side by side (versus)',
   parse: (raw, ctx) => {
     const side = (v: unknown): { title: string; points: string[] } | null => {
       if (!isRec(v) || !Array.isArray(v.points)) return null;
@@ -96,6 +99,11 @@ export const chartSpec: KindSpec<'chart'> = {
   limits: `chart title ≤ ${L.chartTitle}, point label ≤ ${L.chartLabel} (3-6 points, values ≥ 0), callout ≤ ${L.chartCallout}`,
   layouts: ['stack', 'over', 'pip'],
   durationSec: [3, 8],
+  family: 'data',
+  triggers: [
+    /\b(grow|grew|growth|increase|decrease|dropped|decline|revenue|went from|chart|graph|trend)\w*/,
+  ],
+  avoid: 'money compounding over many years (compound)',
   parse: (raw, ctx) => {
     const title = ctx.str(raw.title, L.chartTitle);
     const growW = ctx.inWin(raw.growWord);
@@ -144,6 +152,9 @@ export const chatSpec: KindSpec<'chat'> = {
   limits: `from ≤ ${L.chatFrom}, message ≤ ${L.chatMessage} (1-4 messages; for email the first message is the subject)`,
   layouts: ['over', 'stack', 'pip'],
   durationSec: [3, 9],
+  family: 'story',
+  triggers: [/\b(text(ed)?|message(d)?|dm|dms|emailed|told me|replied|notification|wrote to me)\b/],
+  avoid: 'a famous saying with an author (quote)',
   parse: (raw, ctx) => {
     const from = ctx.str(raw.from, L.chatFrom);
     if (!from) return null;
@@ -177,6 +188,8 @@ export const networkSpec: KindSpec<'network'> = {
   limits: `hub ≤ ${L.networkHub}, node label ≤ ${L.networkNode} (3-6 nodes)`,
   layouts: ['stack', 'takeover', 'pip'],
   durationSec: [3.5, 10],
+  family: 'framework',
+  triggers: [/\b(team|connect\w*|network|tools|partners|referrals?|ecosystem|together)\b/],
   parse: (raw, ctx) => {
     const nodes = parseTimedList(
       raw.nodes,
@@ -219,6 +232,8 @@ export const loopSpec: KindSpec<'loop'> = {
   limits: `stage label ≤ ${L.loopStage} (2-5 stages), center ≤ ${L.loopCenter}`,
   layouts: ['stack', 'pip', 'takeover'],
   durationSec: [3.5, 10],
+  family: 'process',
+  triggers: [/\b(loop|cycle|again and again|repeat\w*|flywheel|habit|feedback|over and over)\b/],
   parse: (raw, ctx) => {
     const stages = parseTimedList(
       raw.stages,

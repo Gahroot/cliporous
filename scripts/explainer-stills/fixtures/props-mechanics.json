@@ -1,0 +1,5 @@
+[
+  { "name": "hero-gears", "scene": { "kind": "hero", "prop": "gears", "label": "How it all works", "at": 0.4 }, "frames": [18, 21, 33, 110], "durationSec": 5 },
+  { "name": "hero-key", "scene": { "kind": "hero", "prop": "key", "label": "The secret to it", "at": 0.4 }, "frames": [18, 28, 40, 110], "durationSec": 5 },
+  { "name": "hero-door", "scene": { "kind": "hero", "prop": "door", "label": "New opportunity", "at": 0.4 }, "frames": [18, 26, 38, 110], "durationSec": 5 }
+]

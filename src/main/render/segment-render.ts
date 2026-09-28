@@ -603,7 +603,9 @@ async function concatWithDemuxer(
  * near-losslessly (CRF 12, veryfast) regardless of the user's CRF/preset.
  *
  * `transitions` / `stepDurations` come from `resolveSegmentTransitions` and
- * `computeStepDurations`; the caption timeline subtracts the same overlaps.
+ * `computeStepDurations`. Callers encode each outgoing segment `step` seconds
+ * long so the overlap repeats the same source moment and the output length
+ * is the plain sum of segment durations.
  *
  * `requestedDurations` is the per-segment duration we asked FFmpeg to produce
  * for each input file (i.e. `seg.endTime - seg.startTime`). We combine that
@@ -690,14 +692,11 @@ async function concatWithXfade(
     filterParts.push(
       `[${inputLabel}][${i}:v]xfade=transition=${xfadeType ?? 'fade'}:duration=${stepDuration.toFixed(3)}:offset=${offset.toFixed(3)}[${outputLabel}]`,
     );
-    // Audio crossfade. For hard-cuts inside the xfade chain we want a
-    // clean butt-splice (no soft fade) so the speaker's voice doesn't
-    // soften every time the visual barely cuts. `c1=nofade:c2=nofade`
-    // collapses acrossfade's curve to a sample-aligned join — the
-    // crossfade still has to exist (acrossfade requires d > 0) but it
-    // contributes no audible taper. Soft transitions keep the triangular
-    // curve so audio fades match the visual fade.
-    const audioCurves = xfadeType === null ? 'c1=nofade:c2=nofade' : 'c1=tri:c2=tri';
+    // Audio crossfade. Segment i-1 was encoded `stepDuration` past its end
+    // (see `encodeDurations`), so both sides of this overlap carry the SAME
+    // source audio; complementary linear gains sum back to the original, so
+    // the voice plays straight through every join, hard cut or soft.
+    const audioCurves = 'c1=tri:c2=tri';
     audioParts.push(
       `[${audioInputLabel}][${i}:a]acrossfade=d=${stepDuration.toFixed(3)}:${audioCurves}[${audioOutputLabel}]`,
     );
@@ -818,11 +817,10 @@ async function concatWithXfade(
  * `i` OVERLAPS segment `i-1` in the rendered output. `stepDurations[0]` is
  * always 0 (no transition into the first segment).
  *
- * These values MUST match what `concatWithXfade` uses, or the caption
- * timeline will drift from the actual rendered video timeline. The values
- * are also subtracted from the cumulative clip-time when laying out caption
- * events and archetype windows so that everything stays in the output's
- * post-concat coordinate system.
+ * These values MUST match what `concatWithXfade` uses. The segmented render
+ * encodes each outgoing segment `step` seconds past its end, so the overlap
+ * never shortens the output; the timeline helpers below still accept steps
+ * (callers there pass zeros).
  *
  * When the segmented render uses `concatWithDemuxer` (all hard-cuts, no
  * xfade) the step durations are all 0 — captions then align with the
@@ -1167,11 +1165,20 @@ export async function renderSegmentedClip(
     balancedSegments.map((s) => s.endTime - s.startTime),
   );
 
-  // Archetype windows must reflect the shifted boundaries AND the xfade
-  // overlap that the concat pass consumes between segments. Any pre-supplied
-  // `config.archetypeWindows` is rebuilt from the rebalanced segments +
-  // step durations here.
-  const balancedArchetypeWindows = buildClipArchetypeWindows(balancedSegments, stepDurations);
+  // Each outgoing segment is encoded `step` seconds past its end, so the
+  // crossfade blends that source moment with ITSELF (the incoming segment's
+  // head). Linear crossfades of identical audio sum back to the original, so
+  // no speech is overlapped or dropped at a join, and the output timeline is
+  // the plain sum of segment durations — captions, windows and cues need no
+  // overlap correction (`timelineSteps` are all zero).
+  const encodeDurations = balancedSegments.map(
+    (s, i) => s.endTime - s.startTime + (stepDurations[i + 1] ?? 0),
+  );
+  const timelineSteps = balancedSegments.map(() => 0);
+
+  // Archetype windows must reflect the shifted boundaries. Any pre-supplied
+  // `config.archetypeWindows` is rebuilt from the rebalanced segments here.
+  const balancedArchetypeWindows = buildClipArchetypeWindows(balancedSegments, timelineSteps);
 
   // Progress allocation: 80% segment encode, 5% concat, 15% post-concat.
   const segmentWeight = 80;
@@ -1184,7 +1191,7 @@ export async function renderSegmentedClip(
     // ── Phase 1: Encode each segment ────────────────────────────────────
     for (let i = 0; i < balancedSegments.length; i++) {
       const seg = balancedSegments[i];
-      const segDuration = seg.endTime - seg.startTime;
+      const segDuration = encodeDurations[i] ?? seg.endTime - seg.startTime;
       const tempPath = join(tempDir, `batchcontent-seg-${Date.now()}-${i}.mp4`);
       tempFiles.push(tempPath);
       segmentOutputFiles.push(tempPath);
@@ -1211,7 +1218,7 @@ export async function renderSegmentedClip(
       // the encoder's promised stream length rather than ffprobe's container
       // duration (which can drift past the actual video stream end and make
       // xfade hold the last frame as a still image).
-      const requestedSegDurations = balancedSegments.map((s) => s.endTime - s.startTime);
+      const requestedSegDurations = encodeDurations;
       await concatWithXfade(
         segmentOutputFiles,
         transitions,
@@ -1249,13 +1256,13 @@ export async function renderSegmentedClip(
         balancedSegments,
         config.wordTimestamps,
         config.wordEmphasis,
-        stepDurations,
+        timelineSteps,
       );
       if (clipWords.length > 0) {
         try {
           const windows = balancedArchetypeWindows;
           const editStyleId = config.editStyle?.id ?? DEFAULT_EDIT_STYLE_ID;
-          const layoutWindows = buildClipLayoutWindows(balancedSegments, stepDurations);
+          const layoutWindows = buildClipLayoutWindows(balancedSegments, timelineSteps);
           const captionAssPath = await generateCaptions(clipWords, config.captionStyle, undefined, {
             frameWidth: tw,
             frameHeight: th,
@@ -1382,11 +1389,8 @@ export async function renderSegmentedClip(
 
     // 3d. Explainer-scene sound cues — soft beats mixed under the voice.
     if (config.sceneSfxEnabled !== false && config.sceneCues && config.sceneCues.length > 0) {
-      const clipCues = mapCuesToClipTime(config.sceneCues, balancedSegments, stepDurations);
-      const clipDuration = balancedSegments.reduce(
-        (sum, s, i) => sum + (s.endTime - s.startTime) - (stepDurations[i] ?? 0),
-        0,
-      );
+      const clipCues = mapCuesToClipTime(config.sceneCues, balancedSegments, timelineSteps);
+      const clipDuration = balancedSegments.reduce((sum, s) => sum + (s.endTime - s.startTime), 0);
       const sfxPath = join(tempDir, `batchcontent-seg-sfx-${Date.now()}.mp4`);
       const mixed = await mixSceneSfx(currentPath, clipCues, {
         clipDuration,

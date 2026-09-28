@@ -19,6 +19,9 @@ For each segment we:
 Output per segment:
   {
     "x": 100, "y": 0, "width": 607, "height": 1080, "face_detected": true,
+    "face_top": 180, "face_bottom": 420,   # rows the chosen face spans (source
+                                          # px); only when MediaPipe found one
+    "faces_reliable": true,                # MediaPipe ran (Haar-only: false)
     "timeline": [
       {"start_abs": 10.5, "end_abs": 22.3,
        "x": 100, "y": 0, "width": 607, "height": 1080, "face_detected": true},
@@ -131,16 +134,7 @@ def _detect_faces_in_frame(
     if mp_detector is not None:
         try:
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            result = mp_detector.process(rgb)
-            if result.detections:
-                for det in result.detections:
-                    bbox = det.location_data.relative_bounding_box
-                    conf = float(det.score[0]) if det.score else 0.0
-                    x = int(bbox.xmin * frame_width)
-                    y = int(bbox.ymin * frame_height)
-                    w = int(bbox.width * frame_width)
-                    h = int(bbox.height * frame_height)
-                    detections.append((x, y, w, h, conf))
+            detections.extend(mp_detector.detect(rgb, frame_width, frame_height))
         except Exception as exc:
             eprint(f"[face_detect] MediaPipe frame error: {exc}")
 
@@ -233,14 +227,29 @@ def _collect_face_observations(
 # Cluster-based face picker (replaces the old weighted-average approach)
 # ---------------------------------------------------------------------------
 
+def _vertical_band(members: list[tuple[int, int, int, float]]) -> tuple[float, float]:
+    """
+    Rows (top, bottom) the face occupies across its observations: 10th
+    percentile of bbox tops to 90th percentile of bbox bottoms, so a speaker
+    who leans or bobs is covered without one stray detection stretching it.
+    Boxes are near-square, so the side is sqrt(area).
+    """
+    tops = sorted(cy - math.sqrt(area) / 2 for _, cy, area, _ in members)
+    bottoms = sorted(cy + math.sqrt(area) / 2 for _, cy, area, _ in members)
+    lo = int(0.1 * (len(tops) - 1))
+    hi = int(math.ceil(0.9 * (len(bottoms) - 1)))
+    return (tops[lo], bottoms[hi])
+
+
 def _pick_face_center(
     per_frame_obs: list[list[tuple[int, int, int, float]]],
     frame_width: int,
     frame_height: int,
-) -> Optional[tuple[float, float]]:
+) -> Optional[tuple[float, float, float, float]]:
     """
-    Return (cx, cy) in absolute pixels of the best face cluster, or None if no
-    usable detections.
+    Return (cx, cy, top, bottom) in absolute pixels of the best face cluster,
+    or None if no usable detections. top/bottom bound the face's rows (see
+    _vertical_band).
 
     Strategy:
       1. Flatten all observations across frames.
@@ -265,7 +274,7 @@ def _pick_face_center(
             return None
         cx = sum(x * area * conf for x, _, area, conf in flat) / total_w
         cy = sum(y * area * conf for _, y, area, conf in flat) / total_w
-        return (cx, cy)
+        return (cx, cy, *_vertical_band(flat))
 
     # Multi-face: cluster
     try:
@@ -275,7 +284,7 @@ def _pick_face_center(
         # sklearn missing — fall back to largest-face-wins
         eprint("[face_detect] sklearn missing — falling back to largest-face selection")
         best = max(flat, key=lambda o: o[2] * o[3])
-        return (float(best[0]), float(best[1]))
+        return (float(best[0]), float(best[1]), *_vertical_band([best]))
 
     pts = np.array([[x, y] for x, y, _, _ in flat], dtype=np.float32)
     try:
@@ -283,7 +292,7 @@ def _pick_face_center(
     except Exception as exc:
         eprint(f"[face_detect] KMeans failed ({exc}) — falling back to largest-face")
         best = max(flat, key=lambda o: o[2] * o[3])
-        return (float(best[0]), float(best[1]))
+        return (float(best[0]), float(best[1]), *_vertical_band([best]))
 
     labels = km.labels_
     cluster_info = []  # (label, count, mean_area, centroid)
@@ -298,7 +307,9 @@ def _pick_face_center(
         mean_area = sum(m[2] for m in members) / count
         cent = km.cluster_centers_[label]
         dist_center = math.hypot(cent[0] - frame_center[0], cent[1] - frame_center[1])
-        cluster_info.append((label, count, mean_area, (float(cent[0]), float(cent[1])), dist_center))
+        cluster_info.append(
+            (label, count, mean_area, (float(cent[0]), float(cent[1]), *_vertical_band(members)), dist_center)
+        )
 
     if not cluster_info:
         return None
@@ -391,21 +402,29 @@ def _crop_for_window(
     center = _pick_face_center(per_frame, frame_width, frame_height)
     if center is None:
         return center_crop(frame_width, frame_height)
-    cx, cy = center
-    return crop_centered_on(cx, cy, frame_width, frame_height)
+    cx, cy, top, bottom = center
+    crop = crop_centered_on(cx, cy, frame_width, frame_height)
+    # Vertical extent of the chosen face, so overlays can keep clear of it.
+    crop["face_top"] = int(round(max(0.0, top)))
+    crop["face_bottom"] = int(round(min(float(frame_height), bottom)))
+    return crop
 
 
 def _dominant_crop(timeline: list[dict]) -> dict:
     """Return the crop from the longest scene in the timeline."""
     best = max(timeline, key=lambda e: e["end_abs"] - e["start_abs"])
     # Strip timeline-only keys before returning
-    return {
+    out = {
         "x": best["x"],
         "y": best["y"],
         "width": best["width"],
         "height": best["height"],
         "face_detected": best["face_detected"],
     }
+    for key in ("face_top", "face_bottom"):
+        if key in best:
+            out[key] = best[key]
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -442,15 +461,16 @@ def main() -> None:
         emit({"type": "error", "message": f"OpenCV not installed: {exc}"})
         sys.exit(1)
 
-    mp_face_module = None
-    try:
-        import mediapipe as mp
-        mp_face_module = mp.solutions.face_detection  # type: ignore[attr-defined]
-        eprint("[face_detect] MediaPipe loaded OK")
-    except ImportError:
-        eprint("[face_detect] MediaPipe not available — will use Haar cascade only")
-    except Exception as exc:
-        eprint(f"[face_detect] MediaPipe init error: {exc}")
+    from face_model import load_face_detector
+
+    mp_ctx = load_face_detector()
+    if mp_ctx is not None:
+        eprint(f"[face_detect] Face detector: {mp_ctx.name}")
+    else:
+        eprint(
+            "[face_detect] MediaPipe unavailable — using Haar cascade only; "
+            "face positions will not be reported"
+        )
 
     try:
         import sklearn  # noqa: F401
@@ -487,12 +507,6 @@ def main() -> None:
 
     crops: list[dict] = []
 
-    mp_ctx = (
-        mp_face_module.FaceDetection(model_selection=1, min_detection_confidence=0.5)
-        if mp_face_module is not None
-        else None
-    )
-
     try:
         for idx, seg in enumerate(segments):
             emit({"type": "progress", "segment": idx, "total": total})
@@ -519,8 +533,15 @@ def main() -> None:
                         **scene_crop,
                     })
 
+                if mp_ctx is None:
+                    # Haar-only detections include false positives (patterned
+                    # shirts, hands), so their rows can't place overlays.
+                    for entry in timeline:
+                        entry.pop("face_top", None)
+                        entry.pop("face_bottom", None)
+
                 dominant = _dominant_crop(timeline)
-                out_entry = {**dominant}
+                out_entry = {**dominant, "faces_reliable": mp_ctx is not None}
                 if len(timeline) > 1:
                     out_entry["timeline"] = timeline
                 crops.append(out_entry)

@@ -15,6 +15,7 @@ import {
   DEFAULT_SETTINGS,
   FILLER_PRESET_LET_IT_RIDE,
   loadPersistedSettings,
+  migrateCaptionMode,
   migrateFillerRemoval,
 } from './helpers';
 import { useStore } from './index';
@@ -69,6 +70,30 @@ describe('short-form filler defaults', () => {
         silenceTargetGap: 0.4,
       }),
     ).toEqual({ ...FILLER_PRESET_LET_IT_RIDE, enabled: false });
+  });
+});
+
+describe('short-form caption mode', () => {
+  it.each([
+    ['signature', 'emphasis_highlight', 'editorial'],
+    ['visual', 'emphasis_highlight', 'editorial'],
+    ['custom', 'emphasis_highlight', 'emphasis_highlight'],
+    ['signature', 'standard', 'standard'],
+    [undefined, undefined, 'editorial'],
+  ] as const)('preset %s with saved %s resolves to %s', (creatorPreset, captionMode, expected) => {
+    expect(migrateCaptionMode({ creatorPreset, captionMode })).toBe(expected);
+  });
+
+  it('upgrades the saved Signature preset caption mode to editorial on load', () => {
+    localStorage.setItem(
+      'batchclip-settings',
+      JSON.stringify({ creatorPreset: 'signature', captionMode: 'emphasis_highlight' }),
+    );
+    try {
+      expect(loadPersistedSettings().captionMode).toBe('editorial');
+    } finally {
+      localStorage.removeItem('batchclip-settings');
+    }
   });
 });
 

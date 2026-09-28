@@ -6,9 +6,11 @@
  * scene kind's spec (src/main/ai/explainer/kinds-*.ts) converts indices to
  * exact word timestamps so every beat lands on the spoken word.
  *
- * Pipeline: prompt → parse/validate → second review pass (Gemini critiques
- * and rewrites its own plan, re-validated by the same parser) → variety rules
- * → emphasis reactions + sound cues.
+ * Pipeline: shortlist (code picks which kinds/props this clip's prompt offers)
+ * → prompt → parse/validate → second review pass (Gemini critiques and
+ * rewrites its own plan, with the validator's rejection reasons fed back so it
+ * can repair them; re-validated by the same parser) → variety rules →
+ * emphasis reactions + sound cues.
  *
  * Everything the model returns is untrusted: invalid scenes are dropped, never
  * guessed at.
@@ -30,6 +32,7 @@ import {
 } from '../remotion/compositions/explainer/types';
 import {
   isRec,
+  type KindFamily,
   makeParseContext,
   type ParseContext,
   type PlannerWord,
@@ -37,7 +40,8 @@ import {
   type SceneWindow,
   idx as wordIdx,
 } from './explainer/kind-spec';
-import { ALL_KIND_SPECS, getKindSpec } from './explainer/kinds';
+import { getKindSpec } from './explainer/kinds';
+import { buildShortlist, type Shortlist } from './explainer/shortlist';
 import { applyVarietyRules } from './explainer/variety';
 import { callGeminiWithRetry, MODELS } from './gemini-client';
 
@@ -118,27 +122,35 @@ function layoutGuide(aspect: '9:16' | '16:9'): string {
     .join('\n');
 }
 
+function kindLines(shortlist: Shortlist): string {
+  return shortlist.kinds
+    .map((s) => {
+      const text = s.prompt ? s.prompt({ heroProps: shortlist.heroProps }) : s;
+      const avoid = s.avoid ? `\n    Not for: ${s.avoid}.` : '';
+      return `- "${s.kind}": ${text.describe}${avoid}\n    JSON: ${text.schema}\n    Limits: ${s.limits}. Layouts: ${s.layouts.join(', ')}.`;
+    })
+    .join('\n');
+}
+
 export function buildExplainerPrompt(
   words: readonly PlannerWord[],
   bounds: PlanBounds,
   aspect: '9:16' | '16:9' = '9:16',
+  shortlist: Shortlist = buildShortlist(words),
 ): string {
   const indexed = words.map((w, i) => `${i}:${w.text}`).join(' ');
   const firstAllowed = Math.max(
     0,
     words.findIndex((w) => w.start >= bounds.minStart),
   );
-  const kinds = ALL_KIND_SPECS.map(
-    (s) =>
-      `- "${s.kind}": ${s.describe}\n    JSON: ${s.schema}\n    Limits: ${s.limits}. Layouts: ${s.layouts.join(', ')}.`,
-  ).join('\n');
+  const kinds = kindLines(shortlist);
 
   return `You are a senior motion designer making PREMIUM explainer edits (calm, confident, Apple-keynote quality — never cheesy). Turn what the speaker is SAYING into simple animated diagrams that appear exactly as they say it.
 
 Transcript as index:word pairs:
 ${indexed}
 
-Scene types:
+Scene types (picked for this transcript — choose the one that matches what is SAID, not just a keyword):
 ${kinds}
 
 Layouts (pick the best one per scene from that scene's allowed list):
@@ -165,16 +177,33 @@ Rules:
 - Only make a scene when a diagram genuinely helps. Cover at most about half of the clip. Fewer, better scenes beat many weak ones.`;
 }
 
+/** A draft scene the validator dropped, with the reasons (for the review pass). */
+export interface RejectedScene {
+  raw: Rec;
+  problems: string[];
+}
+
+function rejectedBlock(rejected: readonly RejectedScene[]): string {
+  if (rejected.length === 0) return '';
+  const lines = rejected
+    .slice(0, 6)
+    .map((r) => `- ${JSON.stringify(r.raw)}\n  Problems: ${r.problems.join('; ')}`)
+    .join('\n');
+  return `\n\nThese draft scenes were REJECTED by the validator and will NOT render. Repair each one (shorten labels to the limits, keep every word index inside its startWord..endWord, use only listed values) or drop it:\n${lines}`;
+}
+
 export function buildReviewPrompt(
   words: readonly PlannerWord[],
   plan: readonly Rec[],
   bounds: PlanBounds,
   aspect: '9:16' | '16:9' = '9:16',
+  rejected: readonly RejectedScene[] = [],
+  shortlist: Shortlist = buildShortlist(words),
 ): string {
-  return `${buildExplainerPrompt(words, bounds, aspect)}
+  return `${buildExplainerPrompt(words, bounds, aspect, shortlist)}
 
 A first draft plan was produced:
-${JSON.stringify({ scenes: plan })}
+${JSON.stringify({ scenes: plan })}${rejectedBlock(rejected)}
 
 Now act as the creative director reviewing this draft before anything renders. Fix it:
 - Rewrite weak, vague, wordy or generic labels into short, punchy ones from the speaker's own words.
@@ -233,6 +262,32 @@ export function reactionTargetCount(scene: ExplainerSceneBody): number {
       return scene.stages.length;
     case 'funnel':
       return scene.stages.length;
+    case 'equation':
+      return scene.terms.length + 1;
+    case 'quadrant':
+      return scene.items.length;
+    case 'venn':
+      return 3;
+    case 'ranking':
+      return scene.items.length;
+    case 'receipt':
+      return scene.lines.length;
+    case 'journey':
+      return scene.points.length;
+    case 'code':
+      return scene.lines.length;
+    case 'iceberg':
+      return scene.below.length + 1;
+    case 'balance':
+      return 2;
+    case 'podium':
+      return scene.places.length;
+    case 'compound':
+      return scene.points.length;
+    case 'dominoes':
+      return scene.tiles.length;
+    case 'stairs':
+      return scene.steps.length;
     default:
       return 0;
   }
@@ -275,24 +330,40 @@ function parseExtras(raw: Rec, ctx: ParseContext, body: ExplainerSceneBody): Sce
 interface Candidate extends PlannedExplainerScene {
   kind: ExplainerSceneKind;
   layouts: readonly ExplainerLayout[];
+  family: KindFamily;
   raw: Rec;
 }
+
+type CandidateResult = { ok: true; value: Candidate } | { ok: false; problems: string[] };
 
 function parseCandidate(
   raw: Rec,
   words: readonly PlannerWord[],
   bounds: PlanBounds,
-): Candidate | null {
+): CandidateResult {
   const spec = typeof raw.kind === 'string' ? getKindSpec(raw.kind) : undefined;
-  if (!spec) return null;
+  if (!spec) return { ok: false, problems: [`unknown scene type ${JSON.stringify(raw.kind)}`] };
   const win = parseWindow(raw, words, bounds);
-  if (!win) return null;
+  if (!win) {
+    return {
+      ok: false,
+      problems: [
+        `startWord/endWord must be valid indices, startWord < endWord, lasting ≥ ${EXPLAINER_LIMITS.minSceneSec} s`,
+      ],
+    };
+  }
   const ctx = makeParseContext(words, win);
   // Each spec narrows its own kind; the registry erases K, so call through a
   // widened signature (the spec only ever returns its own kind).
   const parse = spec.parse as (r: Rec, c: ParseContext) => ExplainerSceneBody | null;
   const body = parse(raw, ctx);
-  if (!body) return null;
+  if (!body) {
+    const problems =
+      ctx.issues.length > 0
+        ? ctx.issues
+        : [`missing or invalid fields — follow the "${spec.kind}" JSON exactly`];
+    return { ok: false, problems };
+  }
   const extras = parseExtras(raw, ctx, body);
   const scene = { ...body, ...extras } as ExplainerScene;
   const requested =
@@ -306,16 +377,20 @@ function parseCandidate(
       ? (raw.transition as SceneTransitionKind)
       : 'grow';
   return {
-    startTime: win.startTime,
-    endTime: win.endTime,
-    scene,
-    layout: layout ?? 'stack',
-    chained: raw.continues === true,
-    transition,
-    cues: [],
-    kind: scene.kind,
-    layouts: spec.layouts,
-    raw,
+    ok: true,
+    value: {
+      startTime: win.startTime,
+      endTime: win.endTime,
+      scene,
+      layout: layout ?? 'stack',
+      chained: raw.continues === true,
+      transition,
+      cues: [],
+      kind: scene.kind,
+      layouts: spec.layouts,
+      family: spec.family,
+      raw,
+    },
   };
 }
 
@@ -379,9 +454,29 @@ export function parseExplainerPlan(
   bounds: PlanBounds,
   options: Pick<PlanOptions, 'emphasisTimes'> = {},
 ): PlannedExplainerScene[] {
-  return parseCandidates(raw, words, bounds, options).map(
-    ({ kind: _k, layouts: _l, raw: _r, ...p }) => p,
-  );
+  return parseCandidates(raw, words, bounds, options).accepted.map(stripCandidate);
+}
+
+function stripCandidate({
+  kind: _k,
+  layouts: _l,
+  family: _f,
+  raw: _r,
+  ...p
+}: Candidate): PlannedExplainerScene {
+  return p;
+}
+
+/**
+ * Validate a raw plan and also report every scene the validator dropped, with
+ * reasons (for the review pass). Pure and deterministic.
+ */
+export function parsePlanWithRejections(
+  raw: unknown,
+  words: readonly PlannerWord[],
+  bounds: PlanBounds,
+): RejectedScene[] {
+  return parseCandidates(raw, words, bounds, {}).rejected;
 }
 
 function parseCandidates(
@@ -389,13 +484,20 @@ function parseCandidates(
   words: readonly PlannerWord[],
   bounds: PlanBounds,
   options: Pick<PlanOptions, 'emphasisTimes'>,
-): Candidate[] {
-  if (!isRec(raw) || !Array.isArray(raw.scenes) || words.length === 0) return [];
+): { accepted: Candidate[]; rejected: RejectedScene[] } {
+  if (!isRec(raw) || !Array.isArray(raw.scenes) || words.length === 0) {
+    return { accepted: [], rejected: [] };
+  }
+  const rejected: RejectedScene[] = [];
   const candidates = raw.scenes
     .flatMap((s) => {
       if (!isRec(s)) return [];
       const c = parseCandidate(s, words, bounds);
-      return c ? [c] : [];
+      if (!c.ok) {
+        rejected.push({ raw: s, problems: c.problems });
+        return [];
+      }
+      return [c.value];
     })
     .sort((a, b) => a.startTime - b.startTime);
 
@@ -419,11 +521,12 @@ function parseCandidates(
 
   const varied = applyVarietyRules(snapped, bounds);
   const emphasis = [...(options.emphasisTimes ?? [])].sort((a, b) => a - b);
-  return varied.map((c) => {
+  const accepted = varied.map((c) => {
     const withPulses: Candidate =
       emphasis.length > 0 ? { ...c, ...addEmphasisPulses(c, emphasis) } : c;
     return { ...withPulses, cues: sceneCues(withPulses) };
   });
+  return { accepted, rejected };
 }
 
 /** Shift every beat so it is relative to `windowStart` (ms precision, ≥ 0). */
@@ -463,20 +566,38 @@ export async function planExplainerScenes(
   if (words.length < 8) return { ok: true, value: [] };
   const aspect = options.aspect ?? '9:16';
   const started = Date.now();
+  const shortlist = buildShortlist(words);
+  log(
+    'info',
+    'explainer',
+    `shortlist: ${shortlist.kinds.length} kinds [${shortlist.kinds
+      .map((k) => k.kind)
+      .join(', ')}], props [${shortlist.heroProps.join(', ')}]`,
+  );
   try {
     const ai = new GoogleGenAI({ apiKey });
     const draftRaw = await askForPlan(
       ai,
-      buildExplainerPrompt(words, bounds, aspect),
+      buildExplainerPrompt(words, bounds, aspect, shortlist),
       'explainer-scenes',
     );
     if (draftRaw === null) {
       return { ok: false, error: 'Gemini returned unparseable JSON for explainer scenes' };
     }
-    let final = parseCandidates(draftRaw, words, bounds, options);
+    const draft = parseCandidates(draftRaw, words, bounds, options);
+    let final = draft.accepted;
     let reviewed = false;
+    if (draft.rejected.length > 0) {
+      log(
+        'info',
+        'explainer',
+        `draft rejected ${draft.rejected.length} scene(s): ${draft.rejected
+          .map((r) => `${String(r.raw.kind)} (${r.problems[0] ?? '?'})`)
+          .join('; ')}`,
+      );
+    }
 
-    if (options.review !== false && final.length > 0) {
+    if (options.review !== false && (final.length > 0 || draft.rejected.length > 0)) {
       try {
         const reviewRaw = await askForPlan(
           ai,
@@ -485,11 +606,13 @@ export async function planExplainerScenes(
             final.map((c) => c.raw),
             bounds,
             aspect,
+            draft.rejected,
+            shortlist,
           ),
           'explainer-review',
         );
         const revised =
-          reviewRaw === null ? [] : parseCandidates(reviewRaw, words, bounds, options);
+          reviewRaw === null ? [] : parseCandidates(reviewRaw, words, bounds, options).accepted;
         // Keep the review only when it still yields a usable plan.
         if (revised.length > 0) {
           final = revised;
@@ -504,7 +627,7 @@ export async function planExplainerScenes(
       }
     }
 
-    const value = final.map(({ layouts: _l, raw: _r, ...p }) => p);
+    const value = final.map(stripCandidate);
     log(
       'info',
       'explainer',

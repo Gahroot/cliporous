@@ -26,6 +26,9 @@ export const checklistSpec: KindSpec<'checklist'> = {
   limits: `title ≤ ${L.checklistTitle}, item label ≤ ${L.checklistLabel}`,
   layouts: ['stack', 'stack-flipped', 'pip'],
   durationSec: [4, 12],
+  family: 'list',
+  general: true,
+  triggers: [/\b(first|second|third|steps?|things|tips|list|checklist|need to|make sure)\b/],
   parse: (raw, ctx) => {
     const items = parseTimedList(
       raw.items,
@@ -58,6 +61,9 @@ export const versusSpec: KindSpec<'versus'> = {
   limits: `side label ≤ ${L.versusLabel}`,
   layouts: ['stack', 'over', 'stack-flipped', 'pip'],
   durationSec: [3, 8],
+  family: 'compare',
+  triggers: [/\b(vs|versus|compared to|instead of|rather than|difference between|better than)\b/],
+  avoid: 'old way → new way over time (before-after) or weighing two things (balance)',
   parse: (raw, ctx) => {
     const side = (
       s: unknown,
@@ -87,6 +93,9 @@ export const stampSpec: KindSpec<'stamp'> = {
   limits: `stamp word ≤ ${L.stampWord}`,
   layouts: ['stack', 'takeover', 'over'],
   durationSec: [2.5, 6],
+  family: 'words',
+  general: true,
+  triggers: [/\b(never|always|stop|don't|wrong|must|rule|forbidden)\b/],
   parse: (raw, ctx) => {
     const word = ctx.str(raw.word, L.stampWord);
     const stampW = ctx.inWin(raw.stampWord);
@@ -117,6 +126,10 @@ export const flowSpec: KindSpec<'flow'> = {
   limits: `flow labels ≤ ${L.flowLabel}, flow texts ≤ ${L.flowText}, engine label ≤ ${L.engineLabel}`,
   layouts: ['stack', 'takeover', 'pip', 'stack-flipped'],
   durationSec: [3.5, 10],
+  family: 'process',
+  triggers: [
+    /\b(input|output|turns? (it |them |that )?into|feed it|becomes|generates?|converts?|transforms?)\b/,
+  ],
   parse: (raw, ctx) => {
     const inputLabel = ctx.str(raw.inputLabel, L.flowLabel);
     const inputText = ctx.str(raw.inputText, L.flowText);
@@ -156,6 +169,9 @@ export const stackSpec: KindSpec<'stack'> = {
   limits: `layer label ≤ ${L.stackLabel}`,
   layouts: ['stack', 'takeover', 'pip'],
   durationSec: [3.5, 10],
+  family: 'framework',
+  triggers: [/\b(layers?|foundation|built on|on top of|stack|pyramid|levels?)\b/],
+  avoid: 'a ranked list (ranking) or hidden depth under the surface (iceberg)',
   parse: (raw, ctx) => {
     const layers = parseTimedList(
       raw.layers,

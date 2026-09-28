@@ -45,6 +45,8 @@ export interface ExplainerContextValue {
   palette: ExplainerPalette;
   layout: ExplainerLayout;
   aspect: ExplainerAspect;
+  /** Content box override; `stageSafeBox(layout, aspect)` when absent. */
+  safe?: StageSafeBox | undefined;
   /** Extras of the scene currently rendering (pulses, overlay stamp …). */
   extras: SceneExtras;
 }
@@ -104,10 +106,10 @@ export interface LayoutInfo {
 }
 
 export function useLayout(): LayoutInfo {
-  const { layout, aspect } = useContext(ExplainerContext);
+  const { layout, aspect, safe: safeOverride } = useContext(ExplainerContext);
   return useMemo(() => {
     const canvas = stageCanvasFor(layout, aspect);
-    const safe = stageSafeBox(layout, aspect);
+    const safe = safeOverride ?? stageSafeBox(layout, aspect);
     const unit = Math.min(safe.width / 960, safe.height / 840);
     return {
       layout,
@@ -118,7 +120,7 @@ export function useLayout(): LayoutInfo {
       unit: Math.max(0.55, Math.min(1.25, unit)),
       floating: layout === 'over',
     };
-  }, [layout, aspect]);
+  }, [layout, aspect, safeOverride]);
 }
 
 /** v1 constant, kept for code that has no provider (default palette). */

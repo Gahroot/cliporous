@@ -53,6 +53,7 @@ import { wordEmphasisFeature } from './features/word-emphasis.feature';
 import { buildOutputPath } from './filename';
 import { renderLongformVideo } from './longform-pipeline';
 import { enforceSpeakerOpening, MIN_FACE_LEAD_SECONDS } from './opening-guard';
+import { measureFaceBands } from './over-face';
 import { resolveQualityParams } from './quality';
 import { classifyRenderError } from './render-error-map';
 import type { ResolvedSegment, SegmentRenderConfig } from './segment-render';
@@ -590,13 +591,16 @@ export async function startBatchRender(
 
         // ── Inline b-roll video fetch for media-archetype segments ──────────
         // Only runs at render time, only for approved clips that contain a
-        // split-image / fullscreen-image segment, only when the Pexels key
-        // is set. Cached on disk so re-renders are free.
+        // split-image / fullscreen-image segment, only when B-roll is enabled
+        // (explainer scenes own the top half otherwise) and the Pexels key
+        // is set. Cached on disk so re-renders are free. Without footage these
+        // segments degrade to talking-head.
         const mediaRaws = job.segmentedSegments.filter(
           (raw) => raw.archetype === 'split-image' || raw.archetype === 'fullscreen-image',
         );
         if (
           mediaRaws.length > 0 &&
+          options.broll?.enabled === true &&
           options.pexelsApiKey &&
           options.pexelsApiKey.trim().length > 0
         ) {
@@ -706,6 +710,13 @@ export async function startBatchRender(
               ...(selectedPalette.accent2 ? { accent2: selectedPalette.accent2 } : {}),
             }),
             emphasisTimes: explainerEmphasisTimes(job.wordEmphasis, job.wordTimestamps),
+            measureFaces: (windows) => measureFaceBands(job.sourceVideoPath, windows),
+            framing: {
+              sourceWidth: segMeta.width,
+              sourceHeight: segMeta.height,
+              width: effectiveResolution.width,
+              height: effectiveResolution.height,
+            },
             isCancelled: () => cancelRequested,
             onProgress: (message, fraction) => {
               if (!cancelRequested) {

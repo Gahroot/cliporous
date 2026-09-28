@@ -62,6 +62,23 @@ export function updateItemById<T extends { id: string }>(
 export const DEFAULT_CREATOR_PRESET: CreatorPresetId = 'signature';
 export const DEFAULT_CAPTION_MODE: CaptionMode = 'editorial';
 
+/**
+ * Resolve a persisted caption mode. `emphasis_highlight` was the Signature /
+ * Visual preset value before Editorial became the default; there is no global
+ * caption-mode picker, so under a non-custom preset that value is a stale
+ * preset default rather than a user choice and moves to Editorial.
+ */
+export function migrateCaptionMode(saved: {
+  captionMode?: CaptionMode | undefined;
+  creatorPreset?: CreatorPresetId | undefined;
+}): CaptionMode {
+  if (saved.captionMode === undefined) return DEFAULT_CAPTION_MODE;
+  if (saved.captionMode === 'emphasis_highlight' && saved.creatorPreset !== 'custom') {
+    return DEFAULT_CAPTION_MODE;
+  }
+  return saved.captionMode;
+}
+
 export const DEFAULT_AUTO_ZOOM: ZoomSettings = {
   enabled: true,
   mode: 'ken-burns',
@@ -388,7 +405,7 @@ export function loadPersistedSettings(): AppSettings {
         falApiKey: '',
         creatorPreset: saved.creatorPreset ?? DEFAULT_CREATOR_PRESET,
         captionsEnabled: saved.captionsEnabled ?? true,
-        captionMode: saved.captionMode ?? DEFAULT_CAPTION_MODE,
+        captionMode: migrateCaptionMode(saved),
         wordEmphasisEnabled: saved.wordEmphasisEnabled ?? true,
         shotTransitionsEnabled: saved.shotTransitionsEnabled ?? true,
         explainerScenesEnabled: saved.explainerScenesEnabled ?? true,

@@ -131,18 +131,27 @@ export async function stitchingStage(
   const stitchedClips: StitchedClipCandidate[] = result.clips
     .filter((plan) => plan.score >= processingConfig.minScore)
     .map((plan) => {
-      const sourceRanges: SourceRange[] = plan.ranges.map((range) => {
+      const sourceRanges: SourceRange[] = [];
+      plan.ranges.forEach((range, index) => {
         const boundary = stabilizeShortFormClipBoundary(
           range.startTime,
           range.endTime,
           words,
           source.duration,
+          { finalRange: index === plan.ranges.length - 1 },
         );
-        return {
-          startTime: boundary.startTime,
+        // Pulling a start back to its sentence must not replay the tail of
+        // the previous range when two ranges sit close together.
+        const previous = sourceRanges[sourceRanges.length - 1];
+        const startTime =
+          previous && boundary.startTime < previous.endTime && range.startTime >= previous.endTime
+            ? previous.endTime
+            : boundary.startTime;
+        sourceRanges.push({
+          startTime,
           endTime: boundary.endTime,
           role: coerceRole(range.role),
-        };
+        });
       });
       const duration = sourceRanges.reduce((s, r) => s + (r.endTime - r.startTime), 0);
       const wordTimestamps: WordTimestamp[] = words.filter((w) =>

@@ -34,8 +34,16 @@ import {
   mapSceneTimes,
   type SceneCue,
   type SceneTransitionKind,
+  type StageSafeBox,
   stageCanvasFor,
 } from '../remotion/compositions/explainer/types';
+import {
+  type FaceMeasurement,
+  faceBandOnCanvas,
+  type OverPlacement,
+  placeOverCard,
+  type SpeakerFraming,
+} from './over-placement';
 import type { ResolvedSegment } from './segment-render';
 
 /** Window edges within this distance of a segment boundary snap onto it. */
@@ -218,6 +226,7 @@ export function buildGroupRenderPlan(
   window: { startTime: number; endTime: number },
   palette: ExplainerPalette,
   aspect: ExplainerAspect = '9:16',
+  safeBox?: StageSafeBox,
 ): GroupRenderPlan {
   const fps = EXPLAINER_FPS;
   const total = window.endTime - window.startTime;
@@ -267,6 +276,7 @@ export function buildGroupRenderPlan(
       enter: true,
       exit: true,
       visibleSec: total,
+      ...(safeBox ? { safeBox } : {}),
     },
     durationSec: totalFrames / fps,
     cues: cues.sort((a, b) => a.at - b.at),
@@ -281,8 +291,54 @@ export interface ApplyExplainerOptions {
   palette: ExplainerPalette;
   /** Absolute times of stressed words, for emphasis reactions. */
   emphasisTimes?: readonly number[];
+  /**
+   * Face position per source window (source rows), for placing floating
+   * `over` cards clear of the face. One entry per window, same order. Without
+   * it, `over` scenes use the split-screen `stack` layout instead.
+   */
+  measureFaces?: (windows: readonly { start: number; end: number }[]) => Promise<FaceMeasurement[]>;
+  /** Source + output size, to map face rows onto the canvas. */
+  framing?: Omit<SpeakerFraming, 'cropRect'>;
   onProgress?: (message: string, fraction: number) => void;
   isCancelled?: () => boolean;
+}
+
+/**
+ * Decide, per `over` piece, where its card sits (or switch it to `stack`).
+ * Never throws: a failed measurement means "face position unknown".
+ */
+async function placeOverPieces(
+  pieces: SplicedPiece[],
+  opts: Pick<ApplyExplainerOptions, 'measureFaces' | 'framing'>,
+): Promise<Map<SplicedPiece, OverPlacement>> {
+  const overPieces = pieces.filter((p) => p.group?.layout === 'over');
+  const placements = new Map<SplicedPiece, OverPlacement>();
+  if (overPieces.length === 0) return placements;
+
+  let measured: FaceMeasurement[] = [];
+  if (opts.measureFaces && opts.framing) {
+    try {
+      measured = await opts.measureFaces(
+        overPieces.map((p) => ({ start: p.segment.startTime, end: p.segment.endTime })),
+      );
+    } catch (err) {
+      log(
+        'warn',
+        'explainer',
+        `face check for floating cards failed: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+
+  overPieces.forEach((piece, i) => {
+    const face = measured[i];
+    const onCanvas =
+      face && opts.framing
+        ? faceBandOnCanvas(face, { ...opts.framing, cropRect: piece.segment.cropRect })
+        : face;
+    placements.set(piece, placeOverCard(onCanvas));
+  });
+  return placements;
 }
 
 export interface ApplyExplainerResult {
@@ -332,6 +388,29 @@ export async function applyExplainerScenes(
   const scenePieces = pieces.filter((p) => p.group);
   if (scenePieces.length === 0) return unchanged;
 
+  // Floating cards must not cover the speaker's face: move them into free
+  // space, or use the split-screen layout when there is none.
+  const placements = await placeOverPieces(pieces, opts);
+  for (const [piece, placement] of placements) {
+    const group = piece.group;
+    if (!group) continue;
+    if (placement.layout === 'stack') {
+      piece.group = { ...group, layout: 'stack' };
+      piece.segment = { ...piece.segment, explainerLayout: 'stack' };
+    }
+    log(
+      'info',
+      'explainer',
+      `floating card at ${piece.segment.startTime.toFixed(2)}s: ${
+        placement.layout === 'stack'
+          ? 'no room beside the face, using split screen'
+          : placement.safe
+            ? `placed at y=${placement.safe.y} h=${placement.safe.height} (clear of face)`
+            : 'no face in shot, default position'
+      }`,
+    );
+  }
+
   const { renderRemotionSegment } = await import('../remotion/render');
   const tempFiles: string[] = [];
   const cues: SceneCue[] = [];
@@ -345,7 +424,9 @@ export async function applyExplainerScenes(
       piece.segment = { ...piece.segment, archetype: 'talking-head', explainerLayout: undefined };
       continue;
     }
-    const plan = buildGroupRenderPlan(group, piece.segment, opts.palette, '9:16');
+    const placement = placements.get(piece);
+    const safeBox = placement?.layout === 'over' ? placement.safe : undefined;
+    const plan = buildGroupRenderPlan(group, piece.segment, opts.palette, '9:16', safeBox);
     const canvas = stageCanvasFor(group.layout, '9:16');
     const ext = canvas.transparent ? 'mov' : 'mp4';
     const outputPath = join(tmpdir(), `batchcontent-explainer-${randomUUID()}.${ext}`);

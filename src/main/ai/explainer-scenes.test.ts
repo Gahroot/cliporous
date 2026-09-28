@@ -302,3 +302,65 @@ describe('toSceneRelative', () => {
     });
   });
 });
+
+describe('review feedback', () => {
+  it('reports why each draft scene was rejected', async () => {
+    const { parsePlanWithRejections } = await import('./explainer-scenes');
+    const rejected = parsePlanWithRejections(
+      {
+        scenes: [
+          { kind: 'sparkles', startWord: 6, endWord: 16 },
+          {
+            kind: 'venn',
+            startWord: 6,
+            endWord: 16,
+            left: { label: 'A much too long circle label', word: 7 },
+            right: { label: 'B', word: 9 },
+            center: { label: 'C', word: 30 },
+          },
+          { kind: 'hero', startWord: 6, endWord: 16, prop: 'unicorn', label: 'x', word: 8 },
+        ],
+      },
+      words(),
+      BOUNDS,
+    );
+    expect(rejected).toHaveLength(3);
+    expect(rejected[0]?.problems[0]).toMatch(/unknown scene type "sparkles"/);
+    expect(rejected[1]?.problems.join(' ')).toMatch(/chars \(max 14\)/);
+    expect(rejected[2]?.problems[0]).toMatch(/prop must be one of/);
+  });
+
+  it('puts rejected scenes and their problems into the review prompt', async () => {
+    const { buildReviewPrompt } = await import('./explainer-scenes');
+    const prompt = buildReviewPrompt(words(), [], BOUNDS, '9:16', [
+      { raw: { kind: 'venn', startWord: 6 }, problems: ['"xxx" is 40 chars (max 14)'] },
+    ]);
+    expect(prompt).toContain('REJECTED by the validator');
+    expect(prompt).toContain('40 chars (max 14)');
+  });
+
+  it('keeps the tone of props that have a reversed action only', () => {
+    const hero = (prop: string) =>
+      parseExplainerPlan(
+        {
+          scenes: [
+            {
+              kind: 'hero',
+              startWord: 6,
+              endWord: 14,
+              prop,
+              label: 'Label',
+              word: 8,
+              tone: 'down',
+            },
+          ],
+        },
+        words(),
+        BOUNDS,
+      )[0]?.scene;
+    expect(hero('battery')).toMatchObject({ prop: 'battery', tone: 'down' });
+    const rocket = hero('rocket');
+    expect(rocket).toMatchObject({ prop: 'rocket' });
+    expect(rocket).not.toHaveProperty('tone');
+  });
+});

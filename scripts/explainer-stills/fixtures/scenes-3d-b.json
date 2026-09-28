@@ -1,0 +1,95 @@
+[
+  {
+    "name": "compound-max",
+    "scene": {
+      "kind": "compound",
+      "title": "$500 a month, 30 yrs",
+      "points": [
+        { "label": "Y1", "value": 6 },
+        { "label": "Y5", "value": 35 },
+        { "label": "Y10", "value": 90 },
+        { "label": "Y15", "value": 200 },
+        { "label": "Y20", "value": 420 },
+        { "label": "Y30", "value": 1200 }
+      ],
+      "callout": "$1.2M net",
+      "growAt": 0.6
+    },
+    "frames": [10, 40, 62, 110],
+    "durationSec": 4.5
+  },
+  {
+    "name": "compound-short",
+    "scene": {
+      "kind": "compound",
+      "title": "Reinvest it",
+      "points": [
+        { "label": "Now", "value": 1 },
+        { "label": "Y5", "value": 2 },
+        { "label": "Y10", "value": 4 }
+      ],
+      "growAt": 0.4
+    },
+    "frames": [8, 30, 90],
+    "durationSec": 4
+  },
+  {
+    "name": "dominoes-max",
+    "scene": {
+      "kind": "dominoes",
+      "tiles": [
+        { "label": "Early alarm!", "at": 0.4 },
+        { "label": "Morning walk", "at": 0.9 },
+        { "label": "Clear focus", "at": 1.4 },
+        { "label": "Deep work", "at": 1.9 },
+        { "label": "Better sleep", "at": 2.4 },
+        { "label": "Big results!", "at": 2.9 }
+      ],
+      "fallAt": 3.4
+    },
+    "frames": [6, 50, 100, 112, 125, 170],
+    "durationSec": 6
+  },
+  {
+    "name": "dominoes-short",
+    "scene": {
+      "kind": "dominoes",
+      "tiles": [
+        { "label": "Habit", "at": 0.3 },
+        { "label": "Skill", "at": 0.7 },
+        { "label": "Income", "at": 1.1 }
+      ],
+      "fallAt": 1.6
+    },
+    "frames": [5, 30, 52, 90],
+    "durationSec": 3.5
+  },
+  {
+    "name": "stairs-max",
+    "scene": {
+      "kind": "stairs",
+      "steps": [
+        { "label": "Learn basics", "at": 0.4 },
+        { "label": "Build projects", "at": 1.1 },
+        { "label": "Get feedback", "at": 1.8 },
+        { "label": "Land clients", "at": 2.5 },
+        { "label": "Scale it up!!", "at": 3.2 }
+      ]
+    },
+    "frames": [6, 30, 50, 80, 115, 150],
+    "durationSec": 5.5
+  },
+  {
+    "name": "stairs-short",
+    "scene": {
+      "kind": "stairs",
+      "steps": [
+        { "label": "Start", "at": 0.4 },
+        { "label": "Finish", "at": 1.2 }
+      ],
+      "pulses": [{ "at": 2.2, "target": 1, "strength": "pulse" }]
+    },
+    "frames": [6, 24, 50, 69, 90],
+    "durationSec": 3.5
+  }
+]

@@ -34,6 +34,9 @@ export const statementSpec: KindSpec<'statement'> = {
   limits: `1-3 single words, each ≤ ${L.statementWord} chars`,
   layouts: ['takeover', 'stack'],
   durationSec: [1.5, 4],
+  family: 'words',
+  general: true,
+  triggers: [],
   parse: (raw, ctx) => {
     const words = parseTimedList(
       raw.words,
@@ -69,6 +72,10 @@ export const numberSpec: KindSpec<'number'> = {
   limits: `label ≤ ${L.numberLabel}, prefix/suffix ≤ ${L.numberAffix}, decimals 0-2, 0 < value < 1e9`,
   layouts: ['over', 'stack', 'takeover'],
   durationSec: [2, 5],
+  family: 'data',
+  general: true,
+  triggers: [/\d/, /\b(percent|million|billion|thousand|hundred|times|double|triple)\b/],
+  avoid: '"1 in N" / "X out of Y" people (pictogram)',
   parse: (raw, ctx) => {
     const value = num(raw.value, 0, NUMBER_MAX);
     if (value === null || value <= 0 || value >= NUMBER_MAX) return null;
@@ -119,6 +126,9 @@ export const timelineSpec: KindSpec<'timeline'> = {
   limits: `step label ≤ ${L.timelineStep}`,
   layouts: ['stack', 'pip', 'stack-flipped'],
   durationSec: [3, 10],
+  family: 'story',
+  triggers: [/\b(then|next|after that|finally|years? later|months? later|back in|\d{4})\b/],
+  avoid: 'a story with highs and lows (journey) or climbing towards a goal (stairs)',
   parse: (raw, ctx) => {
     const steps = parseTimedList(
       raw.steps,
@@ -143,6 +153,8 @@ export const notesSpec: KindSpec<'notes'> = {
   limits: `title ≤ ${L.notesTitle}, badge ≤ ${L.notesBadge}, line ≤ ${L.notesLine}`,
   layouts: ['stack', 'over', 'pip'],
   durationSec: [3.5, 10],
+  family: 'list',
+  triggers: [/\b(notes?|write (this|it) down|remember|reminder|takeaways?|key points?)\b/],
   parse: (raw, ctx) => {
     const title = ctx.str(raw.title, L.notesTitle);
     if (!title) return null;
@@ -178,6 +190,8 @@ export const questionSpec: KindSpec<'question'> = {
   limits: `question ≤ ${L.question}, answer ≤ ${L.answer}`,
   layouts: ['over', 'stack', 'takeover'],
   durationSec: [2.5, 8],
+  family: 'words',
+  triggers: [/\?/, /\b(why|how come|what if|ask yourself|question)\b/],
   parse: (raw, ctx) => {
     const question = ctx.str(raw.question, L.question);
     const askW = ctx.inWin(raw.askWord);

@@ -1,0 +1,123 @@
+[
+  {
+    "name": "quote-max",
+    "scene": {
+      "kind": "quote",
+      "text": "Play long-term games with long-term people. All the returns in life come from compounding.",
+      "author": "Naval Ravikant Jr. III",
+      "role": "Angel investor, author",
+      "at": 0.4,
+      "authorAt": 2.4
+    },
+    "frames": [8, 30, 60, 80, 150],
+    "durationSec": 6
+  },
+  {
+    "name": "quote-short",
+    "scene": {
+      "kind": "quote",
+      "text": "Stay hungry, stay foolish.",
+      "author": "Steve Jobs",
+      "at": 0.3,
+      "authorAt": 1.4
+    },
+    "frames": [20, 50, 120],
+    "durationSec": 5
+  },
+  {
+    "name": "headline-max",
+    "scene": {
+      "kind": "headline",
+      "outlet": "Financial Times",
+      "headline": "Tiny startup with three employees overtakes Big Tech in AI race!",
+      "at": 0.5
+    },
+    "frames": [10, 17, 22, 30, 45, 100],
+    "durationSec": 5
+  },
+  {
+    "name": "headline-short",
+    "scene": { "kind": "headline", "outlet": "Breaking", "headline": "It went viral overnight", "at": 0.3 },
+    "frames": [20, 40, 90],
+    "durationSec": 4
+  },
+  {
+    "name": "journey-5",
+    "scene": {
+      "kind": "journey",
+      "points": [
+        { "label": "First job", "level": 0, "at": 0.4 },
+        { "label": "Lost it all!!!", "level": -2, "at": 1.6 },
+        { "label": "Side project", "level": -1, "at": 2.8 },
+        { "label": "Went viral", "level": 2, "at": 4.0 },
+        { "label": "Now: steady", "level": 1, "at": 5.2 }
+      ]
+    },
+    "frames": [6, 40, 70, 110, 190],
+    "durationSec": 7
+  },
+  {
+    "name": "journey-3",
+    "scene": {
+      "kind": "journey",
+      "points": [
+        { "label": "Broke at 22", "level": -2, "at": 0.4 },
+        { "label": "Breakthrough", "level": 2, "at": 1.8 },
+        { "label": "Burnout", "level": -1, "at": 3.2 }
+      ]
+    },
+    "frames": [30, 60, 130],
+    "durationSec": 5
+  },
+  {
+    "name": "search-max",
+    "scene": {
+      "kind": "search",
+      "query": "how to start a business with no cash",
+      "typeAt": 0.5,
+      "results": [
+        "10 businesses you can start for $0",
+        "Bootstrapping: the complete guide",
+        "Why most startups fail in year one"
+      ],
+      "resultsAt": 2.6
+    },
+    "frames": [8, 40, 70, 85, 140],
+    "durationSec": 6
+  },
+  {
+    "name": "search-noresults",
+    "scene": { "kind": "search", "query": "am I a genius", "typeAt": 0.6, "results": [] },
+    "frames": [10, 30, 90],
+    "durationSec": 4
+  },
+  {
+    "name": "code-diff",
+    "scene": {
+      "kind": "code",
+      "title": "pricing_config.py",
+      "lines": [
+        { "text": "def price(plan, seats=1):", "tone": "plain", "at": 0.4 },
+        { "text": "    return 49 * seats  # monthly", "tone": "remove", "at": 1.4 },
+        { "text": "    return 490 * seats  # yearly!", "tone": "add", "at": 2.2 },
+        { "text": "print(\"shipped to 12,000 users\")", "tone": "add", "at": 3.2 },
+        { "text": "# TODO: never touch this again", "tone": "plain", "at": 4.0 }
+      ]
+    },
+    "frames": [8, 35, 60, 100, 170],
+    "durationSec": 6
+  },
+  {
+    "name": "code-terminal",
+    "scene": {
+      "kind": "code",
+      "title": "terminal",
+      "lines": [
+        { "text": "$ npm install openai", "tone": "plain", "at": 0.3 },
+        { "text": "$ git push origin main", "tone": "plain", "at": 1.3 }
+      ]
+    },
+    "frames": [20, 50, 100],
+    "durationSec": 4
+  }
+]

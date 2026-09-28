@@ -19,6 +19,36 @@ export interface FaceCropResult {
   crop: CropRegion;
   /** Populated when PySceneDetect found >1 scene inside the segment. */
   timeline?: CropTimelineEntry[];
+  /**
+   * Rows (source px) covered by the tracked face across every scene of the
+   * window; absent when no face was found or detection was unreliable.
+   */
+  faceBand?: { top: number; bottom: number };
+  /**
+   * True only when the accurate detector (MediaPipe) ran, so "no face" can
+   * be trusted. The Haar fallback mistakes patterns for faces.
+   */
+  facesReliable?: boolean;
+}
+
+interface PythonFaceRows {
+  face_top?: unknown;
+  face_bottom?: unknown;
+}
+
+/** Union of the face rows reported for a window. Untrusted input. */
+function faceBandOf(entries: PythonFaceRows[]): { top: number; bottom: number } | undefined {
+  let top = Number.POSITIVE_INFINITY;
+  let bottom = Number.NEGATIVE_INFINITY;
+  for (const e of entries) {
+    const t = e.face_top;
+    const b = e.face_bottom;
+    if (typeof t !== 'number' || typeof b !== 'number') continue;
+    if (!Number.isFinite(t) || !Number.isFinite(b) || b <= t) continue;
+    top = Math.min(top, t);
+    bottom = Math.max(bottom, b);
+  }
+  return Number.isFinite(top) && Number.isFinite(bottom) ? { top, bottom } : undefined;
 }
 
 interface Segment {
@@ -26,14 +56,17 @@ interface Segment {
   end: number;
 }
 
-interface PythonCropEntry {
+interface PythonCropEntry extends PythonFaceRows {
   x: number;
   y: number;
   width: number;
   height: number;
   face_detected: boolean;
+  faces_reliable?: unknown;
   /** Per-scene timeline; entries carry start_abs/end_abs in source seconds. */
   timeline?: Array<{
+    face_top?: unknown;
+    face_bottom?: unknown;
     start_abs: number;
     end_abs: number;
     x: number;
@@ -88,7 +121,13 @@ function toResult(entries: PythonCropEntry[]): FaceCropResult[] {
             faceDetected: t.face_detected,
           }))
         : undefined;
-    return { crop, timeline };
+    const faceBand = faceBandOf([c, ...(Array.isArray(c.timeline) ? c.timeline : [])]);
+    return {
+      crop,
+      timeline,
+      ...(faceBand ? { faceBand } : {}),
+      facesReliable: c.faces_reliable === true,
+    };
   });
 }
 

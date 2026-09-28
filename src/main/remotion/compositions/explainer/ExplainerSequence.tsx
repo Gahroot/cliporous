@@ -58,8 +58,13 @@ const StageContent: React.FC<ExplainerSequenceProps> = ({
 
 export const ExplainerSequence: React.FC<ExplainerSequenceProps> = (props) => {
   const ctx = React.useMemo(
-    () => ({ palette: props.palette, layout: props.layout, aspect: props.aspect }),
-    [props.palette, props.layout, props.aspect],
+    () => ({
+      palette: props.palette,
+      layout: props.layout,
+      aspect: props.aspect,
+      safe: props.safeBox,
+    }),
+    [props.palette, props.layout, props.aspect, props.safeBox],
   );
   const floating = props.layout === 'over';
   return (

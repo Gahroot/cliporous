@@ -7,7 +7,9 @@
  *    beat times are ABSOLUTE clip seconds (derived from word indices);
  *  - `layouts` lists the layouts this kind looks good in (first = preferred);
  *  - `cues` emits tasteful sound cues for the scene's beats;
- *  - `focusTimes` (optional) = beats where an emphasis pulse may target an item.
+ *  - `triggers` = transcript cues that make the kind worth offering (shortlist);
+ *    `general` kinds are always offered; `avoid` is a "not this if…" line that
+ *    separates look-alike kinds; `family` groups kinds for the variety rules.
  *
  * Every spec is pure and deterministic.
  */
@@ -18,6 +20,7 @@ import {
   type ExplainerLayout,
   type ExplainerSceneBody,
   type ExplainerSceneKind,
+  type HeroProp,
   type SceneCue,
 } from '../../remotion/compositions/explainer/types';
 
@@ -54,6 +57,27 @@ export interface ParseContext {
   icon: (v: unknown) => ExplainerIcon;
   /** Latest safe beat time inside the window. */
   lastBeat: number;
+  /**
+   * Human-readable problems found while parsing (too-long label, word outside
+   * the window…). Fed back to the review pass so it can repair the scene.
+   */
+  issues: string[];
+}
+
+/** Kind groups: the variety rules avoid long runs of one family. */
+export type KindFamily =
+  | 'list'
+  | 'compare'
+  | 'words'
+  | 'data'
+  | 'framework'
+  | 'story'
+  | 'process'
+  | 'object';
+
+/** What the prompt offers this run (built by the shortlist). */
+export interface PromptOffer {
+  heroProps: readonly HeroProp[];
 }
 
 export interface KindSpec<K extends ExplainerSceneKind = ExplainerSceneKind> {
@@ -67,6 +91,15 @@ export interface KindSpec<K extends ExplainerSceneKind = ExplainerSceneKind> {
   layouts: readonly ExplainerLayout[];
   /** Typical good length in seconds [min, max]. */
   durationSec: readonly [number, number];
+  family: KindFamily;
+  /** Lowercase transcript cues that suggest this kind (shortlist scoring). */
+  triggers: readonly RegExp[];
+  /** Always offered, whatever the transcript says. */
+  general?: boolean;
+  /** "Not this if…" line for look-alike kinds. */
+  avoid?: string;
+  /** Per-run prompt text (e.g. hero lists only the shortlisted props). */
+  prompt?: (offer: PromptOffer) => { describe: string; schema: string };
   parse: (raw: Rec, ctx: ParseContext) => Extract<ExplainerSceneBody, { kind: K }> | null;
   cues: (scene: Extract<ExplainerSceneBody, { kind: K }>) => SceneCue[];
 }
@@ -133,20 +166,47 @@ export function parseTimedList<T>(
   return kept.map((it, n) => ({ ...it, t: times[n] ?? it.t }));
 }
 
+/** Max issues kept per scene (the review prompt only needs the first few). */
+const MAX_ISSUES = 4;
+
+function preview(s: string): string {
+  return s.length > 28 ? `${s.slice(0, 28)}…` : s;
+}
+
 export function makeParseContext(words: readonly PlannerWord[], win: SceneWindow): ParseContext {
   const lo = win.startTime + BEAT_EDGE_SEC;
   const hi = win.endTime - BEAT_EDGE_SEC;
+  const issues: string[] = [];
+  const note = (msg: string): void => {
+    if (issues.length < MAX_ISSUES && !issues.includes(msg)) issues.push(msg);
+  };
   return {
     words,
     win,
-    inWin: (v) => idx(v, win.startWord, win.endWord),
+    inWin: (v) => {
+      const i = idx(v, win.startWord, win.endWord);
+      if (i === null && typeof v === 'number') {
+        note(`word ${v} is outside this scene's words ${win.startWord}..${win.endWord}`);
+      }
+      return i;
+    },
     at: (i) => {
       const w = words[i];
       const t = w ? w.start : win.startTime;
       return Math.min(hi, Math.max(lo, t));
     },
-    str,
+    str: (v, max) => {
+      const s = str(v, max);
+      if (s === null && typeof v === 'string') {
+        const clean = v.replace(/\s+/g, ' ').trim();
+        if (clean.length > max) {
+          note(`"${preview(clean)}" is ${clean.length} chars (max ${max})`);
+        }
+      }
+      return s;
+    },
     icon,
     lastBeat: hi,
+    issues,
   };
 }

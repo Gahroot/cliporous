@@ -100,6 +100,7 @@ export async function clipMappingStage(
         seg.endTime,
         transcriptWords,
         source.duration,
+        { finalRange: true },
       );
       return {
         id: uuidv4(),

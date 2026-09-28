@@ -13,6 +13,10 @@ export default defineConfig({
     build: {
       externalizeDeps: {
         exclude: ['uuid'],
+        // Dev-only (devDependency since the prebuilt release bundle): render.ts
+        // imports it lazily when !app.isPackaged. Inlining it breaks rspack's
+        // native `@rspack/binding` require, so explainer scenes never render.
+        include: ['@remotion/bundler'],
       },
     },
   },

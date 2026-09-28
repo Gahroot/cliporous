@@ -179,6 +179,7 @@ assert_release_contents() {
 
   [ -f "$app_resources/python/download.py" ] || fail "Missing packaged Python download script"
   [ -f "$app_resources/python/face_detect.py" ] || fail "Missing packaged Python face detection script"
+  [ -f "$app_resources/python/face_model.py" ] || fail "Missing packaged Python face model loader"
   [ -f "$app_resources/python/transcribe.py" ] || fail "Missing packaged Python transcription script"
   [ -f "$app_resources/python/requirements.txt" ] || fail "Missing packaged Python requirements"
   [ -f "$app_resources/python/pyproject.toml" ] || fail "Missing packaged Python project metadata"

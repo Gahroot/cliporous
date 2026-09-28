@@ -149,6 +149,7 @@ assert_release_contents() {
 
   [ -f "$resources/python/download.py" ] || fail "Missing packaged Python download script"
   [ -f "$resources/python/face_detect.py" ] || fail "Missing packaged Python face detection script"
+  [ -f "$resources/python/face_model.py" ] || fail "Missing packaged Python face model loader"
   [ -f "$resources/python/transcribe.py" ] || fail "Missing packaged Python transcription script"
   [ -f "$resources/python/requirements.txt" ] || fail "Missing packaged Python requirements"
   cmp -s "$ROOT/THIRD_PARTY_NOTICES.md" "$resources/THIRD_PARTY_NOTICES.md" \

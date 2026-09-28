@@ -272,6 +272,10 @@ interface CropTimelineEntry {
 interface FaceCropResult {
   crop: CropRegion;
   timeline?: CropTimelineEntry[];
+  /** Rows (source px) the tracked face covers; absent when no face was found. */
+  faceBand?: { top: number; bottom: number };
+  /** True when the accurate face detector ran. */
+  facesReliable?: boolean;
 }
 
 interface FaceDetectionProgress {

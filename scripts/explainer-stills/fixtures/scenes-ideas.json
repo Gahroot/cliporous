@@ -1,0 +1,134 @@
+[
+  {
+    "name": "equation-short",
+    "scene": {
+      "kind": "equation",
+      "terms": [
+        { "text": "Focus", "at": 0.5 },
+        { "text": "Time", "at": 1.2 }
+      ],
+      "ops": ["×"],
+      "result": "Results",
+      "resultAt": 2.0
+    },
+    "frames": [8, 30, 55, 72, 140],
+    "durationSec": 5
+  },
+  {
+    "name": "equation-max",
+    "scene": {
+      "kind": "equation",
+      "terms": [
+        { "text": "Consistency", "at": 0.4 },
+        { "text": "Patient effort", "at": 1.0 },
+        { "text": "Honest review", "at": 1.6 }
+      ],
+      "ops": ["+", "×"],
+      "result": "Unfair advantage",
+      "resultAt": 2.4
+    },
+    "frames": [6, 40, 60, 85, 170],
+    "durationSec": 6
+  },
+  {
+    "name": "quadrant-max",
+    "scene": {
+      "kind": "quadrant",
+      "xLabel": "Effort",
+      "yLabel": "Impact",
+      "items": [
+        { "label": "Quick wins", "cell": "tl", "at": 0.8 },
+        { "label": "Big bets worth it", "cell": "tr", "at": 1.5 },
+        { "label": "Busy work", "cell": "br", "at": 2.2 },
+        { "label": "Fill-ins", "cell": "bl", "at": 2.8 }
+      ],
+      "winner": "tl",
+      "winnerAt": 3.5
+    },
+    "frames": [8, 30, 72, 100, 150],
+    "durationSec": 6
+  },
+  {
+    "name": "quadrant-long-axes",
+    "scene": {
+      "kind": "quadrant",
+      "xLabel": "How urgent",
+      "yLabel": "How importan",
+      "items": [{ "label": "Deep work blocks", "cell": "tr", "at": 0.9 }]
+    },
+    "frames": [10, 60],
+    "durationSec": 4
+  },
+  {
+    "name": "venn",
+    "scene": {
+      "kind": "venn",
+      "left": { "label": "Passion", "at": 0.5 },
+      "right": { "label": "Demand", "at": 1.3 },
+      "center": { "label": "Sweet spot", "at": 2.3 }
+    },
+    "frames": [8, 25, 50, 75, 150],
+    "durationSec": 6
+  },
+  {
+    "name": "venn-max",
+    "scene": {
+      "kind": "venn",
+      "left": { "label": "Transformation", "at": 0.4 },
+      "right": { "label": "Market demand", "at": 1.0 },
+      "center": { "label": "Your real edge", "at": 1.8 }
+    },
+    "frames": [40, 150],
+    "durationSec": 6
+  },
+  {
+    "name": "definition-max",
+    "scene": {
+      "kind": "definition",
+      "term": "Return on investment",
+      "tag": "finance",
+      "meaning": "The money you get back for every single dollar you put into the business",
+      "termAt": 0.4,
+      "meaningAt": 1.4
+    },
+    "frames": [6, 30, 52, 150],
+    "durationSec": 6
+  },
+  {
+    "name": "definition-short",
+    "scene": {
+      "kind": "definition",
+      "term": "Moat",
+      "meaning": "What stops rivals copying you",
+      "termAt": 0.3,
+      "meaningAt": 1.0
+    },
+    "frames": [20, 120],
+    "durationSec": 5
+  },
+  {
+    "name": "study-stat",
+    "scene": {
+      "kind": "study",
+      "source": "Harvard University, 2019",
+      "finding": "People who write their goals down are 42% more likely to reach them",
+      "stat": "42%",
+      "sourceAt": 0.4,
+      "findingAt": 1.5
+    },
+    "frames": [6, 30, 50, 62, 150],
+    "durationSec": 6
+  },
+  {
+    "name": "study-plain",
+    "scene": {
+      "kind": "study",
+      "source": "Gallup survey",
+      "finding": "Remote workers report being more productive at home",
+      "sourceAt": 0.3,
+      "findingAt": 1.2
+    },
+    "frames": [25, 120],
+    "durationSec": 5
+  }
+]

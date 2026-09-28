@@ -24,6 +24,7 @@
   "files": [
     "src/main/remotion/compositions/blocks/types.ts",
     "src/main/remotion/compositions/explainer/types.ts",
+    "src/main/remotion/compositions/explainer/hero-catalog.ts",
     "src/main/remotion/compositions/explainer/palette.ts"
   ],
   "include": ["electron-vite.config.ts", "src/main/**/*", "src/preload/**/*", "src/shared/**/*"],

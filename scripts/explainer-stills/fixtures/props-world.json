@@ -1,0 +1,32 @@
+[
+  {
+    "name": "hero-chip",
+    "scene": { "kind": "hero", "prop": "chip", "label": "Powered by AI now", "at": 0.4 },
+    "frames": [18, 23, 35, 110],
+    "durationSec": 5
+  },
+  {
+    "name": "hero-globe",
+    "scene": { "kind": "hero", "prop": "globe", "label": "Worldwide reach", "at": 0.4 },
+    "frames": [18, 27, 30, 42, 110],
+    "durationSec": 5
+  },
+  {
+    "name": "hero-envelope",
+    "scene": { "kind": "hero", "prop": "envelope", "label": "Your weekly email", "at": 0.4 },
+    "frames": [18, 24, 27, 39, 110],
+    "durationSec": 5
+  },
+  {
+    "name": "hero-book",
+    "scene": { "kind": "hero", "prop": "book", "label": "Read every night", "at": 0.4 },
+    "frames": [18, 22, 26, 38, 110],
+    "durationSec": 5
+  },
+  {
+    "name": "ref-lock",
+    "scene": { "kind": "hero", "prop": "lock", "label": "Privacy", "at": 0.4 },
+    "frames": [90],
+    "durationSec": 5
+  }
+]

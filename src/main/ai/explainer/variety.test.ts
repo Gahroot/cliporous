@@ -79,3 +79,30 @@ describe('applyVarietyRules', () => {
     expect(out).toHaveLength(2);
   });
 });
+
+describe('applyVarietyRules — families', () => {
+  it('drops the third separate moment in a row from one family', () => {
+    const out = applyVarietyRules(
+      [
+        s(0, 4, 'versus', 'stack', { family: 'compare' }),
+        s(10, 14, 'myth-fact', 'stack', { family: 'compare' }),
+        s(20, 24, 'balance', 'stack', { family: 'compare' }),
+        s(30, 34, 'checklist', 'stack', { family: 'list' }),
+      ],
+      { minStart: 0, maxEnd: 200 },
+    );
+    expect(out.map((o) => o.kind)).toEqual(['versus', 'myth-fact', 'checklist']);
+  });
+
+  it('allows the same family again after a different one', () => {
+    const out = applyVarietyRules(
+      [
+        s(0, 4, 'versus', 'stack', { family: 'compare' }),
+        s(10, 14, 'checklist', 'stack', { family: 'list' }),
+        s(20, 24, 'balance', 'stack', { family: 'compare' }),
+      ],
+      { minStart: 0, maxEnd: 200 },
+    );
+    expect(out.map((o) => o.kind)).toEqual(['versus', 'checklist', 'balance']);
+  });
+});

@@ -1,6 +1,5 @@
 /**
- * Hero scene (3D) — one soft clay prop (lightbulb, rocket, coins, phone,
- * laptop, lock) appears on the word that names it (spring scale + a slight
+ * Hero scene (3D) — one soft clay prop (see HERO_PROP_DEFS) appears on the word that names it (spring scale + a slight
  * spin), then slowly turns and floats while the camera drifts. A label pill
  * sits under the prop; the prop's own impact beat (coin lands, lock clicks)
  * gets a soft burst and the camera push-in.
@@ -8,7 +7,8 @@
 
 import type React from 'react';
 import { spring, useCurrentFrame, useVideoConfig } from 'remotion';
-import { HeroPropModel, heroImpactSec } from './HeroProps';
+import { HERO_PROP_DEFS, HeroPropModel } from './HeroProps';
+import { heroImpactSec } from './hero-catalog';
 import {
   Burst,
   Glow,
@@ -21,30 +21,10 @@ import {
 import { Stage3D, useRigCamera } from './Stage3D';
 import { ramp, useSceneTime, useStage } from './stage';
 import { type CameraSpec, projectToStage } from './three-helpers';
-import type { HeroProp, HeroScene as HeroSceneData } from './types';
+import type { HeroScene as HeroSceneData } from './types';
 
 const CAMERA: CameraSpec = { position: [0, 0.85, 8.8], fov: 30 };
 const GROUND_Y = -1.38;
-
-/** Resting yaw per prop: a flattering three-quarter view. */
-const BASE_YAW: Record<HeroProp, number> = {
-  lightbulb: 0,
-  rocket: 0.2,
-  coins: 0.3,
-  phone: -0.32,
-  laptop: -0.42,
-  lock: 0.28,
-};
-
-/** Per-prop framing: scale + lift so every prop reads at a similar visual size. */
-const FRAMING: Record<HeroProp, { scale: number; y: number }> = {
-  lightbulb: { scale: 1.1, y: 0.02 },
-  rocket: { scale: 0.92, y: 0.16 },
-  coins: { scale: 1.45, y: 0.22 },
-  phone: { scale: 1.04, y: 0.04 },
-  laptop: { scale: 1.05, y: 0.02 },
-  lock: { scale: 1.12, y: 0.06 },
-};
 
 const Prop: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
   const frame = useCurrentFrame();
@@ -62,14 +42,19 @@ const Prop: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
   const turn = Math.sin(since * 0.5) * 0.3;
   const floatY = Math.sin(t * 1.15 + 0.4) * 0.07;
   const tilt = Math.sin(t * 0.8) * 0.035;
-  const framing = FRAMING[scene.prop];
+  const def = HERO_PROP_DEFS[scene.prop];
+  const framing = def.framing;
   return (
     <group
       position={[0, framing.y + floatY + (1 - Math.min(1, pop)) * -0.4, 0]}
-      rotation={[tilt, BASE_YAW[scene.prop] + spinIn + turn, (reaction.rotate * Math.PI) / 180]}
+      rotation={[tilt, def.yaw + spinIn + turn, (reaction.rotate * Math.PI) / 180]}
       scale={pop * reaction.scale * framing.scale}
     >
-      <HeroPropModel prop={scene.prop} at={scene.at} />
+      <HeroPropModel
+        prop={scene.prop}
+        at={scene.at}
+        {...(scene.tone ? { tone: scene.tone } : {})}
+      />
     </group>
   );
 };
@@ -77,7 +62,7 @@ const Prop: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
 export const HeroScene: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
   const S = useStage();
   const { t } = useSceneTime();
-  const impactAt = scene.at + heroImpactSec(scene.prop);
+  const impactAt = scene.at + heroImpactSec(scene.prop, scene.tone);
   const rig = { focusAt: impactAt, driftDeg: 7, pushAmount: 0.09 };
   const camera = useRigCamera(CAMERA, rig);
   const breath = useBreath('hero');

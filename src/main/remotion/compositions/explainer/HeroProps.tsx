@@ -9,95 +9,35 @@
 
 import type React from 'react';
 import { useMemo } from 'react';
-import { spring, useCurrentFrame, useVideoConfig } from 'remotion';
-import {
-  type BufferGeometry,
-  ExtrudeGeometry,
-  LatheGeometry,
-  Shape,
-  ShapeGeometry,
-  Vector2,
-} from 'three';
+import { type BufferGeometry, ExtrudeGeometry, type LatheGeometry, Shape } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import { HERO_CATALOG } from './hero-catalog';
+import {
+  Clay,
+  type HeroPropDef,
+  type HeroPropProps,
+  lathe,
+  roundedRectGeometry,
+  useSpringAt,
+} from './hero-kit';
+import { BUSINESS_PROPS } from './hero-props/business';
+import { GROWTH_PROPS } from './hero-props/growth';
+import { MECHANICS_PROPS } from './hero-props/mechanics';
+import { MIND_PROPS } from './hero-props/mind';
+import { SIGNAL_PROPS } from './hero-props/signals';
+import { TIME_PROPS } from './hero-props/time';
+import { WORLD_PROPS } from './hero-props/world';
 import { hash01, useBreath } from './motion';
 import { mixHex } from './palette';
 import { ramp, useSceneTime, useStage } from './stage';
 import type { HeroProp } from './types';
 
-/** Seconds after `at` when the flipping coin lands (sync: kinds-3d COIN_LAND_SEC). */
-export const COIN_LAND_SEC = 0.75;
-/** Seconds after `at` when the lock shackle clicks shut (sync: kinds-3d LOCK_CLICK_SEC). */
-export const LOCK_CLICK_SEC = 0.5;
+export { roundedRectGeometry } from './hero-kit';
 
-/** Seconds after `at` of each prop's impact moment (burst + camera focus). */
-export function heroImpactSec(prop: HeroProp): number {
-  if (prop === 'coins') return COIN_LAND_SEC;
-  if (prop === 'lock') return LOCK_CLICK_SEC;
-  return 0.2;
-}
-
-// ---------------------------------------------------------------------------
-// Geometry helpers
-// ---------------------------------------------------------------------------
-
-function roundedRectShape(w: number, h: number, r: number): Shape {
-  const x = -w / 2;
-  const y = -h / 2;
-  const rr = Math.min(r, w / 2, h / 2);
-  const s = new Shape();
-  s.moveTo(x + rr, y);
-  s.lineTo(x + w - rr, y);
-  s.quadraticCurveTo(x + w, y, x + w, y + rr);
-  s.lineTo(x + w, y + h - rr);
-  s.quadraticCurveTo(x + w, y + h, x + w - rr, y + h);
-  s.lineTo(x + rr, y + h);
-  s.quadraticCurveTo(x, y + h, x, y + h - rr);
-  s.lineTo(x, y + rr);
-  s.quadraticCurveTo(x, y, x + rr, y);
-  return s;
-}
-
-/** Flat rounded rectangle in the XY plane, centred, facing +Z. */
-export function roundedRectGeometry(w: number, h: number, r: number): ShapeGeometry {
-  return new ShapeGeometry(roundedRectShape(w, h, r), 6);
-}
-
-function lathe(points: readonly [number, number][], segments = 32): LatheGeometry {
-  return new LatheGeometry(
-    points.map(([x, y]) => new Vector2(x, y)),
-    segments,
-  );
-}
-
-/** Spring 0→1 starting at `atSec` (frame-exact). */
-function useSpringAt(atSec: number, stiffness: number, damping: number, mass = 1): number {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  return spring({
-    frame: frame - Math.round(atSec * fps),
-    fps,
-    config: { stiffness, damping, mass },
-  });
-}
-
-const Clay: React.FC<{
-  color: string;
-  roughness?: number;
-  metalness?: number;
-  emissive?: string;
-  emissiveIntensity?: number;
-  opacity?: number;
-}> = ({ color, roughness = 0.55, metalness = 0.02, emissive, emissiveIntensity = 0, opacity }) => (
-  <meshStandardMaterial
-    color={color}
-    roughness={roughness}
-    metalness={metalness}
-    emissive={emissive ?? '#000000'}
-    emissiveIntensity={emissiveIntensity}
-    transparent={opacity !== undefined && opacity < 1}
-    opacity={opacity ?? 1}
-  />
-);
+/** Seconds after `at` when the flipping coin lands (hero-catalog impactSec). */
+export const COIN_LAND_SEC = HERO_CATALOG.coins.impactSec;
+/** Seconds after `at` when the lock shackle clicks shut / springs open. */
+export const LOCK_CLICK_SEC = HERO_CATALOG.lock.impactSec;
 
 // ---------------------------------------------------------------------------
 // Lightbulb — glassy bulb with a glowing filament, ribbed clay base.
@@ -494,22 +434,34 @@ const Laptop: React.FC<{ at: number }> = ({ at }) => {
 // Lock — rounded body with a keyhole, shackle that swings in and clicks shut.
 // ---------------------------------------------------------------------------
 
-const Lock: React.FC<{ at: number }> = ({ at }) => {
+const Lock: React.FC<HeroPropProps> = ({ at, tone }) => {
   const S = useStage();
   const { t } = useSceneTime();
   const body = useMemo(() => new RoundedBoxGeometry(1.5, 1.22, 0.62, 4, 0.2), []);
   const slot = useMemo(() => roundedRectGeometry(0.1, 0.28, 0.05), []);
   const clickAt = at + LOCK_CLICK_SEC;
-  // Swing back over the body, then drop fast into the body on the click.
-  const swing = ramp(t, at + 0.05, 0.3);
-  const drop = Math.min(1, Math.max(0, (t - (clickAt - 0.1)) / 0.1)) ** 2;
   const settle = useSpringAt(clickAt, 320, 11, 0.6);
   const bounce =
     t >= clickAt ? Math.sin(Math.min(1, settle) * Math.PI) * (1 - Math.min(1, settle)) : 0;
-  const lift = 0.36 * (1 - drop);
-  const yaw = 0.9 * (1 - swing);
   const jolt = t >= clickAt ? Math.sin(Math.min(1, settle) * Math.PI) * 0.035 : 0;
-  const locked = ramp(t, clickAt, 0.35);
+  let lift: number;
+  let yaw: number;
+  let locked: number;
+  if (tone === 'down') {
+    // Unlock: starts shut, the shackle pops up on the click, then swings open.
+    const pop = Math.min(1, Math.max(0, (t - clickAt) / 0.12));
+    const swingOpen = ramp(t, clickAt + 0.1, 0.35);
+    lift = 0.36 * pop * pop;
+    yaw = 0.9 * swingOpen;
+    locked = 1 - ramp(t, clickAt, 0.35);
+  } else {
+    // Swing back over the body, then drop fast into the body on the click.
+    const swing = ramp(t, at + 0.05, 0.3);
+    const drop = Math.min(1, Math.max(0, (t - (clickAt - 0.1)) / 0.1)) ** 2;
+    lift = 0.36 * (1 - drop);
+    yaw = 0.9 * (1 - swing);
+    locked = ramp(t, clickAt, 0.35);
+  }
   const metal = mixHex(S.paper, S.clay[1], 0.35);
   const R = 0.44;
   return (
@@ -557,19 +509,24 @@ const Lock: React.FC<{ at: number }> = ({ at }) => {
 
 // ---------------------------------------------------------------------------
 
-export const HeroPropModel: React.FC<{ prop: HeroProp; at: number }> = ({ prop, at }) => {
-  switch (prop) {
-    case 'lightbulb':
-      return <Lightbulb at={at} />;
-    case 'rocket':
-      return <Rocket at={at} />;
-    case 'coins':
-      return <Coins at={at} />;
-    case 'phone':
-      return <Phone at={at} />;
-    case 'laptop':
-      return <Laptop at={at} />;
-    case 'lock':
-      return <Lock at={at} />;
-  }
+/** Every hero prop: model + resting pose. `satisfies` keeps it exhaustive. */
+export const HERO_PROP_DEFS = {
+  lightbulb: { Model: Lightbulb, yaw: 0, framing: { scale: 1.1, y: 0.02 } },
+  rocket: { Model: Rocket, yaw: 0.2, framing: { scale: 0.92, y: 0.16 } },
+  coins: { Model: Coins, yaw: 0.3, framing: { scale: 1.45, y: 0.22 } },
+  phone: { Model: Phone, yaw: -0.32, framing: { scale: 1.04, y: 0.04 } },
+  laptop: { Model: Laptop, yaw: -0.42, framing: { scale: 1.05, y: 0.02 } },
+  lock: { Model: Lock, yaw: 0.28, framing: { scale: 1.12, y: 0.06 } },
+  ...BUSINESS_PROPS,
+  ...TIME_PROPS,
+  ...MIND_PROPS,
+  ...GROWTH_PROPS,
+  ...WORLD_PROPS,
+  ...MECHANICS_PROPS,
+  ...SIGNAL_PROPS,
+} satisfies Record<HeroProp, HeroPropDef>;
+
+export const HeroPropModel: React.FC<HeroPropProps & { prop: HeroProp }> = ({ prop, at, tone }) => {
+  const { Model } = HERO_PROP_DEFS[prop];
+  return <Model at={at} {...(tone ? { tone } : {})} />;
 };

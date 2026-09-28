@@ -3,6 +3,8 @@
  *
  *  - never the same scene kind twice in a row (a continuation chain counts as
  *    one "moment"; the dropped scene is the later one);
+ *  - never three separate moments from one kind family in a row (e.g.
+ *    versus → myth-fact → balance all read as "compare");
  *  - never the same layout twice in a row when the kind allows another;
  *  - scenes cover at most `maxCoverage` of the plannable span;
  *  - plain-talking gap between scenes (chained scenes are exempt);
@@ -24,6 +26,8 @@ export interface VarietyScene {
   layouts: readonly ExplainerLayout[];
   /** True when this scene continues the previous one (no gap, transition). */
   chained: boolean;
+  /** Kind family (see KindFamily); omitted = no family rule. */
+  family?: string;
 }
 
 export const VARIETY_LIMITS = {
@@ -57,6 +61,16 @@ export function applyVarietyRules<T extends VarietyScene>(
     }
     // Same kind twice in a row reads as a repeat; drop the later one.
     if (prev && prev.kind === scene.kind) continue;
+    // Third separate moment in a row from one family reads samey.
+    const prev2 = out[out.length - 2];
+    if (
+      !chained &&
+      scene.family !== undefined &&
+      prev?.family === scene.family &&
+      prev2?.family === scene.family
+    ) {
+      continue;
+    }
     if (covered + span(scene) > budget) continue;
 
     let layout = scene.layout;

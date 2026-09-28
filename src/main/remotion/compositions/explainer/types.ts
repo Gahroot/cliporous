@@ -186,9 +186,53 @@ export const EXPLAINER_ICONS = [
 ] as const;
 export type ExplainerIcon = (typeof EXPLAINER_ICONS)[number];
 
-/** Soft 3D props for the `hero` scene. */
-export const HERO_PROPS = ['lightbulb', 'rocket', 'coins', 'phone', 'laptop', 'lock'] as const;
+/** Soft 3D props for the `hero` scene (catalog + triggers: hero-catalog.ts). */
+export const HERO_PROPS = [
+  // v2
+  'lightbulb',
+  'rocket',
+  'coins',
+  'phone',
+  'laptop',
+  'lock',
+  // v3 — money & business
+  'target',
+  'piggybank',
+  'trophy',
+  'briefcase',
+  'megaphone',
+  'magnet',
+  'gift',
+  // v3 — time
+  'hourglass',
+  'stopwatch',
+  'calendar',
+  // v3 — mind & health
+  'brain',
+  'heart',
+  'battery',
+  'flame',
+  // v3 — growth & strategy
+  'sprout',
+  'mountain',
+  'dice',
+  'puzzle',
+  'gears',
+  'key',
+  'door',
+  // v3 — tech & world
+  'chip',
+  'globe',
+  'envelope',
+  'book',
+] as const;
 export type HeroProp = (typeof HERO_PROPS)[number];
+
+/**
+ * Optional reversed action for props that have one: battery drains instead of
+ * charging, lock springs open instead of clicking shut. Ignored by other props.
+ */
+export type HeroTone = 'up' | 'down';
 
 // ---------------------------------------------------------------------------
 // Scene kinds
@@ -216,6 +260,31 @@ export const EXPLAINER_SCENE_KINDS = [
   'myth-fact',
   'funnel',
   'hero',
+  // v3 — 2D frameworks & ideas
+  'equation',
+  'quadrant',
+  'venn',
+  'definition',
+  'study',
+  // v3 — 2D money, time & data
+  'pictogram',
+  'ranking',
+  'receipt',
+  'streak',
+  'spectrum',
+  // v3 — 2D stories & people
+  'quote',
+  'headline',
+  'journey',
+  'search',
+  'code',
+  // v3 — 3D
+  'iceberg',
+  'balance',
+  'podium',
+  'compound',
+  'dominoes',
+  'stairs',
 ] as const;
 export type ExplainerSceneKind = (typeof EXPLAINER_SCENE_KINDS)[number];
 
@@ -414,6 +483,251 @@ export interface HeroScene {
   prop: HeroProp;
   label: string;
   at: number;
+  /** 'down' plays the prop's reversed action (battery drains, lock opens). */
+  tone?: HeroTone;
+}
+
+// ---------------------------------------------------------------------------
+// v3 — 2D frameworks & ideas
+// ---------------------------------------------------------------------------
+
+export const EQUATION_OPS = ['+', '−', '×', '÷'] as const;
+export type EquationOp = (typeof EQUATION_OPS)[number];
+
+/** "Consistency × Time = Results": term tiles joined by operators, then a result. */
+export interface EquationScene {
+  kind: 'equation';
+  /** 2–3 terms, left → right. */
+  terms: { text: string; at: number }[];
+  /** ops[i] joins terms[i] and terms[i+1] (length = terms.length − 1). */
+  ops: EquationOp[];
+  result: string;
+  /** When "=" draws and the result lands. */
+  resultAt: number;
+}
+
+export type QuadrantCell = 'tl' | 'tr' | 'bl' | 'br';
+
+/** A 2×2 matrix (effort vs impact): axes, then items dropping into cells. */
+export interface QuadrantScene {
+  kind: 'quadrant';
+  /** Axis names ("Effort", "Impact"); low → high reads left→right / bottom→top. */
+  xLabel: string;
+  yLabel: string;
+  /** 1–4 items, each in its own cell. */
+  items: { label: string; cell: QuadrantCell; at: number }[];
+  /** The cell that lights up as the answer ("do these first"). */
+  winner?: QuadrantCell;
+  winnerAt?: number;
+}
+
+/** Two circles sliding together; the overlap is the "sweet spot". */
+export interface VennScene {
+  kind: 'venn';
+  left: { label: string; at: number };
+  right: { label: string; at: number };
+  /** The overlap label, revealed when the circles meet. */
+  center: { label: string; at: number };
+}
+
+/** Dictionary card: "ROI — the money you get back for every dollar in". */
+export interface DefinitionScene {
+  kind: 'definition';
+  term: string;
+  /** Optional small tag under the term ("noun", "slang", "finance"). */
+  tag?: string;
+  meaning: string;
+  termAt: number;
+  meaningAt: number;
+}
+
+/** Research citation: source + finding, optional headline stat. */
+export interface StudyScene {
+  kind: 'study';
+  /** "Harvard, 2019". */
+  source: string;
+  finding: string;
+  /** Optional big stat ("73%"). */
+  stat?: string;
+  sourceAt: number;
+  findingAt: number;
+}
+
+// ---------------------------------------------------------------------------
+// v3 — 2D money, time & data
+// ---------------------------------------------------------------------------
+
+/** "1 in 4 people": a grid of person icons, `filled` of them lit. */
+export interface PictogramScene {
+  kind: 'pictogram';
+  /** Grid size 2–100. */
+  total: number;
+  /** Lit figures 0–total. */
+  filled: number;
+  /** Short caption ("will quit this year"). */
+  label: string;
+  /** Headline figure shown over the grid ("1 in 4", "25%"). */
+  stat: string;
+  /** When the lit figures start filling. */
+  fillAt: number;
+}
+
+/** Top-N / tier list: rows slot into rank order as each is named. */
+export interface RankingScene {
+  kind: 'ranking';
+  title?: string;
+  /** 2–5 items; rank 1 = best. Revealed in speaking order. */
+  items: { label: string; rank: number; at: number }[];
+}
+
+/** A receipt printing line items, then a bold total. */
+export interface ReceiptScene {
+  kind: 'receipt';
+  /** Header ("Monthly costs"). */
+  title: string;
+  /** 1–5 lines; amounts are display strings ("$40", "3 hrs"). */
+  lines: { label: string; amount: string; at: number }[];
+  total: { label: string; amount: string };
+  totalAt: number;
+}
+
+/** A calendar grid filling day by day ("30 days", streaks, habits). */
+export interface StreakScene {
+  kind: 'streak';
+  /** Days in the grid, 5–35. */
+  days: number;
+  /** Caption ("Post every day"). */
+  label: string;
+  /** Fill runs from fillAt to doneAt; the counter lands on doneAt. */
+  fillAt: number;
+  doneAt: number;
+  /** Optional missed day (1-based) that breaks the chain in the negative colour. */
+  missDay?: number;
+}
+
+/** A slider between two extremes; the marker glides to where the speaker lands. */
+export interface SpectrumScene {
+  kind: 'spectrum';
+  left: string;
+  right: string;
+  /** Marker position 0 (left) … 1 (right). */
+  from: number;
+  to: number;
+  /** Optional pill on the marker ("You", "Most people"). */
+  markerLabel?: string;
+  /** When the marker appears / glides to `to`. */
+  showAt: number;
+  moveAt: number;
+}
+
+// ---------------------------------------------------------------------------
+// v3 — 2D stories & people
+// ---------------------------------------------------------------------------
+
+/** A quote card with attribution ("As Naval says…"). */
+export interface QuoteScene {
+  kind: 'quote';
+  text: string;
+  author: string;
+  /** Optional role/context ("Investor"). */
+  role?: string;
+  at: number;
+  authorAt: number;
+}
+
+/** A news headline card slamming in. */
+export interface HeadlineScene {
+  kind: 'headline';
+  /** Outlet or section ("Breaking", "WSJ"). */
+  outlet: string;
+  headline: string;
+  at: number;
+}
+
+/** A story arc: a curve drawing through highs and lows. */
+export interface JourneyScene {
+  kind: 'journey';
+  /** 3–5 points; level −2 (rock bottom) … 2 (peak). */
+  points: { label: string; level: number; at: number }[];
+}
+
+/** A search bar typing a query, then optional results. */
+export interface SearchScene {
+  kind: 'search';
+  query: string;
+  typeAt: number;
+  /** 0–3 short result lines. */
+  results: string[];
+  resultsAt?: number;
+}
+
+export type CodeLineTone = 'plain' | 'add' | 'remove';
+
+/** A code editor / terminal window; lines type in, diff lines tinted. */
+export interface CodeScene {
+  kind: 'code';
+  /** Window title ("terminal", "app.py"). */
+  title: string;
+  lines: { text: string; tone: CodeLineTone; at: number }[];
+}
+
+// ---------------------------------------------------------------------------
+// v3 — 3D
+// ---------------------------------------------------------------------------
+
+/** Iceberg: the tip is what people see; the camera dives to what's below. */
+export interface IcebergScene {
+  kind: 'iceberg';
+  top: { label: string; at: number };
+  /** 1–3 hidden layers, revealed after the dive. */
+  below: { label: string; at: number }[];
+  /** When the camera dips below the waterline. */
+  diveAt: number;
+}
+
+/** A balance scale: items land on each pan, then it tips. */
+export interface BalanceScene {
+  kind: 'balance';
+  left: { label: string; at: number };
+  right: { label: string; at: number };
+  /** Which side ends heavier ("wins"); 'even' = balanced. */
+  heavier: 'left' | 'right' | 'even';
+  tipAt: number;
+}
+
+/** A podium: places rise as named (usually 3rd → 1st). */
+export interface PodiumScene {
+  kind: 'podium';
+  /** 2–3 places, rank 1–3 each (unique). */
+  places: { label: string; rank: number; at: number }[];
+}
+
+/** Compounding: clay coin towers growing column by column into a curve. */
+export interface CompoundScene {
+  kind: 'compound';
+  /** Caption ("$500 a month"). */
+  title: string;
+  /** 3–6 columns, relative values, labels short ("Y1"). */
+  points: { label: string; value: number }[];
+  /** Optional callout on the last tower ("$1.2M"). */
+  callout?: string;
+  growAt: number;
+}
+
+/** A chain reaction: labelled dominoes fall one into the next. */
+export interface DominoesScene {
+  kind: 'dominoes';
+  /** 3–6 tiles, appear as named. */
+  tiles: { label: string; at: number }[];
+  /** When the first tile is pushed. */
+  fallAt: number;
+}
+
+/** Stairs: a ball climbs one step per beat to the top label. */
+export interface StairsScene {
+  kind: 'stairs';
+  /** 2–5 steps, bottom → top. */
+  steps: { label: string; at: number }[];
 }
 
 export type ExplainerSceneBody =
@@ -434,7 +748,28 @@ export type ExplainerSceneBody =
   | LoopScene
   | MythFactScene
   | FunnelScene
-  | HeroScene;
+  | HeroScene
+  | EquationScene
+  | QuadrantScene
+  | VennScene
+  | DefinitionScene
+  | StudyScene
+  | PictogramScene
+  | RankingScene
+  | ReceiptScene
+  | StreakScene
+  | SpectrumScene
+  | QuoteScene
+  | HeadlineScene
+  | JourneyScene
+  | SearchScene
+  | CodeScene
+  | IcebergScene
+  | BalanceScene
+  | PodiumScene
+  | CompoundScene
+  | DominoesScene
+  | StairsScene;
 
 // ---------------------------------------------------------------------------
 // Cross-kind extras: continuation beats + emphasis reactions
@@ -520,6 +855,11 @@ export interface ExplainerSequenceProps {
    * it); the exit animation finishes here. Defaults to the full duration.
    */
   visibleSec?: number;
+  /**
+   * Content box override (canvas px) — `over` cards placed clear of the
+   * speaker's face. Defaults to `stageSafeBox(layout, aspect)`.
+   */
+  safeBox?: StageSafeBox;
 }
 
 /** Legacy single-scene props (kept for the `ExplainerScene` composition). */

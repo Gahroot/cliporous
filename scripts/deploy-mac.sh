@@ -107,7 +107,7 @@ if [ ! -d "$TARGET" ]; then
   step "No existing $TARGET — copying fresh .app from $UNPACKED"
   cp -R "$UNPACKED" "$TARGET"
   # Refresh python scripts in case they changed since build:mac.
-  cp python/download.py python/face_detect.py python/transcribe.py python/requirements.txt \
+  cp python/download.py python/face_detect.py python/face_model.py python/transcribe.py python/requirements.txt \
      "$TARGET/Contents/Resources/python/"
   # Refresh bundled resources (fonts/music/sfx/bin) so newly added assets land.
   sync_resources "$TARGET"
@@ -152,7 +152,7 @@ ok "app.asar repacked into $TARGET"
 
 step "Refreshing Python scripts"
 mkdir -p "$TARGET/Contents/Resources/python"
-cp python/download.py python/face_detect.py python/transcribe.py python/requirements.txt \
+cp python/download.py python/face_detect.py python/face_model.py python/transcribe.py python/requirements.txt \
    "$TARGET/Contents/Resources/python/"
 ok "Python scripts copied"
 

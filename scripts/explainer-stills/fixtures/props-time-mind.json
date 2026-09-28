@@ -1,0 +1,10 @@
+[
+  { "name": "hero-hourglass", "scene": { "kind": "hero", "prop": "hourglass", "label": "Patience pays off", "at": 0.4 }, "frames": [18, 22, 26, 38, 110], "durationSec": 5 },
+  { "name": "hero-stopwatch", "scene": { "kind": "hero", "prop": "stopwatch", "label": "In 10 minutes", "at": 0.4 }, "frames": [18, 21, 33, 110], "durationSec": 5 },
+  { "name": "hero-calendar", "scene": { "kind": "hero", "prop": "calendar", "label": "Every single day", "at": 0.4 }, "frames": [18, 24, 27, 39, 110], "durationSec": 5 },
+  { "name": "hero-brain", "scene": { "kind": "hero", "prop": "brain", "label": "Rewire your mind", "at": 0.4 }, "frames": [18, 23, 35, 110], "durationSec": 5 },
+  { "name": "hero-heart", "scene": { "kind": "hero", "prop": "heart", "label": "Do what you love", "at": 0.4 }, "frames": [18, 21, 33, 110], "durationSec": 5 },
+  { "name": "hero-battery", "scene": { "kind": "hero", "prop": "battery", "label": "Fully recharged", "at": 0.4 }, "frames": [18, 29, 39, 51, 110], "durationSec": 5 },
+  { "name": "hero-battery-down", "scene": { "kind": "hero", "prop": "battery", "tone": "down", "label": "Total burnout", "at": 0.4 }, "frames": [18, 29, 39, 51, 110], "durationSec": 5 },
+  { "name": "hero-flame", "scene": { "kind": "hero", "prop": "flame", "label": "Stay motivated!!", "at": 0.4 }, "frames": [18, 20, 32, 110], "durationSec": 5 }
+]

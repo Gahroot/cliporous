@@ -1,0 +1,6 @@
+[
+  { "name": "hero-sprout", "scene": { "kind": "hero", "prop": "sprout", "label": "Start small, grow", "at": 0.4 }, "frames": [18, 33, 45, 110], "durationSec": 5 },
+  { "name": "hero-mountain", "scene": { "kind": "hero", "prop": "mountain", "label": "Reach the summit", "at": 0.4 }, "frames": [18, 30, 42, 110], "durationSec": 5 },
+  { "name": "hero-dice", "scene": { "kind": "hero", "prop": "dice", "label": "Take the gamble", "at": 0.4 }, "frames": [18, 33, 45, 110], "durationSec": 5 },
+  { "name": "hero-puzzle", "scene": { "kind": "hero", "prop": "puzzle", "label": "The missing piece", "at": 0.4 }, "frames": [18, 29, 41, 110], "durationSec": 5 }
+]

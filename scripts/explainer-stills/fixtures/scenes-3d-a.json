@@ -1,0 +1,89 @@
+[
+  {
+    "name": "iceberg-max",
+    "scene": {
+      "kind": "iceberg",
+      "top": { "label": "Instant success!", "at": 0.5 },
+      "below": [
+        { "label": "5 years of grind", "at": 2.4 },
+        { "label": "Constant failure", "at": 3.0 },
+        { "label": "Nights & weekends", "at": 3.6 }
+      ],
+      "diveAt": 1.5
+    },
+    "frames": [8, 30, 54, 75, 100, 150],
+    "durationSec": 6
+  },
+  {
+    "name": "iceberg-one",
+    "scene": {
+      "kind": "iceberg",
+      "top": { "label": "Talent", "at": 0.4 },
+      "below": [{ "label": "Practice", "at": 2.0 }],
+      "diveAt": 1.2
+    },
+    "frames": [20, 45, 80],
+    "durationSec": 4
+  },
+  {
+    "name": "balance-left",
+    "scene": {
+      "kind": "balance",
+      "left": { "label": "Huge reward", "at": 0.5 },
+      "right": { "label": "Small risk", "at": 1.3 },
+      "heavier": "left",
+      "tipAt": 2.2
+    },
+    "frames": [6, 22, 48, 72, 84, 120],
+    "durationSec": 5
+  },
+  {
+    "name": "balance-even-max",
+    "scene": {
+      "kind": "balance",
+      "left": { "label": "Deep work time", "at": 0.4 },
+      "right": { "label": "Recovery time!", "at": 1.0 },
+      "heavier": "even",
+      "tipAt": 1.8
+    },
+    "frames": [20, 58, 66, 110],
+    "durationSec": 4.5
+  },
+  {
+    "name": "balance-right",
+    "scene": {
+      "kind": "balance",
+      "left": { "label": "Cost", "at": 0.4 },
+      "right": { "label": "Benefit", "at": 1.0 },
+      "heavier": "right",
+      "tipAt": 1.7
+    },
+    "frames": [40, 110],
+    "durationSec": 4
+  },
+  {
+    "name": "podium-three",
+    "scene": {
+      "kind": "podium",
+      "places": [
+        { "label": "Consistency!", "rank": 3, "at": 0.6 },
+        { "label": "Hard work", "rank": 2, "at": 1.4 },
+        { "label": "Mindset wins", "rank": 1, "at": 2.3 }
+      ]
+    },
+    "frames": [8, 26, 50, 72, 84, 130],
+    "durationSec": 5.5
+  },
+  {
+    "name": "podium-two",
+    "scene": {
+      "kind": "podium",
+      "places": [
+        { "label": "Silver", "rank": 2, "at": 0.5 },
+        { "label": "Gold", "rank": 1, "at": 1.4 }
+      ]
+    },
+    "frames": [30, 60, 100],
+    "durationSec": 4
+  }
+]

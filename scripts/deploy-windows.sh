@@ -92,7 +92,7 @@ ok "app.asar repacked"
 
 step "Refreshing Python scripts"
 mkdir -p "$UNPACKED/resources/python"
-cp python/download.py python/face_detect.py python/transcribe.py python/requirements.txt \
+cp python/download.py python/face_detect.py python/face_model.py python/transcribe.py python/requirements.txt \
    "$UNPACKED/resources/python/"
 ok "Python scripts copied"
 

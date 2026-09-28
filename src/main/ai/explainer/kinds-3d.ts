@@ -4,11 +4,16 @@
  */
 
 import {
+  HERO_CATALOG,
+  heroHasDownTone,
+  heroImpactSec,
+} from '../../remotion/compositions/explainer/hero-catalog';
+import {
   HERO_PROPS,
   type HeroProp,
   type SceneCue,
 } from '../../remotion/compositions/explainer/types';
-import { type AnyKindSpec, type KindSpec, parseTimedList } from './kind-spec';
+import { type AnyKindSpec, type KindSpec, type PromptOffer, parseTimedList } from './kind-spec';
 
 const L = {
   myth: 48,
@@ -20,12 +25,12 @@ const L = {
 
 /**
  * Animation offsets the cues must line up with. Keep in sync with the
- * compositions (MythFactScene FLIP_LAND_SEC, HeroProps COIN_LAND_SEC /
- * LOCK_CLICK_SEC) — duplicated so this module stays free of React imports.
+ * compositions (MythFactScene FLIP_LAND_SEC) — duplicated so this module stays
+ * free of React imports. Hero impact timings live in hero-catalog.ts.
  */
 export const MYTH_FLIP_LAND_SEC = 0.3;
-export const COIN_LAND_SEC = 0.75;
-export const LOCK_CLICK_SEC = 0.5;
+export const COIN_LAND_SEC = HERO_CATALOG.coins.impactSec;
+export const LOCK_CLICK_SEC = HERO_CATALOG.lock.impactSec;
 
 /** Minimum gap between the myth and the flip so the myth can be read. */
 const MYTH_MIN_READ_SEC = 1;
@@ -40,6 +45,10 @@ export const mythFactSpec: KindSpec<'myth-fact'> = {
   limits: `myth ≤ ${L.myth}, fact ≤ ${L.fact}`,
   layouts: ['stack', 'takeover', 'pip'],
   durationSec: [3.5, 9],
+  family: 'compare',
+  triggers: [
+    /\b(myth|people think|most people|actually|the truth is|reality|misconception|believe|lie)\b/,
+  ],
   parse: (raw, ctx) => {
     const myth = ctx.str(raw.myth, L.myth);
     const fact = ctx.str(raw.fact, L.fact);
@@ -67,6 +76,8 @@ export const funnelSpec: KindSpec<'funnel'> = {
   limits: `stage label ≤ ${L.funnelStage}, result ≤ ${L.funnelResult}`,
   layouts: ['takeover', 'stack', 'pip'],
   durationSec: [4, 10],
+  family: 'process',
+  triggers: [/\b(funnel|leads|conversions?|convert|pipeline|narrow|filter|out of)\b/],
   parse: (raw, ctx) => {
     const stages = parseTimedList(
       raw.stages,
@@ -99,28 +110,55 @@ export const funnelSpec: KindSpec<'funnel'> = {
   ],
 };
 
+function heroPrompt(props: readonly HeroProp[]): { describe: string; schema: string } {
+  const list = props.map((p) => `${p} (${HERO_CATALOG[p].hint})`).join('; ');
+  const downs = props.filter(heroHasDownTone);
+  const tone =
+    downs.length > 0
+      ? ` Optional "tone":"down" plays the reversed action for ${downs
+          .map((p) => `${p} = ${HERO_CATALOG[p].downHint}`)
+          .join(', ')}.`
+      : '';
+  return {
+    describe: `the speaker names a THING, not a process. One soft 3D prop appears on that word with a short label and plays its signature motion. Props: ${list}.${tone} 3D.`,
+    schema: `{"kind":"hero","prop":"${props.join('|')}","label":"...","word":N${downs.length > 0 ? ',"tone":"up"|"down"' : ''}}`,
+  };
+}
+
+const ALL_HERO_PROMPT = heroPrompt(HERO_PROPS);
+
 export const heroSpec: KindSpec<'hero'> = {
   kind: 'hero',
-  describe:
-    'the speaker names a THING, not a process: idea → lightbulb, launch/growth → rocket, money/price → coins, app/call/text → phone, software/work → laptop, security/privacy → lock. One soft 3D prop appears on that word with a short label. 3D.',
-  schema: `{"kind":"hero","prop":"${HERO_PROPS.join('|')}","label":"...","word":N}`,
+  describe: ALL_HERO_PROMPT.describe,
+  schema: ALL_HERO_PROMPT.schema,
+  prompt: (offer: PromptOffer) => heroPrompt(offer.heroProps),
   limits: `hero label ≤ ${L.heroLabel}`,
   layouts: ['takeover', 'stack', 'over'],
   durationSec: [2.5, 6],
+  family: 'object',
+  general: true,
+  triggers: [],
   parse: (raw, ctx) => {
-    if (typeof raw.prop !== 'string' || !HERO_PROP_SET.has(raw.prop)) return null;
+    if (typeof raw.prop !== 'string' || !HERO_PROP_SET.has(raw.prop)) {
+      ctx.issues.push(`prop must be one of the listed props (got ${JSON.stringify(raw.prop)})`);
+      return null;
+    }
+    const prop = raw.prop as HeroProp;
     const label = ctx.str(raw.label, L.heroLabel);
     const w = ctx.inWin(raw.word);
     if (!label || w === null) return null;
-    return { kind: 'hero', prop: raw.prop as HeroProp, label, at: ctx.at(w) };
+    const scene = { kind: 'hero' as const, prop, label, at: ctx.at(w) };
+    return raw.tone === 'down' && heroHasDownTone(prop) ? { ...scene, tone: 'down' } : scene;
   },
-  cues: (s) => [
-    { kind: 'whoosh', at: s.at, gain: 0.6 },
-    ...(s.prop === 'coins' ? [{ kind: 'pop' as const, at: s.at + COIN_LAND_SEC, gain: 0.8 }] : []),
-    ...(s.prop === 'lock'
-      ? [{ kind: 'thump' as const, at: s.at + LOCK_CLICK_SEC, gain: 0.5 }]
-      : []),
-  ],
+  cues: (s) => {
+    const impact = HERO_CATALOG[s.prop].impactCue;
+    return [
+      { kind: 'whoosh', at: s.at, gain: 0.6 },
+      ...(impact
+        ? [{ kind: impact.kind, at: s.at + heroImpactSec(s.prop, s.tone), gain: impact.gain }]
+        : []),
+    ];
+  },
 };
 
 export const THREE_D_KIND_SPECS: readonly AnyKindSpec[] = [mythFactSpec, funnelSpec, heroSpec];

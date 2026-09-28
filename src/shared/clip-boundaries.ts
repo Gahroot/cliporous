@@ -4,27 +4,89 @@ const START_BUFFER_SECONDS = 0.12;
 const END_BUFFER_SECONDS = 0.25;
 const NATURAL_PAUSE_SECONDS = 0.65;
 const MAX_SENTENCE_EXTENSION_SECONDS = 6;
+/** How far back a mid-sentence start may move to reach its sentence start. */
+const MAX_START_PULLBACK_SECONDS = 6;
 
 export interface StabilizedClipBoundary {
   startTime: number;
   endTime: number;
 }
 
+export interface ClipBoundaryOptions {
+  /**
+   * The range ends the clip: if it ends on a question, keep going to the
+   * next sentence (the speaker's answer) instead of stopping on the setup.
+   */
+  finalRange?: boolean;
+}
+
 function endsSentence(text: string): boolean {
   return /[.!?]["']?\s*$/.test(text.trim());
 }
 
+function endsQuestion(text: string): boolean {
+  return /\?["']?\s*$/.test(text.trim());
+}
+
+/** True when `words[index]` begins a sentence (or follows a clear pause). */
+function startsSentence(words: readonly WordTimestamp[], index: number): boolean {
+  const previous = words[index - 1];
+  if (!previous) return true;
+  return endsSentence(previous.text) || words[index].start - previous.end >= NATURAL_PAUSE_SECONDS;
+}
+
+/**
+ * Walk a mid-sentence start back to the first word of its sentence, at most
+ * MAX_START_PULLBACK_SECONDS. Keeps the original word when no sentence start
+ * is that close (a very long run-on sentence).
+ */
+function sentenceStartIndex(words: readonly WordTimestamp[], firstWordIndex: number): number {
+  const limit = words[firstWordIndex].start - MAX_START_PULLBACK_SECONDS;
+  for (let index = firstWordIndex; index >= 0; index--) {
+    if (words[index].start < limit) break;
+    if (startsSentence(words, index)) return index;
+  }
+  return firstWordIndex;
+}
+
+/**
+ * Last word of the answer after a closing question: the end of the next
+ * sentence(s), within the extension budget. Returns `questionIndex` when no
+ * complete sentence ends in time.
+ */
+function answerEndIndex(
+  words: readonly WordTimestamp[],
+  questionIndex: number,
+  budgetEnd: number,
+): number {
+  let best = questionIndex;
+  for (let index = questionIndex + 1; index < words.length; index++) {
+    const word = words[index];
+    if (word.end > budgetEnd) break;
+    const nextWord = words[index + 1];
+    const pauseAfter = nextWord ? nextWord.start - word.end : Number.POSITIVE_INFINITY;
+    if (endsSentence(word.text) || pauseAfter >= NATURAL_PAUSE_SECONDS) {
+      best = index;
+      if (!endsQuestion(word.text)) break;
+    }
+  }
+  return best;
+}
+
 /**
  * Align coarse AI timestamps to the ASR word track and leave room for speech
- * onsets/decays. If the requested end lands mid-sentence, extend by at most six
- * seconds to the next punctuation or natural pause so short-form exports do
- * not cut off the final word or unfinished thought.
+ * onsets/decays. A start that lands mid-sentence moves back to the start of
+ * that sentence; an end that lands mid-sentence extends by at most six
+ * seconds to the next punctuation or natural pause, so exports neither open
+ * nor close on half a thought. With `finalRange`, a closing question also
+ * keeps its answer.
  */
 export function stabilizeShortFormClipBoundary(
   requestedStart: number,
   requestedEnd: number,
   words: readonly WordTimestamp[],
   videoDuration?: number,
+  options: ClipBoundaryOptions = {},
 ): StabilizedClipBoundary {
   const finiteVideoEnd =
     Number.isFinite(videoDuration) && (videoDuration ?? 0) > 0
@@ -51,8 +113,9 @@ export function stabilizeShortFormClipBoundary(
     lastOverlappingWordIndex = index;
   }
 
-  const firstWord = words[firstWordIndex];
-  const previousWord = words[firstWordIndex - 1];
+  const startWordIndex = sentenceStartIndex(words, firstWordIndex);
+  const firstWord = words[startWordIndex];
+  const previousWord = words[startWordIndex - 1];
   const headRoom = previousWord
     ? Math.max(0, firstWord.start - previousWord.end)
     : Math.max(START_BUFFER_SECONDS, firstWord.start);
@@ -67,6 +130,14 @@ export function stabilizeShortFormClipBoundary(
     const nextWord = words[index + 1];
     const pauseAfter = nextWord ? nextWord.start - word.end : Number.POSITIVE_INFINITY;
     if (endsSentence(word.text) || pauseAfter >= NATURAL_PAUSE_SECONDS) break;
+  }
+
+  if (options.finalRange && endsQuestion(words[boundaryWordIndex].text)) {
+    boundaryWordIndex = answerEndIndex(
+      words,
+      boundaryWordIndex,
+      Math.min(finiteVideoEnd, safeEnd + MAX_SENTENCE_EXTENSION_SECONDS),
+    );
   }
 
   const boundaryWord = words[boundaryWordIndex];

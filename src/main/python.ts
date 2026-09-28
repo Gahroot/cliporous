@@ -18,6 +18,8 @@ function getPythonModelEnv(): Record<string, string> {
     NEMO_CACHE_DIR: join(modelCache, 'nemo'),
     HF_HOME: join(modelCache, 'huggingface'),
     HUGGINGFACE_HUB_CACHE: join(modelCache, 'huggingface', 'hub'),
+    // face_model.py caches its (hash-pinned) face detector model here.
+    BATCHCLIP_MODEL_CACHE: modelCache,
   };
 }
 

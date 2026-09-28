@@ -1,0 +1,3 @@
+[
+  { "name": "hero-lock", "scene": { "kind": "hero", "prop": "lock", "label": "Privacy", "at": 0.4 }, "frames": [20, 45, 90] }
+]
