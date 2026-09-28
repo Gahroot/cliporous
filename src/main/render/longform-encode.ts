@@ -25,7 +25,7 @@ import type { SegmentLayoutResult } from '../layouts/segment-layouts';
 import { toFFmpegPath } from './helpers';
 import { xfadeTransitionFor } from './layout-transitions';
 import { getIntermediateQuality } from './quality';
-import { quantizeToFrames } from './transition-easing';
+import { quantizeToFrames, xfadeOffsetArg } from './transition-easing';
 
 // ---------------------------------------------------------------------------
 // Shared output options
@@ -381,7 +381,7 @@ export function buildNormalizedConcatFilter(
     const out = i === segments.length - 1 ? 'outv' : `vx${i}`;
     steps.push(
       `[${label}][v${i}]xfade=transition=${b.soft ? dissolve : 'fade'}:` +
-        `duration=${s3(b.duration)}:offset=${s3(Math.max(0, offset))}` +
+        `duration=${s3(b.duration)}:offset=${xfadeOffsetArg(offset, fps)}` +
         `${out === 'outv' ? ',format=yuv420p' : ''}[${out}]`,
     );
     label = out;

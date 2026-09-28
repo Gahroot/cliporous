@@ -88,6 +88,32 @@ export function quantizeToFrames(seconds: number, fps: number): number {
   return Math.max(1, Math.round(seconds * safeFps)) / safeFps;
 }
 
+/**
+ * An xfade `offset` snapped DOWN onto the frame grid (never negative), so it
+ * names a frame input A actually has. See {@link xfadeOffsetArg}.
+ */
+export function xfadeOffsetSeconds(seconds: number, fps: number): number {
+  const safeFps = Math.max(1, fps);
+  // The epsilon absorbs float noise like 2.9 - 1/30 = 2.8666…6 (85.9999… frames).
+  return Math.max(0, Math.floor(seconds * safeFps + 1e-6) / safeFps);
+}
+
+/**
+ * Format an xfade `offset` that can never land after the frame it names.
+ *
+ * FFmpeg 6.0's xfade starts blending on the first input-A frame at or after
+ * `offset`. If A ends before such a frame arrives, it marks the transition
+ * over without ever recording B's start pts and rewrites every later B frame
+ * to a garbage timestamp (≈ INT64_MIN) — the incoming segment then plays as
+ * one frozen image while audio and captions carry on. Plain `toFixed(3)`
+ * rounded 86/30 s = 2.86667 UP to 2.867, one tick past A's last frame at a
+ * one-frame hard cut. Snap to the frame grid, then floor to the millisecond.
+ */
+export function xfadeOffsetArg(seconds: number, fps: number): string {
+  const aligned = xfadeOffsetSeconds(seconds, fps);
+  return (Math.floor(aligned * 1000 + 1e-6) / 1000).toFixed(3);
+}
+
 // ---------------------------------------------------------------------------
 // xfade custom expressions
 // ---------------------------------------------------------------------------

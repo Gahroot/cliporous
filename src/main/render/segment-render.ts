@@ -55,6 +55,7 @@ import {
 import { applyFilterPass } from './overlay-runner';
 import { getIntermediateQuality } from './quality';
 import { mixSceneSfx } from './scene-sfx';
+import { xfadeOffsetArg, xfadeOffsetSeconds } from './transition-easing';
 import type { HookTitleConfig } from './types';
 
 // ---------------------------------------------------------------------------
@@ -634,6 +635,7 @@ async function concatWithXfade(
   stepDurations: number[],
   outputPath: string,
   onProgress: (percent: number) => void,
+  fps: number,
   flashColor?: string,
   requestedDurations?: number[],
 ): Promise<void> {
@@ -688,9 +690,11 @@ async function concatWithXfade(
     const transition = transitions[i] ?? 'hard-cut';
     const xfadeType = xfadeTransitionFor(transition, flashColor);
     const stepDuration = stepDurations[i] ?? 1 / 30;
-    const offset = Math.max(0, accumulatedDuration - stepDuration);
+    // Frame-aligned and never rounded up — see `xfadeOffsetArg` for the
+    // FFmpeg xfade bug a late offset triggers (incoming segment freezes).
+    const offset = xfadeOffsetSeconds(accumulatedDuration - stepDuration, fps);
     filterParts.push(
-      `[${inputLabel}][${i}:v]xfade=transition=${xfadeType ?? 'fade'}:duration=${stepDuration.toFixed(3)}:offset=${offset.toFixed(3)}[${outputLabel}]`,
+      `[${inputLabel}][${i}:v]xfade=transition=${xfadeType ?? 'fade'}:duration=${stepDuration.toFixed(3)}:offset=${xfadeOffsetArg(offset, fps)}[${outputLabel}]`,
     );
     // Audio crossfade. Segment i-1 was encoded `stepDuration` past its end
     // (see `encodeDurations`), so both sides of this overlap carry the SAME
@@ -700,7 +704,8 @@ async function concatWithXfade(
     audioParts.push(
       `[${audioInputLabel}][${i}:a]acrossfade=d=${stepDuration.toFixed(3)}:${audioCurves}[${audioOutputLabel}]`,
     );
-    accumulatedDuration += durations[i] - stepDuration;
+    // xfade output length = offset + incoming length (B plays in full).
+    accumulatedDuration = offset + durations[i];
 
     inputLabel = outputLabel;
     outputLabel = `v${i}`;
@@ -1225,6 +1230,7 @@ export async function renderSegmentedClip(
         stepDurations,
         concatOutputPath,
         (percent) => onProgress(concatBase + (percent - concatBase) * 0.05),
+        config.fps,
         config.editStyle.flashColor,
         requestedSegDurations,
       );

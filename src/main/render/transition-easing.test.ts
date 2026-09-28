@@ -11,6 +11,8 @@ import {
   ease,
   easeExpr,
   quantizeToFrames,
+  xfadeOffsetArg,
+  xfadeOffsetSeconds,
 } from './transition-easing';
 
 /** Evaluate an FFmpeg arithmetic expression in JS (test-only mini evaluator). */
@@ -186,5 +188,55 @@ describe('buildEasedMotionExpr', () => {
     expect(100 - at(1.1)).toBeGreaterThan(50);
     // Ease-in exit: the first 25% of the exit covers little travel.
     expect(at(2.7)).toBeGreaterThan(-5);
+  });
+});
+
+describe('xfade offsets', () => {
+  it('snaps down onto the frame grid', () => {
+    expect(xfadeOffsetSeconds(2.9 - 1 / 30, 30)).toBeCloseTo(86 / 30, 9);
+    expect(xfadeOffsetSeconds(2.88, 30)).toBeCloseTo(86 / 30, 9);
+    expect(xfadeOffsetSeconds(-0.5, 30)).toBe(0);
+  });
+
+  it.each([
+    [86 / 30, '2.866'],
+    [1.6, '1.600'],
+    [5, '5.000'],
+    [2.9 - 1 / 30, '2.866'],
+  ])('never rounds %f up past its frame', (seconds, expected) => {
+    expect(xfadeOffsetArg(seconds, 30)).toBe(expected);
+  });
+
+  it('keeps the incoming clip timed when the join is a one-frame cut', () => {
+    // Mirrors a real segment join: 87-frame A in the mp4 timebase (1/15360),
+    // one-frame fade at 86/30 s. An offset rounded UP past A's last frame
+    // made FFmpeg's xfade skip the blend and stamp every B frame with a
+    // garbage pts — B played back as one frozen image.
+    const offset = xfadeOffsetArg(2.9 - 1 / 30, 30);
+    const r = spawnSync(
+      ffmpegPath as string,
+      [
+        '-hide_banner',
+        '-f',
+        'lavfi',
+        '-i',
+        'testsrc=size=64x64:rate=30:duration=2.9,settb=1/15360',
+        '-f',
+        'lavfi',
+        '-i',
+        'testsrc=size=64x64:rate=30:duration=1,settb=1/15360',
+        '-filter_complex',
+        `[0:v][1:v]xfade=transition=fade:duration=0.033:offset=${offset},showinfo`,
+        '-f',
+        'null',
+        '-',
+      ],
+      { encoding: 'utf8' },
+    );
+    expect(r.status, r.stderr).toBe(0);
+    const pts = [...r.stderr.matchAll(/n:\s*\d+ pts:\s*(-?\d+)/g)].map((m) => Number(m[1]));
+    expect(pts).toHaveLength(86 + 30);
+    for (let i = 1; i < pts.length; i++) expect(pts[i]).toBeGreaterThan(pts[i - 1] ?? 0);
+    expect(pts[0]).toBe(0);
   });
 });
