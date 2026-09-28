@@ -444,7 +444,7 @@ describe('editorial mode', () => {
     ['stack', '\\an8\\pos(540,989)'],
     ['stack-flipped', '\\an2\\pos(540,931)'],
     ['takeover', '\\an2\\pos(540,1498)'],
-    ['pip', '\\an2\\pos(540,1306)'],
+    ['pip', '\\an2\\pos(540,1094)'],
     ['over', '\\an2\\pos(540,1632)'],
   ] as const)('anchors captions for the %s layout', (layout, expected) => {
     const lines = dialogueLines(

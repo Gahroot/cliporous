@@ -23,10 +23,11 @@ import { ramp, useSceneTime, useStage } from './stage';
 import { type CameraSpec, projectToStage } from './three-helpers';
 import type { HeroScene as HeroSceneData } from './types';
 
-const CAMERA: CameraSpec = { position: [0, 0.85, 8.8], fov: 30 };
-const GROUND_Y = -1.38;
+export const HERO_CAMERA: CameraSpec = { position: [0, 0.85, 8.8], fov: 30 };
+export const HERO_GROUND_Y = -1.38;
 
-const Prop: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
+/** The animated prop (pop-in, turn, float). Must render inside a `Stage3D`. */
+export const HeroPropActor: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { t } = useSceneTime();
@@ -64,7 +65,7 @@ export const HeroScene: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
   const { t } = useSceneTime();
   const impactAt = scene.at + heroImpactSec(scene.prop, scene.tone);
   const rig = { focusAt: impactAt, driftDeg: 7, pushAmount: 0.09 };
-  const camera = useRigCamera(CAMERA, rig);
+  const camera = useRigCamera(HERO_CAMERA, rig);
   const breath = useBreath('hero');
   const reaction = useReaction(0);
   const float = useFloat('hero-label', 4);
@@ -72,7 +73,7 @@ export const HeroScene: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
   const appear = ramp(t, scene.at, 0.6);
   const labelIn = ramp(t, scene.at + 0.3, 0.5);
   const center = projectToStage(camera, [0, 0.1, 0]);
-  const labelAt = projectToStage(camera, [0, GROUND_Y - 0.2, 0.9]);
+  const labelAt = projectToStage(camera, [0, HERO_GROUND_Y - 0.2, 0.9]);
 
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
@@ -91,8 +92,8 @@ export const HeroScene: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
           radius={360}
         />
       </div>
-      <Stage3D camera={CAMERA} {...rig} groundY={GROUND_Y} shadowScale={7}>
-        <Prop scene={scene} />
+      <Stage3D camera={HERO_CAMERA} {...rig} groundY={HERO_GROUND_Y} shadowScale={7}>
+        <HeroPropActor scene={scene} />
       </Stage3D>
       <Burst
         atSec={impactAt}

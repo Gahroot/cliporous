@@ -268,14 +268,24 @@ function buildSplitImage(params: SegmentLayoutParams): SegmentLayoutResult {
 // stage render, `-stream_loop -1`'d like any b-roll — hence the same
 // `setpts=N/FR/TB,fps=` normalisation as `buildSplitImage`.
 
-/** Pip speaker window geometry (output px at 1080×1920). */
+/**
+ * Pip speaker window geometry (output px at 1080×1920).
+ *
+ * Bottom-LEFT and lifted: TikTok / Reels / Shorts stack their like, comment
+ * and share buttons down the right edge (x ≳ 780 from y ≈ 840), and draw the
+ * username + post caption across the bottom ~320–420 px on the left. The
+ * window sits left of the button column and above that bottom text band.
+ */
 export const PIP_WINDOW = {
-  width: 400,
-  height: 520,
-  radius: 48,
-  margin: 48,
+  width: 360,
+  height: 460,
+  radius: 44,
+  /** Gap from the left frame edge. */
+  marginX: 60,
+  /** Gap from the bottom frame edge (clears the platforms' username/caption text). */
+  marginBottom: 340,
   border: 3,
-  /** Slide-in duration from the right edge, eased out (seconds). */
+  /** Slide-in duration from the left edge, eased out (seconds). */
   slideSeconds: 0.35,
 } as const;
 
@@ -327,12 +337,14 @@ function stageFullFrameChain(w: number, h: number, fps: number): string {
 /**
  * Comma-free eased x for the pip slide-in: `rest + dist·(1−q)³` where
  * q = min(t/slide, 1) (easeOutCubic, since 1−easeOutCubic(q) = (1−q)³).
- * `min(a, 1)` is written `(a+1−|a−1|)/2` to stay comma-free.
+ * `min(a, 1)` is written `(a+1−|a−1|)/2` to stay comma-free. A negative
+ * `dist` slides in from the left.
  */
 export function pipSlideXExpr(rest: number, dist: number, slideSeconds: number): string {
   const a = `t/${slideSeconds.toFixed(3)}`;
   const rem = `(1-(${a}+1-abs(${a}-1))/2)`;
-  return `${rest}+${dist}*${rem}*${rem}*${rem}`;
+  const sign = dist < 0 ? '-' : '+';
+  return `${rest}${sign}${Math.abs(dist)}*${rem}*${rem}*${rem}`;
 }
 
 /** stack-flipped: speaker top half, stage bottom half. */
@@ -362,9 +374,10 @@ function buildStageTakeover(params: SegmentLayoutParams): SegmentLayoutResult {
 }
 
 /**
- * pip: stage fills the frame; the speaker sits in a rounded window in the
- * bottom-right corner with a soft drop shadow and a subtle light border, and
- * slides in from the right edge over the first `PIP_WINDOW.slideSeconds`.
+ * pip: stage fills the frame; the speaker sits in a rounded window at the
+ * lower left (see `PIP_WINDOW` for why) with a soft drop shadow and a subtle
+ * light border, and slides in from the left edge over the first
+ * `PIP_WINDOW.slideSeconds`.
  *
  * Everything is procedural (no external files): the shadow + border "chrome"
  * and the speaker's rounded alpha mask are each ONE generated frame (`color`
@@ -379,12 +392,12 @@ function buildStagePip(params: SegmentLayoutParams): SegmentLayoutResult {
   const h = params.height;
   const fps = params.fps ?? 30;
   const oneFrame = (1 / fps).toFixed(4);
-  const { width: pw, height: ph, radius, margin, border, slideSeconds } = PIP_WINDOW;
+  const { width: pw, height: ph, radius, marginX, marginBottom, border, slideSeconds } = PIP_WINDOW;
   const { pad, offsetY, alpha: shadowAlpha, spread } = PIP_SHADOW;
 
   // Window rest position (top-left of the bordered window).
-  const restX = w - margin - pw;
-  const restY = h - margin - ph;
+  const restX = marginX;
+  const restY = h - marginBottom - ph;
 
   // Chrome canvas: window centred with `pad` transparent px on every side.
   const cw = pw + 2 * pad;
@@ -410,8 +423,8 @@ function buildStagePip(params: SegmentLayoutParams): SegmentLayoutResult {
   const speakerChain = buildSpeakerCropScale(params, iw, ih, 1.0, PIP_FACE_ANCHOR_Y);
   const speaker = `[0:v]${speakerChain},setpts=N/FR/TB,fps=${fps},setsar=1,format=yuva420p[pipspkraw]`;
 
-  // Slide in from fully off-frame (chrome's left edge at the right border).
-  const dist = w - (restX - pad);
+  // Slide in from fully off-frame (chrome's right edge at the left border).
+  const dist = -(restX + pw + pad);
   const chromeX = pipSlideXExpr(restX - pad, dist, slideSeconds);
   const speakerX = pipSlideXExpr(restX + border, dist, slideSeconds);
 
@@ -475,11 +488,21 @@ function buildFullscreenImage(params: SegmentLayoutParams): SegmentLayoutResult 
  * the brand palette (sand bg, dark-brown text) so a quote moment doesn't
  * read like the video has cut to black. Audio still comes from input 0
  * (the source video) at the encode site.
+ *
+ * With `mediaPath` (the pre-rendered `QuoteGraphic`: same sand backdrop plus
+ * an animated prop in the top band) the render is input 1 instead of the
+ * color source. It is NOT looped, so a short render holds its last frame
+ * (the segment's `tpad` clone) rather than replaying the prop's entrance.
  */
 function buildFullscreenQuote(params: SegmentLayoutParams): SegmentLayoutResult {
   const w = params.width;
   const h = params.height;
   const dur = params.segmentDuration;
+  const fps = params.fps ?? 30;
+  if (params.mediaPath) {
+    const fc = `${stageFullFrameChain(w, h, fps)}[composed];${finalize('composed')}`;
+    return { filterComplex: fc, inputCount: 2 };
+  }
   const bgColor = hexToFFmpeg(BRAND_FG);
 
   const bg = `color=c=${bgColor}:s=${w}x${h}:d=${dur.toFixed(3)}:r=30`;

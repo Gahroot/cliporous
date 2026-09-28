@@ -95,8 +95,9 @@ export function stageSafeBox(layout: ExplainerLayout, aspect: ExplainerAspect): 
       // Leave the lower third for captions.
       return { x: 70, y: 260, width: 940, height: 1040 };
     case 'pip':
-      // Speaker window sits bottom-right; captions above it.
-      return { x: 70, y: 220, width: 940, height: 900 };
+      // Speaker window sits lower-left (y ≈ 1120–1580); captions just above
+      // it (baseline y ≈ 1094), so the stage keeps the upper band.
+      return { x: 70, y: 200, width: 940, height: 600 };
     case 'over':
       // Floating card in the upper third, above the speaker's face.
       return { x: 90, y: 180, width: 900, height: 620 };

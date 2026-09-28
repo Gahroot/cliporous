@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Composition } from 'remotion';
-import { BRAND_ACCENT, BRAND_FG } from '../edit-styles/shared/brand';
+import { BRAND_ACCENT, BRAND_BG, BRAND_FG } from '../edit-styles/shared/brand';
 import {
   BakeoffAuroraGlass,
   BakeoffBento,
@@ -73,6 +73,13 @@ import { DelosEvidenceCard, type DelosEvidenceCardProps } from './compositions/D
 import { ExplainerScene } from './compositions/explainer/ExplainerScene';
 import { ExplainerSequence } from './compositions/explainer/ExplainerSequence';
 import { deriveExplainerPalette } from './compositions/explainer/palette';
+import { QuoteGraphic } from './compositions/explainer/QuoteGraphic';
+import {
+  QUOTE_GRAPHIC_COMPOSITION_ID,
+  QUOTE_GRAPHIC_HEIGHT,
+  QUOTE_GRAPHIC_WIDTH,
+  type QuoteGraphicProps,
+} from './compositions/explainer/quote-graphic';
 import {
   EXPLAINER_FPS,
   EXPLAINER_STAGE_HEIGHT,
@@ -190,6 +197,27 @@ export const RemotionRoot: React.FC = () => {
               },
             ],
           } satisfies ExplainerSequenceProps
+        }
+      />
+
+      {/* Fullscreen-quote card backdrop + animated prop. Duration set per render. */}
+      <Composition
+        id={QUOTE_GRAPHIC_COMPOSITION_ID}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        component={QuoteGraphic as any}
+        durationInFrames={EXPLAINER_FPS * 4}
+        fps={EXPLAINER_FPS}
+        width={QUOTE_GRAPHIC_WIDTH}
+        height={QUOTE_GRAPHIC_HEIGHT}
+        defaultProps={
+          {
+            prop: 'lightbulb',
+            at: 0.3,
+            background: BRAND_FG,
+            seedBackground: BRAND_BG,
+            seedForeground: BRAND_FG,
+            accent: BRAND_ACCENT,
+          } satisfies QuoteGraphicProps
         }
       />
 

@@ -24,6 +24,7 @@ import {
   ARCHETYPE_DEFAULT_TRANSITION_IN,
   ARCHETYPE_TO_CATEGORY,
 } from './../edit-styles/shared/archetypes';
+import { BRAND_FG } from './../edit-styles/shared/brand';
 import type { ManifestJobMeta } from '../export-manifest';
 import type { FfmpegCommand } from '../ffmpeg';
 import { getEncoder, getVideoMetadata, isHardwareEncoder } from '../ffmpeg';
@@ -55,6 +56,7 @@ import { renderLongformVideo } from './longform-pipeline';
 import { enforceSpeakerOpening, MIN_FACE_LEAD_SECONDS } from './opening-guard';
 import { measureFaceBands } from './over-face';
 import { resolveQualityParams } from './quality';
+import { applyQuoteGraphics } from './quote-graphics';
 import { classifyRenderError } from './render-error-map';
 import type { ResolvedSegment, SegmentRenderConfig } from './segment-render';
 import { renderSegmentedClip } from './segment-render';
@@ -731,6 +733,42 @@ export async function startBatchRender(
           allTempFiles.push(...explainer.tempFiles);
           resolvedSegments = explainer.segments;
           sceneCues = explainer.cues;
+        }
+
+        // ── Quote-card graphics ─────────────────────────────────────────────────────
+        // Fullscreen-quote cards keep their sand backdrop and one-word-at-a-time
+        // serif text; when the quote names a catalog prop, that prop animates
+        // in the top band. Same toggle as the explainer scenes; no API call.
+        if (
+          options.explainerScenesEnabled !== false &&
+          job.wordTimestamps &&
+          job.wordTimestamps.length > 0 &&
+          resolvedSegments.some((s) => s.archetype === 'fullscreen-quote')
+        ) {
+          const quotes = await applyQuoteGraphics({
+            segments: resolvedSegments,
+            words: job.wordTimestamps,
+            colors: {
+              background: BRAND_FG,
+              seedBackground: selectedPalette.background,
+              seedForeground: selectedPalette.foreground,
+              accent: job.clipOverrides?.accentColor ?? selectedPalette.accent,
+              ...(selectedPalette.accent2 ? { accent2: selectedPalette.accent2 } : {}),
+            },
+            isCancelled: () => cancelRequested,
+            onProgress: (message, fraction) => {
+              if (!cancelRequested) {
+                window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
+                  clipId: job.clipId,
+                  message,
+                  percent: 20 + Math.round(fraction * 4),
+                });
+              }
+            },
+          });
+          allTempFiles.push(...quotes.tempFiles);
+          resolvedSegments = quotes.segments;
+          sceneCues = [...sceneCues, ...quotes.cues].sort((a, b) => a.at - b.at);
         }
 
         // Clip-relative archetype windows for the post-concat caption pass.

@@ -89,8 +89,8 @@ export interface ResolvedSegment {
    *     split; identical filter graph to before this field existed).
    *   - `'stack-flipped'` — speaker top half, stage bottom half.
    *   - `'takeover'` — stage fills the frame; speaker hidden, audio kept.
-   *   - `'pip'` — stage fills the frame; speaker in a rounded bottom-right
-   *     window (shadow + border) that slides in from the right.
+   *   - `'pip'` — stage fills the frame; speaker in a rounded lower-left
+   *     window (shadow + border) that slides in from the left.
    *   - `'over'` — speaker full frame like talking-head (zoom included); the
    *     transparent stage (ProRes 4444 alpha) is composited on top.
    * Render sizes per layout come from `stageCanvasFor()`.
@@ -383,8 +383,9 @@ async function encodeSegment(
 
   // split-image / fullscreen-image read the b-roll from [1:v]; the source
   // video stays at [0:v] so `-map 0:a` pulls the speaker's audio.
-  // fullscreen-quote produces a color source — it does not reference [0:v].
-  // The source video is still input 0 so audio maps cleanly.
+  // fullscreen-quote reads its pre-rendered graphic from [1:v] when present,
+  // else a color source — it never references [0:v]. The source video is
+  // still input 0 so audio maps cleanly.
 
   // ── Append post-layout filters (zoom, color grade) ────────────────────
   let currentLabel = 'outv';
@@ -464,11 +465,16 @@ async function encodeSegment(
       // loop boundaries are handled by `setpts=N/FR/TB` in the layout
       // filter so `fps=` doesn't stall the rate converter.
       const needsMediaInput =
-        !!seg.videoPath && (archetype === 'split-image' || archetype === 'fullscreen-image');
+        !!seg.videoPath &&
+        (archetype === 'split-image' ||
+          archetype === 'fullscreen-image' ||
+          archetype === 'fullscreen-quote');
 
       if (needsMediaInput && seg.videoPath) {
         cmd.input(toFFmpegPath(seg.videoPath));
-        cmd.inputOptions(['-stream_loop', '-1']);
+        // The quote graphic is rendered to the segment's exact length; looping
+        // it would replay the prop's entrance if it ran a frame short.
+        if (archetype !== 'fullscreen-quote') cmd.inputOptions(['-stream_loop', '-1']);
       }
 
       cmd

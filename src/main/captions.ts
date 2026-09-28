@@ -150,8 +150,11 @@ const GLYPH_SCALE_PERCENT = Math.round(100 / LINE_HEIGHT_FACTOR);
 const LAYOUT_SEAM_GAP_FRACTION = 0.015;
 /** Bottom anchor used while a takeover or picture-in-picture layout is on screen. */
 const LAYOUT_LOWER_ANCHOR_FRACTION = 0.78;
-/** Caption baseline for `pip`: above the bottom-right speaker window. */
-const LAYOUT_PIP_ANCHOR_FRACTION = 0.68;
+/**
+ * Caption baseline for `pip`: just above the lower-left speaker window
+ * (window top at y = 1120 of 1920 — see `PIP_WINDOW` in segment-layouts).
+ */
+const LAYOUT_PIP_ANCHOR_FRACTION = 0.57;
 
 // Editorial mode ----------------------------------------------------------
 
@@ -541,8 +544,8 @@ function resolveLayoutPlacement(
         alignment: 2,
       };
     case 'pip':
-      // The speaker window owns the bottom-right corner (≈ y 70–97%); sit the
-      // block just above it, below the stage's safe box.
+      // The speaker window owns the lower left (≈ y 58–82%); sit the block
+      // just above it, below the stage's safe box.
       return {
         anchor: { x, y: Math.round(context.frameHeight * LAYOUT_PIP_ANCHOR_FRACTION) },
         alignment: 2,

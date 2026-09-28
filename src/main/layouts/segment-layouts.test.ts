@@ -90,8 +90,13 @@ describe('split-image explainer layouts', () => {
       ...base,
       explainerLayout: 'pip',
     });
-    const restX = 1080 - PIP_WINDOW.margin - PIP_WINDOW.width; // 632
-    const restY = 1920 - PIP_WINDOW.margin - PIP_WINDOW.height; // 1352
+    const restX = PIP_WINDOW.marginX; // 60
+    const restY = 1920 - PIP_WINDOW.marginBottom - PIP_WINDOW.height; // 1120
+
+    it('sits bottom-left, clear of the right-edge buttons and bottom caption band', () => {
+      expect(restX + PIP_WINDOW.width).toBeLessThanOrEqual(780);
+      expect(restY + PIP_WINDOW.height).toBeLessThanOrEqual(1920 - 320);
+    });
 
     it('uses the stage full-frame as the base layer', () => {
       expect(inputCount).toBe(2);
@@ -104,29 +109,29 @@ describe('split-image explainer layouts', () => {
     });
 
     it('face-crops the speaker to the window interior, anchored above centre', () => {
-      // 608×1080 face crop → 394:514 aspect sub-crop (608×792) anchored at 40%.
+      // 608×1080 face crop → 354:454 aspect sub-crop anchored at 40%.
       expect(filterComplex).toContain(
-        `[0:v]crop=608:1080:656:0,crop=608:792:0:115,scale=394:514:flags=${SCALE},` +
+        `[0:v]crop=608:1080:656:0,crop=608:780:0:120,scale=354:454:flags=${SCALE},` +
           'setpts=N/FR/TB,fps=30,setsar=1,format=yuva420p[pipspkraw]',
       );
     });
 
     it('masks the speaker with a procedurally generated rounded rect', () => {
-      expect(filterComplex).toContain('color=c=black:s=394x514:r=30:d=0.0333,format=gray,geq=lum=');
-      // Inner radius = 48 - 3 px border.
-      expect(filterComplex).toContain('-45)');
+      expect(filterComplex).toContain('color=c=black:s=354x454:r=30:d=0.0333,format=gray,geq=lum=');
+      // Inner radius = 44 - 3 px border.
+      expect(filterComplex).toContain('-41)');
       expect(filterComplex).toContain('[pipspkraw][pipmask]alphamerge[pipspk]');
       expect(filterComplex).not.toMatch(/movie=|\.png/);
     });
 
     it('generates a shadow + border chrome layer (one frame, rgba geq)', () => {
-      expect(filterComplex).toMatch(/color=c=black@0:s=488x608:r=30:d=0\.0333,format=rgba,geq=r='/);
+      expect(filterComplex).toMatch(/color=c=black@0:s=448x548:r=30:d=0\.0333,format=rgba,geq=r='/);
       expect(filterComplex).toContain('0.42*exp(');
       expect(filterComplex).toContain('0.55*clip(');
     });
 
-    it('slides both layers in from the right with the same eased motion', () => {
-      const dist = 1080 - (restX - 44);
+    it('slides both layers in from the left with the same eased motion', () => {
+      const dist = -(restX + PIP_WINDOW.width + 44);
       expect(filterComplex).toContain(
         `overlay=x='${pipSlideXExpr(restX - 44, dist, PIP_WINDOW.slideSeconds)}':y=${restY - 44}[pipbg]`,
       );
@@ -153,6 +158,34 @@ describe('split-image explainer layouts', () => {
       const early = evalAt(e, 0.35 / 3);
       expect(early).toBeLessThan(632 + 492 / 2);
       expect(evalAt(e, 0.1)).toBeGreaterThan(evalAt(e, 0.2));
+    });
+
+    it('slides in from the left for a negative distance', () => {
+      const e = pipSlideXExpr(60, -464, 0.35);
+      expect(e).not.toContain('+-');
+      expect(evalAt(e, 0)).toBeCloseTo(-404);
+      expect(evalAt(e, 0.35)).toBeCloseTo(60);
+      expect(evalAt(e, 0.1)).toBeLessThan(evalAt(e, 0.2));
+    });
+  });
+
+  describe('fullscreen-quote', () => {
+    it('is a flat sand color source with no graphic', () => {
+      const { mediaPath: _m, ...plain } = base;
+      const { filterComplex, inputCount } = buildArchetypeLayout('fullscreen-quote', plain);
+      expect(inputCount).toBe(0);
+      expect(filterComplex).toMatch(/^color=c=0xF6ECD9:s=1080x1920/i);
+    });
+
+    it('uses the pre-rendered quote graphic as the full frame when present', () => {
+      const { filterComplex, inputCount } = buildArchetypeLayout('fullscreen-quote', {
+        ...base,
+        mediaPath: '/tmp/quote.mp4',
+      });
+      expect(inputCount).toBe(2);
+      expect(filterComplex).toContain('[1:v]scale=1080:1920:force_original_aspect_ratio=decrease');
+      expect(filterComplex).not.toContain('[0:v]');
+      expect(filterComplex.endsWith('[composed]setsar=1,format=yuv420p[outv]')).toBe(true);
     });
   });
 
