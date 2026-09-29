@@ -6,7 +6,8 @@
  */
 
 import type React from 'react';
-import { spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { useCurrentFrame, useVideoConfig } from 'remotion';
+import { AnnotatedLabel, MaskRise } from './graphic-accents';
 import { HERO_PROP_DEFS, HeroPropModel } from './HeroProps';
 import { heroImpactSec } from './hero-catalog';
 import {
@@ -18,6 +19,7 @@ import {
   useLivingShadow,
   useReaction,
 } from './motion';
+import { motionProgress } from './motion-tokens';
 import { Stage3D, useRigCamera } from './Stage3D';
 import { ramp, useSceneTime, useStage } from './stage';
 import { type CameraSpec, projectToStage } from './three-helpers';
@@ -31,11 +33,7 @@ export const HeroPropActor: React.FC<{ scene: HeroSceneData }> = ({ scene }) => 
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { t } = useSceneTime();
-  const pop = spring({
-    frame: frame - Math.round(scene.at * fps),
-    fps,
-    config: { stiffness: 150, damping: 13, mass: 1 },
-  });
+  const pop = motionProgress(frame, fps, scene.at, 'heavy');
   const reaction = useReaction(0);
   if (pop <= 0.001) return null;
   const since = Math.max(0, t - scene.at);
@@ -140,7 +138,9 @@ export const HeroScene: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
               boxShadow: `0 0 ${10 + breath * 14}px ${S.accent}`,
             }}
           />
-          {scene.label}
+          <AnnotatedLabel>
+            <MaskRise text={scene.label} at={scene.at + 0.3} />
+          </AnnotatedLabel>
         </div>
       </div>
     </div>

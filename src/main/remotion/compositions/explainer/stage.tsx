@@ -23,6 +23,7 @@ import {
   useVideoConfig,
 } from 'remotion';
 import { EASE } from '../../shared/easing';
+import { motionProgress } from './motion-tokens';
 import { deriveExplainerPalette } from './palette';
 import {
   type ExplainerAspect,
@@ -142,9 +143,10 @@ export function useSceneTime(): { t: number; frame: number; fps: number } {
 }
 
 /** 0→1 spring that starts at `atSec`. Soft settle with a small overshoot. */
-export function usePop(atSec: number, stiffness = 170, damping = 15): number {
+export function usePop(atSec: number, stiffness?: number, damping = 15): number {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  if (stiffness === undefined) return motionProgress(frame, fps, atSec);
   return spring({
     frame: frame - Math.round(atSec * fps),
     fps,

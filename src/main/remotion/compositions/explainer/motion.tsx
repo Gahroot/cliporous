@@ -12,7 +12,9 @@
 
 import type React from 'react';
 import { Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { boundAccent, emphasisImpulse, motionProgress, settleOffset } from './motion-tokens';
 import { ramp, useExplainerContext, useSceneTime, useStage } from './stage';
+import type { SceneExtras } from './types';
 
 /** Deterministic 0–1 hash for any integer/string seed (mulberry32 step). */
 export function hash01(seed: number | string): number {
@@ -92,38 +94,42 @@ export interface Reaction {
 
 const NO_REACTION: Reaction = { scale: 1, x: 0, rotate: 0, glow: 0 };
 
-/**
- * Reaction to the scene's emphasis pulses. `target` = element index; pulses
- * without a target apply to every element (use `target === undefined` for the
- * whole-scene wrapper).
- */
+/** Sum overlapping reactions instead of replacing an unfinished pulse. */
+export function reactionAt(
+  pulses: Readonly<NonNullable<SceneExtras['pulses']>>,
+  frame: number,
+  fps: number,
+  target?: number,
+): Reaction {
+  let scale = 0;
+  let x = 0;
+  let rotate = 0;
+  let glow = 0;
+  for (const p of pulses) {
+    if (p.target !== target) continue;
+    const impulse = emphasisImpulse(frame, fps, p.at);
+    scale += impulse * (p.strength === 'shake' ? 0.02 : 0.09);
+    glow += impulse;
+    if (p.strength === 'shake') {
+      const recoil = settleOffset(frame / fps - p.at, 9);
+      x += recoil * 9;
+      rotate += recoil * 1.2;
+    }
+  }
+  return {
+    scale: 1 + boundAccent(scale, 0.12),
+    x: boundAccent(x, 12),
+    rotate: boundAccent(rotate, 2),
+    glow: boundAccent(glow, 1),
+  };
+}
+
+/** Untargeted pulses move only the whole-scene wrapper, never each child twice. */
 export function useReaction(target?: number): Reaction {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { extras } = useExplainerContext();
-  const pulses = extras.pulses;
-  if (!pulses || pulses.length === 0) return NO_REACTION;
-  let out = NO_REACTION;
-  for (const p of pulses) {
-    const matches = target === undefined ? p.target === undefined : p.target === target;
-    if (!matches) continue;
-    const local = frame - Math.round(p.at * fps);
-    if (local < 0 || local > fps * 0.9) continue;
-    if (p.strength === 'shake') {
-      const decay = Math.exp(-local / (fps * 0.18));
-      out = {
-        scale: 1 + 0.02 * decay,
-        x: Math.sin(local * 1.9) * 9 * decay,
-        rotate: Math.sin(local * 1.6) * 1.2 * decay,
-        glow: decay,
-      };
-    } else {
-      const s = spring({ frame: local, fps, config: { stiffness: 260, damping: 11, mass: 0.6 } });
-      const bump = Math.sin(Math.min(1, s) * Math.PI) * (1 - local / (fps * 0.9));
-      out = { scale: 1 + 0.07 * bump, x: 0, rotate: 0, glow: bump };
-    }
-  }
-  return out;
+  return extras.pulses?.length ? reactionAt(extras.pulses, frame, fps, target) : NO_REACTION;
 }
 
 export function reactionTransform(r: Reaction): string {
@@ -143,8 +149,8 @@ export function useStageEnterExit(
   exit: boolean,
   durationSec: number,
 ): React.CSSProperties {
-  const { t } = useSceneTime();
-  const inP = enter ? EASE_OUT_SOFT(Math.min(1, Math.max(0, t / 0.5))) : 1;
+  const { t, frame, fps } = useSceneTime();
+  const inP = enter ? Math.min(1, motionProgress(frame, fps, 0, 'heavy')) : 1;
   const outStart = Math.max(0, durationSec - 0.38);
   const outP = exit ? EASE_IN_OUT_SOFT(Math.min(1, Math.max(0, (t - outStart) / 0.38))) : 0;
   const y = (1 - inP) * 90 - outP * 30;

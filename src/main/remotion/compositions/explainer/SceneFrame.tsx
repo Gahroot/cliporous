@@ -11,21 +11,17 @@
  */
 
 import type React from 'react';
-import { interpolate } from 'remotion';
 import { Burst, floatTransform, reactionTransform, useFloat, useReaction } from './motion';
+import { motionProgress, settleOffset } from './motion-tokens';
 import { ExplainerProvider, ramp, useLayout, useSceneTime, useStage } from './stage';
 import { EXPLAINER_STAGE_HEIGHT, EXPLAINER_STAGE_WIDTH, type ExplainerScene } from './types';
 
 const OverlayStamp: React.FC<{ word: string; at: number }> = ({ word, at }) => {
   const S = useStage();
-  const { t } = useSceneTime();
-  const slam = interpolate(t, [at, at + 0.16], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
+  const { t, frame, fps } = useSceneTime();
+  const slam = motionProgress(frame, fps, at, 'stamp');
   if (slam <= 0) return null;
-  const since = t - (at + 0.16);
-  const shake = since > 0 && since < 0.3 ? Math.sin(since * 90) * 8 * (1 - since / 0.3) : 0;
+  const shake = settleOffset(t - at - 0.12) * 5;
   return (
     <div
       style={{
@@ -33,7 +29,7 @@ const OverlayStamp: React.FC<{ word: string; at: number }> = ({ word, at }) => {
         left: '50%',
         top: '72%',
         transform: `translate(calc(-50% + ${shake}px), -50%) rotate(-7deg) scale(${2 - slam})`,
-        opacity: slam,
+        opacity: Math.min(1, slam),
         border: `8px solid ${S.accent}`,
         borderRadius: 20,
         padding: '4px 34px 0',

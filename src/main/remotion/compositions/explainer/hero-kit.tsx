@@ -87,7 +87,9 @@ export const Clay: React.FC<{
   emissiveIntensity?: number;
   opacity?: number;
 }> = ({ color, roughness = 0.55, metalness = 0.02, emissive, emissiveIntensity = 0, opacity }) => (
-  <meshStandardMaterial
+  <meshPhysicalMaterial
+    clearcoat={0.22}
+    clearcoatRoughness={0.4}
     color={color}
     roughness={roughness}
     metalness={metalness}

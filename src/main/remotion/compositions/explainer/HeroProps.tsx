@@ -22,6 +22,7 @@ import {
 } from './hero-kit';
 import { BUSINESS_PROPS } from './hero-props/business';
 import { GROWTH_PROPS } from './hero-props/growth';
+import { ICON_PROP_DEFS } from './hero-props/icons';
 import { MECHANICS_PROPS } from './hero-props/mechanics';
 import { MIND_PROPS } from './hero-props/mind';
 import { SIGNAL_PROPS } from './hero-props/signals';
@@ -522,6 +523,7 @@ export const HERO_PROP_DEFS = {
   ...MIND_PROPS,
   ...GROWTH_PROPS,
   ...WORLD_PROPS,
+  ...ICON_PROP_DEFS,
   ...MECHANICS_PROPS,
   ...SIGNAL_PROPS,
 } satisfies Record<HeroProp, HeroPropDef>;

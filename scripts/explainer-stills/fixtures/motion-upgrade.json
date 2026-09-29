@@ -1,0 +1,23 @@
+[
+  {"name":"upgrade-shield","scene":{"kind":"hero","prop":"shield","label":"Protect privacy","at":0.4,"annotation":{"kind":"underline","at":1.4}},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-cloud","scene":{"kind":"hero","prop":"cloud","label":"Cloud backup","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-cloud-down","scene":{"kind":"hero","prop":"cloud","label":"Download files","at":0.4,"tone":"down"},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-checkmark","scene":{"kind":"hero","prop":"checkmark","label":"Verified","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-warning","scene":{"kind":"hero","prop":"warning","label":"Know the risk","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-lightning","scene":{"kind":"hero","prop":"lightning","label":"Instant results","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-chat","scene":{"kind":"hero","prop":"chat","label":"Customer feedback","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-crown","scene":{"kind":"hero","prop":"crown","label":"Lead with care","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-diamond","scene":{"kind":"hero","prop":"diamond","label":"Rare quality","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-bookmark","scene":{"kind":"hero","prop":"bookmark","label":"Save this reference","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-compass","scene":{"kind":"hero","prop":"compass","label":"Find direction","at":0.4,"annotation":{"kind":"arrow","at":1.5}},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-link","scene":{"kind":"hero","prop":"link","label":"Stronger together","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-graduation","scene":{"kind":"hero","prop":"graduation-cap","label":"Keep learning","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-over-long-label","layout":"over","scene":{"kind":"hero","prop":"shield","label":"Protect customer privacy","at":0.4,"annotation":{"kind":"circle","at":1.4}},"frames":[18,45,75],"durationSec":4},
+  {"name":"upgrade-stamp","scene":{"kind":"stamp","icon":"Check","word":"APPROVED","stampAt":0.7},"frames":[21,25,29,40,75],"durationSec":4},
+  {"name":"upgrade-marker","scene":{"kind":"statement","words":[{"text":"Make","at":0.2},{"text":"it","at":0.5},{"text":"matter","at":0.8}],"accentIndex":2,"annotation":{"kind":"marker","at":1.4}},"frames":[18,45,75],"durationSec":4},
+  {"name":"upgrade-callout","scene":{"kind":"statement","words":[{"text":"Small","at":0.2},{"text":"steps","at":0.6}],"accentIndex":1,"annotation":{"kind":"box","at":1.4}},"frames":[18,45,75],"durationSec":4},
+  {"name":"upgrade-old-coins","scene":{"kind":"hero","prop":"coins","label":"Invest wisely","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-old-lock","scene":{"kind":"hero","prop":"lock","label":"Privacy","at":0.4},"frames":[18,32,75],"durationSec":4},
+  {"name":"upgrade-code","scene":{"kind":"code","title":"terminal","lines":[{"text":"npm run build","at":0.7}]},"frames":[6,12,45,75],"durationSec":4},
+  {"name":"upgrade-search","scene":{"kind":"search","query":"How to start","typeAt":0.3,"results":["Start with one small step","Build a useful habit"],"resultsAt":1.3},"frames":[18,45,75],"durationSec":4}
+]

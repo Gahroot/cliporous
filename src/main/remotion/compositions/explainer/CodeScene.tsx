@@ -8,7 +8,6 @@
 
 import { FileCode, SquareTerminal } from 'lucide-react';
 import type React from 'react';
-import { spring } from 'remotion';
 import {
   floatTransform,
   Glow,
@@ -17,6 +16,7 @@ import {
   useLivingShadow,
   useReaction,
 } from './motion';
+import { decodeLabel, motionProgress } from './motion-tokens';
 import { mixHex, withAlpha } from './palette';
 import { ramp, useSceneTime, useStage } from './stage';
 import type { CodeScene as CodeSceneData } from './types';
@@ -245,7 +245,7 @@ export const CodeScene: React.FC<{ scene: CodeSceneData }> = ({ scene }) => {
   const float = useFloat('code', 4, 5.8);
   const shadow = useLivingShadow('code', 1.3);
   const reaction = useReaction(undefined);
-  const enter = spring({ frame, fps, config: { damping: 18, stiffness: 110 } });
+  const enter = motionProgress(frame, fps, 0, 'heavy');
 
   // Always a dark editor, whichever stage theme: bias the stage bg to black.
   const body = mixHex(S.bgOuter, '#000000', 0.4);
@@ -334,7 +334,7 @@ export const CodeScene: React.FC<{ scene: CodeSceneData }> = ({ scene }) => {
             }}
           >
             <Icon size={28} strokeWidth={2.2} color={S.accent} />
-            {scene.title}
+            {decodeLabel(scene.title, frame, fps)}
           </div>
         </div>
         {/* Lines */}

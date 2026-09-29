@@ -5,30 +5,25 @@
  */
 
 import type React from 'react';
-import { interpolate } from 'remotion';
 import { resolveIcon } from '../blocks/icon';
+import { ImpactRing } from './graphic-accents';
 import { Burst, floatTransform, useBreath, useFloat } from './motion';
+import { motionProgress, settleOffset } from './motion-tokens';
 import { ramp, usePop, useSceneTime, useStage } from './stage';
 import type { StampScene as StampSceneData } from './types';
 
 export const StampScene: React.FC<{ scene: StampSceneData }> = ({ scene }) => {
   const STAGE = useStage();
   const accent = STAGE.accent;
-  const { t } = useSceneTime();
+  const { t, frame, fps } = useSceneTime();
   const float = useFloat('stamp-icon', 7);
   const breath = useBreath('stamp');
   const iconIn = usePop(0.05, 150, 16);
   const Icon = resolveIcon(scene.icon);
 
-  // Stamp: drops from 2.2× to 1× in ~0.16s, then holds.
-  const slam = interpolate(t, [scene.stampAt, scene.stampAt + 0.16], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
+  const slam = motionProgress(frame, fps, scene.stampAt, 'stamp');
   const stampScale = 2.2 - 1.2 * slam;
-  // Decaying shake for 0.3s after impact.
-  const since = t - (scene.stampAt + 0.16);
-  const shake = since > 0 && since < 0.3 ? Math.sin(since * 90) * 10 * (1 - since / 0.3) : 0;
+  const recoil = settleOffset(t - scene.stampAt - 0.12) * 3;
 
   const strike = scene.strikeAt === undefined ? 0 : ramp(t, scene.strikeAt, 0.35);
   const lineLength = 300;
@@ -38,7 +33,6 @@ export const StampScene: React.FC<{ scene: StampSceneData }> = ({ scene }) => {
       style={{
         position: 'absolute',
         inset: 0,
-        transform: `translate(${shake}px, ${shake * 0.4}px)`,
       }}
     >
       <div
@@ -87,8 +81,8 @@ export const StampScene: React.FC<{ scene: StampSceneData }> = ({ scene }) => {
             position: 'absolute',
             left: '50%',
             top: 640,
-            transform: `translate(-50%, -50%) rotate(-7deg) scale(${stampScale})`,
-            opacity: slam,
+            transform: `translate(-50%, -50%) rotate(${-7 + recoil}deg) scale(${stampScale})`,
+            opacity: Math.min(1, slam),
             border: `9px solid ${accent}`,
             borderRadius: 22,
             padding: '6px 40px 2px',
@@ -105,6 +99,7 @@ export const StampScene: React.FC<{ scene: StampSceneData }> = ({ scene }) => {
           {scene.word}
         </div>
       )}
+      <ImpactRing at={scene.stampAt + 0.12} x={540} y={640} radius={230} />
       <Burst
         atSec={scene.stampAt + 0.12}
         x={540}

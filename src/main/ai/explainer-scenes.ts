@@ -19,6 +19,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { log } from '../logger';
 import {
+  ANNOTATION_KINDS,
   EXPLAINER_ICONS,
   EXPLAINER_LAYOUTS,
   type ExplainerLayout,
@@ -162,6 +163,7 @@ Every scene object ALSO has these common fields:
   "transition": "grow"|"slide"|"fade" — only for continues:true ("grow" = the previous scene's focus item grows into this one),
   "laterStamp": {"text":"YES, BUT","word":N} or null — a stamp that lands on top of the running scene later (lets one scene keep going across several sentences),
   "dimWord": N or null — the whole scene dims on this word (e.g. "broken", "fails"),
+  "annotation": {"kind":"marker"|"underline"|"circle"|"box"|"arrow","word":N} or null — ONLY hero/statement: draw attention to its label/accent word after it appears. ONE annotation OR laterStamp, not both. Use only when the speaker stresses that exact label; no decoration for its own sake.
   "reactions": [{"word":N,"item":index or null,"strength":"pulse"|"shake"}] — when the speaker stresses or repeats a word that matches an element (item = index in that scene's list, null = whole scene). Max 3. "shake" only for negative words ("wrong", "broken").
 
 Return JSON only: {"scenes":[ ... ]}
@@ -173,6 +175,7 @@ Rules:
 - Do not start before word ${firstAllowed}. Never overlap scenes.
 - Prefer ONE scene that keeps going (more beats, a laterStamp, a dim) over several short separate ones — like keeping the same object on screen across two sentences.
 - Variety: never the same scene type twice in a row; mix 2D and 3D; vary layouts.
+- Restraint: annotations are occasional, never on adjacent scenes. Do not combine an annotation with a stamp. At most one reaction in annotated scenes. Use object motion to explain a change, not to fill empty space.
 - Leave at least 1.5 s of plain speaker between separate scenes (continues:true scenes are exempt).
 - Only make a scene when a diagram genuinely helps. Cover at most about half of the clip. Fewer, better scenes beat many weak ones.`;
 }
@@ -300,6 +303,20 @@ function parseExtras(raw: Rec, ctx: ParseContext, body: ExplainerSceneBody): Sce
     const w = ctx.inWin(raw.laterStamp.word);
     if (text && w !== null) extras.overlayStamp = { word: text.toUpperCase(), at: ctx.at(w) };
   }
+  if (
+    !extras.overlayStamp &&
+    (body.kind === 'hero' || body.kind === 'statement') &&
+    isRec(raw.annotation)
+  ) {
+    const requestedKind = raw.annotation.kind;
+    const kind = ANNOTATION_KINDS.find((k) => k === requestedKind);
+    const w = ctx.inWin(raw.annotation.word);
+    const labelAt =
+      body.kind === 'hero'
+        ? body.at + 0.3
+        : (body.words[body.accentIndex ?? body.words.length - 1]?.at ?? 0);
+    if (kind && w !== null && ctx.at(w) >= labelAt) extras.annotation = { kind, at: ctx.at(w) };
+  }
   const dimW = raw.dimWord === null || body.kind === 'stack' ? null : ctx.inWin(raw.dimWord);
   if (dimW !== null) extras.dimAt = ctx.at(dimW);
   if (Array.isArray(raw.reactions)) {
@@ -321,7 +338,7 @@ function parseExtras(raw: Rec, ctx: ParseContext, body: ExplainerSceneBody): Sce
     if (pulses.length > 0) {
       extras.pulses = pulses
         .sort((a, b) => a.at - b.at)
-        .slice(0, EXPLAINER_LIMITS.maxReactionsPerScene);
+        .slice(0, extras.annotation ? 1 : EXPLAINER_LIMITS.maxReactionsPerScene);
     }
   }
   return extras;
@@ -430,7 +447,8 @@ function addEmphasisPulses(
   for (const t of emphasisTimes) {
     if (
       added.length >= 2 ||
-      existing.length + added.length >= EXPLAINER_LIMITS.maxReactionsPerScene
+      existing.length + added.length >=
+        (planned.scene.annotation ? 1 : EXPLAINER_LIMITS.maxReactionsPerScene)
     )
       break;
     if (t < lo || t > hi) continue;
@@ -521,7 +539,14 @@ function parseCandidates(
 
   const varied = applyVarietyRules(snapped, bounds);
   const emphasis = [...(options.emphasisTimes ?? [])].sort((a, b) => a - b);
-  const accepted = varied.map((c) => {
+  let previousAnnotated = false;
+  const accepted = varied.map((candidate) => {
+    let c = candidate;
+    if (previousAnnotated && c.scene.annotation) {
+      const { annotation: _annotation, ...scene } = c.scene;
+      c = { ...c, scene };
+    }
+    previousAnnotated = c.scene.annotation !== undefined;
     const withPulses: Candidate =
       emphasis.length > 0 ? { ...c, ...addEmphasisPulses(c, emphasis) } : c;
     return { ...withPulses, cues: sceneCues(withPulses) };

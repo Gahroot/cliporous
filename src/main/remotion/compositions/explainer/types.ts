@@ -226,6 +226,19 @@ export const HERO_PROPS = [
   'globe',
   'envelope',
   'book',
+  // Beveled icon objects (project-authored silhouettes)
+  'shield',
+  'cloud',
+  'checkmark',
+  'warning',
+  'lightning',
+  'chat',
+  'crown',
+  'diamond',
+  'bookmark',
+  'compass',
+  'link',
+  'graduation-cap',
 ] as const;
 export type HeroProp = (typeof HERO_PROPS)[number];
 
@@ -780,7 +793,12 @@ export type ExplainerSceneBody =
  * Beats any scene can carry on top of its own content, so one scene can
  * "keep going" across several sentences instead of ending after one moment.
  */
+export const ANNOTATION_KINDS = ['marker', 'underline', 'circle', 'box', 'arrow'] as const;
+export type AnnotationKind = (typeof ANNOTATION_KINDS)[number];
+
 export interface SceneExtras {
+  /** A single drawn accent on the hero/statement label; exclusive with overlayStamp. */
+  annotation?: { kind: AnnotationKind; at: number };
   /** A stamp that lands on top of the scene later ("YES, BUT"). */
   overlayStamp?: { word: string; at: number };
   /** Whole stage dims (e.g. "broken"). Generic version of stack.dimAt. */

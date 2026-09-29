@@ -5,7 +5,8 @@
  */
 
 import type React from 'react';
-import { interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AnnotatedLabel } from './graphic-accents';
 import {
   EASE_OUT_SOFT,
   floatTransform,
@@ -15,6 +16,7 @@ import {
   useFloat,
   useReaction,
 } from './motion';
+import { motionProgress } from './motion-tokens';
 import { withAlpha } from './palette';
 import { ramp, useSceneTime, useStage } from './stage';
 import { EXPLAINER_STAGE_WIDTH, type StatementScene as StatementSceneData } from './types';
@@ -87,13 +89,7 @@ const Word: React.FC<{
   const rise = (1 - p) * fontSize * 0.28;
   const blur = (1 - p) * 18;
   // Landing: small overshoot (the accent word bounces a little harder).
-  const s = spring({
-    frame: frame - Math.round(start * fps),
-    fps,
-    config: accent
-      ? { stiffness: 210, damping: 11, mass: 0.8 }
-      : { stiffness: 170, damping: 16, mass: 0.9 },
-  });
+  const s = motionProgress(frame, fps, start, accent ? 'default' : 'heavy');
   const scale = interpolate(s, [0, 1], [accent ? 0.86 : 0.93, 1]);
   const lit = ramp(t, at, 0.6);
   const glow = accent ? lit * (0.45 + breath * 0.35) + reaction.glow : reaction.glow;
@@ -131,7 +127,7 @@ const Word: React.FC<{
           padding: accent ? '0 0.06em' : undefined,
         }}
       >
-        {text}
+        {accent ? <AnnotatedLabel>{text}</AnnotatedLabel> : text}
       </span>
     </span>
   );

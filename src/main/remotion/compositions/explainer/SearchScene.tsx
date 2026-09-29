@@ -8,7 +8,9 @@
 import { Search } from 'lucide-react';
 import type React from 'react';
 import { spring } from 'remotion';
+import { MaskRise } from './graphic-accents';
 import { floatTransform, Glow, useBreath, useFloat, useLivingShadow } from './motion';
+import { motionProgress } from './motion-tokens';
 import { mixHex, withAlpha } from './palette';
 import { ramp, useSceneTime, useStage } from './stage';
 import type { SearchScene as SearchSceneData } from './types';
@@ -41,11 +43,7 @@ const ResultCard: React.FC<{ text: string; index: number; at: number; top: numbe
 }) => {
   const S = useStage();
   const { frame, fps } = useSceneTime();
-  const s = spring({
-    frame: frame - Math.round((at + index * STAGGER) * fps),
-    fps,
-    config: { damping: 16, stiffness: 150, mass: 0.8 },
-  });
+  const s = motionProgress(frame, fps, at + index * STAGGER);
   if (s <= 0.001) return null;
   return (
     <div
@@ -99,7 +97,7 @@ const ResultCard: React.FC<{ text: string; index: number; at: number; top: numbe
           textOverflow: 'ellipsis',
         }}
       >
-        {text}
+        <MaskRise text={text} at={at + index * STAGGER} />
       </div>
       <div
         style={{

@@ -97,6 +97,19 @@ const CASES: { text: string; kind: string; prop?: string }[] = [
     kind: 'loop',
   },
   { text: 'Before, I edited every video by hand. Now the old way is gone.', kind: 'before-after' },
+  // Every new icon must be reachable from a realistic transcript, within existing menu caps.
+  { text: 'Protect customer privacy with better security.', kind: 'hero', prop: 'shield' },
+  { text: 'Upload your backup to cloud storage.', kind: 'hero', prop: 'cloud' },
+  { text: 'Your account is verified and approved.', kind: 'hero', prop: 'checkmark' },
+  { text: 'This is a serious warning about risk.', kind: 'hero', prop: 'warning' },
+  { text: 'Lightning speed gives you instant results.', kind: 'hero', prop: 'lightning' },
+  { text: 'The conversation changed after customer feedback.', kind: 'hero', prop: 'chat' },
+  { text: 'Leadership means earning that crown.', kind: 'hero', prop: 'crown' },
+  { text: 'A rare diamond represents quality.', kind: 'hero', prop: 'diamond' },
+  { text: 'Bookmark this reference to remember it.', kind: 'hero', prop: 'bookmark' },
+  { text: 'A compass gives you direction and purpose.', kind: 'hero', prop: 'compass' },
+  { text: 'Connect the integration to your partners.', kind: 'hero', prop: 'link' },
+  { text: 'Graduation from university earns your degree.', kind: 'hero', prop: 'graduation-cap' },
   // Hero props follow the transcript.
   {
     text: 'Save a little every month, that savings account is your safety net.',

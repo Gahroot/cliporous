@@ -18,6 +18,7 @@ import { ThreeCanvas } from '@remotion/three';
 import type React from 'react';
 import { useLayoutEffect } from 'react';
 import { mixHex } from './palette';
+import { StudioEnvironment } from './StudioEnvironment';
 import { useSceneTime, useStage } from './stage';
 import { type CameraSpec, cameraRig } from './three-helpers';
 import { EXPLAINER_STAGE_HEIGHT, EXPLAINER_STAGE_WIDTH } from './types';
@@ -78,6 +79,7 @@ export const Stage3D: React.FC<Stage3DProps> = ({
       style={{ position: 'absolute', inset: 0 }}
     >
       <RigCamera spec={spec} />
+      <StudioEnvironment />
       <ambientLight intensity={0.32} />
       <hemisphereLight args={[sky, ground, 0.95]} />
       {/* Key light upper-left, soft fill right, faint rim from behind. */}

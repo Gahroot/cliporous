@@ -210,6 +210,81 @@ export const HERO_CATALOG: Readonly<Record<HeroProp, HeroPropInfo>> = {
     impactSec: 0.45,
     impactCue: { kind: 'flip', gain: 0.6 },
   },
+  shield: {
+    hint: 'protection, privacy, secure — shield with a check settling onto its face',
+    triggers: /\b(protect|privacy|secure|security|defen[cs]|safeguard|shield)\w*/,
+    impactSec: 0.55,
+    impactCue: { kind: 'pop', gain: 0.5 },
+  },
+  cloud: {
+    hint: 'cloud storage, upload, backup — arrow lifts into cloud; down = download',
+    triggers: /\b(cloud|upload|download|backup|hosting|sync)\w*/,
+    impactSec: 0.55,
+    downImpactSec: 0.55,
+    downHint: 'arrow points down for download',
+    impactCue: { kind: 'slide', gain: 0.5 },
+  },
+  checkmark: {
+    hint: 'approved, verified, completed — a beveled check swings into place',
+    triggers:
+      /\b(approv(?:e|ed|al|ing)|verif(?:y|ied|ication)|complet(?:e|ed|ion|ing)|checkmark|confirm(?:ed|ation)?|done|correct)\b/,
+    impactSec: 0.45,
+    impactCue: { kind: 'pop', gain: 0.5 },
+  },
+  warning: {
+    hint: 'warning, risk, caution — triangle with a short recoil, not a flashing alert',
+    triggers: /\b(warning|risk|caution|danger|alert|hazard)\w*/,
+    impactSec: 0.5,
+    impactCue: { kind: 'thump', gain: 0.5 },
+  },
+  lightning: {
+    hint: 'speed, instant, electricity — bolt with a short impact recoil',
+    triggers: /\b(lightning|instant|electric|voltage|speed|rapid)\w*/,
+    impactSec: 0.4,
+    impactCue: { kind: 'pop', gain: 0.5 },
+  },
+  chat: {
+    hint: 'conversation, feedback, support — three dots reply in sequence',
+    triggers: /\b(chat|conversation|feedback|support|reply|dialogue|discuss)\w*/,
+    impactSec: 0.65,
+    impactCue: { kind: 'pop', gain: 0.45 },
+  },
+  crown: {
+    hint: 'leadership, premium, champion — crown seats with weighted follow-through',
+    triggers: /\b(crown|leader|premium|champion|royal|king|queen)\w*/,
+    impactSec: 0.6,
+    impactCue: { kind: 'thump', gain: 0.5 },
+  },
+  diamond: {
+    hint: 'value, rare, quality — beveled gem turns to reveal contrasting facets',
+    triggers: /\b(diamond|gem|rare|valuable|quality|precious)\w*/,
+    impactSec: 0.6,
+    impactCue: { kind: 'pop', gain: 0.5 },
+  },
+  bookmark: {
+    hint: 'save, remember, reference — saved ribbon with inset lines',
+    triggers: /\b(bookmark|save|saved|remember|reference|reading list)\b/,
+    impactSec: 0.5,
+    impactCue: { kind: 'slide', gain: 0.45 },
+  },
+  compass: {
+    hint: 'direction, navigation, purpose — needle finds its heading',
+    triggers: /\b(compass|direction|navigat|purpose|heading|orient)\w*/,
+    impactSec: 0.7,
+    impactCue: { kind: 'pop', gain: 0.5 },
+  },
+  link: {
+    hint: 'connection, integration, partnership — two beveled links join',
+    triggers: /\b(link|connect|integrat|partner|relationship|bond)\w*/,
+    impactSec: 0.6,
+    impactCue: { kind: 'pop', gain: 0.5 },
+  },
+  'graduation-cap': {
+    hint: 'education, graduation, qualification — cap seats, tassel follows',
+    triggers: /\b(graduat|educat|qualification|degree|university|college|diploma)\w*/,
+    impactSec: 0.6,
+    impactCue: { kind: 'thump', gain: 0.5 },
+  },
 };
 
 /** Seconds after `at` of the prop's impact beat for the given tone. */
