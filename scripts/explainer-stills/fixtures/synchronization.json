@@ -1,0 +1,75 @@
+[
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "synchronization-mail",
+    "scene": {
+      "kind": "synchronization",
+      "label": "Find a shared rhythm",
+      "disagreeAt": 0.3,
+      "rhythmAt": 1,
+      "alignAt": 2.4,
+      "transferAt": 4
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "disagree",
+        "frame": 18
+      },
+      {
+        "name": "rhythm",
+        "frame": 30
+      },
+      {
+        "name": "align-before",
+        "frame": 71
+      },
+      {
+        "name": "align",
+        "frame": 72
+      },
+      {
+        "name": "gate-open",
+        "frame": 79
+      },
+      {
+        "name": "handoff",
+        "frame": 95
+      },
+      {
+        "name": "received",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "synchronization"
+      }
+    ]
+  }
+]

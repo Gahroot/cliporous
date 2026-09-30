@@ -1,0 +1,34 @@
+[
+  {
+    "name":"prism",
+    "covers":[{"category":"prop","id":"prism"}],
+    "durationSec":3.8,
+    "scene":{"kind":"hero","prop":"prism","label":"Separate the beam","at":0.4},
+    "samples":[{"name":"setup","frame":17},{"name":"contact","frame":33},{"name":"splitting","frame":38},{"name":"resolved","frame":46},{"name":"hold","frame":102}],
+    "cases":[{"name":"violet","layout":"stack","aspect":"9:16"},{"name":"amber","layout":"stack","aspect":"9:16","palette":{"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]}}]
+  },
+  {
+    "name":"aperture",
+    "covers":[{"category":"prop","id":"aperture"}],
+    "durationSec":3.8,
+    "scene":{"kind":"hero","prop":"aperture","label":"Narrow the opening","at":0.4},
+    "samples":[{"name":"setup","frame":17},{"name":"closing","frame":32},{"name":"closed","frame":46},{"name":"hold","frame":102}],
+    "cases":[{"name":"violet","layout":"stack","aspect":"9:16"},{"name":"amber","layout":"stack","aspect":"9:16","palette":{"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]}}]
+  },
+  {
+    "name":"magnifying-glass",
+    "covers":[{"category":"prop","id":"magnifying-glass"}],
+    "durationSec":3.8,
+    "scene":{"kind":"hero","prop":"magnifying-glass","label":"Look at the detail","at":0.4},
+    "samples":[{"name":"setup","frame":17},{"name":"aligned","frame":36},{"name":"enlarging","frame":41},{"name":"detail","frame":47},{"name":"hold","frame":102}],
+    "cases":[{"name":"violet","layout":"stack","aspect":"9:16"},{"name":"amber","layout":"stack","aspect":"9:16","palette":{"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]}}]
+  },
+  {
+    "name":"telescope",
+    "covers":[{"category":"prop","id":"telescope"}],
+    "durationSec":3.8,
+    "scene":{"kind":"hero","prop":"telescope","label":"See farther","at":0.4},
+    "samples":[{"name":"setup","frame":17},{"name":"extended","frame":38},{"name":"aiming","frame":43},{"name":"aimed","frame":50},{"name":"hold","frame":102}],
+    "cases":[{"name":"violet","layout":"stack","aspect":"9:16"},{"name":"amber","layout":"stack","aspect":"9:16","palette":{"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]}}]
+  }
+]

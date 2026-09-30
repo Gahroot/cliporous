@@ -6,6 +6,7 @@
 
 import type React from 'react';
 import { resolveIcon } from '../blocks/icon';
+import { StampTreatment } from './editorial/StampTreatments';
 import { ImpactRing } from './graphic-accents';
 import { Burst, floatTransform, useBreath, useFloat } from './motion';
 import { motionProgress, settleOffset } from './motion-tokens';
@@ -75,39 +76,47 @@ export const StampScene: React.FC<{ scene: StampSceneData }> = ({ scene }) => {
         )}
       </div>
 
-      {slam > 0 && (
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: 640,
-            transform: `translate(-50%, -50%) rotate(${-7 + recoil}deg) scale(${stampScale})`,
-            opacity: Math.min(1, slam),
-            border: `9px solid ${accent}`,
-            borderRadius: 22,
-            padding: '6px 40px 2px',
-            fontFamily: STAGE.font,
-            fontWeight: 900,
-            fontSize: 132,
-            letterSpacing: 6,
-            color: accent,
-            whiteSpace: 'nowrap',
-            textTransform: 'uppercase',
-            lineHeight: 1.05,
-          }}
-        >
-          {scene.word}
-        </div>
+      {scene.finish ? (
+        <StampTreatment word={scene.word} at={scene.stampAt} finish={scene.finish} />
+      ) : (
+        slam > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: 640,
+              transform: `translate(-50%, -50%) rotate(${-7 + recoil}deg) scale(${stampScale})`,
+              opacity: Math.min(1, slam),
+              border: `9px solid ${accent}`,
+              borderRadius: 22,
+              padding: '6px 40px 2px',
+              fontFamily: STAGE.font,
+              fontWeight: 900,
+              fontSize: 132,
+              letterSpacing: 6,
+              color: accent,
+              whiteSpace: 'nowrap',
+              textTransform: 'uppercase',
+              lineHeight: 1.05,
+            }}
+          >
+            {scene.word}
+          </div>
+        )
       )}
-      <ImpactRing at={scene.stampAt + 0.12} x={540} y={640} radius={230} />
-      <Burst
-        atSec={scene.stampAt + 0.12}
-        x={540}
-        y={640}
-        color={accent}
-        seed="stamp"
-        radius={260}
-      />
+      {!scene.finish && (
+        <>
+          <ImpactRing at={scene.stampAt + 0.12} x={540} y={640} radius={230} />
+          <Burst
+            atSec={scene.stampAt + 0.12}
+            x={540}
+            y={640}
+            color={accent}
+            seed="stamp"
+            radius={260}
+          />
+        </>
+      )}
     </div>
   );
 };

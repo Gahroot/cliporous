@@ -53,7 +53,7 @@ function circlePath(x: number, y: number, r: number): Path {
 /** Gear module: pitch radius = MODULE * teeth / 2 (meshing gears share tooth size). */
 const MODULE = 0.08;
 
-function gearShape(teeth: number, holeR: number, windows: number): Shape {
+export function gearShape(teeth: number, holeR: number, windows: number): Shape {
   const r = (MODULE * teeth) / 2;
   const rTip = r + MODULE;
   const rRoot = r - MODULE * 1.2;
@@ -99,12 +99,7 @@ const GEAR_SPECS: readonly GearSpec[] = [
 ];
 
 const Gears: React.FC<HeroPropProps> = ({ at }) => {
-  const S = useStage();
   const { t } = useSceneTime();
-  const geoms = useMemo(
-    () => GEAR_SPECS.map((g) => extrude(gearShape(g.teeth, g.holeR, g.windows), 0.2, 0.035)),
-    [],
-  );
   const impact = at + GEARS_IMPACT_SEC;
   // Driver angle: eased-in spin-up from rest (quadratic ramp into constant speed).
   const omega = 1.5;
@@ -112,6 +107,16 @@ const Gears: React.FC<HeroPropProps> = ({ at }) => {
   const k = Math.max(0, t - impact);
   const a1 = k < rampT ? (omega * k * k) / (2 * rampT) : omega * (k - rampT / 2);
   const jolt = wobble(t, impact, 16, 7);
+  return <GearsRig a1={a1} jolt={jolt} />;
+};
+
+/** Pose-only extraction; the standalone wrapper retains its original timing. */
+export const GearsRig: React.FC<{ a1: number; jolt?: number }> = ({ a1, jolt = 0 }) => {
+  const S = useStage();
+  const geoms = useMemo(
+    () => GEAR_SPECS.map((g) => extrude(gearShape(g.teeth, g.holeR, g.windows), 0.2, 0.035)),
+    [],
+  );
   const n1 = GEAR_SPECS[0].teeth;
   const r1 = (MODULE * n1) / 2;
   const colors = [S.clay[0], S.accent, S.clay[1]];
@@ -173,10 +178,7 @@ function keyholePlateShape(): Shape {
 }
 
 const Key: React.FC<HeroPropProps> = ({ at }) => {
-  const S = useStage();
   const { t } = useSceneTime();
-  const plate = useMemo(() => extrude(keyholePlateShape(), 0.2, 0.05), []);
-  const backing = useMemo(() => roundedRectGeometry(0.6, 0.95, 0.2), []);
   const impact = at + KEY_IMPACT_SEC;
   // Slide in, then a quick 90° turn that lands exactly on the impact.
   const slide = ramp(t, at + 0.02, KEY_IMPACT_SEC - 0.16);
@@ -184,6 +186,19 @@ const Key: React.FC<HeroPropProps> = ({ at }) => {
   const turn = turnP * turnP * (Math.PI / 2) + wobble(t, impact, 26, 9) * 0.1;
   const click = wobble(t, impact, 30, 10);
   const lit = ramp(t, impact, 0.3);
+  return <KeyRig slide={slide} turn={turn} click={click} lit={lit} />;
+};
+
+export interface KeyRigProps {
+  slide: number;
+  turn: number;
+  click?: number;
+  lit?: number;
+}
+export const KeyRig: React.FC<KeyRigProps> = ({ slide, turn, click = 0, lit = 0 }) => {
+  const S = useStage();
+  const plate = useMemo(() => extrude(keyholePlateShape(), 0.2, 0.05), []);
+  const backing = useMemo(() => roundedRectGeometry(0.6, 0.95, 0.2), []);
   const metal = mixHex(S.paper, S.accent2, 0.3);
   const hole = mixHex(S.clay[2], S.bgOuter, 0.45);
   const tipZ = -0.06 + (1 - slide) * 0.85;
@@ -279,6 +294,16 @@ function spillShape(): Shape {
 }
 
 const Door: React.FC<HeroPropProps> = ({ at }) => {
+  const impact = at + DOOR_IMPACT_SEC;
+  const open = useSpringAt(impact - 0.15, 170, 14, 0.7);
+  return <DoorRig open={open} />;
+};
+
+/** Children are attached to the slab, so a seated key moves with the door hinge. */
+export const DoorRig: React.FC<{ open: number; children?: React.ReactNode }> = ({
+  open,
+  children,
+}) => {
   const S = useStage();
   const wall = useMemo(() => extrude(wallShape(), 0.3, 0.05), []);
   const slab = useMemo(
@@ -291,8 +316,6 @@ const Door: React.FC<HeroPropProps> = ({ at }) => {
     () => new ExtrudeGeometry(spillShape(), { depth: 0.001, bevelEnabled: false }),
     [],
   );
-  const impact = at + DOOR_IMPACT_SEC;
-  const open = useSpringAt(impact - 0.15, 170, 14, 0.7);
   const glow = Math.min(1, Math.max(0, open * 1.3));
   const warm = mixHex(S.accent2, S.paper, 0.5);
   const hingeX = -OPEN_W / 2 + 0.02;
@@ -331,6 +354,7 @@ const Door: React.FC<HeroPropProps> = ({ at }) => {
               <Clay color={S.accent} roughness={0.35} metalness={0.2} />
             </mesh>
           ))}
+          {children}
         </group>
       </group>
     </group>

@@ -1,0 +1,7 @@
+[
+  {"name":"flywheel","covers":[{"category":"prop","id":"flywheel"}],"scene":{"kind":"hero","prop":"flywheel","label":"Build momentum","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":18},{"name":"drive","frame":41},{"name":"friction-shoe-contact","frame":46},{"name":"coast-result","frame":100}]},
+  {"name":"lever","covers":[{"category":"prop","id":"lever"}],"scene":{"kind":"hero","prop":"lever","label":"Change leverage","at":0.4},"durationSec":4,"samples":[{"name":"effort","frame":23},{"name":"fulcrum","frame":37},{"name":"lift","frame":53},{"name":"weight-eye-contact","frame":69},{"name":"hold","frame":100}]},
+  {"name":"pulley","covers":[{"category":"prop","id":"pulley"}],"scene":{"kind":"hero","prop":"pulley","label":"Lift the load","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":22},{"name":"lift","frame":53},{"name":"weight-eye-contact","frame":69},{"name":"hold","frame":100}]},
+  {"name":"spring","covers":[{"category":"prop","id":"spring"}],"scene":{"kind":"hero","prop":"spring","label":"Store and release","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":18},{"name":"compressed","frame":36},{"name":"release","frame":57},{"name":"hold","frame":100}]},
+  {"name":"ratchet","covers":[{"category":"prop","id":"ratchet"}],"scene":{"kind":"hero","prop":"ratchet","label":"Progress holds","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":20},{"name":"advance","frame":43},{"name":"detent","frame":66},{"name":"hold","frame":100}]}
+]

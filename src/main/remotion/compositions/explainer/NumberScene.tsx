@@ -9,6 +9,7 @@
 
 import type React from 'react';
 import { Easing, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { MechanicalNumber } from './editorial/MechanicalNumber';
 import {
   Burst,
   floatTransform,
@@ -92,7 +93,14 @@ const DigitColumn: React.FC<{
   );
 };
 
-export const NumberScene: React.FC<{ scene: NumberSceneData }> = ({ scene }) => {
+export const NumberScene: React.FC<{ scene: NumberSceneData }> = ({ scene }) =>
+  scene.presentation ? (
+    <MechanicalNumber scene={{ ...scene, presentation: scene.presentation }} />
+  ) : (
+    <LegacyNumberScene scene={scene} />
+  );
+
+const LegacyNumberScene: React.FC<{ scene: NumberSceneData }> = ({ scene }) => {
   const S = useStage();
   const { t } = useSceneTime();
   const frame = useCurrentFrame();

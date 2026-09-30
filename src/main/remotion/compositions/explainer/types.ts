@@ -13,6 +13,27 @@
  * time under any other key, and never name a non-time number `…At`.
  */
 
+import type {
+  LabelTreatment,
+  NumberPresentation,
+  SemanticTextTreatment,
+  StampFinish,
+} from './editorial/types';
+import type {
+  ExplodedViewScene,
+  RelayScene,
+  SynchronizationScene,
+} from './mechanisms/composed-types';
+
+export type {
+  ExplodedTarget,
+  ExplodedTemplate,
+  ExplodedViewScene,
+  RelayPreset,
+  RelayScene,
+  SynchronizationScene,
+} from './mechanisms/composed-types';
+
 // ---------------------------------------------------------------------------
 // Canvas
 // ---------------------------------------------------------------------------
@@ -22,6 +43,9 @@ export const EXPLAINER_FPS = 30;
 /** Stage canvas for the stacked layouts: one half of the 1080×1920 output. */
 export const EXPLAINER_STAGE_WIDTH = 1080;
 export const EXPLAINER_STAGE_HEIGHT = 960;
+
+/** Floating card radius in final canvas pixels (before the virtual stage is scaled). */
+export const EXPLAINER_GLASS_RADIUS = 56;
 
 /**
  * Where the stage sits relative to the speaker.
@@ -239,6 +263,35 @@ export const HERO_PROPS = [
   'compass',
   'link',
   'graduation-cap',
+  // Causal motion: authored kinetic mechanisms
+  'flywheel',
+  'lever',
+  'pulley',
+  'spring',
+  'ratchet',
+  'conveyor',
+  'valve',
+  'pressure-gauge',
+  'rail-switch',
+  'vault',
+  'wallet',
+  'card-reader',
+  'calculator',
+  'parcel',
+  'filing-cabinet',
+  'reservoir',
+  'prism',
+  'aperture',
+  'magnifying-glass',
+  'telescope',
+  'bridge',
+  'arch',
+  'microphone',
+  'camera',
+  'clapperboard',
+  'metronome',
+  'watering-can',
+  'wrench',
 ] as const;
 export type HeroProp = (typeof HERO_PROPS)[number];
 
@@ -251,6 +304,24 @@ export type HeroTone = 'up' | 'down';
 // ---------------------------------------------------------------------------
 // Scene kinds
 // ---------------------------------------------------------------------------
+
+/** Authored causal sequences need their complete setup, contact and outcome window. */
+export const CAUSAL_SCENE_KINDS = [
+  'bottleneck',
+  'momentum',
+  'leverage',
+  'resource-leak',
+  'feedback-control',
+  'keystone',
+  'switchyard',
+  'synchronization',
+  'relay',
+  'exploded-view',
+] as const;
+
+export function isCausalSceneKind(kind: string): boolean {
+  return CAUSAL_SCENE_KINDS.some((candidate) => candidate === kind);
+}
 
 export const EXPLAINER_SCENE_KINDS = [
   // v1
@@ -299,6 +370,7 @@ export const EXPLAINER_SCENE_KINDS = [
   'compound',
   'dominoes',
   'stairs',
+  ...CAUSAL_SCENE_KINDS,
 ] as const;
 export type ExplainerSceneKind = (typeof EXPLAINER_SCENE_KINDS)[number];
 
@@ -336,6 +408,7 @@ export interface StampScene {
   word: string;
   /** When the stamp slams in. */
   stampAt: number;
+  finish?: StampFinish;
   /** When the icon gets crossed out; omitted = never. */
   strikeAt?: number;
 }
@@ -373,6 +446,8 @@ export interface StatementScene {
   /** Words revealed one by one; the `accentIndex` word is set in the accent. */
   words: { text: string; at: number }[];
   accentIndex?: number;
+  labelTreatment?: LabelTreatment;
+  semanticText?: SemanticTextTreatment;
 }
 
 /** A figure the speaker says ("3x", "$40k", "87%") counting up with a bounce. */
@@ -390,6 +465,7 @@ export interface NumberScene {
   /** When the count starts / lands. */
   countAt: number;
   landAt: number;
+  presentation?: NumberPresentation;
 }
 
 /** "first… then… finally": dots on a line that light up in order. */
@@ -499,6 +575,7 @@ export interface HeroScene {
   at: number;
   /** 'down' plays the prop's reversed action (battery drains, lock opens). */
   tone?: HeroTone;
+  labelTreatment?: LabelTreatment;
 }
 
 // ---------------------------------------------------------------------------
@@ -744,6 +821,83 @@ export interface StairsScene {
   steps: { label: string; at: number }[];
 }
 
+export interface BottleneckScene {
+  kind: 'bottleneck';
+  label: string;
+  tokenCount: 4 | 6 | 8;
+  feedAt: number;
+  queueAt: number;
+  openAt: number;
+  clearAt: number;
+}
+
+export interface MomentumScene {
+  kind: 'momentum';
+  label: string;
+  pushAt: number;
+  repeatAt: number;
+  engageAt: number;
+  /** Coasting begins here; the authored drive stops 0.6s later. */
+  coastAt: number;
+}
+
+export interface LeverageScene {
+  kind: 'leverage';
+  label: string;
+  effortAt: number;
+  pivotAt: number;
+  liftAt: number;
+  holdAt: number;
+}
+
+/** Shared visual/contact timing for the resource-leak planner and renderer. */
+export const LEAK_SEAL_SECONDS = 0.32;
+
+export interface ResourceLeakScene {
+  kind: 'resource-leak';
+  label: string;
+  inflowAt: number;
+  leakAt: number;
+  /** Outlet taps start closing here and seat 0.32s later. */
+  sealAt: number;
+  retainAt: number;
+}
+
+export interface FeedbackControlScene {
+  kind: 'feedback-control';
+  label: string;
+  exceedAt: number;
+  senseAt: number;
+  correctAt: number;
+  settleAt: number;
+}
+
+/** Support lowering time shared by the keystone planner and renderer. */
+export const KEYSTONE_WITHDRAW_SECONDS = 0.45;
+
+export interface KeystoneScene {
+  kind: 'keystone';
+  label: string;
+  supportsAt: number;
+  blocksAt: number;
+  /** Final center-stone contact; side wedges must already be seated. */
+  lockAt: number;
+  withdrawAt: number;
+}
+
+export interface SwitchyardScene {
+  kind: 'switchyard';
+  label: string;
+  route: 'left' | 'right';
+  leftLabel: string;
+  rightLabel: string;
+  approachAt: number;
+  /** Tongue finishes seating here, before any token crosses the junction. */
+  seatAt: number;
+  commitAt: number;
+  arriveAt: number;
+}
+
 export type ExplainerSceneBody =
   | ChecklistScene
   | VersusScene
@@ -783,7 +937,17 @@ export type ExplainerSceneBody =
   | PodiumScene
   | CompoundScene
   | DominoesScene
-  | StairsScene;
+  | StairsScene
+  | BottleneckScene
+  | MomentumScene
+  | LeverageScene
+  | ResourceLeakScene
+  | FeedbackControlScene
+  | KeystoneScene
+  | SwitchyardScene
+  | SynchronizationScene
+  | RelayScene
+  | ExplodedViewScene;
 
 // ---------------------------------------------------------------------------
 // Cross-kind extras: continuation beats + emphasis reactions
@@ -800,7 +964,7 @@ export interface SceneExtras {
   /** A single drawn accent on the hero/statement label; exclusive with overlayStamp. */
   annotation?: { kind: AnnotationKind; at: number };
   /** A stamp that lands on top of the scene later ("YES, BUT"). */
-  overlayStamp?: { word: string; at: number };
+  overlayStamp?: { word: string; at: number; finish?: StampFinish };
   /** Whole stage dims (e.g. "broken"). Generic version of stack.dimAt. */
   dimAt?: number;
   /**

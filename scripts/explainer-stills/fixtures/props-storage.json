@@ -1,0 +1,6 @@
+[
+  {"name":"parcel","covers":[{"category":"prop","id":"parcel"}],"scene":{"kind":"hero","prop":"parcel","label":"Pack the result","at":0.4},"durationSec":4.5,"samples":[{"name":"setup","frame":19},{"name":"walls","frame":36},{"name":"lid","frame":50},{"name":"contact","frame":57},{"name":"hold","frame":105}]},
+  {"name":"filing-cabinet","covers":[{"category":"prop","id":"filing-cabinet"}],"scene":{"kind":"hero","prop":"filing-cabinet","label":"File the documents","at":0.4},"durationSec":4.5,"samples":[{"name":"setup","frame":19},{"name":"open","frame":32},{"name":"paper","frame":38},{"name":"seated","frame":45},{"name":"closed","frame":75},{"name":"hold","frame":105}]},
+  {"name":"reservoir","covers":[{"category":"prop","id":"reservoir"}],"scene":{"kind":"hero","prop":"reservoir","label":"Build a reserve","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":19},{"name":"flow","frame":35},{"name":"filled","frame":51},{"name":"hold","frame":96}]},
+  {"name":"reservoir-down","covers":[{"category":"prop","id":"reservoir"}],"scene":{"kind":"hero","prop":"reservoir","label":"Use the reserve","at":0.4,"tone":"down"},"durationSec":4,"samples":[{"name":"setup","frame":19},{"name":"flow","frame":35},{"name":"drained","frame":51},{"name":"hold","frame":96}]}
+]

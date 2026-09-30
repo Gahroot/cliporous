@@ -1,0 +1,108 @@
+[
+  {
+    "name": "editorial-letterpress", "covers": [{"category":"treatment","id":"letterpress"}],
+    "durationSec": 4, "frames": [18,21,25,33,90],
+    "sourceRefs": [{"id":"stamp-catch-transcript","quote":"Here is THE CATCH."}],
+    "scene": {"kind":"stamp","icon":"TriangleAlert","word":"THE CATCH","stampAt":0.7,"finish":"letterpress"}
+  },
+  {
+    "name": "editorial-embossed", "covers": [{"category":"treatment","id":"embossed"}],
+    "durationSec": 4, "frames": [18,21,25,33,90],
+    "sourceRefs": [{"id":"stamp-exception-transcript","quote":"There is one EXCEPTION."}],
+    "scene": {"kind":"stamp","icon":"Circle","word":"EXCEPTION","stampAt":0.7,"finish":"embossed"}
+  },
+  {
+    "name": "editorial-overlay-letterpress", "covers": [], "durationSec": 4, "frames": [30,42,46,56,105],
+    "sourceRefs": [{"id":"overlay-before-transcript","quote":"Keep privacy. This is BEFORE the change."}],
+    "scene": {"kind":"hero","prop":"lock","label":"Keep privacy","at":0.35,"overlayStamp":{"word":"BEFORE","at":1.4,"finish":"letterpress"}}
+  },
+  {
+    "name": "editorial-overlay-embossed", "covers": [], "durationSec": 4, "frames": [30,42,46,56,105],
+    "sourceRefs": [{"id":"overlay-after-transcript","quote":"Keep privacy. This is AFTER the change."}],
+    "scene": {"kind":"hero","prop":"lock","label":"Keep privacy","at":0.35,"overlayStamp":{"word":"AFTER","at":1.4,"finish":"embossed"}}
+  },
+  {
+    "name": "editorial-peel-long-label", "covers": [{"category":"treatment","id":"peel-back"}],
+    "durationSec": 4, "frames": [30,44,49,58,100],
+    "sourceRefs": [{"id":"privacy-transcript","quote":"Protect customer privacy!"}],
+    "scene": {"kind":"hero","prop":"shield","label":"Protect customer privacy!","at":0.3,"labelTreatment":{"kind":"peel-back","revealAt":1.4}}
+  },
+  {
+    "name": "editorial-redaction-source", "covers": [{"category":"treatment","id":"redaction"}],
+    "durationSec": 4, "frames": [30,44,50,57,100],
+    "sourceRefs": [{"id":"privacy-transcript","quote":"Protect customer privacy!"}],
+    "scene": {"kind":"hero","prop":"shield","label":"Protect customer privacy!","at":0.3,"labelTreatment":{"kind":"redaction","revealAt":1.4}}
+  },
+  {
+    "name": "editorial-statement-peel", "covers": [{"category":"treatment","id":"peel-back"}],
+    "durationSec": 4, "frames": [30,44,51,59,100],
+    "sourceRefs": [{"id":"statement-transcript","quote":"Keep privacy!"}],
+    "scene": {"kind":"statement","words":[{"text":"Keep","at":0.3},{"text":"privacy!","at":0.7}],"labelTreatment":{"kind":"peel-back","targetIndex":1,"revealAt":1.4}}
+  },
+  {
+    "name": "editorial-statement-redaction", "covers": [{"category":"treatment","id":"redaction"}],
+    "durationSec": 4, "frames": [30,44,50,57,100],
+    "sourceRefs": [{"id":"statement-transcript","quote":"Keep privacy!"}],
+    "scene": {"kind":"statement","words":[{"text":"Keep","at":0.3},{"text":"privacy!","at":0.7}],"labelTreatment":{"kind":"redaction","targetIndex":1,"revealAt":1.4}}
+  },
+  {
+    "name": "editorial-magnified-gear", "covers": [{"category":"treatment","id":"magnified-inset"}],
+    "durationSec": 6.5, "frames": [30,60,80,100,135,185],
+    "sourceRefs": [{"id":"gear-transcript","target":"gear","quote":"Separate the gear assembly to see the gear teeth, then reassemble it."}],
+    "scene": {"kind":"exploded-view","template":"mechanism","target":"gear","label":"Gear assembly","detailLabel":"Gear teeth","assembleAt":0.3,"separateAt":1.2,"explainAt":2.3,"returnAt":4.8,"detail":{"kind":"magnified-inset","target":"gear","label":"gear teeth","at":2.5}}
+  },
+  {
+    "name": "editorial-tracked-callout", "covers": [{"category":"treatment","id":"tracked-callout"}],
+    "durationSec": 6.5, "frames": [30,60,80,100,135,185],
+    "sourceRefs": [{"id":"computing-transcript","target":"chip","quote":"Separate the processor assembly, board and heatsink to reveal the processor chip, then reassemble it."}],
+    "scene": {"kind":"exploded-view","template":"computing","target":"chip","label":"Processor assembly","detailLabel":"Processor chip","assembleAt":0.3,"separateAt":1.2,"explainAt":2.3,"returnAt":4.8,"detail":{"kind":"tracked-callout","target":"chip","label":"processor chip","at":2.5}}
+  },
+  {
+    "name": "editorial-source-measurement", "covers": [{"category":"treatment","id":"measurement"}],
+    "durationSec": 6.5, "frames": [30,60,80,100,135,185],
+    "sourceRefs": [{"id":"gear-dimension-transcript","target":"gear","label":"12 mm","quote":"The gear is 12 mm wide. Separate the gear assembly to see the gear width, then reassemble it."}],
+    "scene": {"kind":"exploded-view","template":"mechanism","target":"gear","label":"Gear assembly","detailLabel":"Gear width","assembleAt":0.3,"separateAt":1.2,"explainAt":2.3,"returnAt":4.8,"detail":{"kind":"measurement","target":"gear","label":"12 mm","at":2.5}}
+  },
+  {
+    "name": "editorial-focus-contents", "covers": [{"category":"treatment","id":"focus-isolation"}],
+    "durationSec": 6.5, "frames": [30,60,80,100,135,185],
+    "sourceRefs": [{"id":"parcel-transcript","target":"contents","quote":"Separate the packed parcel and focus on the packed contents, then reassemble it."}],
+    "scene": {"kind":"exploded-view","template":"parcel","target":"contents","label":"Packed parcel","detailLabel":"Packed contents","assembleAt":0.3,"separateAt":1.2,"explainAt":2.3,"returnAt":4.8,"detail":{"kind":"focus-isolation","target":"contents","label":"packed contents","at":2.5}}
+  },
+  {
+    "name": "editorial-odometer-long", "covers": [{"category":"treatment","id":"mechanical-number"}],
+    "durationSec": 5, "frames": [12,42,63,78,135],
+    "sourceRefs": [{"id":"long-cost-transcript","quote":"The annual cost is $123,456,789.25."}],
+    "scene": {"kind":"number","value":123456789.25,"decimals":2,"prefix":"$","label":"Annual cost","countAt":0.3,"landAt":2.4,"presentation":"odometer"}
+  },
+  {
+    "name": "editorial-flap-negative", "covers": [{"category":"treatment","id":"mechanical-number"}],
+    "durationSec": 5, "frames": [12,42,63,78,135],
+    "sourceRefs": [{"id":"negative-change-transcript","quote":"The change is -12.50%."}],
+    "scene": {"kind":"number","value":12.5,"decimals":2,"prefix":"-","suffix":"%","label":"Change","countAt":0.3,"landAt":2.4,"presentation":"split-flap"}
+  },
+  {
+    "name": "editorial-odometer-small", "covers": [{"category":"treatment","id":"mechanical-number"}],
+    "durationSec": 5, "frames": [12,42,63,78,135],
+    "sourceRefs": [{"id":"time-increment-transcript","quote":"The increment is +0.01 hours."}],
+    "scene": {"kind":"number","value":0.01,"decimals":2,"prefix":"+","suffix":"hrs","label":"Increment","countAt":0.3,"landAt":2.4,"presentation":"odometer"}
+  },
+  {
+    "name": "editorial-semantic-compress", "covers": [{"category":"treatment","id":"semantic-text"}],
+    "durationSec": 4, "frames": [24,39,46,54,100],
+    "sourceRefs": [{"id":"compress-transcript","quote":"Compress the idea."}],
+    "scene": {"kind":"statement","words":[{"text":"Compress","at":0.35}],"semanticText":{"kind":"compress","targetIndex":0,"at":1.2}}
+  },
+  {
+    "name": "editorial-semantic-separate", "covers": [{"category":"treatment","id":"semantic-text"}],
+    "durationSec": 4, "frames": [24,39,46,54,100],
+    "sourceRefs": [{"id":"separate-transcript","quote":"Separate the tasks."}],
+    "scene": {"kind":"statement","words":[{"text":"Separate","at":0.35}],"semanticText":{"kind":"separate","targetIndex":0,"at":1.2}}
+  },
+  {
+    "name": "editorial-semantic-align", "covers": [{"category":"treatment","id":"semantic-text"}],
+    "durationSec": 4, "frames": [24,37,44,51,100],
+    "sourceRefs": [{"id":"align-transcript","quote":"Align the teams."}],
+    "scene": {"kind":"statement","words":[{"text":"Align","at":0.35}],"semanticText":{"kind":"align","targetIndex":0,"at":1.2}}
+  }
+]

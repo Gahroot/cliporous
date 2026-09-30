@@ -318,9 +318,6 @@ const BatteryCell: React.FC<{
 const Battery: React.FC<HeroPropProps> = ({ at, tone }) => {
   const S = useStage();
   const { t } = useSceneTime();
-  const shell = useMemo(() => new RoundedBoxGeometry(2.0, 1.14, 0.92, 5, 0.26), []);
-  const cell = useMemo(() => new RoundedBoxGeometry(0.34, 0.78, 0.6, 3, 0.09), []);
-  const tray = useMemo(() => new RoundedBoxGeometry(1.76, 0.9, 0.1, 3, 0.04), []);
   const down = tone === 'down';
   const impactAt = at + (down ? BATTERY_DOWN_SEC : BATTERY_UP_SEC);
   const jolt = wobble(t, impactAt, 18, 6);
@@ -371,7 +368,24 @@ const Battery: React.FC<HeroPropProps> = ({ at, tone }) => {
       pop: 1 + flash * 0.1,
     };
   });
+  return <BatteryRig cells={cells} jolt={jolt} />;
+};
 
+export interface BatteryCellPose {
+  color: string;
+  emissive: string;
+  intensity: number;
+  scaleY: number;
+  pop: number;
+}
+export const BatteryRig: React.FC<{ cells: readonly BatteryCellPose[]; jolt?: number }> = ({
+  cells,
+  jolt = 0,
+}) => {
+  const S = useStage();
+  const shell = useMemo(() => new RoundedBoxGeometry(2.0, 1.14, 0.92, 5, 0.26), []);
+  const cell = useMemo(() => new RoundedBoxGeometry(0.34, 0.78, 0.6, 3, 0.09), []);
+  const tray = useMemo(() => new RoundedBoxGeometry(1.76, 0.9, 0.1, 3, 0.04), []);
   const glass = mixHex(S.paper, S.accent2, 0.12);
   return (
     <group position={[-0.06, -0.08, 0]} rotation={[0.05, 0, jolt * 0.04]}>

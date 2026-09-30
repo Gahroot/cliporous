@@ -111,22 +111,23 @@ const AI_STROKES: readonly [number, number, number, number][] = [
   [0.13, 0, 0.3, 0],
 ];
 
-const Chip: React.FC<HeroPropProps> = ({ at, tone }) => {
+export interface ChipTraceLight {
+  on: number;
+  intensity: number;
+}
+
+/** Pose-only chip geometry. Relay supplies its clock; the standalone wrapper keeps its motion. */
+export const ChipRig: React.FC<{
+  glow: number;
+  press?: number;
+  traceLights?: readonly ChipTraceLight[];
+}> = ({ glow, press = 0, traceLights }) => {
   const S = useStage();
-  const { t } = useSceneTime();
-  const breath = useBreath('hero-chip', 2.4);
-  const impact = at + heroImpactSec('chip', tone);
   const substrate = useMemo(() => new RoundedBoxGeometry(SUB, 0.12, SUB, 3, 0.05), []);
   const die = useMemo(() => new RoundedBoxGeometry(DIE, 0.2, DIE, 4, 0.08), []);
   const core = useMemo(() => new RoundedBoxGeometry(0.66, 0.05, 0.66, 3, 0.02), []);
   const pin = useMemo(() => new RoundedBoxGeometry(0.085, 0.06, 0.22, 2, 0.022), []);
   const traces = useMemo(chipTraces, []);
-
-  // Core charges up to a flash exactly on the impact, then settles to a glow.
-  const charge = clamp01((t - (impact - 0.2)) / 0.2);
-  const pulse = impactPulse(t, impact, 3.6);
-  const glow = t < impact ? 0.12 + charge * charge * 1.5 : 0.62 + pulse + breath * 0.14;
-  const press = pulse * Math.cos((t - impact) * 22);
   const dieColor = mixHex(S.clay[2], S.bgOuter, 0.55);
   const subColor = mixHex(S.clay[1], S.clay[2], 0.35);
   const traceBase = mixHex(subColor, S.paper, 0.35);
@@ -153,11 +154,11 @@ const Chip: React.FC<HeroPropProps> = ({ at, tone }) => {
           {traces
             .filter((tr) => tr.side === side)
             .map((tr) => {
-              const lightAt = impact + tr.order * TRACE_STEP;
-              const on = ramp(t, lightAt, 0.14);
-              const flash = impactPulse(t, lightAt, 6);
+              const { on, intensity } = traceLights?.[tr.order] ?? {
+                on: clamp01(glow),
+                intensity: clamp01(glow) * 0.5,
+              };
               const color = mixHex(traceBase, S.accent, on * 0.85);
-              const intensity = on * (0.5 + flash * 1.1 + breath * 0.15);
               return (
                 <group key={tr.key}>
                   {tr.segs.map((sg) => (
@@ -206,6 +207,24 @@ const Chip: React.FC<HeroPropProps> = ({ at, tone }) => {
       </group>
     </group>
   );
+};
+
+const Chip: React.FC<HeroPropProps> = ({ at, tone }) => {
+  const { t } = useSceneTime();
+  const breath = useBreath('hero-chip', 2.4);
+  const impact = at + heroImpactSec('chip', tone);
+  // Preserve the standalone core flash and stagger exactly; rigs contain no clock.
+  const charge = clamp01((t - (impact - 0.2)) / 0.2);
+  const pulse = impactPulse(t, impact, 3.6);
+  const glow = t < impact ? 0.12 + charge * charge * 1.5 : 0.62 + pulse + breath * 0.14;
+  const press = pulse * Math.cos((t - impact) * 22);
+  const traceLights = Array.from({ length: 4 * PINS }, (_, order) => {
+    const lightAt = impact + order * TRACE_STEP;
+    const on = ramp(t, lightAt, 0.14);
+    const flash = impactPulse(t, lightAt, 6);
+    return { on, intensity: on * (0.5 + flash * 1.1 + breath * 0.15) };
+  });
+  return <ChipRig glow={glow} press={press} traceLights={traceLights} />;
 };
 
 // ---------------------------------------------------------------------------

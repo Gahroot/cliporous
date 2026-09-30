@@ -24,6 +24,10 @@
   "files": [
     "src/main/remotion/compositions/blocks/types.ts",
     "src/main/remotion/compositions/explainer/types.ts",
+    "src/main/remotion/compositions/explainer/mechanisms/composed-types.ts",
+    "src/main/remotion/compositions/explainer/editorial/types.ts",
+    "src/main/remotion/compositions/explainer/editorial/number-logic.ts",
+    "src/main/remotion/compositions/explainer/editorial/motion.ts",
     "src/main/remotion/compositions/explainer/hero-catalog.ts",
     "src/main/remotion/compositions/explainer/quote-graphic.ts",
     "src/main/remotion/compositions/explainer/palette.ts"

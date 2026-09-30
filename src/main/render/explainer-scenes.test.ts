@@ -89,6 +89,41 @@ describe('spliceExplainerScenes', () => {
     expect(out[1]?.segment.videoPath).toBeUndefined();
   });
 
+  it('keeps a causal setup and settled hold when nearby boundaries would cut them off', () => {
+    const scene: ExplainerScene = {
+      kind: 'bottleneck',
+      label: 'Orders pass through',
+      tokenCount: 4,
+      feedAt: 14.1,
+      queueAt: 15,
+      openAt: 17,
+      clearAt: 19.5,
+    };
+    const causal = {
+      ...group(14, 20),
+      scenes: [planned(14, 20, { scene })],
+    };
+    const pieces = spliceExplainerScenes(
+      [
+        seg('talking-head', 10, 14.3),
+        seg('talking-head', 14.3, 19.6),
+        seg('talking-head', 19.6, 25),
+      ],
+      [causal],
+      12,
+    );
+    const piece = pieces.find((p) => p.group);
+    expect(piece?.segment.startTime).toBe(14);
+    expect(piece?.segment.endTime).toBe(20);
+    if (!piece?.group) throw new Error('Expected causal scene');
+    const rendered = buildGroupRenderPlan(piece.group, piece.segment, deriveExplainerPalette());
+    const body = rendered.props.scenes[0]?.scene;
+    if (body?.kind !== 'bottleneck') throw new Error('Expected bottleneck');
+    expect(body.feedAt).toBeCloseTo(0.1, 10);
+    expect(body.clearAt).toBe(5.5);
+    expect(rendered.props.visibleSec).toBe(6);
+  });
+
   it('never snaps a scene start before the protected opening', () => {
     const out = spliceExplainerScenes(
       [seg('talking-head', 10, 12.2), seg('talking-head', 12.2, 30)],

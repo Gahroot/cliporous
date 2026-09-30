@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { HERO_CATALOG } from '../remotion/compositions/explainer/hero-catalog';
 import { type PlannerWord, parseExplainerPlan, toSceneRelative } from './explainer-scenes';
 
 /** 40 words, one every 0.5s starting at t=10 (source-absolute time). */
@@ -13,6 +14,83 @@ function words(count = 40, start = 10): PlannerWord[] {
 const BOUNDS = { minStart: 12, maxEnd: 30 };
 
 describe('parseExplainerPlan', () => {
+  it.each([
+    'vault',
+    'wallet',
+    'card-reader',
+    'calculator',
+    'parcel',
+    'filing-cabinet',
+    'aperture',
+    'telescope',
+    'bridge',
+    'arch',
+  ] as const)('parses %s with its exact action cue and omits unsupported reversal', (prop) => {
+    const result = parseExplainerPlan(
+      {
+        scenes: [
+          { kind: 'hero', prop, label: prop, startWord: 6, endWord: 14, word: 6, tone: 'down' },
+        ],
+      },
+      words(),
+      BOUNDS,
+    );
+    expect(result).toHaveLength(1);
+    const p = result[0];
+    if (p.scene.kind !== 'hero') throw new Error('Expected hero');
+    expect(p.scene).toMatchObject({ kind: 'hero', prop, label: prop });
+    expect(p.scene).not.toHaveProperty('tone');
+    const impact = HERO_CATALOG[prop];
+    expect(p.cues).toContainEqual({ ...impact.impactCue, at: p.scene.at + impact.impactSec });
+    expect(toSceneRelative(p.scene, p.startTime).at).toBeCloseTo(p.scene.at - p.startTime);
+  });
+  it.each([
+    'prism',
+    'magnifying-glass',
+  ] as const)('keeps %s optical effects quiet and does not invent a reversed action', (prop) => {
+    const result = parseExplainerPlan(
+      {
+        scenes: [
+          { kind: 'hero', prop, label: prop, startWord: 6, endWord: 14, word: 6, tone: 'down' },
+        ],
+      },
+      words(),
+      BOUNDS,
+    );
+    expect(result).toHaveLength(1);
+    const p = result[0];
+    if (p.scene.kind !== 'hero') throw new Error('Expected hero');
+    expect(p.scene).toMatchObject({ kind: 'hero', prop });
+    expect(p.scene).not.toHaveProperty('tone');
+    expect(p.cues).toEqual([{ kind: 'whoosh', at: p.scene.at, gain: 0.6 }]);
+    expect(toSceneRelative(p.scene, p.startTime).at).toBeCloseTo(p.scene.at - p.startTime);
+  });
+  it('preserves the reservoir drain action and its catalog completion cue', () => {
+    const [p] = parseExplainerPlan(
+      {
+        scenes: [
+          {
+            kind: 'hero',
+            prop: 'reservoir',
+            label: 'Reserves',
+            startWord: 6,
+            endWord: 14,
+            word: 6,
+            tone: 'down',
+          },
+        ],
+      },
+      words(),
+      BOUNDS,
+    );
+    expect(p.scene).toMatchObject({ kind: 'hero', prop: 'reservoir', tone: 'down' });
+    if (p.scene.kind !== 'hero') throw new Error('Expected hero');
+    const info = HERO_CATALOG.reservoir;
+    expect(p.cues).toContainEqual({
+      ...info.impactCue,
+      at: p.scene.at + (info.downImpactSec ?? info.impactSec),
+    });
+  });
   it('maps word indices to exact word times for a checklist', () => {
     const w = words();
     const plan = parseExplainerPlan(

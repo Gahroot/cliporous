@@ -6,6 +6,7 @@
 import type React from 'react';
 import { BalanceScene } from './BalanceScene';
 import { BeforeAfterScene } from './BeforeAfterScene';
+import { BottleneckScene } from './BottleneckScene';
 import { ChartScene } from './ChartScene';
 import { ChatScene } from './ChatScene';
 import { ChecklistScene } from './ChecklistScene';
@@ -14,13 +15,18 @@ import { CompoundScene } from './CompoundScene';
 import { DefinitionScene } from './DefinitionScene';
 import { DominoesScene } from './DominoesScene';
 import { EquationScene } from './EquationScene';
+import { ExplodedViewScene } from './ExplodedViewScene';
+import { FeedbackControlScene } from './FeedbackControlScene';
 import { FlowScene } from './FlowScene';
 import { FunnelScene } from './FunnelScene';
 import { HeadlineScene } from './HeadlineScene';
 import { HeroScene } from './HeroScene';
 import { IcebergScene } from './IcebergScene';
 import { JourneyScene } from './JourneyScene';
+import { KeystoneScene } from './KeystoneScene';
+import { LeverageScene } from './LeverageScene';
 import { LoopScene } from './LoopScene';
+import { MomentumScene } from './MomentumScene';
 import { MythFactScene } from './MythFactScene';
 import { NetworkScene } from './NetworkScene';
 import { NotesScene } from './NotesScene';
@@ -32,6 +38,8 @@ import { QuestionScene } from './QuestionScene';
 import { QuoteScene } from './QuoteScene';
 import { RankingScene } from './RankingScene';
 import { ReceiptScene } from './ReceiptScene';
+import { RelayScene } from './RelayScene';
+import { ResourceLeakScene } from './ResourceLeakScene';
 import { SearchScene } from './SearchScene';
 import { SpectrumScene } from './SpectrumScene';
 import { StackScene } from './StackScene';
@@ -40,6 +48,8 @@ import { StampScene } from './StampScene';
 import { StatementScene } from './StatementScene';
 import { StreakScene } from './StreakScene';
 import { StudyScene } from './StudyScene';
+import { SwitchyardScene } from './SwitchyardScene';
+import { SynchronizationScene } from './SynchronizationScene';
 import { TimelineScene } from './TimelineScene';
 import type { ExplainerScene } from './types';
 import { VennScene } from './VennScene';
@@ -47,6 +57,26 @@ import { VersusScene } from './VersusScene';
 
 export const SceneBody: React.FC<{ scene: ExplainerScene }> = ({ scene }) => {
   switch (scene.kind) {
+    case 'synchronization':
+      return <SynchronizationScene scene={scene} />;
+    case 'relay':
+      return <RelayScene scene={scene} />;
+    case 'exploded-view':
+      return <ExplodedViewScene scene={scene} />;
+    case 'bottleneck':
+      return <BottleneckScene scene={scene} />;
+    case 'momentum':
+      return <MomentumScene scene={scene} />;
+    case 'leverage':
+      return <LeverageScene scene={scene} />;
+    case 'resource-leak':
+      return <ResourceLeakScene scene={scene} />;
+    case 'feedback-control':
+      return <FeedbackControlScene scene={scene} />;
+    case 'keystone':
+      return <KeystoneScene scene={scene} />;
+    case 'switchyard':
+      return <SwitchyardScene scene={scene} />;
     case 'checklist':
       return <ChecklistScene scene={scene} />;
     case 'versus':
@@ -126,4 +156,6 @@ export const SceneBody: React.FC<{ scene: ExplainerScene }> = ({ scene }) => {
     case 'stairs':
       return <StairsScene scene={scene} />;
   }
+  const exhaustive: never = scene;
+  return exhaustive;
 };

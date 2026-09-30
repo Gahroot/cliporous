@@ -7,9 +7,10 @@
 
 import type React from 'react';
 import { useCurrentFrame, useVideoConfig } from 'remotion';
+import { TreatedLabel } from './editorial/LabelTreatments';
 import { AnnotatedLabel, MaskRise } from './graphic-accents';
 import { HERO_PROP_DEFS, HeroPropModel } from './HeroProps';
-import { heroImpactSec } from './hero-catalog';
+import { heroImpactSec, isCausalHeroProp } from './hero-catalog';
 import {
   Burst,
   Glow,
@@ -33,14 +34,17 @@ export const HeroPropActor: React.FC<{ scene: HeroSceneData }> = ({ scene }) => 
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { t } = useSceneTime();
-  const pop = motionProgress(frame, fps, scene.at, 'heavy');
+  const quiet = isCausalHeroProp(scene.prop) || !!scene.labelTreatment;
+  const entry = motionProgress(frame, fps, scene.at, 'heavy');
+  // A settled mechanism has an exact rest pose, not a spring's floating-point tail.
+  const pop = quiet && Math.abs(1 - entry) < 0.00001 ? 1 : entry;
   const reaction = useReaction(0);
   if (pop <= 0.001) return null;
   const since = Math.max(0, t - scene.at);
   const spinIn = (1 - Math.min(1, pop)) * -1.5;
-  const turn = Math.sin(since * 0.5) * 0.3;
-  const floatY = Math.sin(t * 1.15 + 0.4) * 0.07;
-  const tilt = Math.sin(t * 0.8) * 0.035;
+  const turn = quiet ? 0 : Math.sin(since * 0.5) * 0.3;
+  const floatY = quiet ? 0 : Math.sin(t * 1.15 + 0.4) * 0.07;
+  const tilt = quiet ? 0 : Math.sin(t * 0.8) * 0.035;
   const def = HERO_PROP_DEFS[scene.prop];
   const framing = def.framing;
   return (
@@ -62,7 +66,8 @@ export const HeroScene: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
   const S = useStage();
   const { t } = useSceneTime();
   const impactAt = scene.at + heroImpactSec(scene.prop, scene.tone);
-  const rig = { focusAt: impactAt, driftDeg: 7, pushAmount: 0.09 };
+  const quiet = isCausalHeroProp(scene.prop) || !!scene.labelTreatment;
+  const rig = { focusAt: impactAt, driftDeg: quiet ? 0 : 7, pushAmount: quiet ? 0 : 0.09 };
   const camera = useRigCamera(HERO_CAMERA, rig);
   const breath = useBreath('hero');
   const reaction = useReaction(0);
@@ -86,22 +91,24 @@ export const HeroScene: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
       >
         <Glow
           color={S.accent}
-          intensity={appear * (0.45 + breath * 0.3) + reaction.glow * 0.5}
+          intensity={quiet ? appear * 0.45 : appear * (0.45 + breath * 0.3) + reaction.glow * 0.5}
           radius={360}
         />
       </div>
       <Stage3D camera={HERO_CAMERA} {...rig} groundY={HERO_GROUND_Y} shadowScale={7}>
         <HeroPropActor scene={scene} />
       </Stage3D>
-      <Burst
-        atSec={impactAt}
-        x={center.x}
-        y={center.y}
-        color={S.accent2}
-        radius={300}
-        count={14}
-        seed="hero"
-      />
+      {!quiet && (
+        <Burst
+          atSec={impactAt}
+          x={center.x}
+          y={center.y}
+          color={S.accent2}
+          radius={300}
+          count={14}
+          seed="hero"
+        />
+      )}
       <div
         style={{
           position: 'absolute',
@@ -120,13 +127,15 @@ export const HeroScene: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
             borderRadius: 999,
             background: S.cardRaised,
             border: `1.5px solid ${S.cardBorder}`,
-            boxShadow: shadow,
+            boxShadow: quiet ? '0 12px 24px rgba(0,0,0,0.24)' : shadow,
             color: S.text,
             fontFamily: S.font,
             fontWeight: 700,
             fontSize: 40,
             whiteSpace: 'nowrap',
-            transform: `translate(${float.x.toFixed(2)}px, ${float.y.toFixed(2)}px)`,
+            transform: quiet
+              ? undefined
+              : `translate(${float.x.toFixed(2)}px, ${float.y.toFixed(2)}px)`,
           }}
         >
           <div
@@ -135,12 +144,16 @@ export const HeroScene: React.FC<{ scene: HeroSceneData }> = ({ scene }) => {
               height: 16,
               borderRadius: 8,
               background: S.accent,
-              boxShadow: `0 0 ${10 + breath * 14}px ${S.accent}`,
+              boxShadow: `0 0 ${quiet ? 10 : 10 + breath * 14}px ${S.accent}`,
             }}
           />
-          <AnnotatedLabel>
-            <MaskRise text={scene.label} at={scene.at + 0.3} />
-          </AnnotatedLabel>
+          {scene.labelTreatment ? (
+            <TreatedLabel text={scene.label} treatment={scene.labelTreatment} />
+          ) : (
+            <AnnotatedLabel>
+              <MaskRise text={scene.label} at={scene.at + 0.3} />
+            </AnnotatedLabel>
+          )}
         </div>
       </div>
     </div>

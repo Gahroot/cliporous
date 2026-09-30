@@ -31,6 +31,7 @@ import {
   type ExplainerPalette,
   type ExplainerScene,
   type ExplainerSequenceProps,
+  isCausalSceneKind,
   mapSceneTimes,
   type SceneCue,
   type SceneTransitionKind,
@@ -137,8 +138,13 @@ export function spliceExplainerScenes(
   const boundaries = segments.flatMap((s) => [s.startTime, s.endTime]);
   const windows: SceneGroup[] = [];
   for (const g of groups) {
-    const startTime = snapEdge(g.startTime, boundaries, minStart);
-    const endTime = snapEdge(g.endTime, boundaries, startTime + MIN_SCENE_SEC);
+    // Do not trim causal setup/contact/settling to remove a small speaker sliver.
+    // Outward snaps preserve every word-locked beat and the final readable hold.
+    const causal = g.scenes.some((planned) => isCausalSceneKind(planned.scene.kind));
+    const startBoundaries = causal ? boundaries.filter((b) => b <= g.startTime) : boundaries;
+    const endBoundaries = causal ? boundaries.filter((b) => b >= g.endTime) : boundaries;
+    const startTime = snapEdge(g.startTime, startBoundaries, minStart);
+    const endTime = snapEdge(g.endTime, endBoundaries, startTime + MIN_SCENE_SEC);
     const prev = windows[windows.length - 1];
     if (endTime - startTime < MIN_SCENE_SEC) continue;
     if (startTime < minStart - CONTIGUOUS_EPS) continue;

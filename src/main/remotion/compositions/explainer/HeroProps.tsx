@@ -21,12 +21,20 @@ import {
   useSpringAt,
 } from './hero-kit';
 import { BUSINESS_PROPS } from './hero-props/business';
+import { COMMERCE_PROPS } from './hero-props/commerce';
 import { GROWTH_PROPS } from './hero-props/growth';
 import { ICON_PROP_DEFS } from './hero-props/icons';
+import { KINETIC_PROPS } from './hero-props/kinetic';
 import { MECHANICS_PROPS } from './hero-props/mechanics';
+import { MEDIA_PROPS } from './hero-props/media';
 import { MIND_PROPS } from './hero-props/mind';
+import { OPTICS_PROPS } from './hero-props/optics';
 import { SIGNAL_PROPS } from './hero-props/signals';
+import { STORAGE_PROPS } from './hero-props/storage';
+import { STRUCTURE_PROPS } from './hero-props/structures';
 import { TIME_PROPS } from './hero-props/time';
+import { TOOLS_PROPS } from './hero-props/tools';
+import { TRANSPORT_PROPS } from './hero-props/transport';
 import { WORLD_PROPS } from './hero-props/world';
 import { hash01, useBreath } from './motion';
 import { mixHex } from './palette';
@@ -44,10 +52,15 @@ export const LOCK_CLICK_SEC = HERO_CATALOG.lock.impactSec;
 // Lightbulb — glassy bulb with a glowing filament, ribbed clay base.
 // ---------------------------------------------------------------------------
 
-const Lightbulb: React.FC<{ at: number }> = ({ at }) => {
+export interface LightbulbRigProps {
+  /** Filament/glass glow in [0, 1]; caller owns time and causal activation. */
+  glow: number;
+}
+
+/** Original bulb mesh and internal transforms, with no clock or ambient animation. */
+export const LightbulbRig: React.FC<LightbulbRigProps> = ({ glow: inputGlow }) => {
   const S = useStage();
-  const { t } = useSceneTime();
-  const breath = useBreath('hero-bulb', 2.6);
+  const glow = Number.isFinite(inputGlow) ? Math.max(0, Math.min(1, inputGlow)) : 0;
   const bulb = useMemo(() => {
     const pts: [number, number][] = [];
     for (let i = 0; i <= 14; i++) {
@@ -57,9 +70,6 @@ const Lightbulb: React.FC<{ at: number }> = ({ at }) => {
     pts.push([0.44, -0.28], [0.38, -0.4], [0, -0.4]);
     return lathe(pts, 36);
   }, []);
-  // Switches on shortly after appearing, with one soft flicker.
-  const on = ramp(t, at + 0.25, 0.35) * (t > at + 0.38 && t < at + 0.45 ? 0.55 : 1);
-  const glow = on * (0.55 + breath * 0.45);
   const baseColor = S.clay[2];
   const glass = mixHex(S.paper, S.accent2, 0.22);
   return (
@@ -105,6 +115,15 @@ const Lightbulb: React.FC<{ at: number }> = ({ at }) => {
       </mesh>
     </group>
   );
+};
+
+const Lightbulb: React.FC<{ at: number }> = ({ at }) => {
+  const { t } = useSceneTime();
+  const breath = useBreath('hero-bulb', 2.6);
+  // Preserve the standalone activation, flicker and breath envelope exactly.
+  const on = ramp(t, at + 0.25, 0.35) * (t > at + 0.38 && t < at + 0.45 ? 0.55 : 1);
+  const glow = on * (0.55 + breath * 0.45);
+  return <LightbulbRig glow={glow} />;
 };
 
 // ---------------------------------------------------------------------------
@@ -526,6 +545,14 @@ export const HERO_PROP_DEFS = {
   ...ICON_PROP_DEFS,
   ...MECHANICS_PROPS,
   ...SIGNAL_PROPS,
+  ...KINETIC_PROPS,
+  ...TRANSPORT_PROPS,
+  ...COMMERCE_PROPS,
+  ...STORAGE_PROPS,
+  ...OPTICS_PROPS,
+  ...STRUCTURE_PROPS,
+  ...MEDIA_PROPS,
+  ...TOOLS_PROPS,
 } satisfies Record<HeroProp, HeroPropDef>;
 
 export const HeroPropModel: React.FC<HeroPropProps & { prop: HeroProp }> = ({ prop, at, tone }) => {

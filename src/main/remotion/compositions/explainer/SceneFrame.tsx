@@ -11,12 +11,33 @@
  */
 
 import type React from 'react';
+import { StampTreatment } from './editorial/StampTreatments';
+import type { StampFinish } from './editorial/types';
+import { isCausalHeroProp } from './hero-catalog';
 import { Burst, floatTransform, reactionTransform, useFloat, useReaction } from './motion';
 import { motionProgress, settleOffset } from './motion-tokens';
 import { ExplainerProvider, ramp, useLayout, useSceneTime, useStage } from './stage';
-import { EXPLAINER_STAGE_HEIGHT, EXPLAINER_STAGE_WIDTH, type ExplainerScene } from './types';
+import {
+  EXPLAINER_GLASS_RADIUS,
+  EXPLAINER_STAGE_HEIGHT,
+  EXPLAINER_STAGE_WIDTH,
+  type ExplainerScene,
+  isCausalSceneKind,
+  type SceneExtras,
+} from './types';
 
-const OverlayStamp: React.FC<{ word: string; at: number }> = ({ word, at }) => {
+const OverlayStamp: React.FC<{ word: string; at: number; finish?: StampFinish }> = ({
+  word,
+  at,
+  finish,
+}) =>
+  finish ? (
+    <StampTreatment word={word} at={at} finish={finish} overlay />
+  ) : (
+    <LegacyOverlayStamp word={word} at={at} />
+  );
+
+const LegacyOverlayStamp: React.FC<{ word: string; at: number }> = ({ word, at }) => {
   const S = useStage();
   const { t, frame, fps } = useSceneTime();
   const slam = motionProgress(frame, fps, at, 'stamp');
@@ -50,7 +71,7 @@ const OverlayStamp: React.FC<{ word: string; at: number }> = ({ word, at }) => {
 };
 
 /** Frosted floating card for the transparent `over` layout. */
-const GlassCard: React.FC = () => {
+const GlassCard: React.FC<{ quiet: boolean }> = ({ quiet }) => {
   const S = useStage();
   const float = useFloat('glass', 4, 5.5);
   return (
@@ -58,11 +79,11 @@ const GlassCard: React.FC = () => {
       style={{
         position: 'absolute',
         inset: 0,
-        borderRadius: 56,
+        borderRadius: EXPLAINER_GLASS_RADIUS,
         background: `linear-gradient(160deg, ${S.cardRaised}f2 0%, ${S.card}eb 100%)`,
         border: `1.5px solid ${S.cardBorder}`,
         boxShadow: '0 50px 120px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
-        transform: floatTransform(float),
+        transform: quiet ? undefined : floatTransform(float),
       }}
     />
   );
@@ -74,20 +95,33 @@ export const SceneFrame: React.FC<{ scene: ExplainerScene; children: React.React
 }) => {
   const layout = useLayout();
   const { t } = useSceneTime();
+  // Saved scenes may predate planner budgets; functional scenes remain free of global extras.
+  const functional =
+    isCausalSceneKind(scene.kind) ||
+    (scene.kind === 'hero' && isCausalHeroProp(scene.prop)) ||
+    (scene.kind === 'stamp' && !!scene.finish) ||
+    ((scene.kind === 'hero' || scene.kind === 'statement') && !!scene.labelTreatment) ||
+    (scene.kind === 'statement' && !!scene.semanticText) ||
+    (scene.kind === 'number' && !!scene.presentation);
+  const extras: SceneExtras = functional
+    ? {}
+    : scene.overlayStamp?.finish
+      ? { overlayStamp: scene.overlayStamp }
+      : scene;
   const { safe, floating } = layout;
   const scale = Math.min(safe.width / EXPLAINER_STAGE_WIDTH, safe.height / EXPLAINER_STAGE_HEIGHT);
   const w = EXPLAINER_STAGE_WIDTH * scale;
   const h = EXPLAINER_STAGE_HEIGHT * scale;
   const left = safe.x + (safe.width - w) / 2;
   const top = safe.y + (safe.height - h) / 2;
-  const dim = scene.dimAt === undefined || scene.kind === 'stack' ? 0 : ramp(t, scene.dimAt, 0.5);
+  const dim = extras.dimAt === undefined || scene.kind === 'stack' ? 0 : ramp(t, extras.dimAt, 0.5);
 
   return (
-    <ExplainerProvider value={{ extras: scene }}>
+    <ExplainerProvider value={{ extras }}>
       <SceneReactionLayer>
         {floating && (
           <div style={{ position: 'absolute', left, top, width: w, height: h }}>
-            <GlassCard />
+            <GlassCard quiet={functional} />
           </div>
         )}
         <div
@@ -104,10 +138,8 @@ export const SceneFrame: React.FC<{ scene: ExplainerScene; children: React.React
           }}
         >
           {children}
-          {scene.overlayStamp && (
-            <OverlayStamp word={scene.overlayStamp.word} at={scene.overlayStamp.at} />
-          )}
-          {(scene.bursts ?? []).map((b, i) => (
+          {extras.overlayStamp && <OverlayStamp {...extras.overlayStamp} />}
+          {(extras.bursts ?? []).map((b, i) => (
             <Burst
               key={`burst-${b.at}-${i}`}
               atSec={b.at}

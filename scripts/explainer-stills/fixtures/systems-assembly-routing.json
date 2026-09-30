@@ -1,0 +1,57 @@
+[
+  {
+    "name": "keystone",
+    "covers": [{"category":"kind","id":"keystone"}],
+    "durationSec": 5.2,
+    "samples": [
+      { "name": "supports", "frame": 24 },
+      { "name": "blocks", "frame": 60 },
+      { "name": "locked", "frame": 83 },
+      { "name": "withdraw", "frame": 116 },
+      { "name": "hold", "frame": 144 }
+    ],
+    "cases": [
+      { "name": "violet-stack", "layout": "stack", "aspect": "9:16" },
+      { "name": "amber-stack", "layout": "stack", "aspect": "9:16", "palette": {"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]} },
+      { "name": "amber-compact", "layout": "over", "aspect": "16:9", "palette": {"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]} }
+    ],
+    "scene": { "kind": "keystone", "label": "Keep it together", "supportsAt": 0.3, "blocksAt": 1.1, "lockAt": 2.75, "withdrawAt": 3.6 }
+  },
+  {
+    "name": "switchyard-left",
+    "covers": [{"category":"kind","id":"switchyard"}],
+    "durationSec": 5.2,
+    "samples": [
+      { "name": "approach", "frame": 24 },
+      { "name": "seated", "frame": 43 },
+      { "name": "committed", "frame": 85 },
+      { "name": "reel-carts-on-curve", "frame": 96 },
+      { "name": "arrived", "frame": 114 },
+      { "name": "hold", "frame": 144 }
+    ],
+    "cases": [
+      { "name": "violet-stack", "layout": "stack", "aspect": "9:16" },
+      { "name": "amber-stack", "layout": "stack", "aspect": "9:16", "palette": {"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]} },
+      { "name": "amber-compact", "layout": "over", "aspect": "16:9", "palette": {"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]} }
+    ],
+    "scene": { "kind": "switchyard", "label": "Route the requests", "route": "left", "leftLabel": "Review", "rightLabel": "Publish", "approachAt": 0.3, "seatAt": 1.4, "commitAt": 2.1, "arriveAt": 3.7 }
+  },
+  {
+    "name": "switchyard-right",
+    "covers": [{"category":"kind","id":"switchyard"}],
+    "durationSec": 5.2,
+    "samples": [
+      { "name": "approach", "frame": 24 },
+      { "name": "seated", "frame": 43 },
+      { "name": "committed", "frame": 85 },
+      { "name": "reel-carts-on-curve", "frame": 96 },
+      { "name": "arrived", "frame": 114 },
+      { "name": "hold", "frame": 144 }
+    ],
+    "cases": [
+      { "name": "violet-stack", "layout": "stack", "aspect": "9:16" },
+      { "name": "amber-compact", "layout": "over", "aspect": "16:9", "palette": {"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]} }
+    ],
+    "scene": { "kind": "switchyard", "label": "Route the requests", "route": "right", "leftLabel": "Review", "rightLabel": "Publish", "approachAt": 0.3, "seatAt": 1.4, "commitAt": 2.1, "arriveAt": 3.7 }
+  }
+]

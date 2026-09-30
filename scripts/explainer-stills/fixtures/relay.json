@@ -1,0 +1,518 @@
+[
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "relay-unlock",
+    "scene": {
+      "kind": "relay",
+      "preset": "unlock",
+      "label": "Unlock the door",
+      "sourceAt": 0.3,
+      "transferAt": 1.2,
+      "receiveAt": 2.2,
+      "outcomeAt": 4.2
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "source",
+        "frame": 9
+      },
+      {
+        "name": "transfer-before",
+        "frame": 35
+      },
+      {
+        "name": "transfer",
+        "frame": 36
+      },
+      {
+        "name": "handoff-before",
+        "frame": 65
+      },
+      {
+        "name": "handoff",
+        "frame": 66
+      },
+      {
+        "name": "handoff-after",
+        "frame": 67
+      },
+      {
+        "name": "receiving",
+        "frame": 93
+      },
+      {
+        "name": "packing",
+        "frame": 116
+      },
+      {
+        "name": "settled",
+        "frame": 127
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "relay"
+      },
+      {
+        "category": "relay",
+        "id": "unlock"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "relay-nurture",
+    "scene": {
+      "kind": "relay",
+      "preset": "nurture",
+      "label": "Nurture growth",
+      "sourceAt": 0.3,
+      "transferAt": 1.2,
+      "receiveAt": 2.2,
+      "outcomeAt": 4.2
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "source",
+        "frame": 9
+      },
+      {
+        "name": "transfer-before",
+        "frame": 35
+      },
+      {
+        "name": "transfer",
+        "frame": 36
+      },
+      {
+        "name": "handoff-before",
+        "frame": 65
+      },
+      {
+        "name": "handoff",
+        "frame": 66
+      },
+      {
+        "name": "handoff-after",
+        "frame": 67
+      },
+      {
+        "name": "receiving",
+        "frame": 93
+      },
+      {
+        "name": "packing",
+        "frame": 116
+      },
+      {
+        "name": "settled",
+        "frame": 127
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "relay"
+      },
+      {
+        "category": "relay",
+        "id": "nurture"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "relay-attract-process",
+    "scene": {
+      "kind": "relay",
+      "preset": "attract-process",
+      "label": "Attract and package",
+      "sourceAt": 0.3,
+      "transferAt": 1.2,
+      "receiveAt": 2.2,
+      "outcomeAt": 4.2
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "source",
+        "frame": 9
+      },
+      {
+        "name": "transfer-before",
+        "frame": 35
+      },
+      {
+        "name": "transfer",
+        "frame": 36
+      },
+      {
+        "name": "handoff-before",
+        "frame": 65
+      },
+      {
+        "name": "handoff",
+        "frame": 66
+      },
+      {
+        "name": "handoff-after",
+        "frame": 67
+      },
+      {
+        "name": "receiving",
+        "frame": 93
+      },
+      {
+        "name": "packing",
+        "frame": 116
+      },
+      {
+        "name": "settled",
+        "frame": 127
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "relay"
+      },
+      {
+        "category": "relay",
+        "id": "attract-process"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "relay-power-insight",
+    "scene": {
+      "kind": "relay",
+      "preset": "power-insight",
+      "label": "Power becomes light",
+      "sourceAt": 0.3,
+      "transferAt": 1.2,
+      "receiveAt": 2.2,
+      "outcomeAt": 4.2
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "source",
+        "frame": 9
+      },
+      {
+        "name": "transfer-before",
+        "frame": 35
+      },
+      {
+        "name": "transfer",
+        "frame": 36
+      },
+      {
+        "name": "handoff-before",
+        "frame": 65
+      },
+      {
+        "name": "handoff",
+        "frame": 66
+      },
+      {
+        "name": "handoff-after",
+        "frame": 67
+      },
+      {
+        "name": "receiving",
+        "frame": 93
+      },
+      {
+        "name": "packing",
+        "frame": 116
+      },
+      {
+        "name": "settled",
+        "frame": 127
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "relay"
+      },
+      {
+        "category": "relay",
+        "id": "power-insight"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "relay-complete-system",
+    "scene": {
+      "kind": "relay",
+      "preset": "complete-system",
+      "label": "Complete the system",
+      "sourceAt": 0.3,
+      "transferAt": 1.2,
+      "receiveAt": 2.2,
+      "outcomeAt": 4.2
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "source",
+        "frame": 9
+      },
+      {
+        "name": "transfer-before",
+        "frame": 35
+      },
+      {
+        "name": "transfer",
+        "frame": 36
+      },
+      {
+        "name": "handoff-before",
+        "frame": 65
+      },
+      {
+        "name": "handoff",
+        "frame": 66
+      },
+      {
+        "name": "handoff-after",
+        "frame": 67
+      },
+      {
+        "name": "receiving",
+        "frame": 93
+      },
+      {
+        "name": "packing",
+        "frame": 116
+      },
+      {
+        "name": "settled",
+        "frame": 127
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "relay"
+      },
+      {
+        "category": "relay",
+        "id": "complete-system"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "relay-idea-process-result",
+    "scene": {
+      "kind": "relay",
+      "preset": "idea-process-result",
+      "label": "Idea to finished result",
+      "sourceAt": 0.3,
+      "transferAt": 1.2,
+      "receiveAt": 2.2,
+      "outcomeAt": 4.2
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "source",
+        "frame": 9
+      },
+      {
+        "name": "transfer-before",
+        "frame": 35
+      },
+      {
+        "name": "transfer",
+        "frame": 36
+      },
+      {
+        "name": "handoff-before",
+        "frame": 65
+      },
+      {
+        "name": "handoff",
+        "frame": 66
+      },
+      {
+        "name": "handoff-after",
+        "frame": 67
+      },
+      {
+        "name": "receiving",
+        "frame": 93
+      },
+      {
+        "name": "packing",
+        "frame": 116
+      },
+      {
+        "name": "settled",
+        "frame": 127
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "relay"
+      },
+      {
+        "category": "relay",
+        "id": "idea-process-result"
+      }
+    ]
+  }
+]

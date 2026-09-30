@@ -1,0 +1,18 @@
+[
+  {
+    "name":"bottleneck",
+    "covers":[{"category":"kind","id":"bottleneck"}],
+    "durationSec":4.8,
+    "scene":{"kind":"bottleneck","label":"Work queues","tokenCount":6,"feedAt":0.3,"queueAt":1.2,"openAt":2.1,"clearAt":3.5},
+    "samples":[{"name":"feed","frame":12},{"name":"queue","frame":38},{"name":"open","frame":63},{"name":"parcel-transfer","frame":74},{"name":"release","frame":85},{"name":"clear","frame":110},{"name":"hold","frame":135}],
+    "cases":[{"name":"stack","aspect":"9:16","layout":"stack"},{"name":"compact","aspect":"16:9","layout":"over"}]
+  },
+  {
+    "name":"momentum",
+    "covers":[{"category":"kind","id":"momentum"}],
+    "durationSec":5.2,
+    "scene":{"kind":"momentum","label":"Build momentum","pushAt":0.3,"repeatAt":1.1,"engageAt":2.1,"coastAt":3.6},
+    "samples":[{"name":"setup","frame":7},{"name":"push","frame":18},{"name":"repeat","frame":45},{"name":"engage","frame":69},{"name":"parcel-carry","frame":82},{"name":"coast","frame":117},{"name":"hold","frame":148}],
+    "cases":[{"name":"stack","aspect":"9:16","layout":"stack"},{"name":"compact","aspect":"16:9","layout":"over"}]
+  }
+]

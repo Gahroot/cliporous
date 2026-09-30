@@ -1,0 +1,55 @@
+import type React from 'react';
+import { useVideoConfig } from 'remotion';
+import { Stage3D, useRigCamera } from '../Stage3D';
+import { useStage } from '../stage';
+import type { CameraSpec } from '../three-helpers';
+import { MECHANISM_CAMERA } from './anchors';
+
+export function useCompactMechanism(): boolean {
+  const { width } = useVideoConfig();
+  // A vertical stacked scene is itself 1080×960; its ratio is not the output aspect.
+  return width === 1920;
+}
+
+/** A single WebGL stage and a sibling editorial layer, both driven by the same Remotion frame. */
+export function MechanismStage({
+  children,
+  title,
+  overlay,
+  camera = MECHANISM_CAMERA,
+}: {
+  children: React.ReactNode;
+  title?: string;
+  overlay?: (camera: CameraSpec) => React.ReactNode;
+  camera?: CameraSpec;
+}): React.ReactElement {
+  const S = useStage();
+  const compact = useCompactMechanism();
+  const sampled = useRigCamera(camera, { driftDeg: 0, pushAmount: 0 });
+  return (
+    <>
+      <Stage3D camera={camera} driftDeg={0} pushAmount={0} groundY={-1.4} shadowScale={9}>
+        {children}
+      </Stage3D>
+      {title && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 70,
+            left: 72,
+            width: 936,
+            color: S.text,
+            fontFamily: S.font,
+            fontSize: compact ? 60 : 50,
+            fontWeight: 750,
+            lineHeight: 1.15,
+            textAlign: 'center',
+          }}
+        >
+          {title}
+        </div>
+      )}
+      {overlay?.(sampled)}
+    </>
+  );
+}

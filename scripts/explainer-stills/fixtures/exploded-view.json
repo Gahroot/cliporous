@@ -1,0 +1,2954 @@
+[
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-housing-magnified-inset",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "housing",
+      "label": "Mechanism assembly",
+      "detailLabel": "housing",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "magnified-inset",
+        "target": "housing",
+        "at": 2,
+        "label": "housing"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "magnified-inset"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-housing-tracked-callout",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "housing",
+      "label": "Mechanism assembly",
+      "detailLabel": "housing",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "tracked-callout",
+        "target": "housing",
+        "at": 2,
+        "label": "housing"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "tracked-callout"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-housing-measurement",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "housing",
+      "label": "Mechanism assembly",
+      "detailLabel": "housing",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "measurement",
+        "target": "housing",
+        "at": 2,
+        "label": "housing width"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "measurement"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-housing-focus-isolation",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "housing",
+      "label": "Mechanism assembly",
+      "detailLabel": "housing",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "focus-isolation",
+        "target": "housing",
+        "at": 2,
+        "label": "housing"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "focus-isolation"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-shaft-magnified-inset",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "shaft",
+      "label": "Mechanism assembly",
+      "detailLabel": "shaft",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "magnified-inset",
+        "target": "shaft",
+        "at": 2,
+        "label": "shaft"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "magnified-inset"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-shaft-tracked-callout",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "shaft",
+      "label": "Mechanism assembly",
+      "detailLabel": "shaft",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "tracked-callout",
+        "target": "shaft",
+        "at": 2,
+        "label": "shaft"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "tracked-callout"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-shaft-measurement",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "shaft",
+      "label": "Mechanism assembly",
+      "detailLabel": "shaft",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "measurement",
+        "target": "shaft",
+        "at": 2,
+        "label": "shaft length"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "measurement"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-shaft-focus-isolation",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "shaft",
+      "label": "Mechanism assembly",
+      "detailLabel": "shaft",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "focus-isolation",
+        "target": "shaft",
+        "at": 2,
+        "label": "shaft"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "focus-isolation"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-gear-magnified-inset",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "gear",
+      "label": "Mechanism assembly",
+      "detailLabel": "gear",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "magnified-inset",
+        "target": "gear",
+        "at": 2,
+        "label": "gear"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "magnified-inset"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-gear-tracked-callout",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "gear",
+      "label": "Mechanism assembly",
+      "detailLabel": "gear",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "tracked-callout",
+        "target": "gear",
+        "at": 2,
+        "label": "gear"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "tracked-callout"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-gear-measurement",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "gear",
+      "label": "Mechanism assembly",
+      "detailLabel": "gear",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "measurement",
+        "target": "gear",
+        "at": 2,
+        "label": "gear width"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "measurement"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-mechanism-gear-focus-isolation",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "mechanism",
+      "target": "gear",
+      "label": "Mechanism assembly",
+      "detailLabel": "gear",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "focus-isolation",
+        "target": "gear",
+        "at": 2,
+        "label": "gear"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "focus-isolation"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-base-magnified-inset",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "base",
+      "label": "Parcel assembly",
+      "detailLabel": "base",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "magnified-inset",
+        "target": "base",
+        "at": 2,
+        "label": "base"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "magnified-inset"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-base-tracked-callout",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "base",
+      "label": "Parcel assembly",
+      "detailLabel": "base",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "tracked-callout",
+        "target": "base",
+        "at": 2,
+        "label": "base"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "tracked-callout"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-base-measurement",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "base",
+      "label": "Parcel assembly",
+      "detailLabel": "base",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "measurement",
+        "target": "base",
+        "at": 2,
+        "label": "base width"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "measurement"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-base-focus-isolation",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "base",
+      "label": "Parcel assembly",
+      "detailLabel": "base",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "focus-isolation",
+        "target": "base",
+        "at": 2,
+        "label": "base"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "focus-isolation"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-contents-magnified-inset",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "contents",
+      "label": "Parcel assembly",
+      "detailLabel": "contents",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "magnified-inset",
+        "target": "contents",
+        "at": 2,
+        "label": "contents"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "magnified-inset"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-contents-tracked-callout",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "contents",
+      "label": "Parcel assembly",
+      "detailLabel": "contents",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "tracked-callout",
+        "target": "contents",
+        "at": 2,
+        "label": "contents"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "tracked-callout"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-contents-measurement",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "contents",
+      "label": "Parcel assembly",
+      "detailLabel": "contents",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "measurement",
+        "target": "contents",
+        "at": 2,
+        "label": "contents width"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "measurement"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-contents-focus-isolation",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "contents",
+      "label": "Parcel assembly",
+      "detailLabel": "contents",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "focus-isolation",
+        "target": "contents",
+        "at": 2,
+        "label": "contents"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "focus-isolation"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-lid-magnified-inset",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "lid",
+      "label": "Parcel assembly",
+      "detailLabel": "lid",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "magnified-inset",
+        "target": "lid",
+        "at": 2,
+        "label": "lid"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "magnified-inset"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-lid-tracked-callout",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "lid",
+      "label": "Parcel assembly",
+      "detailLabel": "lid",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "tracked-callout",
+        "target": "lid",
+        "at": 2,
+        "label": "lid"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "tracked-callout"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-lid-measurement",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "lid",
+      "label": "Parcel assembly",
+      "detailLabel": "lid",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "measurement",
+        "target": "lid",
+        "at": 2,
+        "label": "lid width"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "measurement"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-parcel-lid-focus-isolation",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "parcel",
+      "target": "lid",
+      "label": "Parcel assembly",
+      "detailLabel": "lid",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "focus-isolation",
+        "target": "lid",
+        "at": 2,
+        "label": "lid"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "focus-isolation"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-board-magnified-inset",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "board",
+      "label": "Computing assembly",
+      "detailLabel": "board",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "magnified-inset",
+        "target": "board",
+        "at": 2,
+        "label": "board"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "magnified-inset"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-board-tracked-callout",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "board",
+      "label": "Computing assembly",
+      "detailLabel": "board",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "tracked-callout",
+        "target": "board",
+        "at": 2,
+        "label": "board"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "tracked-callout"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-board-measurement",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "board",
+      "label": "Computing assembly",
+      "detailLabel": "board",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "measurement",
+        "target": "board",
+        "at": 2,
+        "label": "board width"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "measurement"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-board-focus-isolation",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "board",
+      "label": "Computing assembly",
+      "detailLabel": "board",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "focus-isolation",
+        "target": "board",
+        "at": 2,
+        "label": "board"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "focus-isolation"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-chip-magnified-inset",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "chip",
+      "label": "Computing assembly",
+      "detailLabel": "chip",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "magnified-inset",
+        "target": "chip",
+        "at": 2,
+        "label": "chip"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "magnified-inset"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-chip-tracked-callout",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "chip",
+      "label": "Computing assembly",
+      "detailLabel": "chip",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "tracked-callout",
+        "target": "chip",
+        "at": 2,
+        "label": "chip"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "tracked-callout"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-chip-measurement",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "chip",
+      "label": "Computing assembly",
+      "detailLabel": "chip",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "measurement",
+        "target": "chip",
+        "at": 2,
+        "label": "chip width"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "measurement"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-chip-focus-isolation",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "chip",
+      "label": "Computing assembly",
+      "detailLabel": "chip",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "focus-isolation",
+        "target": "chip",
+        "at": 2,
+        "label": "chip"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "focus-isolation"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-heatsink-magnified-inset",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "heatsink",
+      "label": "Computing assembly",
+      "detailLabel": "heatsink",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "magnified-inset",
+        "target": "heatsink",
+        "at": 2,
+        "label": "heatsink"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "magnified-inset"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-heatsink-tracked-callout",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "heatsink",
+      "label": "Computing assembly",
+      "detailLabel": "heatsink",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "tracked-callout",
+        "target": "heatsink",
+        "at": 2,
+        "label": "heatsink"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "tracked-callout"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-heatsink-measurement",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "heatsink",
+      "label": "Computing assembly",
+      "detailLabel": "heatsink",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "measurement",
+        "target": "heatsink",
+        "at": 2,
+        "label": "heatsink width"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "measurement"
+      }
+    ]
+  },
+  {
+    "durationSec": 6,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-over",
+        "layout": "over",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "name": "exploded-computing-heatsink-focus-isolation",
+    "scene": {
+      "kind": "exploded-view",
+      "template": "computing",
+      "target": "heatsink",
+      "label": "Computing assembly",
+      "detailLabel": "heatsink",
+      "assembleAt": 0.3,
+      "separateAt": 1,
+      "explainAt": 2,
+      "returnAt": 3.3,
+      "detail": {
+        "kind": "focus-isolation",
+        "target": "heatsink",
+        "at": 2,
+        "label": "heatsink"
+      }
+    },
+    "samples": [
+      {
+        "name": "assembled",
+        "frame": 9
+      },
+      {
+        "name": "separating",
+        "frame": 45
+      },
+      {
+        "name": "explain",
+        "frame": 61
+      },
+      {
+        "name": "detail",
+        "frame": 78
+      },
+      {
+        "name": "return-before",
+        "frame": 98
+      },
+      {
+        "name": "return",
+        "frame": 108
+      },
+      {
+        "name": "reassembled",
+        "frame": 120
+      },
+      {
+        "name": "hold",
+        "frame": 179
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "exploded-view"
+      },
+      {
+        "category": "treatment",
+        "id": "focus-isolation"
+      }
+    ]
+  }
+]

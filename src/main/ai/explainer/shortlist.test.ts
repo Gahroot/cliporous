@@ -82,6 +82,78 @@ const CASES: { text: string; kind: string; prop?: string }[] = [
     text: 'Step by step: learn, then build, then scale. Take it one step at a time and climb.',
     kind: 'stairs',
   },
+  {
+    text: 'Approvals are the bottleneck: requests queue behind the gate until we open it and clear the backlog.',
+    kind: 'bottleneck',
+  },
+  {
+    text: 'Orders pile up waiting for approval; remove the constraint and let them flow through.',
+    kind: 'bottleneck',
+  },
+  {
+    text: 'A first push gets it moving, repeated pushes build momentum, then the wheel drives the output before coasting to a stop.',
+    kind: 'momentum',
+  },
+  {
+    text: 'Each small push helps; keep pushing and the flywheel starts driving the output, then it coasts to a stop.',
+    kind: 'momentum',
+  },
+  {
+    text: 'At first we push hard; shifting the fulcrum changes the leverage, then the same effort lifts the load and holds it.',
+    kind: 'leverage',
+  },
+  {
+    text: 'It takes real effort to move this weight. Move the pivot closer and the load rises with the same push, then stays up.',
+    kind: 'leverage',
+  },
+  {
+    text: 'Water flows in, but leaks drain the tank. Seal those leaks and the retained level rises until we stop the inflow.',
+    kind: 'resource-leak',
+  },
+  {
+    text: 'Revenue comes in, hidden fees leak money away; close those leaks and we retain more of what comes in.',
+    kind: 'resource-leak',
+  },
+  {
+    text: 'We keep filling the bucket but it leaks; plug the holes and the water level rises instead of draining away.',
+    kind: 'resource-leak',
+  },
+  {
+    text: 'Pressure rises above target, a sensor detects the error, the valve reduces flow, and the gauge settles exactly at target.',
+    kind: 'feedback-control',
+  },
+  {
+    text: 'The gauge goes above its setpoint, a sensor responds, then a valve corrects the flow and it settles at the setpoint.',
+    kind: 'feedback-control',
+  },
+  {
+    text: 'Temperature overshoots the target; the sensor signals the valve to cut the hot water flow until it returns to target.',
+    kind: 'feedback-control',
+  },
+  {
+    text: 'Temporary supports hold the blocks while the keystone locks the arch; then we withdraw the supports and it stands on its own.',
+    kind: 'keystone',
+  },
+  {
+    text: 'We build the stones on scaffolding, seat the center stone, then remove the scaffolding and the arch stays up.',
+    kind: 'keystone',
+  },
+  {
+    text: 'Falsework carries the wedges until the keystone seats firmly. Lower the supports and the locked arch holds without them.',
+    kind: 'keystone',
+  },
+  {
+    text: 'Tokens approach the junction. The tongue seats toward the right track, then they pass the junction and arrive on the chosen branch.',
+    kind: 'switchyard',
+  },
+  {
+    text: 'Parcels approach the fork; seat the switch toward Express rather than Review, then commit the parcels to that branch and they arrive at Express.',
+    kind: 'switchyard',
+  },
+  {
+    text: 'Inbound requests approach the fork. The rail switch selects Review over Archive; once locked, we send them down that route until they reach Review.',
+    kind: 'switchyard',
+  },
   // Older kinds must stay reachable.
   { text: 'First, write the outline. Second, record it. Third, edit it down.', kind: 'checklist' },
   {
@@ -110,6 +182,91 @@ const CASES: { text: string; kind: string; prop?: string }[] = [
   { text: 'A compass gives you direction and purpose.', kind: 'hero', prop: 'compass' },
   { text: 'Connect the integration to your partners.', kind: 'hero', prop: 'link' },
   { text: 'Graduation from university earns your degree.', kind: 'hero', prop: 'graduation-cap' },
+  // Authored mechanisms remain reachable without displacing the existing loop case.
+  {
+    text: 'Each small push keeps the flywheel turning with momentum.',
+    kind: 'hero',
+    prop: 'flywheel',
+  },
+  { text: 'Move the fulcrum on the lever to lift the load.', kind: 'hero', prop: 'lever' },
+  { text: 'Pull the taut cable over the pulley to raise the load.', kind: 'hero', prop: 'pulley' },
+  { text: 'Compress the spring, store tension, then release it.', kind: 'hero', prop: 'spring' },
+  {
+    text: 'The ratchet advances one notch and never slips backwards.',
+    kind: 'hero',
+    prop: 'ratchet',
+  },
+  {
+    text: 'The conveyor belt moves every parcel along the production line.',
+    kind: 'hero',
+    prop: 'conveyor',
+  },
+  { text: 'Open the valve to control the flow through the pipe.', kind: 'hero', prop: 'valve' },
+  {
+    text: 'Watch the pressure gauge respond when the input rises.',
+    kind: 'hero',
+    prop: 'pressure-gauge',
+  },
+  {
+    text: 'The rail switch selects the right track before the token arrives.',
+    kind: 'hero',
+    prop: 'rail-switch',
+  },
+  { text: 'Release the vault bolts before opening the heavy door.', kind: 'hero', prop: 'vault' },
+  { text: 'Keep your cards in the wallet for everyday spending.', kind: 'hero', prop: 'wallet' },
+  {
+    text: 'Tap your card on the contactless reader and wait for confirmation.',
+    kind: 'hero',
+    prop: 'card-reader',
+  },
+  {
+    text: 'Use a calculator to calculate the cost before deciding.',
+    kind: 'hero',
+    prop: 'calculator',
+  },
+  { text: 'Fold the parcel panels and close the shipping box.', kind: 'hero', prop: 'parcel' },
+  {
+    text: 'File the documents in the filing cabinet to organize your records.',
+    kind: 'hero',
+    prop: 'filing-cabinet',
+  },
+  { text: 'Fill the reservoir to build a resource reserve.', kind: 'hero', prop: 'reservoir' },
+  { text: 'A prism splits one beam of light into separate paths.', kind: 'hero', prop: 'prism' },
+  {
+    text: 'Close the aperture so the iris blades let less light in.',
+    kind: 'hero',
+    prop: 'aperture',
+  },
+  {
+    text: 'Use a magnifying glass to inspect the fine print and see that detail.',
+    kind: 'hero',
+    prop: 'magnifying-glass',
+  },
+  {
+    text: 'Extend the telescope, then aim toward the distant horizon.',
+    kind: 'hero',
+    prop: 'telescope',
+  },
+  {
+    text: 'Lower the bridge leaves to bridge the gap until their tips meet.',
+    kind: 'hero',
+    prop: 'bridge',
+  },
+  {
+    text: 'Connect both sides of the gap so people can cross safely.',
+    kind: 'hero',
+    prop: 'bridge',
+  },
+  {
+    text: 'Seat the paired blocks in the archway before the keystone completes the arch.',
+    kind: 'hero',
+    prop: 'arch',
+  },
+  {
+    text: 'The center stone seats last and locks both sides in place.',
+    kind: 'hero',
+    prop: 'arch',
+  },
   // Hero props follow the transcript.
   {
     text: 'Save a little every month, that savings account is your safety net.',
@@ -127,6 +284,143 @@ const CASES: { text: string; kind: string; prop?: string }[] = [
 ];
 
 describe('buildShortlist eval set', () => {
+  it.each([
+    'We are busy today.',
+    'Under pressure, take a break.',
+    'Work is busy and the pressure is high.',
+    'I queued up my favourite song.',
+    'It is a flywheel: content brings leads, leads bring revenue, revenue funds content, over and over.',
+  ])('does not offer a bottleneck for ambiguous text: %s', (text) => {
+    const s = buildShortlist(toWords(text));
+    expect(s.kinds.map((kind) => kind.kind)).not.toContain('bottleneck');
+    expect(s.scores.bottleneck).toBeUndefined();
+  });
+  it.each([
+    { text: 'We need more momentum this quarter.', simpler: 'statement' },
+    { text: 'Consistency matters. Show up every day.', simpler: 'statement' },
+    { text: 'Each small push keeps the flywheel turning with momentum.', simpler: 'hero' },
+    {
+      text: 'It is a flywheel: content brings leads, leads bring revenue, revenue funds content, over and over.',
+      simpler: 'loop',
+    },
+    { text: 'We used financial leverage to fund the deal.', simpler: 'statement' },
+    { text: 'That offer gives us leverage in the negotiation.', simpler: 'statement' },
+    { text: 'Work smarter, not harder.', simpler: 'statement' },
+    { text: 'Pull the lever to open the door.', simpler: 'hero' },
+    {
+      text: 'Plot every task on effort versus impact and do the high impact low effort ones first.',
+      simpler: 'quadrant',
+    },
+  ])('keeps $simpler instead of a mechanism for "$text"', ({ text, simpler }) => {
+    const s = buildShortlist(toWords(text));
+    expect(s.kinds.map((kind) => kind.kind)).toContain(simpler);
+    for (const kind of ['momentum', 'leverage']) {
+      expect(s.kinds.map((entry) => entry.kind)).not.toContain(kind);
+      expect(s.scores[kind]).toBeUndefined();
+    }
+  });
+  it.each([
+    { text: 'Pressure.', simpler: 'statement' },
+    { text: 'Under pressure, take a break.', simpler: 'statement' },
+    { text: 'Watch the pressure gauge respond when the input rises.', simpler: 'hero' },
+    { text: 'The gauge is above target but we only record the reading.', simpler: 'hero' },
+    {
+      text: 'Pressure rises above target, the sensor sends an alert, and we leave the valve alone.',
+      simpler: 'hero',
+    },
+    { text: 'Customer feedback helped us improve the landing page.', simpler: 'statement' },
+    { text: 'Money leaks away on subscriptions every month.', simpler: 'statement' },
+    { text: 'Revenue comes in but money leaks away on fees.', simpler: 'statement' },
+    { text: 'Seal the parcel before it leaks in transit.', simpler: 'hero' },
+    { text: 'Fill the reservoir and keep some water in reserve.', simpler: 'hero' },
+    {
+      text: 'It is a flywheel: content brings leads, leads bring revenue, revenue funds content, over and over.',
+      simpler: 'loop',
+    },
+  ])('keeps $simpler without inventing a corrective system for "$text"', ({ text, simpler }) => {
+    const s = buildShortlist(toWords(text));
+    expect(s.kinds.map((kind) => kind.kind)).toContain(simpler);
+    for (const kind of ['resource-leak', 'feedback-control']) {
+      expect(s.kinds.map((entry) => entry.kind)).not.toContain(kind);
+      expect(s.scores[kind]).toBeUndefined();
+    }
+  });
+  it.each([
+    { text: 'Trust is the keystone of our business.', simpler: 'statement' },
+    { text: 'That stone arch has stood for centuries.', simpler: 'hero' },
+    {
+      text: 'Seat the paired blocks in the archway before the keystone completes the arch.',
+      simpler: 'hero',
+    },
+    { text: 'The center stone seats last and locks both sides in place.', simpler: 'hero' },
+    { text: 'Temporary supports hold the blocks while we inspect them.', simpler: 'statement' },
+    { text: 'Switch tasks when you feel stuck.', simpler: 'statement' },
+    { text: 'Under pressure, switch to a simpler task and take a break.', simpler: 'statement' },
+    { text: 'Switch to the new software and route the incoming requests.', simpler: 'statement' },
+    { text: 'We can choose Express or Review, but have not decided yet.', simpler: 'statement' },
+    {
+      text: 'The rail switch selects the right track before the token arrives.',
+      simpler: 'hero',
+    },
+    {
+      text: 'Tokens approach the junction, but the switch is broken so nothing moves.',
+      simpler: 'statement',
+    },
+    {
+      text: 'It is a flywheel: content brings leads, leads bring revenue, revenue funds content, over and over.',
+      simpler: 'loop',
+    },
+  ])('keeps $simpler without inventing an assembly or routing system for "$text"', ({
+    text,
+    simpler,
+  }) => {
+    const s = buildShortlist(toWords(text));
+    expect(s.kinds.map((kind) => kind.kind)).toContain(simpler);
+    for (const kind of ['keystone', 'switchyard']) {
+      expect(s.kinds.map((entry) => entry.kind)).not.toContain(kind);
+      expect(s.scores[kind]).toBeUndefined();
+    }
+  });
+  it('does not turn everyday pressure or a software switch into physical controls', () => {
+    const s = buildShortlist(toWords('Under pressure, switch to a simpler task and take a break.'));
+    expect(s.heroProps).not.toContain('pressure-gauge');
+    expect(s.heroProps).not.toContain('rail-switch');
+  });
+  it('does not invent a checkout or calculator from a generic outcome', () => {
+    const s = buildShortlist(toWords('Think about the outcome before deciding.'));
+    expect(s.heroProps).not.toContain('card-reader');
+    expect(s.heroProps).not.toContain('calculator');
+  });
+  it.each([
+    'Focus on one goal instead of chasing every opportunity.',
+    'The future is uncertain, so keep the plan simple.',
+    'Split the workload between two people.',
+    'Open the document and read it carefully.',
+  ])('does not invent optical equipment for ambiguous text: %s', (text) => {
+    const s = buildShortlist(toWords(text));
+    expect(s.kinds.map((kind) => kind.kind)).toContain('statement');
+    for (const prop of ['prism', 'aperture', 'magnifying-glass', 'telescope'])
+      expect(s.heroProps).not.toContain(prop);
+  });
+  it.each([
+    'The network connected every service after deployment.',
+    'We connect teams through our network.',
+    'Review the software architecture before changing the API.',
+    'Archive the old documents before the next release.',
+  ])('does not invent structures for ambiguous text: %s', (text) => {
+    const s = buildShortlist(toWords(text));
+    expect(s.heroProps).not.toContain('bridge');
+    expect(s.heroProps).not.toContain('arch');
+  });
+  it('does not turn a digital file format into a filing cabinet', () => {
+    expect(buildShortlist(toWords('This file format opens on a laptop.')).heroProps).not.toContain(
+      'filing-cabinet',
+    );
+  });
+  it('does not interpret the season as a compression spring', () => {
+    const s = buildShortlist(toWords('This spring we will launch the next course.'));
+    expect(s.heroProps).not.toContain('spring');
+  });
   it.each(CASES)('offers $kind for "$text"', ({ text, kind, prop }) => {
     const s = buildShortlist(toWords(text));
     expect(s.kinds.map((k) => k.kind)).toContain(kind);
@@ -151,6 +445,8 @@ describe('buildShortlist limits', () => {
   it('never exceeds the caps, even for a trigger-heavy transcript', () => {
     const everything = CASES.map((c) => c.text).join(' ');
     const s = buildShortlist(toWords(everything));
+    expect(SHORTLIST_LIMITS.maxKinds).toBe(16);
+    expect(SHORTLIST_LIMITS.maxProps).toBe(10);
     expect(s.kinds.length).toBeLessThanOrEqual(SHORTLIST_LIMITS.maxKinds);
     expect(s.heroProps.length).toBeLessThanOrEqual(SHORTLIST_LIMITS.maxProps);
   });

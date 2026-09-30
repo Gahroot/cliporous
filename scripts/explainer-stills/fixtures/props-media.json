@@ -1,0 +1,6 @@
+[
+  {"name":"microphone","covers":[{"category":"prop","id":"microphone"}],"scene":{"kind":"hero","prop":"microphone","label":"Let the voice through","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":19},{"name":"switch","frame":30},{"name":"action","frame":36},{"name":"settled","frame":96}]},
+  {"name":"microphone-down","covers":[{"category":"prop","id":"microphone"}],"scene":{"kind":"hero","prop":"microphone","label":"Mute the microphone","at":0.4,"tone":"down"},"durationSec":4,"samples":[{"name":"setup","frame":19},{"name":"action","frame":28},{"name":"muted","frame":36},{"name":"settled","frame":96}]},
+  {"name":"camera","covers":[{"category":"prop","id":"camera"}],"scene":{"kind":"hero","prop":"camera","label":"Focus before the exposure","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":19},{"name":"focused","frame":33},{"name":"action","frame":42},{"name":"reopened","frame":48},{"name":"settled","frame":96}]},
+  {"name":"clapperboard","covers":[{"category":"prop","id":"clapperboard"}],"scene":{"kind":"hero","prop":"clapperboard","label":"Mark the take","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":19},{"name":"action","frame":30},{"name":"contact","frame":39},{"name":"settled","frame":96}]}
+]

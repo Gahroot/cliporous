@@ -1,0 +1,18 @@
+[
+  {
+    "name":"leverage",
+    "covers":[{"category":"kind","id":"leverage"}],
+    "durationSec":4.6,
+    "scene":{"kind":"leverage","label":"Move the fulcrum","effortAt":0.3,"pivotAt":1.2,"liftAt":2,"holdAt":3.2},
+    "samples":[{"name":"setup","frame":6},{"name":"effort","frame":23},{"name":"pivot","frame":48},{"name":"lift","frame":75},{"name":"result","frame":99},{"name":"hold","frame":131}],
+    "cases":[{"name":"stack","aspect":"9:16","layout":"stack"},{"name":"compact","aspect":"16:9","layout":"over"}]
+  },
+  {
+    "name":"feedback-control",
+    "covers":[{"category":"kind","id":"feedback-control"}],
+    "durationSec":5.2,
+    "scene":{"kind":"feedback-control","label":"Correct the pressure","exceedAt":0.3,"senseAt":1.2,"correctAt":2.2,"settleAt":4.2},
+    "samples":[{"name":"setup","frame":5},{"name":"over-target","frame":32},{"name":"sensed","frame":42},{"name":"correcting","frame":77},{"name":"settling","frame":99},{"name":"settled","frame":128},{"name":"hold","frame":149}],
+    "cases":[{"name":"stack","aspect":"9:16","layout":"stack"},{"name":"compact","aspect":"16:9","layout":"over"},{"name":"compact-amber","aspect":"16:9","layout":"over","palette":{"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]}}]
+  }
+]

@@ -1,0 +1,6 @@
+[
+  {"name":"conveyor","covers":[{"category":"prop","id":"conveyor"}],"scene":{"kind":"hero","prop":"conveyor","label":"Move work forward","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":21},{"name":"carry","frame":39},{"name":"parcel-tape","frame":44},{"name":"arrive","frame":54},{"name":"hold","frame":100}]},
+  {"name":"valve","covers":[{"category":"prop","id":"valve"}],"scene":{"kind":"hero","prop":"valve","label":"Control the flow","at":0.4},"durationSec":4,"samples":[{"name":"closed","frame":19},{"name":"open","frame":39},{"name":"flow","frame":55},{"name":"hold","frame":100}]},
+  {"name":"pressure-gauge","covers":[{"category":"prop","id":"pressure-gauge"}],"scene":{"kind":"hero","prop":"pressure-gauge","label":"Pressure responds","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":21},{"name":"response","frame":41},{"name":"settled","frame":90}]},
+  {"name":"rail-switch","covers":[{"category":"prop","id":"rail-switch"}],"scene":{"kind":"hero","prop":"rail-switch","label":"Choose the route","at":0.4},"durationSec":4,"samples":[{"name":"approach","frame":20},{"name":"seat","frame":32},{"name":"commit","frame":52},{"name":"rail-cart-flanges","frame":60},{"name":"arrive","frame":90}]}
+]

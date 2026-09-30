@@ -11,6 +11,74 @@
 
 import type { HeroProp, SceneCueKind } from './types';
 
+export const KINETIC_TIMING = {
+  flywheel: 0.95,
+  lever: 1.35,
+  pulley: 1.35,
+  spring: 1.5,
+  ratchet: 1.8,
+} as const;
+
+export const TRANSPORT_TIMING = {
+  conveyor: 1.4,
+  valve: 0.9,
+  'pressure-gauge': 1.25,
+  'rail-switch': 0.65,
+} as const;
+
+export const STORAGE_TIMING = {
+  parcel: 1.5,
+  'filing-cabinet': 1.1,
+  reservoir: 1.3,
+} as const;
+
+export const STRUCTURE_TIMING = {
+  bridge: 1.2,
+  arch: 1.3,
+} as const;
+
+export const OPTICS_TIMING = {
+  prism: 1.1,
+  aperture: 1.1,
+  'magnifying-glass': 1.15,
+  telescope: 1.25,
+} as const;
+
+export const COMMERCE_TIMING = {
+  vault: 0.65,
+  wallet: 0.95,
+  'card-reader': 0.85,
+  calculator: 1.2,
+} as const;
+
+export const MEDIA_TIMING = {
+  microphone: 0.8,
+  camera: 0.98,
+  clapperboard: 0.9,
+} as const;
+
+export const TOOLS_TIMING = {
+  metronome: 0.8,
+  'watering-can': 0.97,
+  wrench: 0.7,
+} as const;
+
+const CAUSAL_HERO_TIMING = {
+  ...KINETIC_TIMING,
+  ...TRANSPORT_TIMING,
+  ...STORAGE_TIMING,
+  ...STRUCTURE_TIMING,
+  ...OPTICS_TIMING,
+  ...COMMERCE_TIMING,
+  ...MEDIA_TIMING,
+  ...TOOLS_TIMING,
+} satisfies Partial<Record<HeroProp, number>>;
+
+/** Authored mechanisms own their motion; do not add legacy ambient turns or camera drift. */
+export function isCausalHeroProp(prop: HeroProp): boolean {
+  return Object.hasOwn(CAUSAL_HERO_TIMING, prop);
+}
+
 export interface HeroPropInfo {
   /** Short trigger meanings for the prompt ("idea, insight"). */
   hint: string;
@@ -27,6 +95,189 @@ export interface HeroPropInfo {
 }
 
 export const HERO_CATALOG: Readonly<Record<HeroProp, HeroPropInfo>> = {
+  microphone: {
+    hint: 'a studio microphone switches on before a restrained voice waveform; down mutes it',
+    triggers:
+      /\b(microphones?|podcast|record (?:your |the |a )?voice|mute (?:your |the )?mic|unmute)\b/,
+    impactSec: MEDIA_TIMING.microphone,
+    downImpactSec: MEDIA_TIMING.microphone,
+    downHint: 'switches off and silences the waveform (mute)',
+  },
+  camera: {
+    hint: 'a camera lens focuses before the shutter closes and reopens for one exposure',
+    triggers:
+      /\b(cameras?|photograph(?:s|y)?|take (?:a |the )?(?:photo|picture)|shutter|photographic exposure)\b/,
+    impactSec: MEDIA_TIMING.camera,
+    impactCue: { kind: 'tick', gain: 0.3 },
+  },
+  clapperboard: {
+    hint: 'a hinged film slate closes once, with contact at the clap rather than an ambient bounce',
+    triggers:
+      /\b(clapperboard|film slate|slate the take|start (?:the |a )?take|lights camera action)\b/,
+    impactSec: MEDIA_TIMING.clapperboard,
+    impactCue: { kind: 'tick', gain: 0.4 },
+  },
+  metronome: {
+    hint: 'a mechanical metronome establishes a measured rhythm, then comes to rest',
+    triggers:
+      /\b(metronome|steady (?:beat|rhythm|tempo)|keep (?:the |a )?(?:beat|tempo)|(?:play|playing|tick|ticking) in time)\b/,
+    impactSec: TOOLS_TIMING.metronome,
+    impactCue: { kind: 'tick', gain: 0.25 },
+  },
+  'watering-can': {
+    hint: 'a watering can tilts, pours into a soil-filled pot, then rights itself; soil wets only after contact',
+    triggers:
+      /\b(watering can|water (?:the |your |a )?(?:plant|seedling|garden)|nurture (?:the |your |a )?(?:plant|seedling)|tend (?:the |your )?garden)\b/,
+    impactSec: TOOLS_TIMING['watering-can'],
+  },
+  wrench: {
+    hint: 'an open-ended wrench engages a hex nut before tightening the joint; down loosens it',
+    triggers:
+      /\b(wrench|spanner|tighten (?:the |a )?(?:nut|bolt|joint)|loosen (?:the |a )?(?:nut|bolt)|turn (?:the |a )?nut)\b/,
+    impactSec: TOOLS_TIMING.wrench,
+    downImpactSec: TOOLS_TIMING.wrench,
+    downHint: 'engages before turning the nut the other way and loosening the joint',
+    impactCue: { kind: 'tick', gain: 0.35 },
+  },
+  bridge: {
+    hint: 'two hinged bridge leaves lower until their tips meet exactly, connecting both sides',
+    triggers: /\b(bridges?|bridging the gap|connect(?:s|ed|ing)? both sides)\b/,
+    impactSec: STRUCTURE_TIMING.bridge,
+    impactCue: { kind: 'thump', gain: 0.4 },
+  },
+  arch: {
+    hint: 'six side wedge blocks seat in pairs before the center keystone seats',
+    triggers: /\b(arch(?:es|ways?)?|keystones?|cent(?:er|re) stone)\b/,
+    impactSec: STRUCTURE_TIMING.arch,
+    impactCue: { kind: 'thump', gain: 0.45 },
+  },
+  prism: {
+    hint: 'a triangular prism separates one incoming beam into palette-colored branches',
+    triggers:
+      /\b(prism|refract(?:s|ed|ing|ion)?|split(?:s|ting)? (?:one |a |the )?(?:beam|light))\b/,
+    impactSec: OPTICS_TIMING.prism,
+  },
+  aperture: {
+    hint: 'overlapping iris blades narrow a lens opening together',
+    triggers:
+      /\b(aperture|iris (?:opens?|closes?|blades?)|narrow (?:the )?opening|let less light in)\b/,
+    impactSec: OPTICS_TIMING.aperture,
+    impactCue: { kind: 'tick', gain: 0.25 },
+  },
+  'magnifying-glass': {
+    hint: 'a magnifying glass aligns with one authored detail and enlarges that exact detail',
+    triggers:
+      /\b(magnifying glass|magnify|magnification|look closer|inspect (?:the |a )?(?:fine print|small detail)|small print)\b/,
+    impactSec: OPTICS_TIMING['magnifying-glass'],
+  },
+  telescope: {
+    hint: 'nested telescope sections extend before the instrument aims toward a distant view',
+    triggers:
+      /\b(telescope|spyglass|distant (?:horizon|star|planet)|long[- ]range vision|see farther)\b/,
+    impactSec: OPTICS_TIMING.telescope,
+    impactCue: { kind: 'slide', gain: 0.3 },
+  },
+  parcel: {
+    hint: 'flat parcel panels fold into a closed package with an attached lid',
+    triggers:
+      /\b(parcel|shipping box|pack (?:the |a |your )?(?:order|package)|package (?:the |your )?result)\b/,
+    impactSec: STORAGE_TIMING.parcel,
+    impactCue: { kind: 'tick', gain: 0.35 },
+  },
+  'filing-cabinet': {
+    hint: 'a drawer opens before papers enter, then closes with them inside',
+    triggers:
+      /\b(filing cabinet|file (?:the |these |your )?(?:papers|documents)|organize (?:the |your )?records)\b/,
+    impactSec: STORAGE_TIMING['filing-cabinet'],
+    impactCue: { kind: 'slide', gain: 0.3 },
+  },
+  reservoir: {
+    hint: 'a visible resource reserve fills through its inlet; down drains through its outlet',
+    triggers:
+      /\b(reservoir|resource reserve|buffer tank|fill (?:the |a )?tank|drain (?:the |a )?tank)\b/,
+    impactSec: STORAGE_TIMING.reservoir,
+    downImpactSec: STORAGE_TIMING.reservoir,
+    downHint: 'drains the visible reserve through its outlet',
+    impactCue: { kind: 'slide', gain: 0.25 },
+  },
+  vault: {
+    hint: 'vault bolts release before the heavy door opens',
+    triggers: /\b(vault|unlock the safe|open the safe|secured reserves)\b/,
+    impactSec: COMMERCE_TIMING.vault,
+    impactCue: { kind: 'tick', gain: 0.4 },
+  },
+  wallet: {
+    hint: 'a bifold wallet opens to reveal its card compartment, not a promised return',
+    triggers: /\b(wallet|personal spending|everyday spending|keep your cards)\b/,
+    impactSec: COMMERCE_TIMING.wallet,
+    impactCue: { kind: 'slide', gain: 0.3 },
+  },
+  'card-reader': {
+    hint: 'a contactless card taps the reader before confirmation',
+    triggers:
+      /\b(card reader|contactless (?:payment|reader|card|terminal)|tap (?:your |the )?card|payment terminal)\b/,
+    impactSec: COMMERCE_TIMING['card-reader'],
+    impactCue: { kind: 'tick', gain: 0.35 },
+  },
+  calculator: {
+    hint: 'calculator keys precede the resolved operation, without an invented amount',
+    triggers:
+      /\b(calculator|calculate (?:the |your )?(?:cost|total)|add up (?:the )?costs|do the math)\b/,
+    impactSec: COMMERCE_TIMING.calculator,
+    impactCue: { kind: 'tick', gain: 0.3 },
+  },
+  conveyor: {
+    hint: 'a conveyor belt carries work along a production line',
+    triggers: /\b(conveyor|production line|assembly line|belt carries)\b/,
+    impactSec: TRANSPORT_TIMING.conveyor,
+  },
+  valve: {
+    hint: 'turn a valve to control flow through a pipe',
+    triggers: /\b(valve|control the flow|shut off the flow|throttle flow)\b/,
+    impactSec: TRANSPORT_TIMING.valve,
+    impactCue: { kind: 'tick', gain: 0.35 },
+  },
+  'pressure-gauge': {
+    hint: 'a pressure gauge responds to input, without invented units',
+    triggers: /\b(pressure gauge|gauge reading|gauge responds|needle rises)\b/,
+    impactSec: TRANSPORT_TIMING['pressure-gauge'],
+  },
+  'rail-switch': {
+    hint: 'seat a rail switch before committing to a route',
+    triggers: /\b(rail switch|switch tracks|selects? the (?:right|left) track|railway junction)\b/,
+    impactSec: TRANSPORT_TIMING['rail-switch'],
+    impactCue: { kind: 'tick', gain: 0.35 },
+  },
+  flywheel: {
+    hint: 'small repeated pushes build momentum, then coast',
+    triggers: /\b(flywheel|build(?:s|ing)? momentum|keep(?:s)? turning)\b/,
+    impactSec: KINETIC_TIMING.flywheel,
+    impactCue: { kind: 'tick', gain: 0.35 },
+  },
+  lever: {
+    hint: 'shift the fulcrum, change leverage, lift a load',
+    triggers: /\b(lever|leverage|fulcrum|mechanical advantage)\b/,
+    impactSec: KINETIC_TIMING.lever,
+    impactCue: { kind: 'thump', gain: 0.35 },
+  },
+  pulley: {
+    hint: 'taut cable turns a pulley and raises a load',
+    triggers: /\b(pulley|taut cable|raise the load|hoist)\b/,
+    impactSec: KINETIC_TIMING.pulley,
+  },
+  spring: {
+    hint: 'compress a spring, store tension, then release',
+    triggers:
+      /\b(compress(?:ed)? (?:the |a )?spring|coiled spring|store(?:d)? tension|spring tension)\b/,
+    impactSec: KINETIC_TIMING.spring,
+    impactCue: { kind: 'pop', gain: 0.3 },
+  },
+  ratchet: {
+    hint: 'advance through detents without slipping backwards',
+    triggers: /\b(ratchet|detent|advance(?:s)? one notch|never slips backwards)\b/,
+    impactSec: KINETIC_TIMING.ratchet,
+    impactCue: { kind: 'tick', gain: 0.4 },
+  },
   lightbulb: {
     hint: 'idea, insight, realise',
     triggers: /\b(idea|ideas|insight|realis|realiz|lightbulb|creativ|brainstorm|eureka)\w*/,

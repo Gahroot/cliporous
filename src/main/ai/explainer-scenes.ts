@@ -18,6 +18,8 @@
 
 import { GoogleGenAI } from '@google/genai';
 import { log } from '../logger';
+import { STAMP_CONTACT_SECONDS } from '../remotion/compositions/explainer/editorial/types';
+import { isCausalHeroProp } from '../remotion/compositions/explainer/hero-catalog';
 import {
   ANNOTATION_KINDS,
   EXPLAINER_ICONS,
@@ -26,11 +28,22 @@ import {
   type ExplainerScene,
   type ExplainerSceneBody,
   type ExplainerSceneKind,
+  isCausalSceneKind,
   mapSceneTimes,
   type SceneCue,
   type SceneExtras,
   type SceneTransitionKind,
 } from '../remotion/compositions/explainer/types';
+import {
+  editorialPrompt,
+  hasEditorialTreatment,
+  isEvidenceStamp,
+  parseEditorialFields,
+  parseStampFinish,
+  removeEditorialTreatment,
+  stampSupported,
+  suppressEditorialExtras,
+} from './explainer/editorial-contract';
 import {
   isRec,
   type KindFamily,
@@ -153,7 +166,7 @@ ${indexed}
 
 Scene types (picked for this transcript — choose the one that matches what is SAID, not just a keyword):
 ${kinds}
-
+${editorialPrompt(shortlist.kinds.map((kind) => kind.kind))}
 Layouts (pick the best one per scene from that scene's allowed list):
 ${layoutGuide(aspect)}
 
@@ -170,7 +183,7 @@ Return JSON only: {"scenes":[ ... ]}
 
 Rules:
 - Every "word"/"...Word" value is the index of the word where that beat happens, inside that scene's startWord..endWord. Beats in chronological order.
-- Labels: use the speaker's own words, SHORT and concrete (2-4 words). No filler ("The", "Very"), no full sentences unless the limit allows it. Respect every max length.
+- Labels: use the speaker's own words, SHORT and concrete (2-4 words). No filler ("The", "Very"), no full sentences unless the limit allows it. Respect every max length. Never invent evidence, verification, certification, returns or hidden facts; negated/uncertain claims must not become positive stamps.
 - icon must be one of: ${EXPLAINER_ICONS.join(', ')}.
 - Do not start before word ${firstAllowed}. Never overlap scenes.
 - Prefer ONE scene that keeps going (more beats, a laterStamp, a dim) over several short separate ones — like keeping the same object on screen across two sentences.
@@ -202,11 +215,21 @@ export function buildReviewPrompt(
   aspect: '9:16' | '16:9' = '9:16',
   rejected: readonly RejectedScene[] = [],
   shortlist: Shortlist = buildShortlist(words),
+  omitted: readonly RejectedScene[] = [],
 ): string {
+  const optionalIssues =
+    omitted.length === 0
+      ? ''
+      : `\n\nThese cores were RETAINED, but optional fields were OMITTED or repaired. Do not discard the valid core; remove the optional request or fix only its supported fields:\n${omitted
+          .slice(0, 6)
+          .map(
+            (r) => `- ${JSON.stringify(r.raw)}\n  Problems: ${r.problems.slice(0, 6).join('; ')}`,
+          )
+          .join('\n')}`;
   return `${buildExplainerPrompt(words, bounds, aspect, shortlist)}
 
 A first draft plan was produced:
-${JSON.stringify({ scenes: plan })}${rejectedBlock(rejected)}
+${JSON.stringify({ scenes: plan })}${rejectedBlock(rejected)}${optionalIssues}
 
 Now act as the creative director reviewing this draft before anything renders. Fix it:
 - Rewrite weak, vague, wordy or generic labels into short, punchy ones from the speaker's own words.
@@ -298,10 +321,40 @@ export function reactionTargetCount(scene: ExplainerSceneBody): number {
 
 function parseExtras(raw: Rec, ctx: ParseContext, body: ExplainerSceneBody): SceneExtras {
   const extras: SceneExtras = {};
+  if (isCausalSceneKind(body.kind) || (body.kind === 'hero' && isCausalHeroProp(body.prop))) {
+    if (
+      ['laterStamp', 'annotation', 'dimWord', 'reactions', 'bursts'].some((key) => raw[key] != null)
+    ) {
+      ctx.issues.push(
+        'optional extras omitted: causal mechanisms own their emphasis and do not support global extras',
+      );
+    }
+    return extras;
+  }
+  if (raw.laterStamp != null && !isRec(raw.laterStamp))
+    ctx.issues.push('optional laterStamp omitted: expected an object');
   if (isRec(raw.laterStamp)) {
     const text = ctx.str(raw.laterStamp.text, 12);
     const w = ctx.inWin(raw.laterStamp.word);
-    if (text && w !== null) extras.overlayStamp = { word: text.toUpperCase(), at: ctx.at(w) };
+    if (Object.keys(raw.laterStamp).some((key) => !['text', 'word', 'finish'].includes(key))) {
+      ctx.issues.push('optional laterStamp omitted: unknown fields or replacement/hidden claim');
+    } else if (text && w !== null) {
+      if (isEvidenceStamp(text) && !stampSupported(text, ctx)) {
+        ctx.issues.push(
+          'optional laterStamp omitted: unsupported or negated evidence/verification claim',
+        );
+      } else {
+        const finish = parseStampFinish(raw.laterStamp.finish, text, ctx);
+        extras.overlayStamp = {
+          word: text.toUpperCase(),
+          at: ctx.at(w),
+          ...(finish ? { finish } : {}),
+        };
+      }
+    } else
+      ctx.issues.push(
+        'optional laterStamp omitted: text ≤12 chars and a valid scene word required',
+      );
   }
   if (
     !extras.overlayStamp &&
@@ -351,7 +404,9 @@ interface Candidate extends PlannedExplainerScene {
   raw: Rec;
 }
 
-type CandidateResult = { ok: true; value: Candidate } | { ok: false; problems: string[] };
+type CandidateResult =
+  | { ok: true; value: Candidate; problems: string[] }
+  | { ok: false; problems: string[] };
 
 function parseCandidate(
   raw: Rec,
@@ -381,8 +436,17 @@ function parseCandidate(
         : [`missing or invalid fields — follow the "${spec.kind}" JSON exactly`];
     return { ok: false, problems };
   }
-  const extras = parseExtras(raw, ctx, body);
-  const scene = { ...body, ...extras } as ExplainerScene;
+  // Unsupported evidence is an invalid core claim, not an invalid optional finish.
+  if (body.kind === 'stamp' && isEvidenceStamp(body.word) && !stampSupported(body.word, ctx)) {
+    return {
+      ok: false,
+      problems: ['stamp verdict invents or reverses an evidence/verification claim'],
+    };
+  }
+  const editorial = parseEditorialFields(raw, body, ctx);
+  const enhanced = { ...body, ...editorial };
+  const extras = suppressEditorialExtras(enhanced, parseExtras(raw, ctx, body), ctx);
+  const scene = { ...enhanced, ...extras } as ExplainerScene;
   const requested =
     typeof raw.layout === 'string' && LAYOUT_SET.has(raw.layout)
       ? (raw.layout as ExplainerLayout)
@@ -395,6 +459,7 @@ function parseCandidate(
       : 'grow';
   return {
     ok: true,
+    problems: [...ctx.issues],
     value: {
       startTime: win.startTime,
       endTime: win.endTime,
@@ -415,10 +480,15 @@ function parseCandidate(
 export function sceneCues(planned: Pick<PlannedExplainerScene, 'scene' | 'chained'>): SceneCue[] {
   const spec = getKindSpec(planned.scene.kind);
   const cuesOf = spec?.cues as ((s: ExplainerSceneBody) => SceneCue[]) | undefined;
-  const kindCues = cuesOf ? cuesOf(planned.scene) : [];
+  const kindCues =
+    planned.scene.kind === 'stamp' && planned.scene.finish
+      ? [{ kind: 'thump' as const, at: planned.scene.stampAt + STAMP_CONTACT_SECONDS, gain: 0.65 }]
+      : cuesOf
+        ? cuesOf(planned.scene)
+        : [];
   const extra: SceneCue[] = [];
   if (planned.scene.overlayStamp) {
-    extra.push({ kind: 'thump', at: planned.scene.overlayStamp.at + 0.12 });
+    extra.push({ kind: 'thump', at: planned.scene.overlayStamp.at + STAMP_CONTACT_SECONDS });
   }
   if (planned.scene.dimAt !== undefined && planned.scene.kind !== 'stack') {
     extra.push({ kind: 'whoosh', at: planned.scene.dimAt, gain: 0.4 });
@@ -435,6 +505,12 @@ function addEmphasisPulses(
   planned: PlannedExplainerScene,
   emphasisTimes: readonly number[],
 ): PlannedExplainerScene {
+  if (
+    isCausalSceneKind(planned.scene.kind) ||
+    (planned.scene.kind === 'hero' && isCausalHeroProp(planned.scene.prop)) ||
+    hasEditorialTreatment(planned.scene)
+  )
+    return planned;
   const lo = planned.startTime + 0.6;
   const hi = planned.endTime - 0.4;
   const beats: number[] = [];
@@ -497,16 +573,46 @@ export function parsePlanWithRejections(
   return parseCandidates(raw, words, bounds, {}).rejected;
 }
 
+/** Full diagnostics distinguish dropped cores from safely omitted optional fields. */
+export function parsePlanWithDiagnostics(
+  raw: unknown,
+  words: readonly PlannerWord[],
+  bounds: PlanBounds,
+): {
+  accepted: PlannedExplainerScene[];
+  rejected: RejectedScene[];
+  omitted: RejectedScene[];
+} {
+  const parsed = parseCandidates(raw, words, bounds, {});
+  return {
+    accepted: parsed.accepted.map(stripCandidate),
+    rejected: parsed.rejected,
+    omitted: parsed.omitted,
+  };
+}
+
+/** Only causal chains need this guard; legacy snapping stays unchanged. */
+export function chainPreservesFirstAction(scene: ExplainerScene, startTime: number): boolean {
+  if (!isCausalSceneKind(scene.kind)) return true;
+  let first = Infinity;
+  mapSceneTimes(scene, (at) => {
+    first = Math.min(first, at);
+    return at;
+  });
+  return startTime <= first;
+}
+
 function parseCandidates(
   raw: unknown,
   words: readonly PlannerWord[],
   bounds: PlanBounds,
   options: Pick<PlanOptions, 'emphasisTimes'>,
-): { accepted: Candidate[]; rejected: RejectedScene[] } {
+): { accepted: Candidate[]; rejected: RejectedScene[]; omitted: RejectedScene[] } {
   if (!isRec(raw) || !Array.isArray(raw.scenes) || words.length === 0) {
-    return { accepted: [], rejected: [] };
+    return { accepted: [], rejected: [], omitted: [] };
   }
   const rejected: RejectedScene[] = [];
+  const omitted: RejectedScene[] = [];
   const candidates = raw.scenes
     .flatMap((s) => {
       if (!isRec(s)) return [];
@@ -515,6 +621,7 @@ function parseCandidates(
         rejected.push({ raw: s, problems: c.problems });
         return [];
       }
+      if (c.problems.length > 0) omitted.push({ raw: s, problems: c.problems });
       return [c.value];
     })
     .sort((a, b) => a.startTime - b.startTime);
@@ -529,7 +636,8 @@ function parseCandidates(
       prev &&
       c.startTime >= prev.endTime - 0.6 &&
       c.startTime - prev.endTime <= EXPLAINER_LIMITS.chainGapSec &&
-      c.endTime - prev.endTime >= EXPLAINER_LIMITS.minSceneSec
+      c.endTime - prev.endTime >= EXPLAINER_LIMITS.minSceneSec &&
+      chainPreservesFirstAction(c.scene, prev.endTime)
     ) {
       snapped.push({ ...c, startTime: prev.endTime });
     } else {
@@ -539,19 +647,26 @@ function parseCandidates(
 
   const varied = applyVarietyRules(snapped, bounds);
   const emphasis = [...(options.emphasisTimes ?? [])].sort((a, b) => a - b);
-  let previousAnnotated = false;
+  let previousEmphasized = false;
   const accepted = varied.map((candidate) => {
     let c = candidate;
-    if (previousAnnotated && c.scene.annotation) {
-      const { annotation: _annotation, ...scene } = c.scene;
-      c = { ...c, scene };
+    const wasTreated = hasEditorialTreatment(c.scene);
+    if (previousEmphasized && (c.scene.annotation || wasTreated)) {
+      const { annotation: _annotation, ...scene } = removeEditorialTreatment(c.scene);
+      c = { ...c, scene: scene as ExplainerScene };
+      omitted.push({
+        raw: c.raw,
+        problems: [
+          'optional emphasis omitted: editorial treatments/annotations may not occupy adjacent scenes',
+        ],
+      });
     }
-    previousAnnotated = c.scene.annotation !== undefined;
+    previousEmphasized = c.scene.annotation !== undefined || hasEditorialTreatment(c.scene);
     const withPulses: Candidate =
-      emphasis.length > 0 ? { ...c, ...addEmphasisPulses(c, emphasis) } : c;
+      emphasis.length > 0 && !wasTreated ? { ...c, ...addEmphasisPulses(c, emphasis) } : c;
     return { ...withPulses, cues: sceneCues(withPulses) };
   });
-  return { accepted, rejected };
+  return { accepted, rejected, omitted };
 }
 
 /** Shift every beat so it is relative to `windowStart` (ms precision, ≥ 0). */
@@ -633,6 +748,7 @@ export async function planExplainerScenes(
             aspect,
             draft.rejected,
             shortlist,
+            draft.omitted,
           ),
           'explainer-review',
         );

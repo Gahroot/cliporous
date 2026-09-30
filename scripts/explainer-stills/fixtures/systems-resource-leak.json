@@ -1,0 +1,10 @@
+[
+  {
+    "name":"resource-leak",
+    "covers":[{"category":"kind","id":"resource-leak"}],
+    "durationSec":5.2,
+    "scene":{"kind":"resource-leak","label":"Keep the resource","inflowAt":0.3,"leakAt":1.2,"sealAt":2.8,"retainAt":4.4},
+    "samples":[{"name":"setup","frame":5},{"name":"inflow","frame":24},{"name":"leaking","frame":66},{"name":"sealing","frame":89},{"name":"sealed","frame":94},{"name":"retained","frame":133},{"name":"hold","frame":149}],
+    "cases":[{"name":"stack","aspect":"9:16","layout":"stack"},{"name":"compact","aspect":"16:9","layout":"over"},{"name":"compact-amber","aspect":"16:9","layout":"over","palette":{"bgOuter":"#14120f","bgInner":"#2e2c27","card":"#2a2723","cardRaised":"#37342f","cardBorder":"rgba(251, 243, 228, 0.09)","text":"#fcf5e9","muted":"#969086","accent":"#fbbf24","accent2":"#f59e0b","accentSoft":"rgba(251, 191, 36, 0.18)","positive":"#6fbf8a","negative":"#e0735f","paper":"#fdfaf4","paperText":"#12110e","clay":["#fdd77c","#fbd394","#c1a151"]}}]
+  }
+]

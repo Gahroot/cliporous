@@ -6,6 +6,9 @@
 
 import type React from 'react';
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { TreatedLabel } from './editorial/LabelTreatments';
+import { SemanticText } from './editorial/SemanticText';
+import type { LabelTreatment, SemanticTextTreatment } from './editorial/types';
 import { AnnotatedLabel } from './graphic-accents';
 import {
   EASE_OUT_SOFT,
@@ -73,7 +76,10 @@ const Word: React.FC<{
   index: number;
   accent: boolean;
   fontSize: number;
-}> = ({ text, at, index, accent, fontSize }) => {
+  labelTreatment?: LabelTreatment;
+  semanticText?: SemanticTextTreatment;
+  quiet?: boolean;
+}> = ({ text, at, index, accent, fontSize, labelTreatment, semanticText, quiet }) => {
   const S = useStage();
   const { t } = useSceneTime();
   const frame = useCurrentFrame();
@@ -99,11 +105,13 @@ const Word: React.FC<{
       style={{
         position: 'relative',
         display: 'inline-block',
-        transform: `translateY(${rise.toFixed(2)}px) ${floatTransform(float)} scale(${scale.toFixed(4)}) ${reactionTransform(reaction)}`,
+        transform: quiet
+          ? `translateY(${rise.toFixed(2)}px)`
+          : `translateY(${rise.toFixed(2)}px) ${floatTransform(float)} scale(${scale.toFixed(4)}) ${reactionTransform(reaction)}`,
         transformOrigin: '50% 70%',
       }}
     >
-      {accent && (
+      {accent && !quiet && (
         <Glow color={withAlpha(S.accent, 0.55)} intensity={glow} radius={fontSize * 0.9} />
       )}
       <span
@@ -120,14 +128,23 @@ const Word: React.FC<{
           // Upcoming words wait as a faint blurred ghost.
           opacity: 0.08 + 0.92 * p,
           filter: blur > 0.1 ? `blur(${blur.toFixed(2)}px)` : undefined,
-          textShadow: accent
-            ? `0 0 ${(28 + breath * 26).toFixed(1)}px ${withAlpha(S.accent, 0.35 * lit)}, 0 18px 50px rgba(0,0,0,0.35)`
-            : '0 18px 50px rgba(0,0,0,0.35)',
+          textShadow:
+            accent && !quiet
+              ? `0 0 ${(28 + breath * 26).toFixed(1)}px ${withAlpha(S.accent, 0.35 * lit)}, 0 18px 50px rgba(0,0,0,0.35)`
+              : '0 18px 50px rgba(0,0,0,0.35)',
           whiteSpace: 'nowrap',
           padding: accent ? '0 0.06em' : undefined,
         }}
       >
-        {accent ? <AnnotatedLabel>{text}</AnnotatedLabel> : text}
+        {labelTreatment ? (
+          <TreatedLabel text={text} treatment={labelTreatment} />
+        ) : semanticText ? (
+          <SemanticText text={text} treatment={semanticText} />
+        ) : accent && !quiet ? (
+          <AnnotatedLabel>{text}</AnnotatedLabel>
+        ) : (
+          text
+        )}
       </span>
     </span>
   );
@@ -172,23 +189,32 @@ export const StatementScene: React.FC<{ scene: StatementSceneData }> = ({ scene 
                 index={i}
                 accent={i === accentIndex}
                 fontSize={fontSize}
+                quiet={!!(scene.labelTreatment || scene.semanticText)}
+                {...(scene.labelTreatment?.targetIndex === i
+                  ? { labelTreatment: scene.labelTreatment }
+                  : {})}
+                {...(!scene.labelTreatment && scene.semanticText?.targetIndex === i
+                  ? { semanticText: scene.semanticText }
+                  : {})}
               />
             ) : null;
           })}
         </div>
       ))}
-      <div
-        style={{
-          marginTop: fontSize * 0.14,
-          width: 150 * underline,
-          height: 5,
-          borderRadius: 3,
-          background: S.accent,
-          opacity: 0.85 * underline,
-          boxShadow: `0 0 24px ${withAlpha(S.accent, 0.6)}`,
-          transform: floatTransform(drift),
-        }}
-      />
+      {!scene.labelTreatment && !scene.semanticText && (
+        <div
+          style={{
+            marginTop: fontSize * 0.14,
+            width: 150 * underline,
+            height: 5,
+            borderRadius: 3,
+            background: S.accent,
+            opacity: 0.85 * underline,
+            boxShadow: `0 0 24px ${withAlpha(S.accent, 0.6)}`,
+            transform: floatTransform(drift),
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -136,6 +136,40 @@ const Megaphone: React.FC<HeroPropProps> = ({ at }) => {
 // ---------------------------------------------------------------------------
 
 const MAG_R = 0.5;
+
+/** Bare original magnet; composed scenes own their meaningful workpieces. */
+export const MagnetRig: React.FC<{ snap?: number; flash?: number }> = ({ snap = 0, flash = 0 }) => {
+  const S = useStage();
+  return (
+    <group rotation={[0, 0, Math.PI / 2]} position={[snap * -0.03, 0, 0]}>
+      <mesh position={[0, 0.3, 0]}>
+        <torusGeometry args={[MAG_R, 0.2, 18, 40, Math.PI]} />
+        <Clay color={S.accent} roughness={0.5} />
+      </mesh>
+      {[-MAG_R, MAG_R].map((x) => (
+        <group key={x}>
+          <mesh position={[x, -0.05, 0]}>
+            <cylinderGeometry args={[0.2, 0.2, 0.7, 24]} />
+            <Clay color={S.accent} roughness={0.5} />
+          </mesh>
+          <mesh position={[x, -0.56, 0]}>
+            <cylinderGeometry args={[0.2, 0.2, 0.32, 24]} />
+            <Clay
+              color={S.paper}
+              emissive={S.accent2}
+              emissiveIntensity={flash * 0.6}
+              roughness={0.45}
+            />
+          </mesh>
+          <mesh position={[x, -0.4, 0]}>
+            <cylinderGeometry args={[0.205, 0.205, 0.03, 24]} />
+            <Clay color={mixHex(S.accent, '#000000', 0.2)} />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+};
 const CUBE = 0.3;
 const PULL_SEC = 0.42;
 
@@ -157,33 +191,7 @@ const Magnet: React.FC<HeroPropProps> = ({ at }) => {
   ];
   return (
     <group position={[-0.2, 0, 0]}>
-      <group rotation={[0, 0, Math.PI / 2]} position={[snap * -0.03, 0, 0]}>
-        <mesh position={[0, 0.3, 0]}>
-          <torusGeometry args={[MAG_R, 0.2, 18, 40, Math.PI]} />
-          <Clay color={S.accent} roughness={0.5} />
-        </mesh>
-        {[-MAG_R, MAG_R].map((x) => (
-          <group key={x}>
-            <mesh position={[x, -0.05, 0]}>
-              <cylinderGeometry args={[0.2, 0.2, 0.7, 24]} />
-              <Clay color={S.accent} roughness={0.5} />
-            </mesh>
-            <mesh position={[x, -0.56, 0]}>
-              <cylinderGeometry args={[0.2, 0.2, 0.32, 24]} />
-              <Clay
-                color={S.paper}
-                emissive={S.accent2}
-                emissiveIntensity={flash * 0.6}
-                roughness={0.45}
-              />
-            </mesh>
-            <mesh position={[x, -0.4, 0]}>
-              <cylinderGeometry args={[0.205, 0.205, 0.03, 24]} />
-              <Clay color={mixHex(S.accent, '#000000', 0.2)} />
-            </mesh>
-          </group>
-        ))}
-      </group>
+      <MagnetRig snap={snap} flash={flash} />
       {/* Clay cubes pulled in from the right, snapping on at impact. */}
       {cubes.map(({ pole, slot }, i) => {
         const tx = 0.72 + CUBE / 2 + 0.01 + slot * (CUBE + 0.01);

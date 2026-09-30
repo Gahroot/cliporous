@@ -1,0 +1,6 @@
+[
+  {"name":"metronome","covers":[{"category":"prop","id":"metronome"}],"scene":{"kind":"hero","prop":"metronome","label":"Keep a steady beat","at":0.4},"durationSec":4.5,"samples":[{"name":"setup","frame":18},{"name":"action","frame":30},{"name":"beat","frame":36},{"name":"opposite-swing","frame":42},{"name":"settled","frame":102}]},
+  {"name":"watering-can","covers":[{"category":"prop","id":"watering-can"}],"scene":{"kind":"hero","prop":"watering-can","label":"Water reaches the soil","at":0.4},"durationSec":4.5,"samples":[{"name":"setup","frame":18},{"name":"tilted","frame":32},{"name":"action","frame":40},{"name":"contact","frame":42},{"name":"last-drops","frame":57},{"name":"settled","frame":102}]},
+  {"name":"wrench","covers":[{"category":"prop","id":"wrench"}],"scene":{"kind":"hero","prop":"wrench","label":"Engage before tightening","at":0.4},"durationSec":4,"samples":[{"name":"setup","frame":18},{"name":"engaged","frame":33},{"name":"action","frame":46},{"name":"settled","frame":96}]},
+  {"name":"wrench-down","covers":[{"category":"prop","id":"wrench"}],"scene":{"kind":"hero","prop":"wrench","label":"Loosen the joint","at":0.4,"tone":"down"},"durationSec":4,"samples":[{"name":"setup","frame":18},{"name":"engaged","frame":33},{"name":"action","frame":46},{"name":"settled","frame":96}]}
+]

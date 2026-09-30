@@ -70,9 +70,20 @@ const Leaf: React.FC<{ side: 1 | -1; open: number; color: string; vein: string }
 };
 
 const Sprout: React.FC<HeroPropProps> = ({ at }) => {
-  const S = useStage();
   const { t } = useSceneTime();
   const impact = at + SPROUT_IMPACT_SEC;
+  const grow = easeOut(lin(t, at, SPROUT_IMPACT_SEC));
+  const open = smooth(lin(t, at + 0.25, SPROUT_IMPACT_SEC - 0.25)) + wobble(t, impact, 9, 4) * 0.14;
+  const sway = wobble(t, impact, 7, 3) * 0.08 + Math.sin(t * 1.6) * 0.02 * grow;
+  return <SproutRig grow={grow} open={open} sway={sway} />;
+};
+
+export const SproutRig: React.FC<{ grow: number; open: number; sway?: number }> = ({
+  grow,
+  open,
+  sway = 0,
+}) => {
+  const S = useStage();
   const pot = useMemo(
     () =>
       lathe(
@@ -93,10 +104,7 @@ const Sprout: React.FC<HeroPropProps> = ({ at }) => {
       ),
     [],
   );
-  const grow = easeOut(lin(t, at, SPROUT_IMPACT_SEC));
-  const open = smooth(lin(t, at + 0.25, SPROUT_IMPACT_SEC - 0.25)) + wobble(t, impact, 9, 4) * 0.14;
   const stemH = 0.22 + 0.9 * grow;
-  const sway = wobble(t, impact, 7, 3) * 0.08 + Math.sin(t * 1.6) * 0.02 * grow;
   const green = S.positive;
   const stemColor = mixHex(S.positive, S.clay[2], 0.3);
   const vein = mixHex(S.positive, S.paper, 0.35);
@@ -393,15 +401,23 @@ const PIECES: { key: string; x: number; y: number; edges: Edges }[] = [
 const MISSING_EDGES: Edges = [1, 0, 0, -1];
 
 const Puzzle: React.FC<HeroPropProps> = ({ at }) => {
-  const S = useStage();
   const { t } = useSceneTime();
-  const geos = useMemo(() => PIECES.map((p) => pieceGeometry(p.edges)), []);
-  const missing = useMemo(() => pieceGeometry(MISSING_EDGES), []);
   const impact = at + PUZZLE_IMPACT_SEC;
   const slide = easeOut(lin(t, at, PUZZLE_IMPACT_SEC - 0.15));
   const dropP = lin(t, impact - 0.13, 0.13);
   const lift = (0.95 - 0.55 * slide) * (1 - dropP * dropP);
   const jolt = wobble(t, impact, 16, 7) * 0.05;
+  return <PuzzleRig slide={slide} lift={lift} jolt={jolt} />;
+};
+
+export const PuzzleRig: React.FC<{ slide: number; lift: number; jolt?: number }> = ({
+  slide,
+  lift,
+  jolt = 0,
+}) => {
+  const S = useStage();
+  const geos = useMemo(() => PIECES.map((p) => pieceGeometry(p.edges)), []);
+  const missing = useMemo(() => pieceGeometry(MISSING_EDGES), []);
   const colors = [S.clay[0], S.clay[1], mixHex(S.clay[0], S.clay[1], 0.5)];
   return (
     <group position={[0, -0.05, 0]} rotation={[-0.95, 0, 0]}>
