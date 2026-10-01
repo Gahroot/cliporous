@@ -1,0 +1,2651 @@
+[
+  {
+    "name": "population-distribution-customer-concentration",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "population-distribution"
+      },
+      {
+        "category": "explanation",
+        "id": "population-distribution/customer-concentration"
+      }
+    ],
+    "description": "Synthetic Pack D storyboard, not measured business data. Qualitative actors are illustrative; quantitative counts quote this named source population only.",
+    "sourceText": "Customer concentration. Shop includes all 3 members: Ada, Ben and Cy. Ada receives 6 orders. The same identities stay visible throughout this illustration. Ben receives 1 orders. Cy receives 1 orders. The same identities stay visible throughout this illustration. Persistent customers keep their own orders. The same identities stay visible throughout this illustration. Shop orders are concentrated. The same identities stay visible throughout this illustration.",
+    "durationSec": 12,
+    "plannerInput": {
+      "kind": "population-distribution",
+      "preset": "customer-concentration",
+      "startWord": 0,
+      "endWord": 64,
+      "layout": "stack",
+      "mode": "quantitative",
+      "label": "Customer concentration",
+      "subject": "Shop",
+      "outcome": "Shop orders are concentrated",
+      "unit": "orders",
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 23,
+      "checkWord": 39,
+      "resolveWord": 53,
+      "populationSize": 3,
+      "populationWord": 2,
+      "members": [
+        {
+          "label": "Ada",
+          "amount": 6,
+          "evidenceWord": 11
+        },
+        {
+          "label": "Ben",
+          "amount": 1,
+          "evidenceWord": 23
+        },
+        {
+          "label": "Cy",
+          "amount": 1,
+          "evidenceWord": 27
+        }
+      ]
+    },
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Customer concentration. Shop includes all 3 members: Ada, Ben and Cy.",
+        "storyboard": "Identify the same three customers and a finite tray of eight order documents."
+      },
+      {
+        "at": 2.179230769,
+        "text": "Ada receives 6 orders. The same identities stay visible throughout this illustration.",
+        "storyboard": "Move Ada’s six striped order documents to her station."
+      },
+      {
+        "at": 4.283846154,
+        "text": "Ben receives 1 orders. Cy receives 1 orders. The same identities stay visible throughout this illustration.",
+        "storyboard": "Move Ben’s and Cy’s own documents without duplicating them."
+      },
+      {
+        "at": 7.09,
+        "text": "Persistent customers keep their own orders. The same identities stay visible throughout this illustration.",
+        "storyboard": "Compare the unequal stacks; all customers and documents remain."
+      },
+      {
+        "at": 9.545384615,
+        "text": "Shop orders are concentrated. The same identities stay visible throughout this illustration.",
+        "storyboard": "Hold the dominant order stack without adding a ratio."
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "action": "Identify the same three customers and a finite tray of eight order documents.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "action",
+        "word": 11,
+        "at": 2.179230769,
+        "action": "Move Ada’s six striped order documents to her station.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "response",
+        "word": 23,
+        "at": 4.283846154,
+        "action": "Move Ben’s and Cy’s own documents without duplicating them.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "check",
+        "word": 39,
+        "at": 7.09,
+        "action": "Compare the unequal stacks; all customers and documents remain.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "resolve",
+        "word": 53,
+        "at": 9.545384615,
+        "action": "Hold the dominant order stack without adding a ratio.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "population-distribution",
+      "preset": "customer-concentration",
+      "mode": "quantitative",
+      "unit": "orders",
+      "label": "Customer concentration",
+      "subject": "Shop",
+      "outcome": "Shop orders are concentrated",
+      "setupAt": 0.3,
+      "actionAt": 2.179230769,
+      "responseAt": 4.283846154,
+      "checkAt": 7.09,
+      "resolveAt": 9.545384615,
+      "members": [
+        {
+          "id": "member-0",
+          "label": "Ada",
+          "level": "high",
+          "amount": 6
+        },
+        {
+          "id": "member-1",
+          "label": "Ben",
+          "level": "low",
+          "amount": 1
+        },
+        {
+          "id": "member-2",
+          "label": "Cy",
+          "level": "low",
+          "amount": 1
+        }
+      ],
+      "populationSize": 3
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 15
+      },
+      {
+        "name": "first-movement",
+        "frame": 73
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 139
+      },
+      {
+        "name": "comparison",
+        "frame": 223
+      },
+      {
+        "name": "final-hold",
+        "frame": 323
+      }
+    ]
+  },
+  {
+    "name": "population-distribution-workload-spread",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "population-distribution"
+      },
+      {
+        "category": "explanation",
+        "id": "population-distribution/workload-spread"
+      }
+    ],
+    "description": "Synthetic Pack D storyboard, not measured business data. Qualitative actors are illustrative; quantitative counts quote this named source population only.",
+    "sourceText": "Workload spread. Workshop names Ada, Ben and Cy. The same identities stay visible throughout this illustration. Ada receives many tasks. The same identities stay visible throughout this illustration. Ben receives some tasks. Cy receives few tasks. The same identities stay visible throughout this illustration. These are illustrative workloads. The same identities stay visible throughout this illustration. Workshop workloads differ. The same identities stay visible throughout this illustration.",
+    "durationSec": 12,
+    "plannerInput": {
+      "kind": "population-distribution",
+      "preset": "workload-spread",
+      "startWord": 0,
+      "endWord": 66,
+      "layout": "stack",
+      "mode": "qualitative",
+      "label": "Workload spread",
+      "subject": "Workshop",
+      "outcome": "Workshop workloads differ",
+      "unit": "tasks",
+      "setupWord": 0,
+      "actionWord": 16,
+      "responseWord": 28,
+      "checkWord": 44,
+      "resolveWord": 56,
+      "members": [
+        {
+          "label": "Ada",
+          "level": "high",
+          "evidenceWord": 16
+        },
+        {
+          "label": "Ben",
+          "level": "middle",
+          "evidenceWord": 28
+        },
+        {
+          "label": "Cy",
+          "level": "low",
+          "evidenceWord": 32
+        }
+      ]
+    },
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Workload spread. Workshop names Ada, Ben and Cy. The same identities stay visible throughout this illustration.",
+        "storyboard": "Identify three workers and task documents; no numerical scale."
+      },
+      {
+        "at": 2.97238806,
+        "text": "Ada receives many tasks. The same identities stay visible throughout this illustration.",
+        "storyboard": "Ada receives the visibly heavier illustrative workload."
+      },
+      {
+        "at": 5.014179104,
+        "text": "Ben receives some tasks. Cy receives few tasks. The same identities stay visible throughout this illustration.",
+        "storyboard": "Ben and Cy receive their distinct task stacks."
+      },
+      {
+        "at": 7.736567164,
+        "text": "These are illustrative workloads. The same identities stay visible throughout this illustration.",
+        "storyboard": "Keep identities and unequal stacks visible together."
+      },
+      {
+        "at": 9.778358209,
+        "text": "Workshop workloads differ. The same identities stay visible throughout this illustration.",
+        "storyboard": "Hold the spread with an explicit illustrative/no-scale label."
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "action": "Identify three workers and task documents; no numerical scale.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "action",
+        "word": 16,
+        "at": 2.97238806,
+        "action": "Ada receives the visibly heavier illustrative workload.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "response",
+        "word": 28,
+        "at": 5.014179104,
+        "action": "Ben and Cy receive their distinct task stacks.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "check",
+        "word": 44,
+        "at": 7.736567164,
+        "action": "Keep identities and unequal stacks visible together.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "resolve",
+        "word": 56,
+        "at": 9.778358209,
+        "action": "Hold the spread with an explicit illustrative/no-scale label.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "population-distribution",
+      "preset": "workload-spread",
+      "mode": "qualitative",
+      "unit": "tasks",
+      "label": "Workload spread",
+      "subject": "Workshop",
+      "outcome": "Workshop workloads differ",
+      "setupAt": 0.3,
+      "actionAt": 2.97238806,
+      "responseAt": 5.014179104,
+      "checkAt": 7.736567164,
+      "resolveAt": 9.778358209,
+      "members": [
+        {
+          "id": "member-0",
+          "label": "Ada",
+          "level": "high"
+        },
+        {
+          "id": "member-1",
+          "label": "Ben",
+          "level": "middle"
+        },
+        {
+          "id": "member-2",
+          "label": "Cy",
+          "level": "low"
+        }
+      ]
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 15
+      },
+      {
+        "name": "first-movement",
+        "frame": 97
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 161
+      },
+      {
+        "name": "comparison",
+        "frame": 243
+      },
+      {
+        "name": "final-hold",
+        "frame": 327
+      }
+    ]
+  },
+  {
+    "name": "population-distribution-average-hides-tail",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "population-distribution"
+      },
+      {
+        "category": "explanation",
+        "id": "population-distribution/average-hides-tail"
+      }
+    ],
+    "description": "Synthetic Pack D storyboard, not measured business data. Qualitative actors are illustrative; quantitative counts quote this named source population only.",
+    "sourceText": "Average hides the tail. Team includes all 3 members: Ada, Ben and Cy. Ada receives 0 tasks. The same identities stay visible throughout this illustration. Ben receives 3 tasks. Cy receives 6 tasks. The same identities stay visible throughout this illustration. Team average is 3 tasks. The same identities stay visible throughout this illustration. Team average hides the tail. The same identities stay visible throughout this illustration.",
+    "durationSec": 12,
+    "plannerInput": {
+      "kind": "population-distribution",
+      "preset": "average-hides-tail",
+      "startWord": 0,
+      "endWord": 66,
+      "layout": "stack",
+      "mode": "quantitative",
+      "label": "Average hides the tail",
+      "subject": "Team",
+      "outcome": "Team average hides the tail",
+      "unit": "tasks",
+      "setupWord": 0,
+      "actionWord": 13,
+      "responseWord": 25,
+      "checkWord": 41,
+      "resolveWord": 54,
+      "populationSize": 3,
+      "populationWord": 4,
+      "average": 3,
+      "averageWord": 41,
+      "members": [
+        {
+          "label": "Ada",
+          "amount": 0,
+          "evidenceWord": 13
+        },
+        {
+          "label": "Ben",
+          "amount": 3,
+          "evidenceWord": 25
+        },
+        {
+          "label": "Cy",
+          "amount": 6,
+          "evidenceWord": 29
+        }
+      ]
+    },
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Average hides the tail. Team includes all 3 members: Ada, Ben and Cy.",
+        "storyboard": "Identify the complete named team; an empty task tray remains a real member."
+      },
+      {
+        "at": 2.461940299,
+        "text": "Ada receives 0 tasks. The same identities stay visible throughout this illustration.",
+        "storyboard": "Ada remains visible with zero tasks while task sheets start moving."
+      },
+      {
+        "at": 4.503731343,
+        "text": "Ben receives 3 tasks. Cy receives 6 tasks. The same identities stay visible throughout this illustration.",
+        "storyboard": "Ben’s three and Cy’s six task documents keep their owners."
+      },
+      {
+        "at": 7.226119403,
+        "text": "Team average is 3 tasks. The same identities stay visible throughout this illustration.",
+        "storyboard": "Reveal the stated three-task average guide without leveling the stacks."
+      },
+      {
+        "at": 9.438059701,
+        "text": "Team average hides the tail. The same identities stay visible throughout this illustration.",
+        "storyboard": "Hold the average, empty tray and high tail together."
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "action": "Identify the complete named team; an empty task tray remains a real member.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "action",
+        "word": 13,
+        "at": 2.461940299,
+        "action": "Ada remains visible with zero tasks while task sheets start moving.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "response",
+        "word": 25,
+        "at": 4.503731343,
+        "action": "Ben’s three and Cy’s six task documents keep their owners.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "check",
+        "word": 41,
+        "at": 7.226119403,
+        "action": "Reveal the stated three-task average guide without leveling the stacks.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "resolve",
+        "word": 54,
+        "at": 9.438059701,
+        "action": "Hold the average, empty tray and high tail together.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "population-distribution",
+      "preset": "average-hides-tail",
+      "mode": "quantitative",
+      "unit": "tasks",
+      "label": "Average hides the tail",
+      "subject": "Team",
+      "outcome": "Team average hides the tail",
+      "setupAt": 0.3,
+      "actionAt": 2.461940299,
+      "responseAt": 4.503731343,
+      "checkAt": 7.226119403,
+      "resolveAt": 9.438059701,
+      "members": [
+        {
+          "id": "member-0",
+          "label": "Ada",
+          "level": "low",
+          "amount": 0
+        },
+        {
+          "id": "member-1",
+          "label": "Ben",
+          "level": "middle",
+          "amount": 3
+        },
+        {
+          "id": "member-2",
+          "label": "Cy",
+          "level": "high",
+          "amount": 6
+        }
+      ],
+      "populationSize": 3,
+      "average": 3
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 15
+      },
+      {
+        "name": "first-movement",
+        "frame": 81
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 146
+      },
+      {
+        "name": "comparison",
+        "frame": 227
+      },
+      {
+        "name": "final-hold",
+        "frame": 322
+      }
+    ]
+  },
+  {
+    "name": "customer-cohort-retention",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "customer-cohort"
+      },
+      {
+        "category": "explanation",
+        "id": "customer-cohort/retention"
+      }
+    ],
+    "description": "Synthetic Pack D storyboard, not measured business data. Qualitative actors are illustrative; quantitative counts quote this named source population only.",
+    "sourceText": "Customer retention. Cohort starts with 2 customers in Spring. Ada starts in Spring in Cohort. Ben starts in Spring in Cohort. Ada remains in Autumn in Cohort. The same identities stay visible throughout this illustration. Ben leaves in Autumn in Cohort. The same identities stay visible throughout this illustration. Cy joins Cohort in Autumn as a new customer. Cohort retains 1 customers in Autumn. Cohort loses 1 customers in Autumn. Cohort adds 1 customers in Autumn. Cohort retains named customers. The same identities stay visible throughout this illustration.",
+    "durationSec": 12,
+    "plannerInput": {
+      "kind": "customer-cohort",
+      "preset": "retention",
+      "startWord": 0,
+      "endWord": 87,
+      "layout": "stack",
+      "mode": "quantitative",
+      "label": "Customer retention",
+      "subject": "Cohort",
+      "outcome": "Cohort retains named customers",
+      "startPeriod": "Spring",
+      "endPeriod": "Autumn",
+      "setupWord": 0,
+      "actionWord": 21,
+      "responseWord": 35,
+      "checkWord": 49,
+      "resolveWord": 76,
+      "members": [
+        {
+          "label": "Ada",
+          "status": "retained",
+          "startWord": 9,
+          "evidenceWord": 21
+        },
+        {
+          "label": "Ben",
+          "status": "departed",
+          "startWord": 15,
+          "evidenceWord": 35
+        }
+      ],
+      "arrivals": [
+        {
+          "label": "Cy",
+          "evidenceWord": 49
+        }
+      ],
+      "counts": {
+        "starting": 2,
+        "retained": 1,
+        "departed": 1,
+        "arrivals": 1
+      },
+      "countWords": {
+        "starting": 2,
+        "retained": 58,
+        "departed": 64,
+        "arrivals": 70
+      }
+    },
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Customer retention. Cohort starts with 2 customers in Spring. Ada starts in Spring in Cohort. Ben starts in Spring in Cohort.",
+        "storyboard": "Identify the original Spring customers by stable silhouette/badge; Cy waits outside the cohort."
+      },
+      {
+        "at": 2.970454545,
+        "text": "Ada remains in Autumn in Cohort. The same identities stay visible throughout this illustration.",
+        "storyboard": "The same originals pass the source-stated Autumn boundary."
+      },
+      {
+        "at": 4.784090909,
+        "text": "Ben leaves in Autumn in Cohort. The same identities stay visible throughout this illustration.",
+        "storyboard": "Ada stays on the original-member lane; Ben moves into the departed lane without disappearing."
+      },
+      {
+        "at": 6.597727273,
+        "text": "Cy joins Cohort in Autumn as a new customer. Cohort retains 1 customers in Autumn. Cohort loses 1 customers in Autumn. Cohort adds 1 customers in Autumn.",
+        "storyboard": "Cy enters a separate new-customer lane, never the retained lane."
+      },
+      {
+        "at": 10.095454545,
+        "text": "Cohort retains named customers. The same identities stay visible throughout this illustration.",
+        "storyboard": "Hold originals, departures and newcomers separately; never compute a retention rate."
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "action": "Identify the original Spring customers by stable silhouette/badge; Cy waits outside the cohort.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "action",
+        "word": 21,
+        "at": 2.970454545,
+        "action": "The same originals pass the source-stated Autumn boundary.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "response",
+        "word": 35,
+        "at": 4.784090909,
+        "action": "Ada stays on the original-member lane; Ben moves into the departed lane without disappearing.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "check",
+        "word": 49,
+        "at": 6.597727273,
+        "action": "Cy enters a separate new-customer lane, never the retained lane.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "resolve",
+        "word": 76,
+        "at": 10.095454545,
+        "action": "Hold originals, departures and newcomers separately; never compute a retention rate.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "customer-cohort",
+      "preset": "retention",
+      "mode": "quantitative",
+      "label": "Customer retention",
+      "subject": "Cohort",
+      "outcome": "Cohort retains named customers",
+      "setupAt": 0.3,
+      "actionAt": 2.970454545,
+      "responseAt": 4.784090909,
+      "checkAt": 6.597727273,
+      "resolveAt": 10.095454545,
+      "startPeriod": "Spring",
+      "endPeriod": "Autumn",
+      "members": [
+        {
+          "id": "original-0",
+          "label": "Ada",
+          "status": "retained"
+        },
+        {
+          "id": "original-1",
+          "label": "Ben",
+          "status": "departed"
+        }
+      ],
+      "arrivals": [
+        {
+          "id": "arrival-0",
+          "label": "Cy"
+        }
+      ],
+      "counts": {
+        "starting": 2,
+        "retained": 1,
+        "departed": 1,
+        "arrivals": 1
+      }
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 15
+      },
+      {
+        "name": "first-movement",
+        "frame": 97
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 154
+      },
+      {
+        "name": "comparison",
+        "frame": 208
+      },
+      {
+        "name": "final-hold",
+        "frame": 331
+      }
+    ]
+  },
+  {
+    "name": "customer-cohort-churn",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "customer-cohort"
+      },
+      {
+        "category": "explanation",
+        "id": "customer-cohort/churn"
+      }
+    ],
+    "description": "Synthetic Pack D storyboard, not measured business data. Qualitative actors are illustrative; quantitative counts quote this named source population only.",
+    "sourceText": "Customer churn. Cohort starts with 2 customers in Spring. Ada starts in Spring in Cohort. Ben starts in Spring in Cohort. Ada remains in Autumn in Cohort. The same identities stay visible throughout this illustration. Ben leaves in Autumn in Cohort. The same identities stay visible throughout this illustration. Cy joins Cohort in Autumn as a new customer. Cohort retains 1 customers in Autumn. Cohort loses 1 customers in Autumn. Cohort adds 1 customers in Autumn. Cohort loses named customers. The same identities stay visible throughout this illustration.",
+    "durationSec": 12,
+    "plannerInput": {
+      "kind": "customer-cohort",
+      "preset": "churn",
+      "startWord": 0,
+      "endWord": 87,
+      "layout": "stack",
+      "mode": "qualitative",
+      "label": "Customer churn",
+      "subject": "Cohort",
+      "outcome": "Cohort loses named customers",
+      "startPeriod": "Spring",
+      "endPeriod": "Autumn",
+      "setupWord": 0,
+      "actionWord": 21,
+      "responseWord": 35,
+      "checkWord": 49,
+      "resolveWord": 76,
+      "members": [
+        {
+          "label": "Ada",
+          "status": "retained",
+          "startWord": 9,
+          "evidenceWord": 21
+        },
+        {
+          "label": "Ben",
+          "status": "departed",
+          "startWord": 15,
+          "evidenceWord": 35
+        }
+      ],
+      "arrivals": [
+        {
+          "label": "Cy",
+          "evidenceWord": 49
+        }
+      ]
+    },
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Customer churn. Cohort starts with 2 customers in Spring. Ada starts in Spring in Cohort. Ben starts in Spring in Cohort.",
+        "storyboard": "Identify the original Spring customers by stable silhouette/badge; Cy waits outside the cohort."
+      },
+      {
+        "at": 2.970454545,
+        "text": "Ada remains in Autumn in Cohort. The same identities stay visible throughout this illustration.",
+        "storyboard": "The same originals pass the source-stated Autumn boundary."
+      },
+      {
+        "at": 4.784090909,
+        "text": "Ben leaves in Autumn in Cohort. The same identities stay visible throughout this illustration.",
+        "storyboard": "Ada stays on the original-member lane; Ben moves into the departed lane without disappearing."
+      },
+      {
+        "at": 6.597727273,
+        "text": "Cy joins Cohort in Autumn as a new customer. Cohort retains 1 customers in Autumn. Cohort loses 1 customers in Autumn. Cohort adds 1 customers in Autumn.",
+        "storyboard": "Cy enters a separate new-customer lane, never the retained lane."
+      },
+      {
+        "at": 10.095454545,
+        "text": "Cohort loses named customers. The same identities stay visible throughout this illustration.",
+        "storyboard": "Hold originals, departures and newcomers separately; never compute a retention rate."
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "action": "Identify the original Spring customers by stable silhouette/badge; Cy waits outside the cohort.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "action",
+        "word": 21,
+        "at": 2.970454545,
+        "action": "The same originals pass the source-stated Autumn boundary.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "response",
+        "word": 35,
+        "at": 4.784090909,
+        "action": "Ada stays on the original-member lane; Ben moves into the departed lane without disappearing.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "check",
+        "word": 49,
+        "at": 6.597727273,
+        "action": "Cy enters a separate new-customer lane, never the retained lane.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "resolve",
+        "word": 76,
+        "at": 10.095454545,
+        "action": "Hold originals, departures and newcomers separately; never compute a retention rate.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "customer-cohort",
+      "preset": "churn",
+      "mode": "qualitative",
+      "label": "Customer churn",
+      "subject": "Cohort",
+      "outcome": "Cohort loses named customers",
+      "setupAt": 0.3,
+      "actionAt": 2.970454545,
+      "responseAt": 4.784090909,
+      "checkAt": 6.597727273,
+      "resolveAt": 10.095454545,
+      "startPeriod": "Spring",
+      "endPeriod": "Autumn",
+      "members": [
+        {
+          "id": "original-0",
+          "label": "Ada",
+          "status": "retained"
+        },
+        {
+          "id": "original-1",
+          "label": "Ben",
+          "status": "departed"
+        }
+      ],
+      "arrivals": [
+        {
+          "id": "arrival-0",
+          "label": "Cy"
+        }
+      ]
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 15
+      },
+      {
+        "name": "first-movement",
+        "frame": 97
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 154
+      },
+      {
+        "name": "comparison",
+        "frame": 208
+      },
+      {
+        "name": "final-hold",
+        "frame": 331
+      }
+    ]
+  },
+  {
+    "name": "inventory-demand-surplus",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "inventory-demand"
+      },
+      {
+        "category": "explanation",
+        "id": "inventory-demand/surplus"
+      }
+    ],
+    "description": "Synthetic Pack D storyboard, not measured business data. Qualitative actors are illustrative; quantitative counts quote this named source population only.",
+    "sourceText": "Inventory surplus. Mugs are physical shelf products. The same identities stay visible throughout this illustration. Stock holds 4 products of Mugs. The same identities stay visible throughout this illustration. Demand requests 3 products of Mugs. The same identities stay visible throughout this illustration. Shelf products match separate customer requests. The same identities stay visible throughout this illustration. Stock exceeds Demand. The same identities stay visible throughout this illustration.",
+    "durationSec": 12,
+    "plannerInput": {
+      "kind": "inventory-demand",
+      "preset": "surplus",
+      "startWord": 0,
+      "endWord": 67,
+      "layout": "stack",
+      "mode": "quantitative",
+      "label": "Inventory surplus",
+      "subject": "Mugs",
+      "outcome": "Stock exceeds Demand",
+      "productLabel": "Mugs",
+      "stockLabel": "Stock",
+      "demandLabel": "Demand",
+      "setupWord": 0,
+      "actionWord": 15,
+      "responseWord": 29,
+      "checkWord": 43,
+      "resolveWord": 57,
+      "stockWord": 15,
+      "demandWord": 29,
+      "stockCount": 4,
+      "demandCount": 3,
+      "unit": "products"
+    },
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Inventory surplus. Mugs are physical shelf products. The same identities stay visible throughout this illustration.",
+        "storyboard": "Identify physical mugs on a recognizable shelf and separate incoming people holding requests."
+      },
+      {
+        "at": 2.764705882,
+        "text": "Stock holds 4 products of Mugs. The same identities stay visible throughout this illustration.",
+        "storyboard": "Bring the demand queue to the matching counter; stock remains on shelves."
+      },
+      {
+        "at": 5.111764706,
+        "text": "Demand requests 3 products of Mugs. The same identities stay visible throughout this illustration.",
+        "storyboard": "Move each matched mug once from its shelf slot to its own requesting customer."
+      },
+      {
+        "at": 7.458823529,
+        "text": "Shelf products match separate customer requests. The same identities stay visible throughout this illustration.",
+        "storyboard": "Keep unmatched people or leftover shelf stock visible; empty slots are preserved."
+      },
+      {
+        "at": 9.805882353,
+        "text": "Stock exceeds Demand. The same identities stay visible throughout this illustration.",
+        "storyboard": "Hold the conserved stock/customer result, with no invented demand trend."
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "action": "Identify physical mugs on a recognizable shelf and separate incoming people holding requests.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "action",
+        "word": 15,
+        "at": 2.764705882,
+        "action": "Bring the demand queue to the matching counter; stock remains on shelves.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "response",
+        "word": 29,
+        "at": 5.111764706,
+        "action": "Move each matched mug once from its shelf slot to its own requesting customer.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "check",
+        "word": 43,
+        "at": 7.458823529,
+        "action": "Keep unmatched people or leftover shelf stock visible; empty slots are preserved.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "resolve",
+        "word": 57,
+        "at": 9.805882353,
+        "action": "Hold the conserved stock/customer result, with no invented demand trend.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "inventory-demand",
+      "preset": "surplus",
+      "mode": "quantitative",
+      "label": "Inventory surplus",
+      "subject": "Mugs",
+      "outcome": "Stock exceeds Demand",
+      "setupAt": 0.3,
+      "actionAt": 2.764705882,
+      "responseAt": 5.111764706,
+      "checkAt": 7.458823529,
+      "resolveAt": 9.805882353,
+      "productLabel": "Mugs",
+      "stockLabel": "Stock",
+      "demandLabel": "Demand",
+      "stock": [
+        {
+          "id": "stock-0"
+        },
+        {
+          "id": "stock-1"
+        },
+        {
+          "id": "stock-2"
+        },
+        {
+          "id": "stock-3"
+        }
+      ],
+      "demand": [
+        {
+          "id": "demand-0"
+        },
+        {
+          "id": "demand-1"
+        },
+        {
+          "id": "demand-2"
+        }
+      ],
+      "quantities": {
+        "stock": 4,
+        "demand": 3,
+        "unit": "products"
+      }
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 15
+      },
+      {
+        "name": "first-movement",
+        "frame": 90
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 164
+      },
+      {
+        "name": "comparison",
+        "frame": 234
+      },
+      {
+        "name": "final-hold",
+        "frame": 327
+      }
+    ]
+  },
+  {
+    "name": "inventory-demand-shortage",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "inventory-demand"
+      },
+      {
+        "category": "explanation",
+        "id": "inventory-demand/shortage"
+      }
+    ],
+    "description": "Synthetic Pack D storyboard, not measured business data. Qualitative actors are illustrative; quantitative counts quote this named source population only.",
+    "sourceText": "Inventory shortage. Mugs are physical shelf products. The same identities stay visible throughout this illustration. Stock holds 3 products of Mugs. The same identities stay visible throughout this illustration. Demand requests 4 products of Mugs. The same identities stay visible throughout this illustration. Shelf products match separate customer requests. The same identities stay visible throughout this illustration. Stock falls short of Demand. The same identities stay visible throughout this illustration.",
+    "durationSec": 12,
+    "plannerInput": {
+      "kind": "inventory-demand",
+      "preset": "shortage",
+      "startWord": 0,
+      "endWord": 69,
+      "layout": "stack",
+      "mode": "quantitative",
+      "label": "Inventory shortage",
+      "subject": "Mugs",
+      "outcome": "Stock falls short of Demand",
+      "productLabel": "Mugs",
+      "stockLabel": "Stock",
+      "demandLabel": "Demand",
+      "setupWord": 0,
+      "actionWord": 15,
+      "responseWord": 29,
+      "checkWord": 43,
+      "resolveWord": 57,
+      "stockWord": 15,
+      "demandWord": 29,
+      "stockCount": 3,
+      "demandCount": 4,
+      "unit": "products"
+    },
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Inventory shortage. Mugs are physical shelf products. The same identities stay visible throughout this illustration.",
+        "storyboard": "Identify physical mugs on a recognizable shelf and separate incoming people holding requests."
+      },
+      {
+        "at": 2.692857143,
+        "text": "Stock holds 3 products of Mugs. The same identities stay visible throughout this illustration.",
+        "storyboard": "Bring the demand queue to the matching counter; stock remains on shelves."
+      },
+      {
+        "at": 4.972857143,
+        "text": "Demand requests 4 products of Mugs. The same identities stay visible throughout this illustration.",
+        "storyboard": "Move each matched mug once from its shelf slot to its own requesting customer."
+      },
+      {
+        "at": 7.252857143,
+        "text": "Shelf products match separate customer requests. The same identities stay visible throughout this illustration.",
+        "storyboard": "Keep unmatched people or leftover shelf stock visible; empty slots are preserved."
+      },
+      {
+        "at": 9.532857143,
+        "text": "Stock falls short of Demand. The same identities stay visible throughout this illustration.",
+        "storyboard": "Hold the conserved stock/customer result, with no invented demand trend."
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "action": "Identify physical mugs on a recognizable shelf and separate incoming people holding requests.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "action",
+        "word": 15,
+        "at": 2.692857143,
+        "action": "Bring the demand queue to the matching counter; stock remains on shelves.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "response",
+        "word": 29,
+        "at": 4.972857143,
+        "action": "Move each matched mug once from its shelf slot to its own requesting customer.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "check",
+        "word": 43,
+        "at": 7.252857143,
+        "action": "Keep unmatched people or leftover shelf stock visible; empty slots are preserved.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "resolve",
+        "word": 57,
+        "at": 9.532857143,
+        "action": "Hold the conserved stock/customer result, with no invented demand trend.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "inventory-demand",
+      "preset": "shortage",
+      "mode": "quantitative",
+      "label": "Inventory shortage",
+      "subject": "Mugs",
+      "outcome": "Stock falls short of Demand",
+      "setupAt": 0.3,
+      "actionAt": 2.692857143,
+      "responseAt": 4.972857143,
+      "checkAt": 7.252857143,
+      "resolveAt": 9.532857143,
+      "productLabel": "Mugs",
+      "stockLabel": "Stock",
+      "demandLabel": "Demand",
+      "stock": [
+        {
+          "id": "stock-0"
+        },
+        {
+          "id": "stock-1"
+        },
+        {
+          "id": "stock-2"
+        }
+      ],
+      "demand": [
+        {
+          "id": "demand-0"
+        },
+        {
+          "id": "demand-1"
+        },
+        {
+          "id": "demand-2"
+        },
+        {
+          "id": "demand-3"
+        }
+      ],
+      "quantities": {
+        "stock": 3,
+        "demand": 4,
+        "unit": "products"
+      }
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 15
+      },
+      {
+        "name": "first-movement",
+        "frame": 88
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 160
+      },
+      {
+        "name": "comparison",
+        "frame": 228
+      },
+      {
+        "name": "final-hold",
+        "frame": 323
+      }
+    ]
+  },
+  {
+    "name": "inventory-demand-balanced",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "inventory-demand"
+      },
+      {
+        "category": "explanation",
+        "id": "inventory-demand/balanced"
+      }
+    ],
+    "description": "Synthetic Pack D storyboard, not measured business data. Qualitative actors are illustrative; quantitative counts quote this named source population only.",
+    "sourceText": "Inventory balanced. Mugs are physical shelf products. The same identities stay visible throughout this illustration. Stock holds Mugs. The same identities stay visible throughout this illustration. Demand requests Mugs. The same identities stay visible throughout this illustration. Shelf products match separate customer requests. The same identities stay visible throughout this illustration. Stock matches Demand. The same identities stay visible throughout this illustration.",
+    "durationSec": 12,
+    "plannerInput": {
+      "kind": "inventory-demand",
+      "preset": "balanced",
+      "startWord": 0,
+      "endWord": 61,
+      "layout": "stack",
+      "mode": "qualitative",
+      "label": "Inventory balanced",
+      "subject": "Mugs",
+      "outcome": "Stock matches Demand",
+      "productLabel": "Mugs",
+      "stockLabel": "Stock",
+      "demandLabel": "Demand",
+      "setupWord": 0,
+      "actionWord": 15,
+      "responseWord": 26,
+      "checkWord": 37,
+      "resolveWord": 51,
+      "stockWord": 15,
+      "demandWord": 26
+    },
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Inventory balanced. Mugs are physical shelf products. The same identities stay visible throughout this illustration.",
+        "storyboard": "Identify physical mugs on a recognizable shelf and separate incoming people holding requests."
+      },
+      {
+        "at": 3.008064516,
+        "text": "Stock holds Mugs. The same identities stay visible throughout this illustration.",
+        "storyboard": "Bring the demand queue to the matching counter; stock remains on shelves."
+      },
+      {
+        "at": 5.030645161,
+        "text": "Demand requests Mugs. The same identities stay visible throughout this illustration.",
+        "storyboard": "Move each matched mug once from its shelf slot to its own requesting customer."
+      },
+      {
+        "at": 7.053225806,
+        "text": "Shelf products match separate customer requests. The same identities stay visible throughout this illustration.",
+        "storyboard": "Keep unmatched people or leftover shelf stock visible; empty slots are preserved."
+      },
+      {
+        "at": 9.627419355,
+        "text": "Stock matches Demand. The same identities stay visible throughout this illustration.",
+        "storyboard": "Hold the conserved stock/customer result, with no invented demand trend."
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "action": "Identify physical mugs on a recognizable shelf and separate incoming people holding requests.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "action",
+        "word": 15,
+        "at": 3.008064516,
+        "action": "Bring the demand queue to the matching counter; stock remains on shelves.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "response",
+        "word": 26,
+        "at": 5.030645161,
+        "action": "Move each matched mug once from its shelf slot to its own requesting customer.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "check",
+        "word": 37,
+        "at": 7.053225806,
+        "action": "Keep unmatched people or leftover shelf stock visible; empty slots are preserved.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      },
+      {
+        "beat": "resolve",
+        "word": 51,
+        "at": 9.627419355,
+        "action": "Hold the conserved stock/customer result, with no invented demand trend.",
+        "camera": "Existing fixed ExplanationStage camera; preserve editorial rails."
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fff8ed",
+          "card": "#ffffff",
+          "cardRaised": "#fffdfa",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#23100c",
+          "muted": "#725f58",
+          "accent": "#8254d9",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321c18",
+          "card": "#432b26",
+          "cardRaised": "#51352e",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c7ada3",
+          "accent": "#9f75ff",
+          "accent2": "#c594a2",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#8cb698",
+          "negative": "#d89a87",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#c5adeb",
+            "#ead8cc",
+            "#9881bf"
+          ]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "inventory-demand",
+      "preset": "balanced",
+      "mode": "qualitative",
+      "label": "Inventory balanced",
+      "subject": "Mugs",
+      "outcome": "Stock matches Demand",
+      "setupAt": 0.3,
+      "actionAt": 3.008064516,
+      "responseAt": 5.030645161,
+      "checkAt": 7.053225806,
+      "resolveAt": 9.627419355,
+      "productLabel": "Mugs",
+      "stockLabel": "Stock",
+      "demandLabel": "Demand",
+      "stock": [
+        {
+          "id": "stock-0"
+        },
+        {
+          "id": "stock-1"
+        },
+        {
+          "id": "stock-2"
+        }
+      ],
+      "demand": [
+        {
+          "id": "demand-0"
+        },
+        {
+          "id": "demand-1"
+        },
+        {
+          "id": "demand-2"
+        }
+      ]
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 15
+      },
+      {
+        "name": "first-movement",
+        "frame": 98
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 161
+      },
+      {
+        "name": "comparison",
+        "frame": 222
+      },
+      {
+        "name": "final-hold",
+        "frame": 324
+      }
+    ]
+  }
+]

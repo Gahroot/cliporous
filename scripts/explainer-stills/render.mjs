@@ -23,6 +23,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import ffmpegPath from 'ffmpeg-static';
 import { stageCanvasFor } from '../../src/main/remotion/compositions/explainer/types.ts';
 import { createRenderPlan, normalizeFixtures } from './fixture-schema.mjs';
 import {
@@ -86,7 +87,7 @@ function contactSheet(files, sheet, label) {
     .join('')}hstack=inputs=${files.length}`;
   try {
     execFileSync(
-      'ffmpeg',
+      ffmpegPath ?? 'ffmpeg',
       [
         '-n',
         '-loglevel',
@@ -103,7 +104,9 @@ function contactSheet(files, sheet, label) {
     console.log(`✓ ${label} → ${sheet}`);
   } catch (error) {
     rmSync(sheet, { force: true });
-    console.warn(`${label}: contact sheet skipped (ffmpeg on PATH required): ${error.message}`);
+    console.warn(
+      `${label}: contact sheet skipped (bundled FFmpeg or FFmpeg on PATH required): ${error.message}`,
+    );
   }
 }
 

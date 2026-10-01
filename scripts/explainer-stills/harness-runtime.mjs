@@ -210,9 +210,10 @@ export function cost(elapsedMs, renderedFrames, fps = 30) {
   };
 }
 
-/** Peak RSS is sampled process-tree RSS, NOT an OS high-water mark, GPU memory, or geometry count. */
+/** Sampled RSS: coordinator only on Windows, process tree on POSIX; never GPU memory or an OS high-water mark. */
 export function startReport(out, mode, metadata = {}) {
   const start = performance.now();
+  const windows = platform() === 'win32';
   const report = {
     schemaVersion: 1,
     mode,
@@ -233,8 +234,9 @@ export function startReport(out, mode, metadata = {}) {
     entries: [],
     errors: [],
     rss: {
-      scope:
-        'node plus descendants; ps RSS sum sampled every 1000ms (shared pages may double count)',
+      scope: windows
+        ? 'Node coordinator only; Chrome/FFmpeg descendants unmeasured on Windows'
+        : 'node plus descendants; ps RSS sum sampled every 1000ms (shared pages may double count)',
       peakBytes: null,
       samples: 0,
       unavailable: null,
@@ -248,16 +250,21 @@ export function startReport(out, mode, metadata = {}) {
   const reportPath = path.join(out, 'report.json');
   const sample = () => {
     try {
-      const bytes = processTreeRss(
-        execFileSync('ps', ['-axo', 'pid=,ppid=,rss='], {
-          encoding: 'utf8',
-          timeout: 3000,
-          maxBuffer: 8 * 1024 * 1024,
-        }),
-        process.pid,
-      );
+      const bytes = windows
+        ? process.memoryUsage().rss
+        : processTreeRss(
+            execFileSync('ps', ['-axo', 'pid=,ppid=,rss='], {
+              encoding: 'utf8',
+              timeout: 3000,
+              maxBuffer: 8 * 1024 * 1024,
+            }),
+            process.pid,
+          );
       if (bytes === null) throw new Error('current PID absent from ps');
-      report.rss.peakBytes = Math.max(report.rss.peakBytes ?? 0, bytes);
+      if (!Number.isFinite(bytes) || bytes <= 0)
+        throw new Error('RSS sample must be finite and positive');
+      report.rss.peakBytes =
+        report.rss.peakBytes === null ? bytes : Math.max(report.rss.peakBytes, bytes);
       report.rss.samples++;
     } catch (error) {
       report.rss.unavailable = error.message;

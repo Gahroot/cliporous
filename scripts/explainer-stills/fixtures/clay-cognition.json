@@ -1,0 +1,349 @@
+[
+  {
+    "name": "agent-team-parallel-specialists",
+    "covers": [{ "category": "kind", "id": "agent-team" }, { "category": "explanation", "id": "agent-team/parallel-specialists" }],
+    "description": "Synthetic direct-scene example: distinct assignments reunite, without a speed claim.",
+    "sourceText": "Specialists share a task: a draft report goes to a research specialist, drafting specialist and checking specialist. They work on their named assignments. Their findings reunite.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "agent-team", "preset": "parallel-specialists",
+      "label": "Specialists share a task", "subject": "draft report",
+      "roles": ["research specialist", "drafting specialist", "checking specialist"],
+      "outcome": "Their findings reunite",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "agent-team-contractor-crew",
+    "covers": [{ "category": "kind", "id": "agent-team" }, { "category": "explanation", "id": "agent-team/contractor-crew" }],
+    "description": "Synthetic direct-scene example: named trades work on one house and return reports for review.",
+    "sourceText": "Trades on the same home: the Maple house has a plumber, electrician and roofer handling their assigned work. Trade reports return for review.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "agent-team", "preset": "contractor-crew",
+      "label": "Trades on the same home", "subject": "Maple house",
+      "roles": ["plumber", "electrician", "roofer"], "outcome": "Trade reports return for review",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "agent-plan-replan",
+    "covers": [{ "category": "kind", "id": "agent-plan" }, { "category": "explanation", "id": "agent-plan/replan" }],
+    "description": "Synthetic direct-scene example: new information changes a route, not the goal.",
+    "sourceText": "New evidence changes the plan. An inspection plan encounters a blocked entrance. It is revised to use the rear entrance. The plan takes a different route.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "agent-plan", "preset": "replan",
+      "label": "New evidence changes the plan", "subject": "inspection plan",
+      "obstacleLabel": "blocked entrance", "revisedLabel": "rear entrance",
+      "outcome": "The plan takes a different route",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "agent-plan-fixed-vs-adaptive",
+    "covers": [{ "category": "kind", "id": "agent-plan" }, { "category": "explanation", "id": "agent-plan/fixed-vs-adaptive" }],
+    "description": "Synthetic direct-scene example: the fixed route stays blocked instead of silently adapting.",
+    "sourceText": "Fixed and adaptive routes face a closed road in a delivery plan. The fixed route stops there; the adaptive route uses a side street. Fixed and revised routes stay distinct.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "agent-plan", "preset": "fixed-vs-adaptive",
+      "label": "Fixed and adaptive routes", "subject": "delivery plan",
+      "obstacleLabel": "closed road", "revisedLabel": "side street",
+      "outcome": "Fixed and revised routes stay distinct",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "agent-budget-stop",
+    "covers": [{ "category": "kind", "id": "agent-budget" }, { "category": "explanation", "id": "agent-budget/stop" }],
+    "description": "Synthetic direct-scene example: a bounded allowance runs out, without invented amounts.",
+    "sourceText": "Stop at the action limit. Each lookup in a research task uses the tool allowance. The allowance runs out and the task stops. No actions after the limit.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "agent-budget", "preset": "stop",
+      "label": "Stop at the action limit", "subject": "research task",
+      "resourceLabel": "tool allowance", "actionLabel": "lookup",
+      "outcome": "No actions after the limit",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "agent-budget-request-more",
+    "covers": [{ "category": "kind", "id": "agent-budget" }, { "category": "explanation", "id": "agent-budget/request-more" }],
+    "description": "Synthetic direct-scene example: a conditional request is not a grant or a refill.",
+    "sourceText": "Ask before spending more on the research task. Each lookup consumes the tool allowance. At the limit, ask for more if another lookup is needed. Extra allowance remains ungranted.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "agent-budget", "preset": "request-more",
+      "label": "Ask before spending more", "subject": "research task",
+      "resourceLabel": "tool allowance", "actionLabel": "lookup",
+      "condition": "if another lookup is needed", "outcome": "Extra allowance remains ungranted",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "model-training-train-then-use",
+    "covers": [{ "category": "kind", "id": "model-training" }, { "category": "explanation", "id": "model-training/train-then-use" }],
+    "description": "Synthetic direct-scene example: training changes the model; later use does not.",
+    "sourceText": "Training comes before use. Labeled examples change the sorting model during training. Later a new item is processed by the trained model. Use does not retrain the model.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "model-training", "preset": "train-then-use",
+      "label": "Training comes before use", "subject": "sorting model",
+      "exampleLabel": "labeled examples", "inputLabel": "new item",
+      "outcome": "Use does not retrain the model",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "model-training-examples-correction",
+    "covers": [{ "category": "kind", "id": "model-training" }, { "category": "explanation", "id": "model-training/examples-correction" }],
+    "description": "Synthetic direct-scene example: corrected examples belong to training; title exercises the 32-character boundary.",
+    "sourceText": "Correct examples during training. Corrected examples change the sorting model before a held-out item is used for a later check. Corrections change the training phase.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "model-training", "preset": "examples-correction",
+      "label": "Correct examples during training", "subject": "sorting model",
+      "exampleLabel": "corrected examples", "inputLabel": "held-out item",
+      "outcome": "Corrections change the training phase",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "model-evaluation-same-tests",
+    "covers": [{ "category": "kind", "id": "model-evaluation" }, { "category": "explanation", "id": "model-evaluation/same-tests" }],
+    "description": "Synthetic direct-scene example: shared criteria without fabricated scores or a winner.",
+    "sourceText": "Approaches face the same checks in an answer review. The concise answer model and detailed answer model both face source support and format compliance checks. Same checks, no declared winner.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "model-evaluation", "preset": "same-tests",
+      "label": "Approaches face the same checks", "subject": "answer review",
+      "approaches": ["concise answer model", "detailed answer model"],
+      "criteria": ["source support", "format compliance"], "outcome": "Same checks, no declared winner",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "model-evaluation-tradeoffs",
+    "covers": [{ "category": "kind", "id": "model-evaluation" }, { "category": "explanation", "id": "model-evaluation/tradeoffs" }],
+    "description": "Synthetic direct-scene example: qualitative differences do not become a universal ranking.",
+    "sourceText": "Different strengths, same checks: in an answer review, the brief answer model emphasizes short responses while the stepwise answer model emphasizes explanation detail. Both face both checks. Different strengths remain a tradeoff.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "model-evaluation", "preset": "tradeoffs",
+      "label": "Different strengths, same checks", "subject": "answer review",
+      "approaches": ["brief answer model", "stepwise answer model"],
+      "criteria": ["short responses", "explanation detail"], "outcome": "Different strengths remain a tradeoff",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "evidence-conflict-unresolved",
+    "covers": [{ "category": "kind", "id": "evidence-conflict" }, { "category": "explanation", "id": "evidence-conflict/unresolved" }],
+    "description": "Synthetic direct-scene example: two conflicting claims remain separate and unresolved.",
+    "sourceText": "Sources disagree on the doorway. For doorway status, the inspection note says door is open, while the maintenance log says door is closed. The conflict remains unresolved.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "evidence-conflict", "preset": "unresolved",
+      "label": "Sources disagree on the doorway", "subject": "doorway status",
+      "sources": ["inspection note", "maintenance log"], "claims": ["door is open", "door is closed"],
+      "outcome": "The conflict remains unresolved",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "evidence-conflict-human-review",
+    "covers": [{ "category": "kind", "id": "evidence-conflict" }, { "category": "explanation", "id": "evidence-conflict/human-review" }],
+    "description": "Synthetic direct-scene example: referral to a person never implies a resolved claim.",
+    "sourceText": "Human referral is not resolution. For doorway status, the inspection note says door is open, while the maintenance log says door is closed. Referred to a person, still unresolved.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "evidence-conflict", "preset": "human-review",
+      "label": "Human referral is not resolution", "subject": "doorway status",
+      "sources": ["inspection note", "maintenance log"], "claims": ["door is open", "door is closed"],
+      "outcome": "Referred to a person, still unresolved",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  }
+]

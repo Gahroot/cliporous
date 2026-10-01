@@ -1,0 +1,1671 @@
+[
+  {
+    "name": "market-exchange-direct-sale",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "market-exchange"
+      },
+      {
+        "category": "explanation",
+        "id": "market-exchange/direct-sale"
+      }
+    ],
+    "description": "Synthetic authored example, not measured business performance. Static shared camera; bounded 12-ticket, two-actor, three-invoice geometry without particles. All amounts and actors are source-stated; no net-profit or guaranteed return claim.",
+    "sourceText": "Direct sale. Maker owns parcel. Buyer pays 12 dollars to Maker for parcel. Maker transfers parcel to Buyer. Buyer owns parcel. Maker receives 12 dollars. Buyer keeps parcel.",
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Direct sale. Maker owns parcel.",
+        "storyboard": "Orient seller counter, buyer shopping bag and persistent taped parcel."
+      },
+      {
+        "at": 1.571428571,
+        "text": "Buyer pays 12 dollars to Maker for parcel.",
+        "storyboard": "Parcel and source-stated payment travel in opposed lanes; labels say in transit, not account balances."
+      },
+      {
+        "at": 3.685714286,
+        "text": "Maker transfers parcel to Buyer.",
+        "storyboard": "Buyer ownership is revealed at the actual parcel handoff, not before arrival."
+      },
+      {
+        "at": 5.007142857,
+        "text": "Buyer owns parcel. Maker receives 12 dollars.",
+        "storyboard": "Compare source-stated ownership and payment received; a fee is deducted, never added."
+      },
+      {
+        "at": 6.857142857,
+        "text": "Buyer keeps parcel.",
+        "storyboard": "Static hold of the supported final owner and payment received, never entire net worth."
+      }
+    ],
+    "plannerInput": {
+      "kind": "market-exchange",
+      "subject": "parcel",
+      "seller": "Maker",
+      "buyer": "Buyer",
+      "product": "parcel",
+      "preset": "direct-sale",
+      "label": "Direct sale",
+      "outcome": "Buyer keeps parcel",
+      "amount": 12,
+      "unit": "dollars",
+      "startWord": 0,
+      "endWord": 27,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 5,
+      "responseWord": 13,
+      "checkWord": 18,
+      "resolveWord": 25
+    },
+    "durationSec": 8,
+    "cases": [
+      {
+        "name": "vertical-stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "vertical-takeover-light",
+        "layout": "takeover",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "market-exchange",
+      "preset": "direct-sale",
+      "label": "Direct sale",
+      "subject": "parcel",
+      "outcome": "Buyer keeps parcel",
+      "seller": {
+        "id": "seller",
+        "label": "Maker"
+      },
+      "buyer": {
+        "id": "buyer",
+        "label": "Buyer"
+      },
+      "product": "parcel",
+      "payment": {
+        "amount": 12,
+        "unit": "dollars"
+      },
+      "setupAt": 0.3,
+      "actionAt": 1.571428571,
+      "responseAt": 3.685714286,
+      "checkAt": 5.007142857,
+      "resolveAt": 6.857142857
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 28
+      },
+      {
+        "name": "first-movement",
+        "frame": 79
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 114
+      },
+      {
+        "name": "comparison",
+        "frame": 153
+      },
+      {
+        "name": "final-hold",
+        "frame": 223
+      }
+    ]
+  },
+  {
+    "name": "market-exchange-platform-fee",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "market-exchange"
+      },
+      {
+        "category": "explanation",
+        "id": "market-exchange/platform-fee"
+      }
+    ],
+    "description": "Synthetic authored example, not measured business performance. Static shared camera; bounded 12-ticket, two-actor, three-invoice geometry without particles. All amounts and actors are source-stated; no net-profit or guaranteed return claim.",
+    "sourceText": "Platform exchange. Maker owns parcel. Buyer approaches the marketplace. Buyer pays 12 dollars to Market for parcel. Maker transfers parcel to Buyer. The parcel changes ownership. Buyer owns parcel. Market keeps 2 dollars as fee. Market pays 10 dollars to Maker. Buyer keeps parcel. The stated fee is part of the original payment.",
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Platform exchange. Maker owns parcel. Buyer approaches the marketplace.",
+        "storyboard": "Orient seller counter, buyer shopping bag and persistent taped parcel."
+      },
+      {
+        "at": 1.846226415,
+        "text": "Buyer pays 12 dollars to Market for parcel.",
+        "storyboard": "Parcel and source-stated payment travel in opposed lanes; labels say in transit, not account balances."
+      },
+      {
+        "at": 3.26509434,
+        "text": "Maker transfers parcel to Buyer. The parcel changes ownership.",
+        "storyboard": "Buyer ownership is revealed at the actual parcel handoff, not before arrival."
+      },
+      {
+        "at": 4.861320755,
+        "text": "Buyer owns parcel. Market keeps 2 dollars as fee. Market pays 10 dollars to Maker.",
+        "storyboard": "Compare source-stated ownership and payment received; a fee is deducted, never added."
+      },
+      {
+        "at": 7.521698113,
+        "text": "Buyer keeps parcel. The stated fee is part of the original payment.",
+        "storyboard": "Static hold of the supported final owner and payment received, never entire net worth."
+      }
+    ],
+    "plannerInput": {
+      "kind": "market-exchange",
+      "subject": "parcel",
+      "seller": "Maker",
+      "buyer": "Buyer",
+      "product": "parcel",
+      "preset": "platform-fee",
+      "label": "Platform exchange",
+      "outcome": "Buyer keeps parcel",
+      "amount": 12,
+      "unit": "dollars",
+      "platform": "Market",
+      "fee": 2,
+      "startWord": 0,
+      "endWord": 52,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 9,
+      "responseWord": 17,
+      "checkWord": 26,
+      "resolveWord": 41
+    },
+    "durationSec": 10,
+    "cases": [
+      {
+        "name": "vertical-stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "vertical-takeover-light",
+        "layout": "takeover",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "market-exchange",
+      "preset": "platform-fee",
+      "label": "Platform exchange",
+      "subject": "parcel",
+      "outcome": "Buyer keeps parcel",
+      "seller": {
+        "id": "seller",
+        "label": "Maker"
+      },
+      "buyer": {
+        "id": "buyer",
+        "label": "Buyer"
+      },
+      "product": "parcel",
+      "payment": {
+        "amount": 12,
+        "unit": "dollars"
+      },
+      "platform": {
+        "id": "platform",
+        "label": "Market",
+        "fee": 2
+      },
+      "setupAt": 0.3,
+      "actionAt": 1.846226415,
+      "responseAt": 3.26509434,
+      "checkAt": 4.861320755,
+      "resolveAt": 7.521698113
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 32
+      },
+      {
+        "name": "first-movement",
+        "frame": 77
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 101
+      },
+      {
+        "name": "comparison",
+        "frame": 149
+      },
+      {
+        "name": "final-hold",
+        "frame": 263
+      }
+    ]
+  },
+  {
+    "name": "market-exchange-unmatched-market",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "market-exchange"
+      },
+      {
+        "category": "explanation",
+        "id": "market-exchange/unmatched-market"
+      }
+    ],
+    "description": "Synthetic authored example, not measured business performance. Static shared camera; bounded 12-ticket, two-actor, three-invoice geometry without particles. All amounts and actors are source-stated; no net-profit or guaranteed return claim.",
+    "sourceText": "Unmatched market. Maker owns parcel. Both participants are present. Buyer finds no match with Maker. The buyer remains waiting. Maker keeps parcel. Ownership remains unchanged in this market. Buyer makes no payment to Maker. Nothing has been exchanged. Maker keeps parcel. Both participants remain separate without an exchange.",
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Unmatched market. Maker owns parcel. Both participants are present.",
+        "storyboard": "Same recognizable seller and buyer orient around the seller-owned parcel."
+      },
+      {
+        "at": 2.0125,
+        "text": "Buyer finds no match with Maker. The buyer remains waiting.",
+        "storyboard": "Buyer stays on their side of the interrupted exchange lane."
+      },
+      {
+        "at": 3.970833333,
+        "text": "Maker keeps parcel. Ownership remains unchanged in this market.",
+        "storyboard": "Pause posts and unchanged parcel tray expose the missing match."
+      },
+      {
+        "at": 5.733333333,
+        "text": "Buyer makes no payment to Maker. Nothing has been exchanged.",
+        "storyboard": "No payment object or completed ownership transfer appears."
+      },
+      {
+        "at": 7.691666667,
+        "text": "Maker keeps parcel. Both participants remain separate without an exchange.",
+        "storyboard": "Hold the unmatched buyer and seller-owned parcel without invented success."
+      }
+    ],
+    "plannerInput": {
+      "kind": "market-exchange",
+      "subject": "parcel",
+      "seller": "Maker",
+      "buyer": "Buyer",
+      "product": "parcel",
+      "preset": "unmatched-market",
+      "label": "Unmatched market",
+      "outcome": "Maker keeps parcel",
+      "startWord": 0,
+      "endWord": 47,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 9,
+      "responseWord": 19,
+      "checkWord": 28,
+      "resolveWord": 38
+    },
+    "durationSec": 10,
+    "cases": [
+      {
+        "name": "vertical-stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "vertical-takeover-light",
+        "layout": "takeover",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "market-exchange",
+      "preset": "unmatched-market",
+      "label": "Unmatched market",
+      "subject": "parcel",
+      "outcome": "Maker keeps parcel",
+      "seller": {
+        "id": "seller",
+        "label": "Maker"
+      },
+      "buyer": {
+        "id": "buyer",
+        "label": "Buyer"
+      },
+      "product": "parcel",
+      "setupAt": 0.3,
+      "actionAt": 2.0125,
+      "responseAt": 3.970833333,
+      "checkAt": 5.733333333,
+      "resolveAt": 7.691666667
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 35
+      },
+      {
+        "name": "first-movement",
+        "frame": 90
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 122
+      },
+      {
+        "name": "comparison",
+        "frame": 175
+      },
+      {
+        "name": "final-hold",
+        "frame": 265
+      }
+    ]
+  },
+  {
+    "name": "resource-allocation-reallocate",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "resource-allocation"
+      },
+      {
+        "category": "explanation",
+        "id": "resource-allocation/reallocate"
+      }
+    ],
+    "description": "Synthetic authored example, not measured business performance. Static shared camera; bounded 12-ticket, two-actor, three-invoice geometry without particles. All amounts and actors are source-stated; no net-profit or guaranteed return claim.",
+    "sourceText": "Reallocate hours. Capacity has 8 hours. Design starts with 4 hours. Testing starts with 4 hours. Design requests 6 hours. Testing requests 2 hours. Design receives 2 hours from Testing. Design has 6 hours. Testing has 2 hours. Testing gives up 2 hours.",
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Reallocate hours. Capacity has 8 hours. Design starts with 4 hours. Testing starts with 4 hours.",
+        "storyboard": "Eight clock tickets occupy two recognizable project workbenches."
+      },
+      {
+        "at": 3.747674419,
+        "text": "Design requests 6 hours. Testing requests 2 hours.",
+        "storyboard": "Requested sockets appear; the donor retains its identity."
+      },
+      {
+        "at": 5.496511628,
+        "text": "Design receives 2 hours from Testing.",
+        "storyboard": "Exactly two existing tickets cross from Testing to Design."
+      },
+      {
+        "at": 6.808139535,
+        "text": "Design has 6 hours. Testing has 2 hours.",
+        "storyboard": "Six and two tickets show conserved capacity and the opportunity cost."
+      },
+      {
+        "at": 8.556976744,
+        "text": "Testing gives up 2 hours.",
+        "storyboard": "Hold the reduced donor allocation; no extra resources appear."
+      }
+    ],
+    "plannerInput": {
+      "kind": "resource-allocation",
+      "subject": "Capacity",
+      "total": 8,
+      "unit": "hours",
+      "preset": "reallocate",
+      "label": "Reallocate hours",
+      "outcome": "Testing gives up 2 hours",
+      "projects": [
+        {
+          "label": "Design",
+          "before": 4,
+          "after": 6,
+          "requested": 6
+        },
+        {
+          "label": "Testing",
+          "before": 4,
+          "after": 2,
+          "requested": 2
+        }
+      ],
+      "startWord": 0,
+      "endWord": 42,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 16,
+      "responseWord": 24,
+      "checkWord": 30,
+      "resolveWord": 38
+    },
+    "durationSec": 10,
+    "cases": [
+      {
+        "name": "vertical-stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "vertical-takeover-light",
+        "layout": "takeover",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "resource-allocation",
+      "preset": "reallocate",
+      "label": "Reallocate hours",
+      "subject": "Capacity",
+      "outcome": "Testing gives up 2 hours",
+      "total": 8,
+      "unit": "hours",
+      "projects": [
+        {
+          "id": "project-0",
+          "label": "Design",
+          "before": 4,
+          "after": 6,
+          "requested": 6
+        },
+        {
+          "id": "project-1",
+          "label": "Testing",
+          "before": 4,
+          "after": 2,
+          "requested": 2
+        }
+      ],
+      "setupAt": 0.3,
+      "actionAt": 3.747674419,
+      "responseAt": 5.496511628,
+      "checkAt": 6.808139535,
+      "resolveAt": 8.556976744
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 61
+      },
+      {
+        "name": "first-movement",
+        "frame": 139
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 168
+      },
+      {
+        "name": "comparison",
+        "frame": 207
+      },
+      {
+        "name": "final-hold",
+        "frame": 278
+      }
+    ]
+  },
+  {
+    "name": "resource-allocation-constrained-projects",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "resource-allocation"
+      },
+      {
+        "category": "explanation",
+        "id": "resource-allocation/constrained-projects"
+      }
+    ],
+    "description": "Synthetic authored example, not measured business performance. Static shared camera; bounded 12-ticket, two-actor, three-invoice geometry without particles. All amounts and actors are source-stated; no net-profit or guaranteed return claim.",
+    "sourceText": "Finite capacity. Capacity has 8 hours. Project implementation starts with 0 hours. Production preparation starts with 0 hours. Project implementation requests 6 hours. Production preparation requests 6 hours. Capacity assigns 4 hours to Project implementation. Capacity assigns 4 hours to Production preparation. Project implementation has 4 hours. Production preparation has 4 hours. Project implementation lacks 2 hours. Production preparation lacks 2 hours. Requests exceed capacity. Both projects retain their stated allocation.",
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Finite capacity. Capacity has 8 hours. Project implementation starts with 0 hours. Production preparation starts with 0 hours.",
+        "storyboard": "Eight clock tickets wait in the finite central reserve."
+      },
+      {
+        "at": 3.140140845,
+        "text": "Project implementation requests 6 hours. Production preparation requests 6 hours.",
+        "storyboard": "Two project workbenches expose six requested slots apiece."
+      },
+      {
+        "at": 4.745774648,
+        "text": "Capacity assigns 4 hours to Project implementation. Capacity assigns 4 hours to Production preparation.",
+        "storyboard": "The same eight tickets split four and four; the reserve becomes empty."
+      },
+      {
+        "at": 6.993661972,
+        "text": "Project implementation has 4 hours. Production preparation has 4 hours. Project implementation lacks 2 hours. Production preparation lacks 2 hours.",
+        "storyboard": "Four unfilled sockets remain, two for each named request."
+      },
+      {
+        "at": 10.204929577,
+        "text": "Requests exceed capacity. Both projects retain their stated allocation.",
+        "storyboard": "Hold unresolved requests and conserved allocation, not budget exhaustion."
+      }
+    ],
+    "plannerInput": {
+      "kind": "resource-allocation",
+      "subject": "Capacity",
+      "total": 8,
+      "unit": "hours",
+      "preset": "constrained-projects",
+      "label": "Finite capacity",
+      "outcome": "Requests exceed capacity",
+      "projects": [
+        {
+          "label": "Project implementation",
+          "before": 0,
+          "after": 4,
+          "requested": 6
+        },
+        {
+          "label": "Production preparation",
+          "before": 0,
+          "after": 4,
+          "requested": 6
+        }
+      ],
+      "startWord": 0,
+      "endWord": 70,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 18,
+      "responseWord": 28,
+      "checkWord": 42,
+      "resolveWord": 62
+    },
+    "durationSec": 12,
+    "cases": [
+      {
+        "name": "vertical-stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "vertical-takeover-light",
+        "layout": "takeover",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "resource-allocation",
+      "preset": "constrained-projects",
+      "label": "Finite capacity",
+      "subject": "Capacity",
+      "outcome": "Requests exceed capacity",
+      "total": 8,
+      "unit": "hours",
+      "projects": [
+        {
+          "id": "project-0",
+          "label": "Project implementation",
+          "before": 0,
+          "after": 4,
+          "requested": 6
+        },
+        {
+          "id": "project-1",
+          "label": "Production preparation",
+          "before": 0,
+          "after": 4,
+          "requested": 6
+        }
+      ],
+      "setupAt": 0.3,
+      "actionAt": 3.140140845,
+      "responseAt": 4.745774648,
+      "checkAt": 6.993661972,
+      "resolveAt": 10.204929577
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 52
+      },
+      {
+        "name": "first-movement",
+        "frame": 118
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 145
+      },
+      {
+        "name": "comparison",
+        "frame": 213
+      },
+      {
+        "name": "final-hold",
+        "frame": 333
+      }
+    ]
+  },
+  {
+    "name": "unit-economics-positive-margin",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "unit-economics"
+      },
+      {
+        "category": "explanation",
+        "id": "unit-economics/positive-margin"
+      }
+    ],
+    "description": "Synthetic authored example, not measured business performance. Static shared camera; bounded 12-ticket, two-actor, three-invoice geometry without particles. All amounts and actors are source-stated; no net-profit or guaranteed return claim.",
+    "sourceText": "Costs per parcel. One parcel brings 12 dollars in revenue. Materials costs 5 dollars per one parcel. Delivery costs 3 dollars per one parcel. Stated costs total 8 dollars per one parcel. Revenue less stated costs leaves 4 dollars per one parcel. Stated-cost remainder is 4 dollars. This calculation includes only the stated costs.",
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Costs per parcel. One parcel brings 12 dollars in revenue.",
+        "storyboard": "One taped sale parcel, a banknote and an open result envelope establish the explicit denominator."
+      },
+      {
+        "at": 1.990740741,
+        "text": "Materials costs 5 dollars per one parcel. Delivery costs 3 dollars per one parcel.",
+        "storyboard": "The banknote separates into source-named invoices, retaining the same sale context."
+      },
+      {
+        "at": 4.427777778,
+        "text": "Stated costs total 8 dollars per one parcel.",
+        "storyboard": "Invoices and common-scale amount rails reveal the stated cost total."
+      },
+      {
+        "at": 5.82037037,
+        "text": "Revenue less stated costs leaves 4 dollars per one parcel.",
+        "storyboard": "Subtraction exposes a bounded remainder."
+      },
+      {
+        "at": 7.561111111,
+        "text": "Stated-cost remainder is 4 dollars. This calculation includes only the stated costs.",
+        "storyboard": "Hold the remainder after stated costs only."
+      }
+    ],
+    "plannerInput": {
+      "kind": "unit-economics",
+      "preset": "positive-margin",
+      "label": "Costs per parcel",
+      "subject": "parcel",
+      "outcome": "Stated-cost remainder is 4 dollars",
+      "saleUnit": "one parcel",
+      "unit": "dollars",
+      "revenue": 12,
+      "costs": [
+        {
+          "label": "Materials",
+          "amount": 5
+        },
+        {
+          "label": "Delivery",
+          "amount": 3
+        }
+      ],
+      "remainder": 4,
+      "startWord": 0,
+      "endWord": 53,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 10,
+      "responseWord": 24,
+      "checkWord": 32,
+      "resolveWord": 42
+    },
+    "durationSec": 10,
+    "cases": [
+      {
+        "name": "vertical-stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "vertical-takeover-light",
+        "layout": "takeover",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "unit-economics",
+      "preset": "positive-margin",
+      "label": "Costs per parcel",
+      "subject": "parcel",
+      "outcome": "Stated-cost remainder is 4 dollars",
+      "saleUnit": "one parcel",
+      "unit": "dollars",
+      "revenue": 12,
+      "costs": [
+        {
+          "id": "cost-0",
+          "label": "Materials",
+          "amount": 5
+        },
+        {
+          "id": "cost-1",
+          "label": "Delivery",
+          "amount": 3
+        }
+      ],
+      "remainder": 4,
+      "setupAt": 0.3,
+      "actionAt": 1.990740741,
+      "responseAt": 4.427777778,
+      "checkAt": 5.82037037,
+      "resolveAt": 7.561111111
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 34
+      },
+      {
+        "name": "first-movement",
+        "frame": 96
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 136
+      },
+      {
+        "name": "comparison",
+        "frame": 178
+      },
+      {
+        "name": "final-hold",
+        "frame": 263
+      }
+    ]
+  },
+  {
+    "name": "unit-economics-break-even",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "unit-economics"
+      },
+      {
+        "category": "explanation",
+        "id": "unit-economics/break-even"
+      }
+    ],
+    "description": "Synthetic authored example, not measured business performance. Static shared camera; bounded 12-ticket, two-actor, three-invoice geometry without particles. All amounts and actors are source-stated; no net-profit or guaranteed return claim.",
+    "sourceText": "Costs per parcel. One parcel brings 8 dollars in revenue. Materials costs 5 dollars per one parcel. Delivery costs 3 dollars per one parcel. Stated costs total 8 dollars per one parcel. Revenue less stated costs leaves 0 dollars per one parcel. Stated-cost remainder is 0 dollars. This calculation includes only the stated costs.",
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Costs per parcel. One parcel brings 8 dollars in revenue.",
+        "storyboard": "One taped sale parcel, a banknote and an open result envelope establish the explicit denominator."
+      },
+      {
+        "at": 1.990740741,
+        "text": "Materials costs 5 dollars per one parcel. Delivery costs 3 dollars per one parcel.",
+        "storyboard": "The banknote separates into source-named invoices, retaining the same sale context."
+      },
+      {
+        "at": 4.427777778,
+        "text": "Stated costs total 8 dollars per one parcel.",
+        "storyboard": "Invoices and common-scale amount rails reveal the stated cost total."
+      },
+      {
+        "at": 5.82037037,
+        "text": "Revenue less stated costs leaves 0 dollars per one parcel.",
+        "storyboard": "Subtraction exposes an empty break-even envelope."
+      },
+      {
+        "at": 7.561111111,
+        "text": "Stated-cost remainder is 0 dollars. This calculation includes only the stated costs.",
+        "storyboard": "Hold zero remainder without growth."
+      }
+    ],
+    "plannerInput": {
+      "kind": "unit-economics",
+      "preset": "break-even",
+      "label": "Costs per parcel",
+      "subject": "parcel",
+      "outcome": "Stated-cost remainder is 0 dollars",
+      "saleUnit": "one parcel",
+      "unit": "dollars",
+      "revenue": 8,
+      "costs": [
+        {
+          "label": "Materials",
+          "amount": 5
+        },
+        {
+          "label": "Delivery",
+          "amount": 3
+        }
+      ],
+      "remainder": 0,
+      "startWord": 0,
+      "endWord": 53,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 10,
+      "responseWord": 24,
+      "checkWord": 32,
+      "resolveWord": 42
+    },
+    "durationSec": 10,
+    "cases": [
+      {
+        "name": "vertical-stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "vertical-takeover-light",
+        "layout": "takeover",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "unit-economics",
+      "preset": "break-even",
+      "label": "Costs per parcel",
+      "subject": "parcel",
+      "outcome": "Stated-cost remainder is 0 dollars",
+      "saleUnit": "one parcel",
+      "unit": "dollars",
+      "revenue": 8,
+      "costs": [
+        {
+          "id": "cost-0",
+          "label": "Materials",
+          "amount": 5
+        },
+        {
+          "id": "cost-1",
+          "label": "Delivery",
+          "amount": 3
+        }
+      ],
+      "remainder": 0,
+      "setupAt": 0.3,
+      "actionAt": 1.990740741,
+      "responseAt": 4.427777778,
+      "checkAt": 5.82037037,
+      "resolveAt": 7.561111111
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 34
+      },
+      {
+        "name": "first-movement",
+        "frame": 96
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 136
+      },
+      {
+        "name": "comparison",
+        "frame": 178
+      },
+      {
+        "name": "final-hold",
+        "frame": 263
+      }
+    ]
+  },
+  {
+    "name": "unit-economics-negative-margin",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "unit-economics"
+      },
+      {
+        "category": "explanation",
+        "id": "unit-economics/negative-margin"
+      }
+    ],
+    "description": "Synthetic authored example, not measured business performance. Static shared camera; bounded 12-ticket, two-actor, three-invoice geometry without particles. All amounts and actors are source-stated; no net-profit or guaranteed return claim.",
+    "sourceText": "Costs per parcel. One parcel brings 6 dollars in revenue. Materials costs 5 dollars per one parcel. Delivery costs 3 dollars per one parcel. Stated costs total 8 dollars per one parcel. Revenue less stated costs leaves -2 dollars per one parcel. Stated-cost shortfall is 2 dollars. This calculation includes only the stated costs.",
+    "sourceBeats": [
+      {
+        "at": 0.3,
+        "text": "Costs per parcel. One parcel brings 6 dollars in revenue.",
+        "storyboard": "One taped sale parcel, a banknote and an open result envelope establish the explicit denominator."
+      },
+      {
+        "at": 1.990740741,
+        "text": "Materials costs 5 dollars per one parcel. Delivery costs 3 dollars per one parcel.",
+        "storyboard": "The banknote separates into source-named invoices, retaining the same sale context."
+      },
+      {
+        "at": 4.427777778,
+        "text": "Stated costs total 8 dollars per one parcel.",
+        "storyboard": "Invoices and common-scale amount rails reveal the stated cost total."
+      },
+      {
+        "at": 5.82037037,
+        "text": "Revenue less stated costs leaves -2 dollars per one parcel.",
+        "storyboard": "Subtraction exposes unfunded costs and a minus-marked envelope."
+      },
+      {
+        "at": 7.561111111,
+        "text": "Stated-cost shortfall is 2 dollars. This calculation includes only the stated costs.",
+        "storyboard": "Hold the explicit shortfall without turning it into profit."
+      }
+    ],
+    "plannerInput": {
+      "kind": "unit-economics",
+      "preset": "negative-margin",
+      "label": "Costs per parcel",
+      "subject": "parcel",
+      "outcome": "Stated-cost shortfall is 2 dollars",
+      "saleUnit": "one parcel",
+      "unit": "dollars",
+      "revenue": 6,
+      "costs": [
+        {
+          "label": "Materials",
+          "amount": 5
+        },
+        {
+          "label": "Delivery",
+          "amount": 3
+        }
+      ],
+      "remainder": -2,
+      "startWord": 0,
+      "endWord": 53,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 10,
+      "responseWord": 24,
+      "checkWord": 32,
+      "resolveWord": 42
+    },
+    "durationSec": 10,
+    "cases": [
+      {
+        "name": "vertical-stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "vertical-stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "vertical-takeover-light",
+        "layout": "takeover",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "unit-economics",
+      "preset": "negative-margin",
+      "label": "Costs per parcel",
+      "subject": "parcel",
+      "outcome": "Stated-cost shortfall is 2 dollars",
+      "saleUnit": "one parcel",
+      "unit": "dollars",
+      "revenue": 6,
+      "costs": [
+        {
+          "id": "cost-0",
+          "label": "Materials",
+          "amount": 5
+        },
+        {
+          "id": "cost-1",
+          "label": "Delivery",
+          "amount": 3
+        }
+      ],
+      "remainder": -2,
+      "setupAt": 0.3,
+      "actionAt": 1.990740741,
+      "responseAt": 4.427777778,
+      "checkAt": 5.82037037,
+      "resolveAt": 7.561111111
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 34
+      },
+      {
+        "name": "first-movement",
+        "frame": 96
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 136
+      },
+      {
+        "name": "comparison",
+        "frame": 178
+      },
+      {
+        "name": "final-hold",
+        "frame": 263
+      }
+    ]
+  }
+]

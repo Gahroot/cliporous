@@ -8,7 +8,7 @@ import { ROOT } from './harness-runtime.mjs';
 export const FIXTURES = path.join(ROOT, 'scripts/explainer-stills/fixtures');
 export const HELP = `Local-only production-bundle verification (does not build or download).
   --bundle DIR             Default out/remotion; must already be built
-  --all                    Every declared deliverable fixture (systems: kinds/relays only)
+  --all                    Every declared deliverable fixture (systems: kinds/relays/technology/explanation)
   --controls               Only old regression controls
   --fixture FILE           Repeatable fixture files, replaces default discovery
   --select TEXT            Repeatable fixture name, kind, or coverage ID substring (OR)
@@ -116,7 +116,9 @@ export function selectVerificationPlan(options, mode = 'motion') {
       (fx) =>
         fx.covers?.length &&
         (mode !== 'systems' ||
-          fx.covers.some((t) => t.category === 'kind' || t.category === 'relay')),
+          fx.covers.some((t) =>
+            ['kind', 'relay', 'technology', 'explanation'].includes(t.category),
+          )),
     );
   }
   if (options.select.length) {

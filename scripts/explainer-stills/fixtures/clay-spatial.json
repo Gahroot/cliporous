@@ -1,0 +1,487 @@
+[
+  {
+    "name": "house-cutaway-rooms",
+    "covers": [{ "category": "kind", "id": "house-cutaway" }, { "category": "explanation", "id": "house-cutaway/rooms" }],
+    "description": "Synthetic direct-scene example: anatomy, not an improvement claim.",
+    "sourceText": "Inside the Maple house, the kitchen, study and bedroom sit under one roof. Opening the shell reveals their arrangement. Rooms share the same shell.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "house-cutaway", "preset": "rooms",
+      "label": "Inside the Maple house", "subject": "Maple house",
+      "parts": ["kitchen", "study", "bedroom"],
+      "outcome": "Rooms share the same shell",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "house-cutaway-utilities",
+    "covers": [{ "category": "kind", "id": "house-cutaway" }, { "category": "explanation", "id": "house-cutaway/utilities" }],
+    "description": "Synthetic direct-scene example: separate utility routes in the same house.",
+    "sourceText": "Routes inside the walls of the Maple house carry the water supply, electrical wiring and heating ducts. The cutaway exposes each system. Utilities follow separate routes.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "house-cutaway", "preset": "utilities",
+      "label": "Routes inside the walls", "subject": "Maple house",
+      "parts": ["water supply", "electrical wiring", "heating ducts"],
+      "outcome": "Utilities follow separate routes",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "house-build-construct",
+    "covers": [{ "category": "kind", "id": "house-build" }, { "category": "explanation", "id": "house-build/construct" }],
+    "description": "Synthetic direct-scene example: an authored construction order, not a schedule promise.",
+    "sourceText": "A house follows its plan. The Maple house starts from the ground floor plan. The foundation is laid, walls rise and the roof follows. Foundation, walls, then roof.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "house-build", "preset": "construct",
+      "label": "A house follows its plan", "subject": "Maple house",
+      "planLabel": "ground floor plan", "outcome": "Foundation, walls, then roof",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "house-build-plan-mismatch",
+    "covers": [{ "category": "kind", "id": "house-build" }, { "category": "explanation", "id": "house-build/plan-mismatch" }],
+    "description": "Synthetic direct-scene example: the foundation mismatch is not repaired or celebrated.",
+    "sourceText": "Foundation outside the plan: the Maple house foundation does not align with the ground floor plan. Comparing the outlines exposes the discrepancy. The mismatch remains visible.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "house-build", "preset": "plan-mismatch",
+      "label": "Foundation outside the plan", "subject": "Maple house",
+      "planLabel": "ground floor plan", "outcome": "The mismatch remains visible",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "house-renovation-cosmetic",
+    "covers": [{ "category": "kind", "id": "house-renovation" }, { "category": "explanation", "id": "house-renovation/cosmetic" }],
+    "description": "Synthetic direct-scene example: cosmetic work without a value-gain claim.",
+    "sourceText": "Paint changes the surface of the Maple house. Replacing the exterior paint leaves the underlying structure in place. Only the surface treatment changes.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "house-renovation", "preset": "cosmetic",
+      "label": "Paint changes the surface", "subject": "Maple house",
+      "partLabel": "exterior paint", "outcome": "Only the surface treatment changes",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "house-renovation-structural",
+    "covers": [{ "category": "kind", "id": "house-renovation" }, { "category": "explanation", "id": "house-renovation/structural" }],
+    "description": "Synthetic direct-scene example: an exposed support is replaced, with no financial forecast.",
+    "sourceText": "Replace a damaged support in the Maple house. The roof support is exposed, removed and replaced, unlike a coat of paint. A support is replaced.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "house-renovation", "preset": "structural",
+      "label": "Replace a damaged support", "subject": "Maple house",
+      "partLabel": "roof support", "outcome": "A support is replaced",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "property-access-scoped-key",
+    "covers": [{ "category": "kind", "id": "property-access" }, { "category": "explanation", "id": "property-access/scoped-key" }],
+    "description": "Synthetic direct-scene example: conditional access to one room never opens the restricted room.",
+    "sourceText": "Utility room access in the Maple house is scoped to one door, only while the utility key is active. The bedroom remains restricted. Only the utility room opens.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "property-access", "preset": "scoped-key",
+      "label": "Utility room access", "subject": "Maple house",
+      "allowedLabel": "utility room", "restrictedLabel": "bedroom",
+      "condition": "only while the utility key is active",
+      "outcome": "Only the utility room opens",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "property-access-revoked-key",
+    "covers": [{ "category": "kind", "id": "property-access" }, { "category": "explanation", "id": "property-access/revoked-key" }],
+    "description": "Synthetic direct-scene example: previous scope does not survive revocation.",
+    "sourceText": "A revoked key no longer opens the Maple house utility room. The key previously served that room, never the bedroom. After revocation, both doors stay closed.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "property-access", "preset": "revoked-key",
+      "label": "A revoked key no longer opens", "subject": "Maple house",
+      "allowedLabel": "utility room", "restrictedLabel": "bedroom",
+      "outcome": "Both doors stay closed",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "neighborhood-replicate",
+    "covers": [{ "category": "kind", "id": "neighborhood" }, { "category": "explanation", "id": "neighborhood/replicate" }],
+    "description": "Synthetic direct-scene example: a bounded pattern, not a market count.",
+    "sourceText": "Repeat a house template. The Maple house is a home template repeated into an illustrative block. Copies show a pattern, not a count.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "neighborhood", "preset": "replicate",
+      "label": "Repeat a house template", "subject": "Maple house",
+      "contextLabels": ["home template", "illustrative block"],
+      "outcome": "Copies show a pattern, not a count",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "neighborhood-context",
+    "covers": [{ "category": "kind", "id": "neighborhood" }, { "category": "explanation", "id": "neighborhood/context" }],
+    "description": "Synthetic direct-scene example: surroundings differ while the home remains fixed.",
+    "sourceText": "The same home in context: keep the Maple house fixed while comparing a nearby park with a busy road around it. Surroundings change, not the home.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "neighborhood", "preset": "context",
+      "label": "The same home in context", "subject": "Maple house",
+      "contextLabels": ["nearby park", "busy road"],
+      "outcome": "Surroundings change, not the home",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "floorplan-fit-fits",
+    "covers": [{ "category": "kind", "id": "floorplan-fit" }, { "category": "explanation", "id": "floorplan-fit/fits" }],
+    "description": "Synthetic direct-scene example: furniture fits inside an unchanged room boundary.",
+    "sourceText": "Furniture inside fixed walls: a sofa, table and chair are placed in the Maple house living room. The pieces fit inside the room.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "floorplan-fit", "preset": "fits",
+      "label": "Furniture inside fixed walls", "subject": "Maple house",
+      "items": ["sofa", "table", "chair"], "outcome": "The pieces fit inside the room",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "floorplan-fit-rearrange",
+    "covers": [{ "category": "kind", "id": "floorplan-fit" }, { "category": "explanation", "id": "floorplan-fit/rearrange" }],
+    "description": "Synthetic direct-scene example: furniture is rearranged without crossing or moving the walls.",
+    "sourceText": "Rearrange, do not enlarge the Maple house room. The sofa and table move to different positions without passing through walls. Furniture moves within the walls.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "floorplan-fit", "preset": "rearrange",
+      "label": "Rearrange, do not enlarge", "subject": "Maple house",
+      "items": ["sofa", "table"], "outcome": "Furniture moves within the walls",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "house-options-compare",
+    "covers": [{ "category": "kind", "id": "house-options" }, { "category": "explanation", "id": "house-options/compare" }],
+    "description": "Synthetic direct-scene example: two alternatives of one home, neither selected as better.",
+    "sourceText": "Two treatments of one home compare a painted exterior and timber exterior on the same Maple house. Neither option is selected.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "house-options", "preset": "compare",
+      "label": "Two treatments of one home", "subject": "Maple house",
+      "options": ["painted exterior", "timber exterior"], "outcome": "Neither option is selected",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "house-options-tradeoff",
+    "covers": [{ "category": "kind", "id": "house-options" }, { "category": "explanation", "id": "house-options/tradeoff" }],
+    "description": "Synthetic direct-scene example: stated space/upkeep tradeoff without a winning option or forecast.",
+    "sourceText": "More space or less upkeep: the Maple house could have a larger extension with more space or a smaller extension with less upkeep. Space and upkeep remain a tradeoff.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "house-options", "preset": "tradeoff",
+      "label": "More space or less upkeep", "subject": "Maple house",
+      "options": ["larger extension", "smaller extension"],
+      "outcome": "Space and upkeep remain a tradeoff",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "property-lifecycle-occupancy",
+    "covers": [{ "category": "kind", "id": "property-lifecycle" }, { "category": "explanation", "id": "property-lifecycle/occupancy" }],
+    "description": "Synthetic direct-scene example: turnover states, not occupancy statistics.",
+    "sourceText": "Tenants change, the house stays. The Maple house is occupied, becomes vacant and then receives a new tenant. Occupancy changes over time.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "property-lifecycle", "preset": "occupancy",
+      "label": "Tenants change, the house stays", "subject": "Maple house",
+      "stageLabels": ["occupied", "vacant", "new tenant"], "outcome": "Occupancy changes over time",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "property-lifecycle-maintenance",
+    "covers": [{ "category": "kind", "id": "property-lifecycle" }, { "category": "explanation", "id": "property-lifecycle/maintenance" }],
+    "description": "Synthetic direct-scene example: a bounded maintenance loop, not a permanent fix claim.",
+    "sourceText": "Inspect, repair, inspect again. The Maple house goes from inspection to roof repair to the next inspection. Maintenance returns to inspection.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "landscape-over-dark", "layout": "over", "aspect": "16:9" }],
+    "palette": {
+      "bgOuter": "#0b0d10", "bgInner": "#242629", "card": "#1f2125", "cardRaised": "#2d2f33",
+      "cardBorder": "rgba(244, 246, 248, 0.09)", "text": "#f6f8f9", "muted": "#8d8f92",
+      "accent": "#4d9dff", "accent2": "#9b8cf7", "accentSoft": "rgba(77, 157, 255, 0.18)",
+      "positive": "#6fbf8a", "negative": "#e0735f", "paper": "#fbfbfc", "paperText": "#0b0c0f",
+      "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+    },
+    "scene": {
+      "kind": "property-lifecycle", "preset": "maintenance",
+      "label": "Inspect, repair, inspect again", "subject": "Maple house",
+      "stageLabels": ["inspection", "roof repair", "next inspection"],
+      "outcome": "Maintenance returns to inspection",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "property-lifecycle-cash-flow",
+    "covers": [{ "category": "kind", "id": "property-lifecycle" }, { "category": "explanation", "id": "property-lifecycle/cash-flow" }],
+    "description": "Synthetic direct-scene example: separate flows, without amounts, netting or a profit claim.",
+    "sourceText": "Income and expenses stay apart for the Maple house. Rental income arrives and a repair expense leaves on a separate path. Income and expense are separate.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "property-lifecycle", "preset": "cash-flow",
+      "label": "Income and expenses stay apart", "subject": "Maple house",
+      "stageLabels": ["rental income", "repair expense"], "outcome": "Income and expense are separate",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  }
+]

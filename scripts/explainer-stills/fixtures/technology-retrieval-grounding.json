@@ -1,0 +1,857 @@
+[
+  {
+    "name": "retrieval-grounding-evidence-found",
+    "durationSec": 10.2,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "scene": {
+      "kind": "retrieval-grounding",
+      "preset": "evidence-found",
+      "label": "Returns question",
+      "subject": "Returns question",
+      "outcome": "Answer retains its source reference",
+      "sources": [
+        {
+          "label": "Returns guide",
+          "excerpt": "Returns last thirty days"
+        }
+      ],
+      "setupAt": 0.3,
+      "actionAt": 1.5,
+      "responseAt": 3,
+      "checkAt": 6.8,
+      "resolveAt": 8.4
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 9
+      },
+      {
+        "name": "query-contact-before",
+        "frame": 44
+      },
+      {
+        "name": "query-contact",
+        "frame": 45
+      },
+      {
+        "name": "query-contact-after",
+        "frame": 46
+      },
+      {
+        "name": "selection-before",
+        "frame": 89
+      },
+      {
+        "name": "selection",
+        "frame": 90
+      },
+      {
+        "name": "selection-after",
+        "frame": 91
+      },
+      {
+        "name": "answer-contact-before",
+        "frame": 203
+      },
+      {
+        "name": "answer-contact",
+        "frame": 204
+      },
+      {
+        "name": "answer-contact-after",
+        "frame": 205
+      },
+      {
+        "name": "resolution-before",
+        "frame": 251
+      },
+      {
+        "name": "resolution",
+        "frame": 252
+      },
+      {
+        "name": "resolution-after",
+        "frame": 253
+      },
+      {
+        "name": "final-hold",
+        "frame": 280
+      },
+      {
+        "name": "hold-end",
+        "frame": 305
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "retrieval-grounding"
+      },
+      {
+        "category": "technology",
+        "id": "retrieval-grounding/evidence-found"
+      }
+    ],
+    "sourceText": "Returns question. The question searches the documents. Returns guide supplies the relevant excerpt Returns last thirty days. The answer uses this selected excerpt. The answer retains its source reference.",
+    "raw": {
+      "kind": "retrieval-grounding",
+      "preset": "evidence-found",
+      "label": "Returns question",
+      "subject": "Returns question",
+      "outcome": "Answer retains its source reference",
+      "sources": [
+        {
+          "label": "Returns guide",
+          "excerpt": "Returns last thirty days"
+        }
+      ],
+      "startWord": 0,
+      "endWord": 28,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 2,
+      "responseWord": 7,
+      "checkWord": 17,
+      "resolveWord": 23
+    },
+    "words": [
+      {
+        "text": "Returns",
+        "start": 0.3,
+        "end": 0.84
+      },
+      {
+        "text": "question.",
+        "start": 0.9,
+        "end": 1.44
+      },
+      {
+        "text": "The",
+        "start": 1.5,
+        "end": 1.77
+      },
+      {
+        "text": "question",
+        "start": 1.8,
+        "end": 2.07
+      },
+      {
+        "text": "searches",
+        "start": 2.1,
+        "end": 2.37
+      },
+      {
+        "text": "the",
+        "start": 2.4,
+        "end": 2.67
+      },
+      {
+        "text": "documents.",
+        "start": 2.7,
+        "end": 2.97
+      },
+      {
+        "text": "Returns",
+        "start": 3,
+        "end": 3.342
+      },
+      {
+        "text": "guide",
+        "start": 3.38,
+        "end": 3.722
+      },
+      {
+        "text": "supplies",
+        "start": 3.76,
+        "end": 4.102
+      },
+      {
+        "text": "the",
+        "start": 4.14,
+        "end": 4.482
+      },
+      {
+        "text": "relevant",
+        "start": 4.52,
+        "end": 4.862
+      },
+      {
+        "text": "excerpt",
+        "start": 4.9,
+        "end": 5.242
+      },
+      {
+        "text": "Returns",
+        "start": 5.28,
+        "end": 5.622
+      },
+      {
+        "text": "last",
+        "start": 5.66,
+        "end": 6.002
+      },
+      {
+        "text": "thirty",
+        "start": 6.04,
+        "end": 6.382
+      },
+      {
+        "text": "days.",
+        "start": 6.42,
+        "end": 6.762
+      },
+      {
+        "text": "The",
+        "start": 6.8,
+        "end": 7.04
+      },
+      {
+        "text": "answer",
+        "start": 7.066667,
+        "end": 7.306667
+      },
+      {
+        "text": "uses",
+        "start": 7.333333,
+        "end": 7.573333
+      },
+      {
+        "text": "this",
+        "start": 7.6,
+        "end": 7.84
+      },
+      {
+        "text": "selected",
+        "start": 7.866667,
+        "end": 8.106667
+      },
+      {
+        "text": "excerpt.",
+        "start": 8.133333,
+        "end": 8.373333
+      },
+      {
+        "text": "The",
+        "start": 8.4,
+        "end": 8.535
+      },
+      {
+        "text": "answer",
+        "start": 8.55,
+        "end": 8.685
+      },
+      {
+        "text": "retains",
+        "start": 8.7,
+        "end": 8.835
+      },
+      {
+        "text": "its",
+        "start": 8.85,
+        "end": 8.985
+      },
+      {
+        "text": "source",
+        "start": 9,
+        "end": 9.135
+      },
+      {
+        "text": "reference.",
+        "start": 9.15,
+        "end": 9.285
+      }
+    ]
+  },
+  {
+    "name": "retrieval-grounding-no-evidence",
+    "durationSec": 10.2,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "scene": {
+      "kind": "retrieval-grounding",
+      "preset": "no-evidence",
+      "label": "Warranty question",
+      "subject": "Warranty question",
+      "outcome": "Answer reports no evidence",
+      "sources": [],
+      "setupAt": 0.3,
+      "actionAt": 1.5,
+      "responseAt": 3,
+      "checkAt": 6.8,
+      "resolveAt": 8.4
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 9
+      },
+      {
+        "name": "query-contact-before",
+        "frame": 44
+      },
+      {
+        "name": "query-contact",
+        "frame": 45
+      },
+      {
+        "name": "query-contact-after",
+        "frame": 46
+      },
+      {
+        "name": "selection-before",
+        "frame": 89
+      },
+      {
+        "name": "selection",
+        "frame": 90
+      },
+      {
+        "name": "selection-after",
+        "frame": 91
+      },
+      {
+        "name": "answer-contact-before",
+        "frame": 203
+      },
+      {
+        "name": "answer-contact",
+        "frame": 204
+      },
+      {
+        "name": "answer-contact-after",
+        "frame": 205
+      },
+      {
+        "name": "resolution-before",
+        "frame": 251
+      },
+      {
+        "name": "resolution",
+        "frame": 252
+      },
+      {
+        "name": "resolution-after",
+        "frame": 253
+      },
+      {
+        "name": "final-hold",
+        "frame": 280
+      },
+      {
+        "name": "hold-end",
+        "frame": 305
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "retrieval-grounding"
+      },
+      {
+        "category": "technology",
+        "id": "retrieval-grounding/no-evidence"
+      }
+    ],
+    "sourceText": "Warranty question. The question searches the documents. The search finds no relevant evidence. The answer workspace stays empty. The answer reports no evidence.",
+    "raw": {
+      "kind": "retrieval-grounding",
+      "preset": "no-evidence",
+      "label": "Warranty question",
+      "subject": "Warranty question",
+      "outcome": "Answer reports no evidence",
+      "sources": [],
+      "startWord": 0,
+      "endWord": 22,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 2,
+      "responseWord": 7,
+      "checkWord": 13,
+      "resolveWord": 18
+    },
+    "words": [
+      {
+        "text": "Warranty",
+        "start": 0.3,
+        "end": 0.84
+      },
+      {
+        "text": "question.",
+        "start": 0.9,
+        "end": 1.44
+      },
+      {
+        "text": "The",
+        "start": 1.5,
+        "end": 1.77
+      },
+      {
+        "text": "question",
+        "start": 1.8,
+        "end": 2.07
+      },
+      {
+        "text": "searches",
+        "start": 2.1,
+        "end": 2.37
+      },
+      {
+        "text": "the",
+        "start": 2.4,
+        "end": 2.67
+      },
+      {
+        "text": "documents.",
+        "start": 2.7,
+        "end": 2.97
+      },
+      {
+        "text": "The",
+        "start": 3,
+        "end": 3.57
+      },
+      {
+        "text": "search",
+        "start": 3.633333,
+        "end": 4.203333
+      },
+      {
+        "text": "finds",
+        "start": 4.266667,
+        "end": 4.836667
+      },
+      {
+        "text": "no",
+        "start": 4.9,
+        "end": 5.47
+      },
+      {
+        "text": "relevant",
+        "start": 5.533333,
+        "end": 6.103333
+      },
+      {
+        "text": "evidence.",
+        "start": 6.166667,
+        "end": 6.736667
+      },
+      {
+        "text": "The",
+        "start": 6.8,
+        "end": 7.088
+      },
+      {
+        "text": "answer",
+        "start": 7.12,
+        "end": 7.408
+      },
+      {
+        "text": "workspace",
+        "start": 7.44,
+        "end": 7.728
+      },
+      {
+        "text": "stays",
+        "start": 7.76,
+        "end": 8.048
+      },
+      {
+        "text": "empty.",
+        "start": 8.08,
+        "end": 8.368
+      },
+      {
+        "text": "The",
+        "start": 8.4,
+        "end": 8.562
+      },
+      {
+        "text": "answer",
+        "start": 8.58,
+        "end": 8.742
+      },
+      {
+        "text": "reports",
+        "start": 8.76,
+        "end": 8.922
+      },
+      {
+        "text": "no",
+        "start": 8.94,
+        "end": 9.102
+      },
+      {
+        "text": "evidence.",
+        "start": 9.12,
+        "end": 9.282
+      }
+    ]
+  },
+  {
+    "name": "retrieval-grounding-two-sources",
+    "durationSec": 10.2,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "scene": {
+      "kind": "retrieval-grounding",
+      "preset": "two-sources",
+      "label": "Returns question",
+      "subject": "Returns question",
+      "outcome": "Answer retains both source references",
+      "sources": [
+        {
+          "label": "Returns guide",
+          "excerpt": "Returns last thirty days"
+        },
+        {
+          "label": "Shipping guide",
+          "excerpt": "Return shipping is free"
+        }
+      ],
+      "setupAt": 0.3,
+      "actionAt": 1.5,
+      "responseAt": 3,
+      "checkAt": 6.8,
+      "resolveAt": 8.4
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 9
+      },
+      {
+        "name": "query-contact-before",
+        "frame": 44
+      },
+      {
+        "name": "query-contact",
+        "frame": 45
+      },
+      {
+        "name": "query-contact-after",
+        "frame": 46
+      },
+      {
+        "name": "selection-before",
+        "frame": 89
+      },
+      {
+        "name": "selection",
+        "frame": 90
+      },
+      {
+        "name": "selection-after",
+        "frame": 91
+      },
+      {
+        "name": "first-slip-contact-before",
+        "frame": 146
+      },
+      {
+        "name": "first-slip-contact",
+        "frame": 147
+      },
+      {
+        "name": "first-slip-contact-after",
+        "frame": 148
+      },
+      {
+        "name": "answer-contact-before",
+        "frame": 203
+      },
+      {
+        "name": "answer-contact",
+        "frame": 204
+      },
+      {
+        "name": "answer-contact-after",
+        "frame": 205
+      },
+      {
+        "name": "resolution-before",
+        "frame": 251
+      },
+      {
+        "name": "resolution",
+        "frame": 252
+      },
+      {
+        "name": "resolution-after",
+        "frame": 253
+      },
+      {
+        "name": "final-hold",
+        "frame": 280
+      },
+      {
+        "name": "hold-end",
+        "frame": 305
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "retrieval-grounding"
+      },
+      {
+        "category": "technology",
+        "id": "retrieval-grounding/two-sources"
+      }
+    ],
+    "sourceText": "Returns question. The question searches the documents. Returns guide supplies the relevant excerpt Returns last thirty days. Shipping guide supplies the relevant excerpt Return shipping is free. The answer combines both selected excerpts. The answer retains both source references.",
+    "raw": {
+      "kind": "retrieval-grounding",
+      "preset": "two-sources",
+      "label": "Returns question",
+      "subject": "Returns question",
+      "outcome": "Answer retains both source references",
+      "sources": [
+        {
+          "label": "Returns guide",
+          "excerpt": "Returns last thirty days"
+        },
+        {
+          "label": "Shipping guide",
+          "excerpt": "Return shipping is free"
+        }
+      ],
+      "startWord": 0,
+      "endWord": 38,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 2,
+      "responseWord": 7,
+      "checkWord": 27,
+      "resolveWord": 33
+    },
+    "words": [
+      {
+        "text": "Returns",
+        "start": 0.3,
+        "end": 0.84
+      },
+      {
+        "text": "question.",
+        "start": 0.9,
+        "end": 1.44
+      },
+      {
+        "text": "The",
+        "start": 1.5,
+        "end": 1.77
+      },
+      {
+        "text": "question",
+        "start": 1.8,
+        "end": 2.07
+      },
+      {
+        "text": "searches",
+        "start": 2.1,
+        "end": 2.37
+      },
+      {
+        "text": "the",
+        "start": 2.4,
+        "end": 2.67
+      },
+      {
+        "text": "documents.",
+        "start": 2.7,
+        "end": 2.97
+      },
+      {
+        "text": "Returns",
+        "start": 3,
+        "end": 3.171
+      },
+      {
+        "text": "guide",
+        "start": 3.19,
+        "end": 3.361
+      },
+      {
+        "text": "supplies",
+        "start": 3.38,
+        "end": 3.551
+      },
+      {
+        "text": "the",
+        "start": 3.57,
+        "end": 3.741
+      },
+      {
+        "text": "relevant",
+        "start": 3.76,
+        "end": 3.931
+      },
+      {
+        "text": "excerpt",
+        "start": 3.95,
+        "end": 4.121
+      },
+      {
+        "text": "Returns",
+        "start": 4.14,
+        "end": 4.311
+      },
+      {
+        "text": "last",
+        "start": 4.33,
+        "end": 4.501
+      },
+      {
+        "text": "thirty",
+        "start": 4.52,
+        "end": 4.691
+      },
+      {
+        "text": "days.",
+        "start": 4.71,
+        "end": 4.881
+      },
+      {
+        "text": "Shipping",
+        "start": 4.9,
+        "end": 5.071
+      },
+      {
+        "text": "guide",
+        "start": 5.09,
+        "end": 5.261
+      },
+      {
+        "text": "supplies",
+        "start": 5.28,
+        "end": 5.451
+      },
+      {
+        "text": "the",
+        "start": 5.47,
+        "end": 5.641
+      },
+      {
+        "text": "relevant",
+        "start": 5.66,
+        "end": 5.831
+      },
+      {
+        "text": "excerpt",
+        "start": 5.85,
+        "end": 6.021
+      },
+      {
+        "text": "Return",
+        "start": 6.04,
+        "end": 6.211
+      },
+      {
+        "text": "shipping",
+        "start": 6.23,
+        "end": 6.401
+      },
+      {
+        "text": "is",
+        "start": 6.42,
+        "end": 6.591
+      },
+      {
+        "text": "free.",
+        "start": 6.61,
+        "end": 6.781
+      },
+      {
+        "text": "The",
+        "start": 6.8,
+        "end": 7.04
+      },
+      {
+        "text": "answer",
+        "start": 7.066667,
+        "end": 7.306667
+      },
+      {
+        "text": "combines",
+        "start": 7.333333,
+        "end": 7.573333
+      },
+      {
+        "text": "both",
+        "start": 7.6,
+        "end": 7.84
+      },
+      {
+        "text": "selected",
+        "start": 7.866667,
+        "end": 8.106667
+      },
+      {
+        "text": "excerpts.",
+        "start": 8.133333,
+        "end": 8.373333
+      },
+      {
+        "text": "The",
+        "start": 8.4,
+        "end": 8.535
+      },
+      {
+        "text": "answer",
+        "start": 8.55,
+        "end": 8.685
+      },
+      {
+        "text": "retains",
+        "start": 8.7,
+        "end": 8.835
+      },
+      {
+        "text": "both",
+        "start": 8.85,
+        "end": 8.985
+      },
+      {
+        "text": "source",
+        "start": 9,
+        "end": 9.135
+      },
+      {
+        "text": "references.",
+        "start": 9.15,
+        "end": 9.285
+      }
+    ]
+  }
+]

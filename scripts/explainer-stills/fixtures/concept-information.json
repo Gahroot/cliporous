@@ -1,0 +1,1741 @@
+[
+  {
+    "name": "semantic-sort-topic-clusters",
+    "description": "Synthetic storyboard: separate dog-eared documents; sequential flights into open topic cradles; identity notches retained; unpaired Travel letter remains on stage; a calm grouped hold, never a truth check.",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "semantic-sort"
+      },
+      {
+        "category": "explanation",
+        "id": "semantic-sort/topic-clusters"
+      }
+    ],
+    "sourceText": "Documents await topic sorting on separate source stands. Orchard memo belongs to Fruit. Compost notes belongs to Soil. Travel letter remains unmatched. Documents keep their identity marks beside the open topic trays. Documents retain distinct topic groups while unpaired material stays visible. Documents remain grouped. This illustrative grouping offers no proof of correctness.",
+    "durationSec": 11.2,
+    "plannerInput": {
+      "kind": "semantic-sort",
+      "preset": "topic-clusters",
+      "startWord": 0,
+      "endWord": 52,
+      "layout": "stack",
+      "label": "topic sorting",
+      "subject": "Documents",
+      "outcome": "Documents remain grouped.",
+      "targets": [
+        {
+          "label": "Fruit"
+        },
+        {
+          "label": "Soil"
+        }
+      ],
+      "items": [
+        {
+          "label": "Orchard memo",
+          "target": 0,
+          "evidence": {
+            "fromWord": 8,
+            "toWord": 12
+          }
+        },
+        {
+          "label": "Compost notes",
+          "target": 1,
+          "evidence": {
+            "fromWord": 13,
+            "toWord": 17
+          }
+        },
+        {
+          "label": "Travel letter",
+          "target": null,
+          "evidence": {
+            "fromWord": 18,
+            "toWord": 21
+          }
+        }
+      ],
+      "setupWord": 0,
+      "actionWord": 8,
+      "responseWord": 18,
+      "checkWord": 32,
+      "resolveWord": 42
+    },
+    "scene": {
+      "kind": "semantic-sort",
+      "preset": "topic-clusters",
+      "label": "topic sorting",
+      "subject": "Documents",
+      "outcome": "Documents remain grouped.",
+      "setupAt": 0.3,
+      "actionAt": 1.85,
+      "responseAt": 3.85,
+      "checkAt": 6.65,
+      "resolveAt": 8.65,
+      "targets": [
+        {
+          "id": "target-0",
+          "label": "Fruit"
+        },
+        {
+          "id": "target-1",
+          "label": "Soil"
+        }
+      ],
+      "items": [
+        {
+          "id": "item-0",
+          "label": "Orchard memo",
+          "targetId": "target-0",
+          "evidence": {
+            "fromWord": 8,
+            "toWord": 12,
+            "phrase": "Orchard memo belongs to Fruit."
+          }
+        },
+        {
+          "id": "item-1",
+          "label": "Compost notes",
+          "targetId": "target-1",
+          "evidence": {
+            "fromWord": 13,
+            "toWord": 17,
+            "phrase": "Compost notes belongs to Soil."
+          }
+        },
+        {
+          "id": "item-2",
+          "label": "Travel letter",
+          "targetId": null,
+          "evidence": {
+            "fromWord": 18,
+            "toWord": 21,
+            "phrase": "Travel letter remains unmatched."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "orientation",
+        "frame": 15
+      },
+      {
+        "name": "primary-change",
+        "frame": 86
+      },
+      {
+        "name": "relationship",
+        "frame": 123
+      },
+      {
+        "name": "comparison",
+        "frame": 207
+      },
+      {
+        "name": "final-hold",
+        "frame": 275
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Open Fruit and Soil file cradles face separate, identity-marked source documents; Travel letter occupies its own front lane."
+      },
+      {
+        "beat": "action",
+        "word": 8,
+        "at": 1.85,
+        "description": "Orchard memo and Compost notes lift along staggered arcs toward their source-stated topic cradles while all text anchors remain fixed."
+      },
+      {
+        "beat": "response",
+        "word": 18,
+        "at": 3.85,
+        "description": "The paired documents seat in their respective cradles, retaining their original binding colors and notch marks."
+      },
+      {
+        "beat": "check",
+        "word": 32,
+        "at": 6.65,
+        "description": "Cradle edge markers reveal the grouping; Travel letter remains visibly unpaired in front rather than disappearing into Soil."
+      },
+      {
+        "beat": "resolve",
+        "word": 42,
+        "at": 8.65,
+        "description": "Hold the grouped documents and the unmatched letter together, explicitly distinguishing similarity from proof."
+      }
+    ]
+  },
+  {
+    "name": "system-layers-business-stack",
+    "description": "Synthetic five-beat storyboard: intact office floors or device boards; separate along fixed pins; named functions reveal; stated adjacent connections; same parts reassemble. Fixed camera, no ranking.",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "system-layers"
+      },
+      {
+        "category": "explanation",
+        "id": "system-layers/business-stack"
+      }
+    ],
+    "sourceText": "Studio has functional layers in a single intact assembly. Studio separates its functional layers while keeping the same parts visible. Archive is the records layer of Studio. Operations is the workflow layer of Studio. Staff is the people layer of Studio. Each source label stays attached to its own functional part. Studio connects Archive to Operations and Operations to Staff through its functional layers. Studio reassembles its layers. The same parts seat together again in the final held view.",
+    "durationSec": 11.2,
+    "plannerInput": {
+      "kind": "system-layers",
+      "preset": "business-stack",
+      "startWord": 0,
+      "endWord": 78,
+      "layout": "stack",
+      "label": "functional layers",
+      "subject": "Studio",
+      "outcome": "Studio reassembles its layers.",
+      "setupWord": 0,
+      "actionWord": 9,
+      "responseWord": 27,
+      "checkWord": 51,
+      "resolveWord": 64,
+      "layers": [
+        {
+          "label": "Archive",
+          "role": "records",
+          "evidence": {
+            "fromWord": 20,
+            "toWord": 26
+          }
+        },
+        {
+          "label": "Operations",
+          "role": "workflow",
+          "evidence": {
+            "fromWord": 27,
+            "toWord": 33
+          }
+        },
+        {
+          "label": "Staff",
+          "role": "people",
+          "evidence": {
+            "fromWord": 34,
+            "toWord": 40
+          }
+        }
+      ]
+    },
+    "scene": {
+      "kind": "system-layers",
+      "preset": "business-stack",
+      "label": "functional layers",
+      "subject": "Studio",
+      "outcome": "Studio reassembles its layers.",
+      "setupAt": 0.3,
+      "actionAt": 1.457594937,
+      "responseAt": 3.87278481,
+      "checkAt": 7.093037975,
+      "resolveAt": 8.837341772,
+      "layers": [
+        {
+          "id": "layer-0",
+          "label": "Archive",
+          "role": "records",
+          "evidence": {
+            "fromWord": 20,
+            "toWord": 26,
+            "phrase": "Archive is the records layer of Studio."
+          }
+        },
+        {
+          "id": "layer-1",
+          "label": "Operations",
+          "role": "workflow",
+          "evidence": {
+            "fromWord": 27,
+            "toWord": 33,
+            "phrase": "Operations is the workflow layer of Studio."
+          }
+        },
+        {
+          "id": "layer-2",
+          "label": "Staff",
+          "role": "people",
+          "evidence": {
+            "fromWord": 34,
+            "toWord": 40,
+            "phrase": "Staff is the people layer of Studio."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "orientation",
+        "frame": 15
+      },
+      {
+        "name": "primary-change",
+        "frame": 80
+      },
+      {
+        "name": "relationship",
+        "frame": 124
+      },
+      {
+        "name": "comparison",
+        "frame": 220
+      },
+      {
+        "name": "final-hold",
+        "frame": 280
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "The Studio is an intact office assembly with an Archive binder shelf, Operations work sheets and a Staff floor."
+      },
+      {
+        "beat": "action",
+        "word": 9,
+        "at": 1.457594937,
+        "description": "Office floors separate vertically from the same base without swapping identities or implying a ranking."
+      },
+      {
+        "beat": "response",
+        "word": 27,
+        "at": 3.87278481,
+        "description": "The open assembly exposes each named function: archived records, the document workflow and recognizable staff figures."
+      },
+      {
+        "beat": "check",
+        "word": 51,
+        "at": 7.093037975,
+        "description": "Visible links connect Archive to Operations and Operations to Staff in the order stated by the source."
+      },
+      {
+        "beat": "resolve",
+        "word": 64,
+        "at": 8.837341772,
+        "description": "The same office floors seat back together; fixed source labels continue to identify their original parts."
+      }
+    ]
+  },
+  {
+    "name": "system-layers-device-stack",
+    "description": "Synthetic five-beat storyboard: intact office floors or device boards; separate along fixed pins; named functions reveal; stated adjacent connections; same parts reassemble. Fixed camera, no ranking.",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "system-layers"
+      },
+      {
+        "category": "explanation",
+        "id": "system-layers/device-stack"
+      }
+    ],
+    "sourceText": "Device has functional layers in a single intact assembly. Device separates its functional layers while keeping the same parts visible. Cells is the power layer of Device. Processor is the compute layer of Device. Storage is the records layer of Device. Display is the interface layer of Device. Each source label stays attached to its own functional part. Device connects Cells to Processor and Processor to Storage and Storage to Display through its functional layers. Device reassembles its layers. The same parts seat together again in the final held view.",
+    "durationSec": 11.2,
+    "plannerInput": {
+      "kind": "system-layers",
+      "preset": "device-stack",
+      "startWord": 0,
+      "endWord": 89,
+      "layout": "stack",
+      "label": "functional layers",
+      "subject": "Device",
+      "outcome": "Device reassembles its layers.",
+      "setupWord": 0,
+      "actionWord": 9,
+      "responseWord": 27,
+      "checkWord": 58,
+      "resolveWord": 75,
+      "layers": [
+        {
+          "label": "Cells",
+          "role": "power",
+          "evidence": {
+            "fromWord": 20,
+            "toWord": 26
+          }
+        },
+        {
+          "label": "Processor",
+          "role": "compute",
+          "evidence": {
+            "fromWord": 27,
+            "toWord": 33
+          }
+        },
+        {
+          "label": "Storage",
+          "role": "records",
+          "evidence": {
+            "fromWord": 34,
+            "toWord": 40
+          }
+        },
+        {
+          "label": "Display",
+          "role": "interface",
+          "evidence": {
+            "fromWord": 41,
+            "toWord": 47
+          }
+        }
+      ]
+    },
+    "scene": {
+      "kind": "system-layers",
+      "preset": "device-stack",
+      "label": "functional layers",
+      "subject": "Device",
+      "outcome": "Device reassembles its layers.",
+      "setupAt": 0.3,
+      "actionAt": 1.31,
+      "responseAt": 3.43,
+      "checkAt": 7.081111111,
+      "resolveAt": 9.083333333,
+      "layers": [
+        {
+          "id": "layer-0",
+          "label": "Cells",
+          "role": "power",
+          "evidence": {
+            "fromWord": 20,
+            "toWord": 26,
+            "phrase": "Cells is the power layer of Device."
+          }
+        },
+        {
+          "id": "layer-1",
+          "label": "Processor",
+          "role": "compute",
+          "evidence": {
+            "fromWord": 27,
+            "toWord": 33,
+            "phrase": "Processor is the compute layer of Device."
+          }
+        },
+        {
+          "id": "layer-2",
+          "label": "Storage",
+          "role": "records",
+          "evidence": {
+            "fromWord": 34,
+            "toWord": 40,
+            "phrase": "Storage is the records layer of Device."
+          }
+        },
+        {
+          "id": "layer-3",
+          "label": "Display",
+          "role": "interface",
+          "evidence": {
+            "fromWord": 41,
+            "toWord": 47,
+            "phrase": "Display is the interface layer of Device."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "orientation",
+        "frame": 15
+      },
+      {
+        "name": "primary-change",
+        "frame": 71
+      },
+      {
+        "name": "relationship",
+        "frame": 110
+      },
+      {
+        "name": "comparison",
+        "frame": 220
+      },
+      {
+        "name": "final-hold",
+        "frame": 287
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "An intact Device contains battery cells, a pinned processor board, storage components and a display surface."
+      },
+      {
+        "beat": "action",
+        "word": 9,
+        "at": 1.31,
+        "description": "The authored hardware boards rise along fixed vertical paths, keeping each source label assigned to its original component."
+      },
+      {
+        "beat": "response",
+        "word": 27,
+        "at": 3.43,
+        "description": "The separated layers reveal distinct power, compute, records and interface functions rather than anonymous boxes."
+      },
+      {
+        "beat": "check",
+        "word": 58,
+        "at": 7.081111111,
+        "description": "Connections appear between Cells and Processor, Processor and Storage, and Storage and Display in the stated order."
+      },
+      {
+        "beat": "resolve",
+        "word": 75,
+        "at": 9.083333333,
+        "description": "All original boards reassemble into the same device footprint, without an invented performance improvement."
+      }
+    ]
+  },
+  {
+    "name": "semantic-sort-closest-match",
+    "description": "Synthetic five-beat storyboard: separate candidates; query approaches Manual; bracket frames stated match; Brochure stays visible; hold similarity, never a success check.",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "semantic-sort"
+      },
+      {
+        "category": "explanation",
+        "id": "semantic-sort/closest-match"
+      }
+    ],
+    "sourceText": "Query compares meaning with Manual and Brochure as distinct candidate documents. Query is closest to Manual. The query approaches that candidate while other material stays visible. Manual keeps its own identity beside Query and the separate Brochure remains on its stand. Query retains a similarity relationship while the other candidate remains available for comparison. Query remains matched. This similarity does not establish truth or accuracy for either document.",
+    "durationSec": 11.2,
+    "plannerInput": {
+      "kind": "semantic-sort",
+      "preset": "closest-match",
+      "startWord": 0,
+      "endWord": 67,
+      "layout": "stack",
+      "label": "compares meaning",
+      "subject": "Query",
+      "outcome": "Query remains matched.",
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 26,
+      "checkWord": 41,
+      "resolveWord": 54,
+      "targets": [
+        {
+          "label": "Manual"
+        },
+        {
+          "label": "Brochure"
+        }
+      ],
+      "items": [
+        {
+          "label": "Query",
+          "target": 0,
+          "evidence": {
+            "fromWord": 11,
+            "toWord": 15
+          }
+        }
+      ]
+    },
+    "scene": {
+      "kind": "semantic-sort",
+      "preset": "closest-match",
+      "label": "compares meaning",
+      "subject": "Query",
+      "outcome": "Query remains matched.",
+      "setupAt": 0.3,
+      "actionAt": 1.964705882,
+      "responseAt": 4.302941176,
+      "checkAt": 6.641176471,
+      "resolveAt": 8.667647059,
+      "targets": [
+        {
+          "id": "target-0",
+          "label": "Manual"
+        },
+        {
+          "id": "target-1",
+          "label": "Brochure"
+        }
+      ],
+      "items": [
+        {
+          "id": "item-0",
+          "label": "Query",
+          "targetId": "target-0",
+          "evidence": {
+            "fromWord": 11,
+            "toWord": 15,
+            "phrase": "Query is closest to Manual."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "orientation",
+        "frame": 15
+      },
+      {
+        "name": "primary-change",
+        "frame": 94
+      },
+      {
+        "name": "relationship",
+        "frame": 137
+      },
+      {
+        "name": "comparison",
+        "frame": 207
+      },
+      {
+        "name": "final-hold",
+        "frame": 275
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Manual and Brochure remain distinct documents on slotted stands while the Query starts separately in front."
+      },
+      {
+        "beat": "action",
+        "word": 11,
+        "at": 1.964705882,
+        "description": "The same Query sheet approaches Manual, the candidate explicitly named as closest in the source."
+      },
+      {
+        "beat": "response",
+        "word": 26,
+        "at": 4.302941176,
+        "description": "Query settles beside Manual without replacing it, while Brochure remains fully visible on its own stand."
+      },
+      {
+        "beat": "check",
+        "word": 41,
+        "at": 6.641176471,
+        "description": "A physical bracket frames the stated closest candidate; no truth checkmark or invented similarity score appears."
+      },
+      {
+        "beat": "resolve",
+        "word": 54,
+        "at": 8.667647059,
+        "description": "Hold Query, Manual and the unselected Brochure together so the result reads as similarity rather than correctness."
+      }
+    ]
+  },
+  {
+    "name": "semantic-sort-skill-match",
+    "description": "Synthetic five-beat storyboard: tickets and workstations; Draft approaches Editing; capability badge stays on its desk; Invoice and Translation stay unpaired; hold pairing, not completion.",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "semantic-sort"
+      },
+      {
+        "category": "explanation",
+        "id": "semantic-sort/skill-match"
+      }
+    ],
+    "sourceText": "Tasks await task pairing with source named skills: Editing and Translation. Draft matches Editing. The same task ticket approaches the matching capability workstation. Invoice remains unpaired. Editing keeps Draft visible while Translation waits with an empty desk. Tasks retain named pairings and the unpaired Invoice remains on its original stand. Tasks remain visible. Pairing a skill does not mean the work has been completed.",
+    "durationSec": 11.2,
+    "plannerInput": {
+      "kind": "semantic-sort",
+      "preset": "skill-match",
+      "startWord": 0,
+      "endWord": 63,
+      "layout": "stack",
+      "label": "task pairing",
+      "subject": "Tasks",
+      "outcome": "Tasks remain visible.",
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 23,
+      "checkWord": 37,
+      "resolveWord": 50,
+      "targets": [
+        {
+          "label": "Editing"
+        },
+        {
+          "label": "Translation"
+        }
+      ],
+      "items": [
+        {
+          "label": "Draft",
+          "target": 0,
+          "evidence": {
+            "fromWord": 11,
+            "toWord": 13
+          }
+        },
+        {
+          "label": "Invoice",
+          "target": null,
+          "evidence": {
+            "fromWord": 23,
+            "toWord": 25
+          }
+        }
+      ]
+    },
+    "scene": {
+      "kind": "semantic-sort",
+      "preset": "skill-match",
+      "label": "task pairing",
+      "subject": "Tasks",
+      "outcome": "Tasks remain visible.",
+      "setupAt": 0.3,
+      "actionAt": 2.071875,
+      "responseAt": 4.059375,
+      "checkAt": 6.378125,
+      "resolveAt": 8.53125,
+      "targets": [
+        {
+          "id": "target-0",
+          "label": "Editing"
+        },
+        {
+          "id": "target-1",
+          "label": "Translation"
+        }
+      ],
+      "items": [
+        {
+          "id": "item-0",
+          "label": "Draft",
+          "targetId": "target-0",
+          "evidence": {
+            "fromWord": 11,
+            "toWord": 13,
+            "phrase": "Draft matches Editing."
+          }
+        },
+        {
+          "id": "item-1",
+          "label": "Invoice",
+          "targetId": null,
+          "evidence": {
+            "fromWord": 23,
+            "toWord": 25,
+            "phrase": "Invoice remains unpaired."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "orientation",
+        "frame": 15
+      },
+      {
+        "name": "primary-change",
+        "frame": 92
+      },
+      {
+        "name": "relationship",
+        "frame": 129
+      },
+      {
+        "name": "comparison",
+        "frame": 199
+      },
+      {
+        "name": "final-hold",
+        "frame": 271
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Draft and Invoice task tickets face separate Editing and Translation workstations with capability badges."
+      },
+      {
+        "beat": "action",
+        "word": 11,
+        "at": 2.071875,
+        "description": "Draft lifts toward Editing, preserving the identity of both the task ticket and the waiting workstation."
+      },
+      {
+        "beat": "response",
+        "word": 23,
+        "at": 4.059375,
+        "description": "Draft settles at the Editing desk; Invoice stays in its distinct front lane and Translation remains an empty, visible station."
+      },
+      {
+        "beat": "check",
+        "word": 37,
+        "at": 6.378125,
+        "description": "The Editing desk pairing marker is revealed without depicting execution or completion of the task."
+      },
+      {
+        "beat": "resolve",
+        "word": 50,
+        "at": 8.53125,
+        "description": "Hold the paired task, unpaired Invoice and unused Translation capability together; pairing is not completed work."
+      }
+    ]
+  },
+  {
+    "name": "information-transform-structured-report",
+    "description": "Synthetic five-beat storyboard: recognizable sources remain; attributed fragments leave; strips enlarge into named fields; source threads and marks bind origins; hold changed representation without added claims.",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "information-transform"
+      },
+      {
+        "category": "explanation",
+        "id": "information-transform/structured-report"
+      }
+    ],
+    "sourceText": "Report begins as a structured result beside distinct source material and its identity marks. Notes text contributes deadline to Report under Schedule. The contributed fragment keeps its source identity as it moves. Ledger text contributes expenses to Report under Costs. Each fragment forms its own named result field. Report preserves sources through the same identity marks for each contributed detail. Report retains sources. The final view keeps all original material visible beside its attributed contributions.",
+    "durationSec": 11.2,
+    "plannerInput": {
+      "kind": "information-transform",
+      "preset": "structured-report",
+      "startWord": 0,
+      "endWord": 74,
+      "layout": "stack",
+      "label": "structured result",
+      "subject": "Report",
+      "outcome": "Report retains sources.",
+      "setupWord": 0,
+      "actionWord": 14,
+      "responseWord": 32,
+      "checkWord": 48,
+      "resolveWord": 60,
+      "resultLabel": "Report",
+      "inputs": [
+        {
+          "label": "Notes",
+          "medium": "text",
+          "detail": "deadline",
+          "field": "Schedule",
+          "evidence": {
+            "fromWord": 14,
+            "toWord": 21
+          }
+        },
+        {
+          "label": "Ledger",
+          "medium": "text",
+          "detail": "expenses",
+          "field": "Costs",
+          "evidence": {
+            "fromWord": 32,
+            "toWord": 39
+          }
+        }
+      ]
+    },
+    "scene": {
+      "kind": "information-transform",
+      "preset": "structured-report",
+      "label": "structured result",
+      "subject": "Report",
+      "outcome": "Report retains sources.",
+      "setupAt": 0.3,
+      "actionAt": 2.228666667,
+      "responseAt": 4.772666667,
+      "checkAt": 7.034,
+      "resolveAt": 8.73,
+      "resultLabel": "Report",
+      "inputs": [
+        {
+          "id": "input-0",
+          "label": "Notes",
+          "medium": "text",
+          "detail": "deadline",
+          "field": "Schedule",
+          "evidence": {
+            "fromWord": 14,
+            "toWord": 21,
+            "phrase": "Notes text contributes deadline to Report under Schedule."
+          }
+        },
+        {
+          "id": "input-1",
+          "label": "Ledger",
+          "medium": "text",
+          "detail": "expenses",
+          "field": "Costs",
+          "evidence": {
+            "fromWord": 32,
+            "toWord": 39,
+            "phrase": "Ledger text contributes expenses to Report under Costs."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "orientation",
+        "frame": 15
+      },
+      {
+        "name": "primary-change",
+        "frame": 105
+      },
+      {
+        "name": "relationship",
+        "frame": 151
+      },
+      {
+        "name": "comparison",
+        "frame": 219
+      },
+      {
+        "name": "final-hold",
+        "frame": 277
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Separate Notes and Ledger sheets retain their identity marks beside an empty report binder."
+      },
+      {
+        "beat": "action",
+        "word": 14,
+        "at": 2.228666667,
+        "description": "The attributed deadline and expenses fragments travel from their respective sources toward the report."
+      },
+      {
+        "beat": "response",
+        "word": 32,
+        "at": 4.772666667,
+        "description": "The fragments widen into report rows while the original Notes and Ledger sheets stay visible."
+      },
+      {
+        "beat": "check",
+        "word": 48,
+        "at": 7.034,
+        "description": "Schedule and Costs headings appear with provenance threads and matching source marks for each contributed detail."
+      },
+      {
+        "beat": "resolve",
+        "word": 60,
+        "at": 8.73,
+        "description": "Hold the structured Report beside both original sources, showing changed representation without adding facts."
+      }
+    ]
+  },
+  {
+    "name": "information-transform-multimodal-fusion",
+    "description": "Synthetic five-beat storyboard: recognizable sources remain; attributed fragments leave; strips enlarge into named fields; source threads and marks bind origins; hold changed representation without added claims.",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "information-transform"
+      },
+      {
+        "category": "explanation",
+        "id": "information-transform/multimodal-fusion"
+      }
+    ],
+    "sourceText": "Interpretation begins as a structured result beside distinct source material and its identity marks. Transcript text contributes spoken request to Interpretation under Words. The contributed fragment keeps its source identity as it moves. Photograph image contributes red doorway to Interpretation under Appearance. Recording audio contributes bell sound to Interpretation under Sound. Each fragment forms its own named result field. Interpretation preserves sources through the same identity marks for each contributed detail. Interpretation retains sources. The final view keeps all original material visible beside its attributed contributions.",
+    "durationSec": 11.2,
+    "plannerInput": {
+      "kind": "information-transform",
+      "preset": "multimodal-fusion",
+      "startWord": 0,
+      "endWord": 85,
+      "layout": "stack",
+      "label": "structured result",
+      "subject": "Interpretation",
+      "outcome": "Interpretation retains sources.",
+      "setupWord": 0,
+      "actionWord": 14,
+      "responseWord": 33,
+      "checkWord": 59,
+      "resolveWord": 71,
+      "resultLabel": "Interpretation",
+      "inputs": [
+        {
+          "label": "Transcript",
+          "medium": "text",
+          "detail": "spoken request",
+          "field": "Words",
+          "evidence": {
+            "fromWord": 14,
+            "toWord": 22
+          }
+        },
+        {
+          "label": "Photograph",
+          "medium": "image",
+          "detail": "red doorway",
+          "field": "Appearance",
+          "evidence": {
+            "fromWord": 33,
+            "toWord": 41
+          }
+        },
+        {
+          "label": "Recording",
+          "medium": "audio",
+          "detail": "bell sound",
+          "field": "Sound",
+          "evidence": {
+            "fromWord": 42,
+            "toWord": 50
+          }
+        }
+      ]
+    },
+    "scene": {
+      "kind": "information-transform",
+      "preset": "multimodal-fusion",
+      "label": "structured result",
+      "subject": "Interpretation",
+      "outcome": "Interpretation retains sources.",
+      "setupAt": 0.3,
+      "actionAt": 1.975581395,
+      "responseAt": 4.31744186,
+      "checkAt": 7.522093023,
+      "resolveAt": 9.001162791,
+      "resultLabel": "Interpretation",
+      "inputs": [
+        {
+          "id": "input-0",
+          "label": "Transcript",
+          "medium": "text",
+          "detail": "spoken request",
+          "field": "Words",
+          "evidence": {
+            "fromWord": 14,
+            "toWord": 22,
+            "phrase": "Transcript text contributes spoken request to Interpretation under Words."
+          }
+        },
+        {
+          "id": "input-1",
+          "label": "Photograph",
+          "medium": "image",
+          "detail": "red doorway",
+          "field": "Appearance",
+          "evidence": {
+            "fromWord": 33,
+            "toWord": 41,
+            "phrase": "Photograph image contributes red doorway to Interpretation under Appearance."
+          }
+        },
+        {
+          "id": "input-2",
+          "label": "Recording",
+          "medium": "audio",
+          "detail": "bell sound",
+          "field": "Sound",
+          "evidence": {
+            "fromWord": 42,
+            "toWord": 50,
+            "phrase": "Recording audio contributes bell sound to Interpretation under Sound."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#d7b08f",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "orientation",
+        "frame": 15
+      },
+      {
+        "name": "primary-change",
+        "frame": 94
+      },
+      {
+        "name": "relationship",
+        "frame": 137
+      },
+      {
+        "name": "comparison",
+        "frame": 233
+      },
+      {
+        "name": "final-hold",
+        "frame": 285
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "A folded Transcript, mounted Photograph and twin-reel Recording face a shared interpretation binder as visibly different media."
+      },
+      {
+        "beat": "action",
+        "word": 14,
+        "at": 1.975581395,
+        "description": "Spoken request, red doorway and bell sound fragments move from their own source carriers without exchanging identities."
+      },
+      {
+        "beat": "response",
+        "word": 33,
+        "at": 4.31744186,
+        "description": "The three attributed fragments become distinct rows in the Interpretation while every original source remains on stage."
+      },
+      {
+        "beat": "check",
+        "word": 59,
+        "at": 7.522093023,
+        "description": "Words, Appearance and Sound fields bind to their respective source threads and physical identity marks."
+      },
+      {
+        "beat": "resolve",
+        "word": 71,
+        "at": 9.001162791,
+        "description": "Hold the combined Interpretation and all three media carriers, preserving each contribution without claiming a verified truth."
+      }
+    ]
+  }
+]

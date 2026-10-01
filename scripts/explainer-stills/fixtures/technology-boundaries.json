@@ -1,0 +1,798 @@
+[
+  {
+    "name": "boundary-agent-workflow-success-labels-max",
+    "description": "Authored example, not a recorded event: title 32, subject 24, outcome 40, tool label 22 characters.",
+    "durationSec": 11.6,
+    "planBounds": { "minStart": 0, "maxEnd": 24 },
+    "cases": [
+      {
+        "name": "vertical-stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "agent-workflow",
+      "preset": "tool-success",
+      "label": "Quarterly summary report example",
+      "subject": "quarterly summary report",
+      "toolLabel": "document indexing tool",
+      "outcome": "agent completes the task for this review",
+      "setupAt": 0.3,
+      "actionAt": 2.8,
+      "responseAt": 4.1,
+      "checkAt": 7.5,
+      "resolveAt": 9.6
+    },
+    "samples": [
+      {
+        "name": "setup-before",
+        "frame": 8
+      },
+      {
+        "name": "setup-on",
+        "frame": 9
+      },
+      {
+        "name": "setup-after",
+        "frame": 10
+      },
+      {
+        "name": "action-before",
+        "frame": 83
+      },
+      {
+        "name": "action-on",
+        "frame": 84
+      },
+      {
+        "name": "action-after",
+        "frame": 85
+      },
+      {
+        "name": "response-before",
+        "frame": 122
+      },
+      {
+        "name": "response-on",
+        "frame": 123
+      },
+      {
+        "name": "response-after",
+        "frame": 124
+      },
+      {
+        "name": "check-before",
+        "frame": 224
+      },
+      {
+        "name": "check-on",
+        "frame": 225
+      },
+      {
+        "name": "check-after",
+        "frame": 226
+      },
+      {
+        "name": "resolve-before",
+        "frame": 287
+      },
+      {
+        "name": "resolve-on",
+        "frame": 288
+      },
+      {
+        "name": "resolve-after",
+        "frame": 289
+      },
+      {
+        "name": "final-hold-start",
+        "frame": 297
+      },
+      {
+        "name": "final-hold-end",
+        "frame": 347
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "agent-workflow"
+      },
+      {
+        "category": "technology",
+        "id": "agent-workflow/tool-success"
+      }
+    ],
+    "sourceText": "Quarterly summary report example. An agent receives a quarterly summary report. The agent calls the document indexing tool. The document indexing tool returns a result. The agent checks the result; the result passes the check. The agent completes the task for this review.",
+    "raw": {
+      "kind": "agent-workflow",
+      "preset": "tool-success",
+      "label": "Quarterly summary report example",
+      "subject": "quarterly summary report",
+      "toolLabel": "document indexing tool",
+      "outcome": "agent completes the task for this review",
+      "startWord": 0,
+      "endWord": 42,
+      "layout": "stack-flipped",
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 18,
+      "checkWord": 25,
+      "resolveWord": 35
+    },
+    "words": [
+      {
+        "text": "Quarterly",
+        "start": 0.25,
+        "end": 0.476364
+      },
+      {
+        "text": "summary",
+        "start": 0.476364,
+        "end": 0.702727
+      },
+      {
+        "text": "report",
+        "start": 0.702727,
+        "end": 0.929091
+      },
+      {
+        "text": "example.",
+        "start": 0.929091,
+        "end": 1.155455
+      },
+      {
+        "text": "An",
+        "start": 1.155455,
+        "end": 1.381818
+      },
+      {
+        "text": "agent",
+        "start": 1.381818,
+        "end": 1.608182
+      },
+      {
+        "text": "receives",
+        "start": 1.608182,
+        "end": 1.834545
+      },
+      {
+        "text": "a",
+        "start": 1.834545,
+        "end": 2.060909
+      },
+      {
+        "text": "quarterly",
+        "start": 2.060909,
+        "end": 2.287273
+      },
+      {
+        "text": "summary",
+        "start": 2.287273,
+        "end": 2.513636
+      },
+      {
+        "text": "report.",
+        "start": 2.513636,
+        "end": 2.74
+      },
+      {
+        "text": "The",
+        "start": 2.8,
+        "end": 2.977143
+      },
+      {
+        "text": "agent",
+        "start": 2.977143,
+        "end": 3.154286
+      },
+      {
+        "text": "calls",
+        "start": 3.154286,
+        "end": 3.331429
+      },
+      {
+        "text": "the",
+        "start": 3.331429,
+        "end": 3.508571
+      },
+      {
+        "text": "document",
+        "start": 3.508571,
+        "end": 3.685714
+      },
+      {
+        "text": "indexing",
+        "start": 3.685714,
+        "end": 3.862857
+      },
+      {
+        "text": "tool.",
+        "start": 3.862857,
+        "end": 4.04
+      },
+      {
+        "text": "The",
+        "start": 4.1,
+        "end": 4.577143
+      },
+      {
+        "text": "document",
+        "start": 4.577143,
+        "end": 5.054286
+      },
+      {
+        "text": "indexing",
+        "start": 5.054286,
+        "end": 5.531429
+      },
+      {
+        "text": "tool",
+        "start": 5.531429,
+        "end": 6.008571
+      },
+      {
+        "text": "returns",
+        "start": 6.008571,
+        "end": 6.485714
+      },
+      {
+        "text": "a",
+        "start": 6.485714,
+        "end": 6.962857
+      },
+      {
+        "text": "result.",
+        "start": 6.962857,
+        "end": 7.44
+      },
+      {
+        "text": "The",
+        "start": 7.5,
+        "end": 7.704
+      },
+      {
+        "text": "agent",
+        "start": 7.704,
+        "end": 7.908
+      },
+      {
+        "text": "checks",
+        "start": 7.908,
+        "end": 8.112
+      },
+      {
+        "text": "the",
+        "start": 8.112,
+        "end": 8.316
+      },
+      {
+        "text": "result;",
+        "start": 8.316,
+        "end": 8.52
+      },
+      {
+        "text": "the",
+        "start": 8.52,
+        "end": 8.724
+      },
+      {
+        "text": "result",
+        "start": 8.724,
+        "end": 8.928
+      },
+      {
+        "text": "passes",
+        "start": 8.928,
+        "end": 9.132
+      },
+      {
+        "text": "the",
+        "start": 9.132,
+        "end": 9.336
+      },
+      {
+        "text": "check.",
+        "start": 9.336,
+        "end": 9.54
+      },
+      {
+        "text": "The",
+        "start": 9.6,
+        "end": 9.80625
+      },
+      {
+        "text": "agent",
+        "start": 9.80625,
+        "end": 10.0125
+      },
+      {
+        "text": "completes",
+        "start": 10.0125,
+        "end": 10.21875
+      },
+      {
+        "text": "the",
+        "start": 10.21875,
+        "end": 10.425
+      },
+      {
+        "text": "task",
+        "start": 10.425,
+        "end": 10.63125
+      },
+      {
+        "text": "for",
+        "start": 10.63125,
+        "end": 10.8375
+      },
+      {
+        "text": "this",
+        "start": 10.8375,
+        "end": 11.04375
+      },
+      {
+        "text": "review.",
+        "start": 11.04375,
+        "end": 11.25
+      }
+    ]
+  },
+  {
+    "name": "boundary-agent-workflow-approval-condition56",
+    "description": "Authored conditional example, not a recorded event: retained 56-character condition.",
+    "durationSec": 11.6,
+    "planBounds": { "minStart": 0, "maxEnd": 24 },
+    "cases": [
+      {
+        "name": "vertical-stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": ["#9dc4f5", "#d9ccee", "#698ebc"]
+        }
+      }
+    ],
+    "scene": {
+      "kind": "agent-workflow",
+      "preset": "approval-gate",
+      "label": "Approval example",
+      "subject": "report task",
+      "toolLabel": "lookup tool",
+      "outcome": "completes the report task",
+      "condition": "If the reviewer has access to the current source records",
+      "setupAt": 0.3,
+      "actionAt": 2.8,
+      "responseAt": 4.1,
+      "checkAt": 7.5,
+      "resolveAt": 9.6
+    },
+    "samples": [
+      {
+        "name": "setup-before",
+        "frame": 8
+      },
+      {
+        "name": "setup-on",
+        "frame": 9
+      },
+      {
+        "name": "setup-after",
+        "frame": 10
+      },
+      {
+        "name": "action-before",
+        "frame": 83
+      },
+      {
+        "name": "action-on",
+        "frame": 84
+      },
+      {
+        "name": "action-after",
+        "frame": 85
+      },
+      {
+        "name": "response-before",
+        "frame": 122
+      },
+      {
+        "name": "response-on",
+        "frame": 123
+      },
+      {
+        "name": "response-after",
+        "frame": 124
+      },
+      {
+        "name": "check-before",
+        "frame": 224
+      },
+      {
+        "name": "check-on",
+        "frame": 225
+      },
+      {
+        "name": "check-after",
+        "frame": 226
+      },
+      {
+        "name": "resolve-before",
+        "frame": 287
+      },
+      {
+        "name": "resolve-on",
+        "frame": 288
+      },
+      {
+        "name": "resolve-after",
+        "frame": 289
+      },
+      {
+        "name": "final-hold-start",
+        "frame": 297
+      },
+      {
+        "name": "final-hold-end",
+        "frame": 347
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "agent-workflow"
+      },
+      {
+        "category": "technology",
+        "id": "agent-workflow/approval-gate"
+      }
+    ],
+    "sourceText": "Approval example. If the reviewer has access to the current source records, an agent receives a report task. The agent calls the lookup tool. The lookup tool returns a result. The agent checks the result; the result passes the check; the task waits for human approval. The person approves the task. The agent completes the report task.",
+    "raw": {
+      "kind": "agent-workflow",
+      "preset": "approval-gate",
+      "label": "Approval example",
+      "subject": "report task",
+      "toolLabel": "lookup tool",
+      "outcome": "completes the report task",
+      "condition": "If the reviewer has access to the current source records",
+      "startWord": 0,
+      "endWord": 56,
+      "layout": "stack-flipped",
+      "setupWord": 0,
+      "actionWord": 18,
+      "responseWord": 24,
+      "checkWord": 46,
+      "resolveWord": 51
+    },
+    "words": [
+      {
+        "text": "Approval",
+        "start": 0.25,
+        "end": 0.388333
+      },
+      {
+        "text": "example.",
+        "start": 0.388333,
+        "end": 0.526667
+      },
+      {
+        "text": "If",
+        "start": 0.526667,
+        "end": 0.665
+      },
+      {
+        "text": "the",
+        "start": 0.665,
+        "end": 0.803333
+      },
+      {
+        "text": "reviewer",
+        "start": 0.803333,
+        "end": 0.941667
+      },
+      {
+        "text": "has",
+        "start": 0.941667,
+        "end": 1.08
+      },
+      {
+        "text": "access",
+        "start": 1.08,
+        "end": 1.218333
+      },
+      {
+        "text": "to",
+        "start": 1.218333,
+        "end": 1.356667
+      },
+      {
+        "text": "the",
+        "start": 1.356667,
+        "end": 1.495
+      },
+      {
+        "text": "current",
+        "start": 1.495,
+        "end": 1.633333
+      },
+      {
+        "text": "source",
+        "start": 1.633333,
+        "end": 1.771667
+      },
+      {
+        "text": "records,",
+        "start": 1.771667,
+        "end": 1.91
+      },
+      {
+        "text": "an",
+        "start": 1.91,
+        "end": 2.048333
+      },
+      {
+        "text": "agent",
+        "start": 2.048333,
+        "end": 2.186667
+      },
+      {
+        "text": "receives",
+        "start": 2.186667,
+        "end": 2.325
+      },
+      {
+        "text": "a",
+        "start": 2.325,
+        "end": 2.463333
+      },
+      {
+        "text": "report",
+        "start": 2.463333,
+        "end": 2.601667
+      },
+      {
+        "text": "task.",
+        "start": 2.601667,
+        "end": 2.74
+      },
+      {
+        "text": "The",
+        "start": 2.8,
+        "end": 3.006667
+      },
+      {
+        "text": "agent",
+        "start": 3.006667,
+        "end": 3.213333
+      },
+      {
+        "text": "calls",
+        "start": 3.213333,
+        "end": 3.42
+      },
+      {
+        "text": "the",
+        "start": 3.42,
+        "end": 3.626667
+      },
+      {
+        "text": "lookup",
+        "start": 3.626667,
+        "end": 3.833333
+      },
+      {
+        "text": "tool.",
+        "start": 3.833333,
+        "end": 4.04
+      },
+      {
+        "text": "The",
+        "start": 4.1,
+        "end": 4.251818
+      },
+      {
+        "text": "lookup",
+        "start": 4.251818,
+        "end": 4.403636
+      },
+      {
+        "text": "tool",
+        "start": 4.403636,
+        "end": 4.555455
+      },
+      {
+        "text": "returns",
+        "start": 4.555455,
+        "end": 4.707273
+      },
+      {
+        "text": "a",
+        "start": 4.707273,
+        "end": 4.859091
+      },
+      {
+        "text": "result.",
+        "start": 4.859091,
+        "end": 5.010909
+      },
+      {
+        "text": "The",
+        "start": 5.010909,
+        "end": 5.162727
+      },
+      {
+        "text": "agent",
+        "start": 5.162727,
+        "end": 5.314545
+      },
+      {
+        "text": "checks",
+        "start": 5.314545,
+        "end": 5.466364
+      },
+      {
+        "text": "the",
+        "start": 5.466364,
+        "end": 5.618182
+      },
+      {
+        "text": "result;",
+        "start": 5.618182,
+        "end": 5.77
+      },
+      {
+        "text": "the",
+        "start": 5.77,
+        "end": 5.921818
+      },
+      {
+        "text": "result",
+        "start": 5.921818,
+        "end": 6.073636
+      },
+      {
+        "text": "passes",
+        "start": 6.073636,
+        "end": 6.225455
+      },
+      {
+        "text": "the",
+        "start": 6.225455,
+        "end": 6.377273
+      },
+      {
+        "text": "check;",
+        "start": 6.377273,
+        "end": 6.529091
+      },
+      {
+        "text": "the",
+        "start": 6.529091,
+        "end": 6.680909
+      },
+      {
+        "text": "task",
+        "start": 6.680909,
+        "end": 6.832727
+      },
+      {
+        "text": "waits",
+        "start": 6.832727,
+        "end": 6.984545
+      },
+      {
+        "text": "for",
+        "start": 6.984545,
+        "end": 7.136364
+      },
+      {
+        "text": "human",
+        "start": 7.136364,
+        "end": 7.288182
+      },
+      {
+        "text": "approval.",
+        "start": 7.288182,
+        "end": 7.44
+      },
+      {
+        "text": "The",
+        "start": 7.5,
+        "end": 7.908
+      },
+      {
+        "text": "person",
+        "start": 7.908,
+        "end": 8.316
+      },
+      {
+        "text": "approves",
+        "start": 8.316,
+        "end": 8.724
+      },
+      {
+        "text": "the",
+        "start": 8.724,
+        "end": 9.132
+      },
+      {
+        "text": "task.",
+        "start": 9.132,
+        "end": 9.54
+      },
+      {
+        "text": "The",
+        "start": 9.6,
+        "end": 9.875
+      },
+      {
+        "text": "agent",
+        "start": 9.875,
+        "end": 10.15
+      },
+      {
+        "text": "completes",
+        "start": 10.15,
+        "end": 10.425
+      },
+      {
+        "text": "the",
+        "start": 10.425,
+        "end": 10.7
+      },
+      {
+        "text": "report",
+        "start": 10.7,
+        "end": 10.975
+      },
+      {
+        "text": "task.",
+        "start": 10.975,
+        "end": 11.25
+      }
+    ]
+  }
+]

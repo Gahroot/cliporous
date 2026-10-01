@@ -224,6 +224,18 @@ test('unsafe and duplicate identifiers fail before output paths can be formed', 
   );
 });
 
+test('authored sample capacity is exactly 32 without dropping samples or changing other limits', () => {
+  assert.deepEqual(LIMITS, { fixtures: 256, samples: 32, cases: 16, durationSec: 60 });
+  const samples = Array.from({ length: LIMITS.samples }, (_, frame) => ({
+    name: `beat-${frame}`,
+    frame,
+  }));
+  const [normalized] = normalizeFixtures([fixture({ durationSec: 6, samples })]);
+  assert.deepEqual(normalized.samples, samples);
+  assert.equal(createRenderPlan([normalized])[0].samples.length, 32);
+  bad({ durationSec: 6, samples: [...samples, { name: 'overflow', frame: 32 }] }, /samples.*1–32/);
+});
+
 test('shape, enum and collection bounds have fixture-specific errors', () => {
   for (const data of [null, {}, [], Array.from({ length: LIMITS.fixtures + 1 }, () => fixture())]) {
     assert.throws(() => normalizeFixtures(data), /fixtures.*1–256/);
@@ -239,7 +251,10 @@ test('shape, enum and collection bounds have fixture-specific errors', () => {
       [],
       Array(LIMITS[field === 'frames' ? 'samples' : field] + 1).fill({}),
     ]) {
-      bad({ durationSec: 6, [field]: value }, new RegExp(`hero-lock.*${field}.*1–16`));
+      bad(
+        { durationSec: 6, [field]: value },
+        new RegExp(`hero-lock.*${field}.*1–${LIMITS[field === 'frames' ? 'samples' : field]}`),
+      );
     }
   }
   bad({ durationSec: 6, samples: [null] }, /samples\[0\].*object/);

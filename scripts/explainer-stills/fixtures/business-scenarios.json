@@ -1,0 +1,268 @@
+[
+  {
+    "name": "business-sales-approval",
+    "exampleMaterial": true,
+    "sourceText": "Sales handoff requests arrive but are blocked by the approval queue. The manager approves them, releasing the handoff and clearing the backlog.",
+    "timed": { "startSec": 10.25, "stepSec": 0.25, "wordDurationSec": 0.2, "sceneStartSec": 10 },
+    "raw": {
+      "kind": "bottleneck",
+      "startWord": 0,
+      "endWord": 21,
+      "layout": "stack",
+      "label": "Sales handoff",
+      "tokenCount": 6,
+      "feedWord": 3,
+      "queueWord": 6,
+      "openWord": 13,
+      "clearWord": 19
+    },
+    "covers": [{ "category": "kind", "id": "bottleneck" }],
+    "durationSec": 6.05,
+    "scene": {
+      "kind": "bottleneck",
+      "label": "Sales handoff",
+      "tokenCount": 6,
+      "feedAt": 1,
+      "queueAt": 1.75,
+      "openAt": 3.5,
+      "clearAt": 5
+    },
+    "contact": { "event": "gate-open", "atSec": 3.5 },
+    "samples": [
+      { "name": "setup", "frame": 5 },
+      { "name": "arrival", "frame": 36 },
+      { "name": "queued", "frame": 75 },
+      { "name": "before-contact", "frame": 104 },
+      { "name": "contact", "frame": 105 },
+      { "name": "after-contact", "frame": 106 },
+      { "name": "release", "frame": 107 },
+      { "name": "cleared", "frame": 150 },
+      { "name": "hold", "frame": 174 }
+    ],
+    "cases": [
+      { "name": "vertical-stack", "aspect": "9:16", "layout": "stack" },
+      { "name": "landscape-over", "aspect": "16:9", "layout": "over" }
+    ]
+  },
+  {
+    "name": "business-support-backlog",
+    "exampleMaterial": true,
+    "sourceText": "Support requests arrive and pile up because only one reviewer can assign them. Removing that constraint lets the team answer waiting requests and clears the backlog.",
+    "timed": { "startSec": 10.25, "stepSec": 0.25, "wordDurationSec": 0.2, "sceneStartSec": 10 },
+    "raw": {
+      "kind": "bottleneck",
+      "startWord": 0,
+      "endWord": 25,
+      "layout": "stack",
+      "label": "Support requests",
+      "tokenCount": 6,
+      "feedWord": 2,
+      "queueWord": 4,
+      "openWord": 13,
+      "clearWord": 23
+    },
+    "covers": [{ "category": "kind", "id": "bottleneck" }],
+    "durationSec": 7.05,
+    "scene": {
+      "kind": "bottleneck",
+      "label": "Support requests",
+      "tokenCount": 6,
+      "feedAt": 0.75,
+      "queueAt": 1.25,
+      "openAt": 3.5,
+      "clearAt": 6
+    },
+    "contact": { "event": "gate-open", "atSec": 3.5 },
+    "samples": [
+      { "name": "setup", "frame": 5 },
+      { "name": "arrival", "frame": 26 },
+      { "name": "queued", "frame": 75 },
+      { "name": "before-contact", "frame": 104 },
+      { "name": "contact", "frame": 105 },
+      { "name": "after-contact", "frame": 106 },
+      { "name": "release", "frame": 107 },
+      { "name": "cleared", "frame": 180 },
+      { "name": "hold", "frame": 204 }
+    ],
+    "cases": [
+      { "name": "vertical-stack", "aspect": "9:16", "layout": "stack" },
+      { "name": "landscape-over", "aspect": "16:9", "layout": "over" }
+    ]
+  },
+  {
+    "name": "business-recurring-resource-loss",
+    "exampleMaterial": true,
+    "sourceText": "Revenue arrives each month, but duplicate subscriptions keep wasting money. We cancel those subscriptions, ending that recurring waste so more revenue stays available for the business.",
+    "timed": { "startSec": 10.25, "stepSec": 0.25, "wordDurationSec": 0.2, "sceneStartSec": 10 },
+    "raw": {
+      "kind": "resource-leak",
+      "startWord": 0,
+      "endWord": 25,
+      "layout": "stack",
+      "label": "Duplicate subscriptions",
+      "inflowWord": 1,
+      "leakWord": 8,
+      "sealWord": 11,
+      "retainWord": 21
+    },
+    "covers": [{ "category": "kind", "id": "resource-leak" }],
+    "durationSec": 7.05,
+    "scene": {
+      "kind": "resource-leak",
+      "label": "Duplicate subscriptions",
+      "inflowAt": 0.5,
+      "leakAt": 2.25,
+      "sealAt": 3,
+      "retainAt": 5.5
+    },
+    "contact": { "event": "tap-seating", "atSec": 3.32 },
+    "samples": [
+      { "name": "setup", "frame": 5 },
+      { "name": "inflow", "frame": 24 },
+      { "name": "loss", "frame": 75 },
+      { "name": "correction", "frame": 90 },
+      { "name": "before-contact", "frame": 99 },
+      { "name": "contact", "frame": 100 },
+      { "name": "after-contact", "frame": 101 },
+      { "name": "retained", "frame": 165 },
+      { "name": "hold", "frame": 204 }
+    ],
+    "cases": [
+      { "name": "vertical-stack", "aspect": "9:16", "layout": "stack" },
+      { "name": "landscape-over", "aspect": "16:9", "layout": "over" }
+    ]
+  },
+  {
+    "name": "business-demand-capacity",
+    "exampleMaterial": true,
+    "sourceText": "Demand exceeds our capacity target. We measure workload against available staffing, then add staff; workload returns to target and stays there.",
+    "timed": { "startSec": 10.25, "stepSec": 0.25, "wordDurationSec": 0.2, "sceneStartSec": 10 },
+    "raw": {
+      "kind": "feedback-control",
+      "startWord": 0,
+      "endWord": 20,
+      "layout": "stack",
+      "label": "Capacity target",
+      "exceedWord": 1,
+      "senseWord": 6,
+      "correctWord": 12,
+      "settleWord": 17
+    },
+    "covers": [{ "category": "kind", "id": "feedback-control" }],
+    "durationSec": 5.8,
+    "scene": {
+      "kind": "feedback-control",
+      "label": "Capacity target",
+      "exceedAt": 0.5,
+      "senseAt": 1.75,
+      "correctAt": 3.25,
+      "settleAt": 4.5
+    },
+    "contact": { "event": "measurement-response", "atSec": 1.75 },
+    "samples": [
+      { "name": "setup", "frame": 5 },
+      { "name": "excess-demand", "frame": 35 },
+      { "name": "before-contact", "frame": 52 },
+      { "name": "contact", "frame": 53 },
+      { "name": "after-contact", "frame": 54 },
+      { "name": "adjustment", "frame": 110 },
+      { "name": "at-target", "frame": 135 },
+      { "name": "hold", "frame": 166 }
+    ],
+    "cases": [
+      { "name": "vertical-stack", "aspect": "9:16", "layout": "stack" },
+      { "name": "landscape-over", "aspect": "16:9", "layout": "over" }
+    ]
+  },
+  {
+    "name": "business-content-reinvestment",
+    "exampleMaterial": true,
+    "sourceText": "Content creates leads, those leads create revenue, and reinvestment uses that revenue to fund more content. The cycle repeats with the next article.",
+    "timed": { "startSec": 10.25, "stepSec": 0.25, "wordDurationSec": 0.2, "sceneStartSec": 10 },
+    "raw": {
+      "kind": "loop",
+      "startWord": 0,
+      "endWord": 22,
+      "layout": "stack",
+      "stages": [
+        { "label": "Content", "word": 0 },
+        { "label": "Leads", "word": 2 },
+        { "label": "Revenue", "word": 6 },
+        { "label": "Reinvestment", "word": 8 }
+      ],
+      "center": "Cycle",
+      "spinWord": 18
+    },
+    "durationSec": 6.3,
+    "scene": {
+      "kind": "loop",
+      "stages": [
+        { "label": "Content", "at": 0.3 },
+        { "label": "Leads", "at": 0.75 },
+        { "label": "Revenue", "at": 1.75 },
+        { "label": "Reinvestment", "at": 2.25 }
+      ],
+      "center": "Cycle",
+      "spinAt": 4.75
+    },
+    "contact": { "event": "cycle-closure", "atSec": 4.75 },
+    "samples": [
+      { "name": "setup", "frame": 5 },
+      { "name": "leads", "frame": 36 },
+      { "name": "revenue", "frame": 60 },
+      { "name": "reinvestment", "frame": 100 },
+      { "name": "before-contact", "frame": 142 },
+      { "name": "contact", "frame": 143 },
+      { "name": "after-contact", "frame": 144 },
+      { "name": "hold", "frame": 181 }
+    ],
+    "cases": [
+      { "name": "vertical-stack", "aspect": "9:16", "layout": "stack" },
+      { "name": "landscape-over", "aspect": "16:9", "layout": "over" }
+    ]
+  },
+  {
+    "name": "business-revenue-margin",
+    "exampleMaterial": true,
+    "sourceText": "Example margin: revenue is $12,000, minus costs of $7,500, gives a stated margin of $4,500 for this business.",
+    "timed": { "startSec": 10.25, "stepSec": 0.25, "wordDurationSec": 0.2, "sceneStartSec": 10 },
+    "raw": {
+      "kind": "receipt",
+      "startWord": 0,
+      "endWord": 17,
+      "layout": "stack",
+      "title": "Example margin",
+      "lines": [
+        { "label": "Revenue", "amount": "$12,000", "word": 4 },
+        { "label": "Minus costs", "amount": "$7,500", "word": 8 }
+      ],
+      "total": { "label": "Margin", "amount": "$4,500" },
+      "totalWord": 14
+    },
+    "durationSec": 5.05,
+    "scene": {
+      "kind": "receipt",
+      "title": "Example margin",
+      "lines": [
+        { "label": "Revenue", "amount": "$12,000", "at": 1.25 },
+        { "label": "Minus costs", "amount": "$7,500", "at": 2.25 }
+      ],
+      "total": { "label": "Margin", "amount": "$4,500" },
+      "totalAt": 3.75
+    },
+    "contact": { "event": "total-cue", "atSec": 3.85 },
+    "samples": [
+      { "name": "setup", "frame": 5 },
+      { "name": "revenue", "frame": 51 },
+      { "name": "costs", "frame": 93 },
+      { "name": "before-contact", "frame": 115 },
+      { "name": "contact", "frame": 116 },
+      { "name": "after-contact", "frame": 117 },
+      { "name": "hold", "frame": 143 }
+    ],
+    "cases": [
+      { "name": "vertical-stack", "aspect": "9:16", "layout": "stack" },
+      { "name": "landscape-over", "aspect": "16:9", "layout": "over" }
+    ]
+  }
+]

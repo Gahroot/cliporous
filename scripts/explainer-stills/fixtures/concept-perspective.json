@@ -1,0 +1,1298 @@
+[
+  {
+    "name": "scale-hierarchy-chip-to-center",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "scale-hierarchy"
+      },
+      {
+        "category": "explanation",
+        "id": "scale-hierarchy/chip-to-center"
+      }
+    ],
+    "description": "Synthetic authored illustration, not real telemetry, measured scale, probabilities or a population count.",
+    "sourceText": "Chip inside infrastructure: the Atlas chip remains identifiable. The Atlas chip sits inside the server. The server sits inside the rack. The rack sits inside the data center. The Atlas chip remains inside the data center.",
+    "plannerInput": {
+      "kind": "scale-hierarchy",
+      "preset": "chip-to-center",
+      "label": "Chip inside infrastructure",
+      "subject": "Atlas chip",
+      "outcome": "remains inside the data center",
+      "startWord": 0,
+      "endWord": 35,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 8,
+      "responseWord": 15,
+      "checkWord": 21,
+      "resolveWord": 28,
+      "levels": [
+        {
+          "label": "server",
+          "evidenceStartWord": 8,
+          "evidenceEndWord": 14
+        },
+        {
+          "label": "rack",
+          "evidenceStartWord": 15,
+          "evidenceEndWord": 20
+        },
+        {
+          "label": "data center",
+          "evidenceStartWord": 21,
+          "evidenceEndWord": 27
+        }
+      ]
+    },
+    "sourceBeats": [
+      {
+        "field": "setupWord",
+        "word": 0,
+        "at": 0.25
+      },
+      {
+        "field": "actionWord",
+        "word": 8,
+        "at": 2.605555556
+      },
+      {
+        "field": "responseWord",
+        "word": 15,
+        "at": 4.666666667
+      },
+      {
+        "field": "checkWord",
+        "word": 21,
+        "at": 6.433333333
+      },
+      {
+        "field": "resolveWord",
+        "word": 28,
+        "at": 8.494444444
+      }
+    ],
+    "storyboard": [
+      "Orient on the notched Atlas chip and its physical identity ring.",
+      "Reveal the open server tray around the same chip while the camera pulls back.",
+      "Reveal rack rails and vented drawers around the tray without replacing the chip.",
+      "Reveal a cutaway data center and neighboring cabinets, retaining the visible ring.",
+      "Settle the camera and hold the same chip inside the rack and center."
+    ],
+    "meshBudget": 150,
+    "durationSec": 11.2,
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "scale-hierarchy",
+      "preset": "chip-to-center",
+      "label": "Chip inside infrastructure",
+      "subject": "Atlas chip",
+      "outcome": "remains inside the data center",
+      "setupAt": 0.3,
+      "actionAt": 2.605555556,
+      "responseAt": 4.666666667,
+      "checkAt": 6.433333333,
+      "resolveAt": 8.494444444,
+      "trackedId": "tracked-subject",
+      "levels": [
+        {
+          "id": "level-0",
+          "label": "server"
+        },
+        {
+          "id": "level-1",
+          "label": "rack"
+        },
+        {
+          "id": "level-2",
+          "label": "data center"
+        }
+      ]
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 44
+      },
+      {
+        "name": "first-change",
+        "frame": 109
+      },
+      {
+        "name": "relationship",
+        "frame": 167
+      },
+      {
+        "name": "comparison",
+        "frame": 224
+      },
+      {
+        "name": "final-hold",
+        "frame": 295
+      }
+    ]
+  },
+  {
+    "name": "scale-hierarchy-customer-to-market",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "scale-hierarchy"
+      },
+      {
+        "category": "explanation",
+        "id": "scale-hierarchy/customer-to-market"
+      }
+    ],
+    "description": "Synthetic authored illustration, not real telemetry, measured scale, probabilities or a population count.",
+    "sourceText": "Customer within a market: the original customer stays identifiable. The original customer belongs to the local segment. The local segment sits within the wider market. Illustrative shoppers reveal context, not a population count. The original customer remains inside the wider market.",
+    "plannerInput": {
+      "kind": "scale-hierarchy",
+      "preset": "customer-to-market",
+      "label": "Customer within a market",
+      "subject": "original customer",
+      "outcome": "remains inside the wider market",
+      "setupWord": 0,
+      "actionWord": 9,
+      "responseWord": 17,
+      "checkWord": 25,
+      "resolveWord": 33,
+      "startWord": 0,
+      "endWord": 40,
+      "layout": "stack",
+      "levels": [
+        {
+          "label": "local segment",
+          "evidenceStartWord": 9,
+          "evidenceEndWord": 16
+        },
+        {
+          "label": "wider market",
+          "evidenceStartWord": 17,
+          "evidenceEndWord": 24
+        }
+      ]
+    },
+    "sourceBeats": [
+      {
+        "field": "setupWord",
+        "word": 0,
+        "at": 0.25
+      },
+      {
+        "field": "actionWord",
+        "word": 9,
+        "at": 2.576829268
+      },
+      {
+        "field": "responseWord",
+        "word": 17,
+        "at": 4.645121951
+      },
+      {
+        "field": "checkWord",
+        "word": 25,
+        "at": 6.713414634
+      },
+      {
+        "field": "resolveWord",
+        "word": 33,
+        "at": 8.781707317
+      }
+    ],
+    "storyboard": [
+      "Orient on one shopper with a shoulder satchel and notched ring base.",
+      "Two illustrative peers and a segment plinth appear around that original shopper.",
+      "The camera pulls back to reveal market stalls beyond the segment.",
+      "Distinct stalls provide wider market context; people are not quantitative counts.",
+      "Hold the original shopper unchanged within both the segment and market."
+    ],
+    "meshBudget": 100,
+    "durationSec": 11.2,
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "scale-hierarchy",
+      "preset": "customer-to-market",
+      "label": "Customer within a market",
+      "subject": "original customer",
+      "outcome": "remains inside the wider market",
+      "setupAt": 0.3,
+      "actionAt": 2.576829268,
+      "responseAt": 4.645121951,
+      "checkAt": 6.713414634,
+      "resolveAt": 8.781707317,
+      "trackedId": "tracked-subject",
+      "levels": [
+        {
+          "id": "level-0",
+          "label": "local segment"
+        },
+        {
+          "id": "level-1",
+          "label": "wider market"
+        }
+      ]
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 43
+      },
+      {
+        "name": "first-change",
+        "frame": 108
+      },
+      {
+        "name": "relationship",
+        "frame": 170
+      },
+      {
+        "name": "comparison",
+        "frame": 232
+      },
+      {
+        "name": "final-hold",
+        "frame": 300
+      }
+    ]
+  },
+  {
+    "name": "possible-futures-branching-scenarios",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "possible-futures"
+      },
+      {
+        "category": "explanation",
+        "id": "possible-futures/branching-scenarios"
+      }
+    ],
+    "description": "Synthetic authored illustration, not real telemetry, measured scale, probabilities or a population count.",
+    "sourceText": "Possible futures for the packing line share this present. The packing line could have lower capacity. The packing line might retain steady capacity. The packing line may reach higher capacity. For the packing line, no outcome is certain.",
+    "plannerInput": {
+      "kind": "possible-futures",
+      "preset": "branching-scenarios",
+      "label": "Possible futures",
+      "subject": "packing line",
+      "outcome": "no outcome is certain",
+      "setupWord": 0,
+      "actionWord": 9,
+      "responseWord": 16,
+      "checkWord": 23,
+      "resolveWord": 30,
+      "startWord": 0,
+      "endWord": 37,
+      "layout": "stack",
+      "alternatives": [
+        {
+          "label": "lower capacity",
+          "change": "reduced",
+          "qualifier": "could have lower capacity",
+          "evidenceStartWord": 9,
+          "evidenceEndWord": 15
+        },
+        {
+          "label": "steady capacity",
+          "change": "steady",
+          "qualifier": "might retain steady capacity",
+          "evidenceStartWord": 16,
+          "evidenceEndWord": 22
+        },
+        {
+          "label": "higher capacity",
+          "change": "expanded",
+          "qualifier": "may reach higher capacity",
+          "evidenceStartWord": 23,
+          "evidenceEndWord": 29
+        }
+      ],
+      "uncertainty": "no outcome is certain"
+    },
+    "sourceBeats": [
+      {
+        "field": "setupWord",
+        "word": 0,
+        "at": 0.25
+      },
+      {
+        "field": "actionWord",
+        "word": 9,
+        "at": 2.760526316
+      },
+      {
+        "field": "responseWord",
+        "word": 16,
+        "at": 4.713157895
+      },
+      {
+        "field": "checkWord",
+        "word": 23,
+        "at": 6.665789474
+      },
+      {
+        "field": "resolveWord",
+        "word": 30,
+        "at": 8.618421053
+      }
+    ],
+    "storyboard": [
+      "A packing conveyor on a solid present-state plinth establishes the common origin.",
+      "Equal-weight solid paths separate miniature hypothetical lines from the unchanged present.",
+      "Their shutters reveal reduced, steady and expanded capacity, without output counts.",
+      "All alternatives retain source possibility phrases and identical visual weight.",
+      "All three remain possible; no winner, probability or observed change is selected."
+    ],
+    "meshBudget": 160,
+    "durationSec": 11.2,
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "possible-futures",
+      "preset": "branching-scenarios",
+      "label": "Possible futures",
+      "subject": "packing line",
+      "outcome": "no outcome is certain",
+      "setupAt": 0.3,
+      "actionAt": 2.760526316,
+      "responseAt": 4.713157895,
+      "checkAt": 6.665789474,
+      "resolveAt": 8.618421053,
+      "alternatives": [
+        {
+          "id": "alternative-0",
+          "label": "lower capacity",
+          "change": "reduced",
+          "qualifier": "could have lower capacity"
+        },
+        {
+          "id": "alternative-1",
+          "label": "steady capacity",
+          "change": "steady",
+          "qualifier": "might retain steady capacity"
+        },
+        {
+          "id": "alternative-2",
+          "label": "higher capacity",
+          "change": "expanded",
+          "qualifier": "may reach higher capacity"
+        }
+      ],
+      "uncertainty": "no outcome is certain"
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 46
+      },
+      {
+        "name": "first-change",
+        "frame": 112
+      },
+      {
+        "name": "relationship",
+        "frame": 171
+      },
+      {
+        "name": "comparison",
+        "frame": 229
+      },
+      {
+        "name": "final-hold",
+        "frame": 297
+      }
+    ]
+  },
+  {
+    "name": "possible-futures-forecast-range",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "possible-futures"
+      },
+      {
+        "category": "explanation",
+        "id": "possible-futures/forecast-range"
+      }
+    ],
+    "description": "Synthetic authored illustration, not real telemetry, measured scale, probabilities or a population count.",
+    "sourceText": "A qualitative forecast range concerns the packing line. The packing line could have lower capacity. The packing line could have higher capacity. The range spans lower capacity to higher capacity. For the packing line, no single forecast is certain.",
+    "plannerInput": {
+      "kind": "possible-futures",
+      "preset": "forecast-range",
+      "label": "A qualitative forecast range",
+      "subject": "packing line",
+      "outcome": "no single forecast is certain",
+      "setupWord": 0,
+      "actionWord": 8,
+      "responseWord": 15,
+      "checkWord": 22,
+      "resolveWord": 30,
+      "startWord": 0,
+      "endWord": 38,
+      "layout": "stack",
+      "alternatives": [
+        {
+          "label": "lower capacity",
+          "change": "reduced",
+          "qualifier": "could have lower capacity",
+          "evidenceStartWord": 8,
+          "evidenceEndWord": 14
+        },
+        {
+          "label": "higher capacity",
+          "change": "expanded",
+          "qualifier": "could have higher capacity",
+          "evidenceStartWord": 15,
+          "evidenceEndWord": 21
+        }
+      ],
+      "uncertainty": "no single forecast is certain"
+    },
+    "sourceBeats": [
+      {
+        "field": "setupWord",
+        "word": 0,
+        "at": 0.25
+      },
+      {
+        "field": "actionWord",
+        "word": 8,
+        "at": 2.424358974
+      },
+      {
+        "field": "responseWord",
+        "word": 15,
+        "at": 4.326923077
+      },
+      {
+        "field": "checkWord",
+        "word": 22,
+        "at": 6.229487179
+      },
+      {
+        "field": "resolveWord",
+        "word": 30,
+        "at": 8.403846154
+      }
+    ],
+    "storyboard": [
+      "A packing conveyor establishes the common present, not a precise forecast.",
+      "Two model plinths diverge along equal-width routes from that same present.",
+      "Qualitative lower and higher capacity shutters expose the two supported endpoints.",
+      "An ungraduated bracket joins the alternatives; it has no ticks, area band or odds.",
+      "Keep both endpoints visible and explicitly uncertain throughout the final hold."
+    ],
+    "meshBudget": 125,
+    "durationSec": 11.2,
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "possible-futures",
+      "preset": "forecast-range",
+      "label": "A qualitative forecast range",
+      "subject": "packing line",
+      "outcome": "no single forecast is certain",
+      "setupAt": 0.3,
+      "actionAt": 2.424358974,
+      "responseAt": 4.326923077,
+      "checkAt": 6.229487179,
+      "resolveAt": 8.403846154,
+      "alternatives": [
+        {
+          "id": "alternative-0",
+          "label": "lower capacity",
+          "change": "reduced",
+          "qualifier": "could have lower capacity"
+        },
+        {
+          "id": "alternative-1",
+          "label": "higher capacity",
+          "change": "expanded",
+          "qualifier": "could have higher capacity"
+        }
+      ],
+      "uncertainty": "no single forecast is certain"
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 41
+      },
+      {
+        "name": "first-change",
+        "frame": 101
+      },
+      {
+        "name": "relationship",
+        "frame": 158
+      },
+      {
+        "name": "comparison",
+        "frame": 219
+      },
+      {
+        "name": "final-hold",
+        "frame": 294
+      }
+    ]
+  },
+  {
+    "name": "digital-twin-mirror-state",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "digital-twin"
+      },
+      {
+        "category": "explanation",
+        "id": "digital-twin/mirror-state"
+      }
+    ],
+    "description": "Synthetic authored illustration, not real telemetry, measured scale, probabilities or a population count.",
+    "sourceText": "Gate state correspondence: the actual conveyor stays closed. The actual conveyor has a closed safety gate. The digital model mirrors the actual conveyor's safety gate. This illustrative model is not live telemetry. The actual conveyor and digital model remain closed.",
+    "plannerInput": {
+      "kind": "digital-twin",
+      "preset": "mirror-state",
+      "label": "Gate state correspondence",
+      "subject": "actual conveyor",
+      "outcome": "remain closed",
+      "setupWord": 0,
+      "actionWord": 8,
+      "responseWord": 16,
+      "checkWord": 25,
+      "resolveWord": 32,
+      "startWord": 0,
+      "endWord": 39,
+      "layout": "stack",
+      "physical": {
+        "label": "actual conveyor",
+        "state": "closed",
+        "evidenceStartWord": 8,
+        "evidenceEndWord": 15
+      },
+      "model": {
+        "label": "digital model",
+        "evidenceStartWord": 16,
+        "evidenceEndWord": 24
+      },
+      "partLabel": "safety gate",
+      "qualifier": "not live telemetry"
+    },
+    "sourceBeats": [
+      {
+        "field": "setupWord",
+        "word": 0,
+        "at": 0.25
+      },
+      {
+        "field": "actionWord",
+        "word": 8,
+        "at": 2.37
+      },
+      {
+        "field": "responseWord",
+        "word": 16,
+        "at": 4.49
+      },
+      {
+        "field": "checkWord",
+        "word": 25,
+        "at": 6.875
+      },
+      {
+        "field": "resolveWord",
+        "word": 32,
+        "at": 8.73
+      }
+    ],
+    "storyboard": [
+      "Identify the actual conveyor with its closed safety gate and stationary parcel.",
+      "Reveal a separate matching miniature on a corner-marked model stand.",
+      "A correspondence link relates the same gate on the physical line and model.",
+      "Keep both gates closed with the explicit not-live-telemetry qualification.",
+      "Hold a matched illustrative state, never imply sensor updates or an intervention."
+    ],
+    "meshBudget": 90,
+    "durationSec": 11.2,
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "digital-twin",
+      "preset": "mirror-state",
+      "label": "Gate state correspondence",
+      "subject": "actual conveyor",
+      "outcome": "remain closed",
+      "setupAt": 0.3,
+      "actionAt": 2.37,
+      "responseAt": 4.49,
+      "checkAt": 6.875,
+      "resolveAt": 8.73,
+      "physical": {
+        "id": "physical-line",
+        "label": "actual conveyor"
+      },
+      "model": {
+        "id": "model-line",
+        "label": "digital model"
+      },
+      "partLabel": "safety gate",
+      "physicalState": "closed",
+      "qualifier": "not live telemetry"
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 40
+      },
+      {
+        "name": "first-change",
+        "frame": 103
+      },
+      {
+        "name": "relationship",
+        "frame": 170
+      },
+      {
+        "name": "comparison",
+        "frame": 234
+      },
+      {
+        "name": "final-hold",
+        "frame": 299
+      }
+    ]
+  },
+  {
+    "name": "digital-twin-simulated-change",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "digital-twin"
+      },
+      {
+        "category": "explanation",
+        "id": "digital-twin/simulated-change"
+      }
+    ],
+    "description": "Synthetic authored illustration, not real telemetry, measured scale, probabilities or a population count.",
+    "sourceText": "Model-only intervention: the actual conveyor stays closed. The actual conveyor has a closed safety gate. The digital model mirrors the actual conveyor's safety gate. The digital model simulates opening the safety gate, simulation only. The actual conveyor remains closed and the digital model remains simulated.",
+    "plannerInput": {
+      "kind": "digital-twin",
+      "preset": "simulated-change",
+      "label": "Model-only intervention",
+      "subject": "actual conveyor",
+      "outcome": "digital model remains simulated",
+      "setupWord": 0,
+      "actionWord": 7,
+      "responseWord": 15,
+      "checkWord": 24,
+      "resolveWord": 34,
+      "startWord": 0,
+      "endWord": 44,
+      "layout": "stack",
+      "physical": {
+        "label": "actual conveyor",
+        "state": "closed",
+        "evidenceStartWord": 7,
+        "evidenceEndWord": 14
+      },
+      "model": {
+        "label": "digital model",
+        "evidenceStartWord": 15,
+        "evidenceEndWord": 23
+      },
+      "partLabel": "safety gate",
+      "qualifier": "simulation only",
+      "intervention": {
+        "state": "open",
+        "evidenceStartWord": 24,
+        "evidenceEndWord": 33
+      }
+    },
+    "sourceBeats": [
+      {
+        "field": "setupWord",
+        "word": 0,
+        "at": 0.25
+      },
+      {
+        "field": "actionWord",
+        "word": 7,
+        "at": 1.898888889
+      },
+      {
+        "field": "responseWord",
+        "word": 15,
+        "at": 3.783333333
+      },
+      {
+        "field": "checkWord",
+        "word": 24,
+        "at": 5.903333333
+      },
+      {
+        "field": "resolveWord",
+        "word": 34,
+        "at": 8.258888889
+      }
+    ],
+    "storyboard": [
+      "Identify the actual conveyor, closed gate and stationary parcel on the physical plinth.",
+      "Reveal a matching closed-gate model on a visibly separate marked stand.",
+      "Establish correspondence without changing either state or moving real parcels.",
+      "Open only the model safety gate under the source simulation-only qualifier.",
+      "Hold the simulated gate open while the actual gate and parcel remain unchanged."
+    ],
+    "meshBudget": 90,
+    "durationSec": 11.2,
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#30201c",
+          "card": "#3b2925",
+          "cardRaised": "#49322d",
+          "cardBorder": "rgba(246,236,217,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#c2aaa0",
+          "accent": "#9f75ff",
+          "accent2": "#bd98ba",
+          "accentSoft": "rgba(159,117,255,0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#f6ecd9",
+          "paperText": "#23100c",
+          "clay": [
+            "#b8a2de",
+            "#ddcbbd",
+            "#8267b2"
+          ]
+        }
+      },
+      {
+        "name": "landscape-takeover-light",
+        "layout": "takeover",
+        "aspect": "16:9"
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "scene": {
+      "kind": "digital-twin",
+      "preset": "simulated-change",
+      "label": "Model-only intervention",
+      "subject": "actual conveyor",
+      "outcome": "digital model remains simulated",
+      "setupAt": 0.3,
+      "actionAt": 1.898888889,
+      "responseAt": 3.783333333,
+      "checkAt": 5.903333333,
+      "resolveAt": 8.258888889,
+      "physical": {
+        "id": "physical-line",
+        "label": "actual conveyor"
+      },
+      "model": {
+        "id": "model-line",
+        "label": "digital model"
+      },
+      "partLabel": "safety gate",
+      "physicalState": "closed",
+      "simulatedState": "open",
+      "qualifier": "simulation only"
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 33
+      },
+      {
+        "name": "first-change",
+        "frame": 85
+      },
+      {
+        "name": "relationship",
+        "frame": 145
+      },
+      {
+        "name": "comparison",
+        "frame": 212
+      },
+      {
+        "name": "final-hold",
+        "frame": 292
+      }
+    ]
+  }
+]

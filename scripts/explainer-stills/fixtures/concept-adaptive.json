@@ -1,0 +1,1560 @@
+[
+  {
+    "name": "collective-pattern-network-clusters",
+    "description": "Synthetic qualitative fixture, not measured behavior. Fixed existing studio camera; bounded actors and no invented statistics.",
+    "durationSec": 11.8,
+    "sourceText": "Local team includes people Ada, Ben, Cora and Dax. Ada connects with Ben. Cora connects with Dax. The same people retain their local connections without new arrivals. Local team forms separate clusters.",
+    "plannerInput": {
+      "kind": "collective-pattern",
+      "preset": "network-clusters",
+      "startWord": 0,
+      "endWord": 31,
+      "layout": "stack",
+      "label": "Local team",
+      "subject": "Local team",
+      "outcome": "Local team forms separate clusters",
+      "setupWord": 0,
+      "actionWord": 9,
+      "responseWord": 13,
+      "checkWord": 17,
+      "resolveWord": 27,
+      "actors": [
+        {
+          "label": "Ada"
+        },
+        {
+          "label": "Ben"
+        },
+        {
+          "label": "Cora"
+        },
+        {
+          "label": "Dax"
+        }
+      ],
+      "relationships": [
+        {
+          "fromActor": 0,
+          "toActor": 1,
+          "word": 9,
+          "evidence": {
+            "fromWord": 9,
+            "toWord": 12
+          }
+        },
+        {
+          "fromActor": 2,
+          "toActor": 3,
+          "word": 13,
+          "evidence": {
+            "fromWord": 13,
+            "toWord": 16
+          }
+        }
+      ]
+    },
+    "scene": {
+      "kind": "collective-pattern",
+      "preset": "network-clusters",
+      "label": "Local team",
+      "subject": "Local team",
+      "outcome": "Local team forms separate clusters",
+      "setupAt": 0.3,
+      "actionAt": 3.4,
+      "responseAt": 4.8,
+      "checkAt": 6.2,
+      "resolveAt": 9.7,
+      "actors": [
+        {
+          "id": "actor-0",
+          "label": "Ada"
+        },
+        {
+          "id": "actor-1",
+          "label": "Ben"
+        },
+        {
+          "id": "actor-2",
+          "label": "Cora"
+        },
+        {
+          "id": "actor-3",
+          "label": "Dax"
+        }
+      ],
+      "relationships": [
+        {
+          "fromId": "actor-0",
+          "toId": "actor-1",
+          "at": 3.4,
+          "evidence": {
+            "fromWord": 9,
+            "toWord": 12,
+            "phrase": "Ada connects with Ben."
+          }
+        },
+        {
+          "fromId": "actor-2",
+          "toId": "actor-3",
+          "at": 4.8,
+          "evidence": {
+            "fromWord": 13,
+            "toWord": 16,
+            "phrase": "Cora connects with Dax."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 19
+      },
+      {
+        "name": "action",
+        "frame": 113
+      },
+      {
+        "name": "response",
+        "frame": 154
+      },
+      {
+        "name": "check",
+        "frame": 197
+      },
+      {
+        "name": "final-hold",
+        "frame": 306
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Named people occupy separate positions."
+      },
+      {
+        "beat": "action",
+        "word": 9,
+        "at": 3.4,
+        "description": "Ada and Ben establish their local connection."
+      },
+      {
+        "beat": "response",
+        "word": 13,
+        "at": 4.8,
+        "description": "Cora and Dax form the second connected pair."
+      },
+      {
+        "beat": "check",
+        "word": 17,
+        "at": 6.2,
+        "description": "All original people remain; no cross-cluster edges appear."
+      },
+      {
+        "beat": "resolve",
+        "word": 27,
+        "at": 9.7,
+        "description": "Two bounded clusters settle, without a network growth claim."
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "collective-pattern"
+      },
+      {
+        "category": "explanation",
+        "id": "collective-pattern/network-clusters"
+      }
+    ]
+  },
+  {
+    "name": "collective-pattern-adoption-wave",
+    "description": "Synthetic qualitative fixture, not measured behavior. Fixed existing studio camera; bounded actors and no invented statistics.",
+    "durationSec": 11.8,
+    "sourceText": "Local team includes people Ada, Ben and Cora. Ben adopts from Ada. Cora adopts from Ben. The same people retain their named local relationships throughout this example. Local team retains staged adoption.",
+    "plannerInput": {
+      "kind": "collective-pattern",
+      "preset": "adoption-wave",
+      "startWord": 0,
+      "endWord": 31,
+      "layout": "stack",
+      "label": "Local team",
+      "subject": "Local team",
+      "outcome": "Local team retains staged adoption",
+      "setupWord": 0,
+      "actionWord": 8,
+      "responseWord": 12,
+      "checkWord": 16,
+      "resolveWord": 27,
+      "actors": [
+        {
+          "label": "Ada"
+        },
+        {
+          "label": "Ben"
+        },
+        {
+          "label": "Cora"
+        }
+      ],
+      "relationships": [
+        {
+          "fromActor": 0,
+          "toActor": 1,
+          "word": 8,
+          "evidence": {
+            "fromWord": 8,
+            "toWord": 11
+          }
+        },
+        {
+          "fromActor": 1,
+          "toActor": 2,
+          "word": 12,
+          "evidence": {
+            "fromWord": 12,
+            "toWord": 15
+          }
+        }
+      ]
+    },
+    "scene": {
+      "kind": "collective-pattern",
+      "preset": "adoption-wave",
+      "label": "Local team",
+      "subject": "Local team",
+      "outcome": "Local team retains staged adoption",
+      "setupAt": 0.3,
+      "actionAt": 3.05,
+      "responseAt": 4.45,
+      "checkAt": 5.85,
+      "resolveAt": 9.7,
+      "actors": [
+        {
+          "id": "actor-0",
+          "label": "Ada"
+        },
+        {
+          "id": "actor-1",
+          "label": "Ben"
+        },
+        {
+          "id": "actor-2",
+          "label": "Cora"
+        }
+      ],
+      "relationships": [
+        {
+          "fromId": "actor-0",
+          "toId": "actor-1",
+          "at": 3.05,
+          "evidence": {
+            "fromWord": 8,
+            "toWord": 11,
+            "phrase": "Ben adopts from Ada."
+          }
+        },
+        {
+          "fromId": "actor-1",
+          "toId": "actor-2",
+          "at": 4.45,
+          "evidence": {
+            "fromWord": 12,
+            "toWord": 15,
+            "phrase": "Cora adopts from Ben."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 19
+      },
+      {
+        "name": "action",
+        "frame": 102
+      },
+      {
+        "name": "response",
+        "frame": 144
+      },
+      {
+        "name": "check",
+        "frame": 186
+      },
+      {
+        "name": "final-hold",
+        "frame": 306
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Three people hold lowered flags."
+      },
+      {
+        "beat": "action",
+        "word": 8,
+        "at": 3.05,
+        "description": "The local signal reaches Ben from Ada before his flag rises."
+      },
+      {
+        "beat": "response",
+        "word": 12,
+        "at": 4.45,
+        "description": "Cora adopts from Ben, along their own visible connection."
+      },
+      {
+        "beat": "check",
+        "word": 16,
+        "at": 5.85,
+        "description": "The same people remain; no predicted future spread."
+      },
+      {
+        "beat": "resolve",
+        "word": 27,
+        "at": 9.7,
+        "description": "Flags and local links hold with no ambient movement."
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "collective-pattern"
+      },
+      {
+        "category": "explanation",
+        "id": "collective-pattern/adoption-wave"
+      }
+    ]
+  },
+  {
+    "name": "collective-pattern-coordinated-swarm",
+    "description": "Synthetic qualitative fixture, not measured behavior. Fixed existing studio camera; bounded actors and no invented statistics.",
+    "durationSec": 11.8,
+    "sourceText": "Robot fleet includes robots Scout, Porter and Rover. Porter follows Scout. Rover follows Porter. The same robots preserve their local neighbor links in this bounded example. Robot fleet holds formation.",
+    "plannerInput": {
+      "kind": "collective-pattern",
+      "preset": "coordinated-swarm",
+      "startWord": 0,
+      "endWord": 29,
+      "layout": "stack",
+      "label": "Robot fleet",
+      "subject": "Robot fleet",
+      "outcome": "Robot fleet holds formation",
+      "setupWord": 0,
+      "actionWord": 8,
+      "responseWord": 11,
+      "checkWord": 14,
+      "resolveWord": 26,
+      "actors": [
+        {
+          "label": "Scout"
+        },
+        {
+          "label": "Porter"
+        },
+        {
+          "label": "Rover"
+        }
+      ],
+      "relationships": [
+        {
+          "fromActor": 0,
+          "toActor": 1,
+          "word": 8,
+          "evidence": {
+            "fromWord": 8,
+            "toWord": 10
+          }
+        },
+        {
+          "fromActor": 1,
+          "toActor": 2,
+          "word": 11,
+          "evidence": {
+            "fromWord": 11,
+            "toWord": 13
+          }
+        }
+      ]
+    },
+    "scene": {
+      "kind": "collective-pattern",
+      "preset": "coordinated-swarm",
+      "label": "Robot fleet",
+      "subject": "Robot fleet",
+      "outcome": "Robot fleet holds formation",
+      "setupAt": 0.3,
+      "actionAt": 3.236666667,
+      "responseAt": 4.356666667,
+      "checkAt": 5.476666667,
+      "resolveAt": 9.956666667,
+      "actors": [
+        {
+          "id": "actor-0",
+          "label": "Scout"
+        },
+        {
+          "id": "actor-1",
+          "label": "Porter"
+        },
+        {
+          "id": "actor-2",
+          "label": "Rover"
+        }
+      ],
+      "relationships": [
+        {
+          "fromId": "actor-0",
+          "toId": "actor-1",
+          "at": 3.236666667,
+          "evidence": {
+            "fromWord": 8,
+            "toWord": 10,
+            "phrase": "Porter follows Scout."
+          }
+        },
+        {
+          "fromId": "actor-1",
+          "toId": "actor-2",
+          "at": 4.356666667,
+          "evidence": {
+            "fromWord": 11,
+            "toWord": 13,
+            "phrase": "Rover follows Porter."
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 19
+      },
+      {
+        "name": "action",
+        "frame": 108
+      },
+      {
+        "name": "response",
+        "frame": 141
+      },
+      {
+        "name": "check",
+        "frame": 175
+      },
+      {
+        "name": "final-hold",
+        "frame": 314
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Three camera-eyed wheeled robots occupy separate positions."
+      },
+      {
+        "beat": "action",
+        "word": 8,
+        "at": 3.236666667,
+        "description": "Porter follows Scout along an authored path."
+      },
+      {
+        "beat": "response",
+        "word": 11,
+        "at": 4.356666667,
+        "description": "Rover follows Porter; local interaction remains visible."
+      },
+      {
+        "beat": "check",
+        "word": 14,
+        "at": 5.476666667,
+        "description": "Neighbor links remain in the bounded convoy."
+      },
+      {
+        "beat": "resolve",
+        "word": 26,
+        "at": 9.956666667,
+        "description": "All wheels and paths settle in a stable formation."
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "collective-pattern"
+      },
+      {
+        "category": "explanation",
+        "id": "collective-pattern/coordinated-swarm"
+      }
+    ]
+  },
+  {
+    "name": "robot-perception-recognized-target",
+    "description": "Synthetic qualitative fixture, not measured behavior. Fixed existing studio camera; bounded actors and no invented statistics.",
+    "durationSec": 11.8,
+    "sourceText": "Scout is a robot. Scout observes parcel and cone inside safety line. Scout recognizes parcel inside safety line. Scout moves toward parcel. Scout stops before safety line.",
+    "plannerInput": {
+      "kind": "robot-perception",
+      "preset": "recognized-target",
+      "startWord": 0,
+      "endWord": 26,
+      "layout": "stack",
+      "label": "Scout",
+      "subject": "Scout",
+      "outcome": "Scout stops before safety line",
+      "setupWord": 0,
+      "actionWord": 4,
+      "responseWord": 12,
+      "checkWord": 18,
+      "resolveWord": 22,
+      "target": {
+        "label": "parcel",
+        "form": "parcel"
+      },
+      "distractor": {
+        "label": "cone",
+        "form": "cone"
+      },
+      "boundaryLabel": "safety line",
+      "observation": {
+        "fromWord": 4,
+        "toWord": 11
+      },
+      "recognition": {
+        "fromWord": 12,
+        "toWord": 17
+      },
+      "response": {
+        "fromWord": 18,
+        "toWord": 21
+      }
+    },
+    "scene": {
+      "kind": "robot-perception",
+      "preset": "recognized-target",
+      "label": "Scout",
+      "subject": "Scout",
+      "outcome": "Scout stops before safety line",
+      "setupAt": 0.3,
+      "actionAt": 1.909259259,
+      "responseAt": 5.227777778,
+      "checkAt": 7.716666667,
+      "resolveAt": 9.375925926,
+      "target": {
+        "id": "target",
+        "label": "parcel",
+        "form": "parcel"
+      },
+      "distractor": {
+        "id": "distractor",
+        "label": "cone",
+        "form": "cone"
+      },
+      "boundaryLabel": "safety line",
+      "observation": {
+        "fromWord": 4,
+        "toWord": 11,
+        "phrase": "Scout observes parcel and cone inside safety line."
+      },
+      "recognition": {
+        "fromWord": 12,
+        "toWord": 17,
+        "phrase": "Scout recognizes parcel inside safety line."
+      },
+      "response": {
+        "fromWord": 18,
+        "toWord": 21,
+        "phrase": "Scout moves toward parcel."
+      }
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 19
+      },
+      {
+        "name": "action",
+        "frame": 68
+      },
+      {
+        "name": "response",
+        "frame": 167
+      },
+      {
+        "name": "check",
+        "frame": 242
+      },
+      {
+        "name": "final-hold",
+        "frame": 296
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Robot faces a taped parcel, striped cone and physical boundary."
+      },
+      {
+        "beat": "action",
+        "word": 4,
+        "at": 1.909259259,
+        "description": "Both distinguishable objects receive observation brackets."
+      },
+      {
+        "beat": "response",
+        "word": 12,
+        "at": 5.227777778,
+        "description": "Only the source-recognized parcel keeps its selection bracket."
+      },
+      {
+        "beat": "check",
+        "word": 18,
+        "at": 7.716666667,
+        "description": "Robot makes one bounded approach after recognition."
+      },
+      {
+        "beat": "resolve",
+        "word": 22,
+        "at": 9.375925926,
+        "description": "Robot stops before the boundary; no pickup or competence score."
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "robot-perception"
+      },
+      {
+        "category": "explanation",
+        "id": "robot-perception/recognized-target"
+      }
+    ]
+  },
+  {
+    "name": "robot-perception-uncertain-target",
+    "description": "Synthetic qualitative fixture, not measured behavior. Fixed existing studio camera; bounded actors and no invented statistics.",
+    "durationSec": 11.8,
+    "sourceText": "Scout is a robot. Scout observes parcel and cylinder inside safety line. Scout cannot distinguish parcel from cylinder. Scout waits at safety line. Scout defers action.",
+    "plannerInput": {
+      "kind": "robot-perception",
+      "preset": "uncertain-target",
+      "startWord": 0,
+      "endWord": 25,
+      "layout": "stack",
+      "label": "Scout",
+      "subject": "Scout",
+      "outcome": "Scout defers action",
+      "setupWord": 0,
+      "actionWord": 4,
+      "responseWord": 12,
+      "checkWord": 18,
+      "resolveWord": 23,
+      "target": {
+        "label": "parcel",
+        "form": "parcel"
+      },
+      "distractor": {
+        "label": "cylinder",
+        "form": "cylinder"
+      },
+      "boundaryLabel": "safety line",
+      "observation": {
+        "fromWord": 4,
+        "toWord": 11
+      },
+      "recognition": {
+        "fromWord": 12,
+        "toWord": 17
+      },
+      "response": {
+        "fromWord": 18,
+        "toWord": 22
+      }
+    },
+    "scene": {
+      "kind": "robot-perception",
+      "preset": "uncertain-target",
+      "label": "Scout",
+      "subject": "Scout",
+      "outcome": "Scout defers action",
+      "setupAt": 0.3,
+      "actionAt": 1.973076923,
+      "responseAt": 5.419230769,
+      "checkAt": 8.003846154,
+      "resolveAt": 10.157692308,
+      "target": {
+        "id": "target",
+        "label": "parcel",
+        "form": "parcel"
+      },
+      "distractor": {
+        "id": "distractor",
+        "label": "cylinder",
+        "form": "cylinder"
+      },
+      "boundaryLabel": "safety line",
+      "observation": {
+        "fromWord": 4,
+        "toWord": 11,
+        "phrase": "Scout observes parcel and cylinder inside safety line."
+      },
+      "recognition": {
+        "fromWord": 12,
+        "toWord": 17,
+        "phrase": "Scout cannot distinguish parcel from cylinder."
+      },
+      "response": {
+        "fromWord": 18,
+        "toWord": 22,
+        "phrase": "Scout waits at safety line."
+      }
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 19
+      },
+      {
+        "name": "action",
+        "frame": 70
+      },
+      {
+        "name": "response",
+        "frame": 173
+      },
+      {
+        "name": "check",
+        "frame": 251
+      },
+      {
+        "name": "final-hold",
+        "frame": 320
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Robot faces a parcel and a banded cylinder behind the safety line."
+      },
+      {
+        "beat": "action",
+        "word": 4,
+        "at": 1.973076923,
+        "description": "Both observations appear while wheels remain still."
+      },
+      {
+        "beat": "response",
+        "word": 12,
+        "at": 5.419230769,
+        "description": "Both brackets persist; no winner is selected."
+      },
+      {
+        "beat": "check",
+        "word": 18,
+        "at": 8.003846154,
+        "description": "Pause bars show source-backed waiting with no approach."
+      },
+      {
+        "beat": "resolve",
+        "word": 23,
+        "at": 10.157692308,
+        "description": "Uncertainty remains unresolved and the robot never acts."
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "robot-perception"
+      },
+      {
+        "category": "explanation",
+        "id": "robot-perception/uncertain-target"
+      }
+    ]
+  },
+  {
+    "name": "modular-machine-reconfigure",
+    "description": "Synthetic qualitative fixture, not measured behavior. Fixed existing studio camera; bounded actors and no invented statistics.",
+    "durationSec": 11.8,
+    "sourceText": "Press is a modular machine with roller. Press replaces roller with drill for drilling. Drill fits Press. Press uses drill for drilling. Press runs drill.",
+    "plannerInput": {
+      "kind": "modular-machine",
+      "preset": "reconfigure",
+      "startWord": 0,
+      "endWord": 24,
+      "layout": "stack",
+      "label": "Press",
+      "subject": "Press",
+      "outcome": "Press runs drill",
+      "setupWord": 0,
+      "actionWord": 7,
+      "responseWord": 14,
+      "checkWord": 17,
+      "resolveWord": 22,
+      "current": {
+        "label": "roller",
+        "role": "roller"
+      },
+      "candidate": {
+        "label": "drill",
+        "role": "drill"
+      },
+      "jobLabel": "drilling",
+      "arrangement": {
+        "fromWord": 7,
+        "toWord": 13
+      },
+      "compatibility": {
+        "fromWord": 14,
+        "toWord": 16
+      },
+      "operation": {
+        "fromWord": 17,
+        "toWord": 21
+      }
+    },
+    "scene": {
+      "kind": "modular-machine",
+      "preset": "reconfigure",
+      "label": "Press",
+      "subject": "Press",
+      "outcome": "Press runs drill",
+      "setupAt": 0.3,
+      "actionAt": 3.386,
+      "responseAt": 6.522,
+      "checkAt": 7.866,
+      "resolveAt": 10.106,
+      "current": {
+        "id": "current",
+        "label": "roller",
+        "role": "roller"
+      },
+      "candidate": {
+        "id": "candidate",
+        "label": "drill",
+        "role": "drill"
+      },
+      "jobLabel": "drilling",
+      "arrangement": {
+        "fromWord": 7,
+        "toWord": 13,
+        "phrase": "Press replaces roller with drill for drilling."
+      },
+      "compatibility": {
+        "fromWord": 14,
+        "toWord": 16,
+        "phrase": "Drill fits Press."
+      },
+      "operation": {
+        "fromWord": 17,
+        "toWord": 21,
+        "phrase": "Press uses drill for drilling."
+      }
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 19
+      },
+      {
+        "name": "action",
+        "frame": 112
+      },
+      {
+        "name": "response",
+        "frame": 206
+      },
+      {
+        "name": "check",
+        "frame": 246
+      },
+      {
+        "name": "final-hold",
+        "frame": 318
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "A gantry holds a roller beside a distinct drill on a stand."
+      },
+      {
+        "beat": "action",
+        "word": 7,
+        "at": 3.386,
+        "description": "The roller withdraws, exposing the round keyed socket."
+      },
+      {
+        "beat": "response",
+        "word": 14,
+        "at": 6.522,
+        "description": "Matching drill connector seats in the socket."
+      },
+      {
+        "beat": "check",
+        "word": 17,
+        "at": 7.866,
+        "description": "Seated drill performs one finite stroke above clamped stock."
+      },
+      {
+        "beat": "resolve",
+        "word": 22,
+        "at": 10.106,
+        "description": "New configuration holds and the old roller remains visible."
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "modular-machine"
+      },
+      {
+        "category": "explanation",
+        "id": "modular-machine/reconfigure"
+      }
+    ]
+  },
+  {
+    "name": "modular-machine-incompatible-module",
+    "description": "Synthetic qualitative fixture, not measured behavior. Fixed existing studio camera; bounded actors and no invented statistics.",
+    "durationSec": 11.8,
+    "sourceText": "Press is a modular machine with roller. Press brings gripper toward the socket. Gripper does not fit Press. Press keeps roller for flattening. Gripper remains incompatible.",
+    "plannerInput": {
+      "kind": "modular-machine",
+      "preset": "incompatible-module",
+      "startWord": 0,
+      "endWord": 25,
+      "layout": "stack",
+      "label": "Press",
+      "subject": "Press",
+      "outcome": "Gripper remains incompatible",
+      "setupWord": 0,
+      "actionWord": 7,
+      "responseWord": 13,
+      "checkWord": 18,
+      "resolveWord": 23,
+      "current": {
+        "label": "roller",
+        "role": "roller"
+      },
+      "candidate": {
+        "label": "gripper",
+        "role": "gripper"
+      },
+      "jobLabel": "flattening",
+      "arrangement": {
+        "fromWord": 7,
+        "toWord": 12
+      },
+      "compatibility": {
+        "fromWord": 13,
+        "toWord": 17
+      },
+      "operation": {
+        "fromWord": 18,
+        "toWord": 22
+      }
+    },
+    "scene": {
+      "kind": "modular-machine",
+      "preset": "incompatible-module",
+      "label": "Press",
+      "subject": "Press",
+      "outcome": "Gripper remains incompatible",
+      "setupAt": 0.3,
+      "actionAt": 3.265384615,
+      "responseAt": 5.85,
+      "checkAt": 8.003846154,
+      "resolveAt": 10.157692308,
+      "current": {
+        "id": "current",
+        "label": "roller",
+        "role": "roller"
+      },
+      "candidate": {
+        "id": "candidate",
+        "label": "gripper",
+        "role": "gripper"
+      },
+      "jobLabel": "flattening",
+      "arrangement": {
+        "fromWord": 7,
+        "toWord": 12,
+        "phrase": "Press brings gripper toward the socket."
+      },
+      "compatibility": {
+        "fromWord": 13,
+        "toWord": 17,
+        "phrase": "Gripper does not fit Press."
+      },
+      "operation": {
+        "fromWord": 18,
+        "toWord": 22,
+        "phrase": "Press keeps roller for flattening."
+      }
+    },
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35,16,12,0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130,84,217,0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#23100c",
+          "bgInner": "#321f1b",
+          "card": "#412d28",
+          "cardRaised": "#543d37",
+          "cardBorder": "rgba(35,16,12,0.14)",
+          "text": "#f6ecd9",
+          "muted": "#b9a89f",
+          "accent": "#9f75ff",
+          "accent2": "#8b6570",
+          "accentSoft": "rgba(130,84,217,0.18)",
+          "positive": "#367b50",
+          "negative": "#ad4939",
+          "paper": "#ffffff",
+          "paperText": "#23100c",
+          "clay": [
+            "#b7a0dd",
+            "#dec6ad",
+            "#88729e"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-takeover",
+        "layout": "takeover",
+        "aspect": "16:9"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 19
+      },
+      {
+        "name": "action",
+        "frame": 108
+      },
+      {
+        "name": "response",
+        "frame": 186
+      },
+      {
+        "name": "check",
+        "frame": 251
+      },
+      {
+        "name": "final-hold",
+        "frame": 320
+      }
+    ],
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "description": "Gantry holds a roller beside a two-jaw gripper."
+      },
+      {
+        "beat": "action",
+        "word": 7,
+        "at": 3.265384615,
+        "description": "Current tool is held aside as the candidate approaches."
+      },
+      {
+        "beat": "response",
+        "word": 13,
+        "at": 5.85,
+        "description": "Triangular connector cannot enter the round socket; a gap remains."
+      },
+      {
+        "beat": "check",
+        "word": 18,
+        "at": 8.003846154,
+        "description": "Candidate retreats and the original roller returns."
+      },
+      {
+        "beat": "resolve",
+        "word": 23,
+        "at": 10.157692308,
+        "description": "Rejected gripper remains parked, unconnected and inactive."
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "modular-machine"
+      },
+      {
+        "category": "explanation",
+        "id": "modular-machine/incompatible-module"
+      }
+    ]
+  }
+]

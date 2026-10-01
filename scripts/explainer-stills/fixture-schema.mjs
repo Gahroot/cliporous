@@ -13,7 +13,7 @@
 import { parseArgs } from 'node:util';
 
 export const FPS = 30;
-export const LIMITS = Object.freeze({ fixtures: 256, samples: 16, cases: 16, durationSec: 60 });
+export const LIMITS = Object.freeze({ fixtures: 256, samples: 32, cases: 16, durationSec: 60 });
 export const USAGE =
   'render.mjs <fixtures.json> [filter] [--out directory] [--bundle local-directory]';
 const LAYOUTS = ['stack', 'stack-flipped', 'takeover', 'pip', 'over'];

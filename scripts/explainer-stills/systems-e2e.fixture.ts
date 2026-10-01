@@ -1,5 +1,44 @@
 // Synthetic transcript only: no recorded human, network asset, or model response is needed.
+import { readFileSync } from 'node:fs';
 import type { PlannerWord } from '../../src/main/ai/explainer/kind-spec';
+import {
+  TECHNOLOGY_KINDS,
+  type TechnologyScene,
+} from '../../src/main/remotion/compositions/explainer/technology/types';
+
+export interface TechnologyFixture {
+  name: string;
+  raw: Record<string, unknown>;
+  words?: PlannerWord[];
+  sourceText: string;
+  wordStepSec?: number;
+  wordTiming?: { fps: number; stepFrames: number; durationFrames: number };
+  scene: TechnologyScene;
+}
+export function technologyFixtures(): TechnologyFixture[] {
+  return TECHNOLOGY_KINDS.flatMap(
+    (kind) =>
+      JSON.parse(
+        readFileSync(new URL(`./fixtures/technology-${kind}.json`, import.meta.url), 'utf8'),
+      ) as TechnologyFixture[],
+  );
+}
+export function sourceWords(fixture: TechnologyFixture): PlannerWord[] {
+  if (fixture.words) return structuredClone(fixture.words);
+  const timing = fixture.wordTiming;
+  if (timing)
+    return fixture.sourceText.split(/\s+/).map((text, i) => ({
+      text,
+      start: (i * timing.stepFrames) / timing.fps,
+      end: (i * timing.stepFrames + timing.durationFrames) / timing.fps,
+    }));
+  const step = fixture.wordStepSec;
+  if (step === undefined) throw new Error(`Missing source timing: ${fixture.name}`);
+  const round = (time: number) => Math.round(time * 1e6) / 1e6;
+  return fixture.sourceText
+    .split(/\s+/)
+    .map((text, i) => ({ text, start: round(i * step), end: round((i + 0.9) * step) }));
+}
 
 function sentence(text: string, start: number, step: number, spoken: number): PlannerWord[] {
   return text.split(' ').map((word, i) => ({

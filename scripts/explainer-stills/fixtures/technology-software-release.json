@@ -1,0 +1,1065 @@
+[
+  {
+    "name": "software-release-fix-pass",
+    "durationSec": 10,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "scene": {
+      "kind": "software-release",
+      "preset": "fix-pass",
+      "label": "The patch fixes the bug",
+      "checkLabels": ["tests"],
+      "outcome": "patch is released",
+      "subject": "patch",
+      "setupAt": 0.4,
+      "actionAt": 2,
+      "responseAt": 3.6,
+      "checkAt": 5.2,
+      "resolveAt": 6.8
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "tests-contact-before",
+        "frame": 59
+      },
+      {
+        "name": "tests-contact",
+        "frame": 60
+      },
+      {
+        "name": "tests-contact-after",
+        "frame": 61
+      },
+      {
+        "name": "first-result-before",
+        "frame": 107
+      },
+      {
+        "name": "first-result",
+        "frame": 108
+      },
+      {
+        "name": "first-result-after",
+        "frame": 109
+      },
+      {
+        "name": "second-check-before",
+        "frame": 155
+      },
+      {
+        "name": "second-check",
+        "frame": 156
+      },
+      {
+        "name": "second-check-after",
+        "frame": 157
+      },
+      {
+        "name": "join-contact-before",
+        "frame": 155
+      },
+      {
+        "name": "join-contact",
+        "frame": 156
+      },
+      {
+        "name": "join-contact-after",
+        "frame": 157
+      },
+      {
+        "name": "release-contact-before",
+        "frame": 194
+      },
+      {
+        "name": "release-contact",
+        "frame": 195
+      },
+      {
+        "name": "release-contact-after",
+        "frame": 196
+      },
+      {
+        "name": "final-hold-start",
+        "frame": 204
+      },
+      {
+        "name": "final-hold",
+        "frame": 299
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "software-release"
+      },
+      {
+        "category": "technology",
+        "id": "software-release/fix-pass"
+      }
+    ],
+    "sourceText": "The patch fixes the bug in this example. The tests run on the patch before release. The tests pass for the patch after running. The passing tests clear the patch for release. Only then the patch is released after the passing check.",
+    "raw": {
+      "kind": "software-release",
+      "preset": "fix-pass",
+      "label": "The patch fixes the bug",
+      "checkLabels": ["tests"],
+      "outcome": "patch is released",
+      "subject": "patch",
+      "layout": "stack",
+      "startWord": 0,
+      "endWord": 41,
+      "setupWord": 0,
+      "actionWord": 8,
+      "responseWord": 16,
+      "checkWord": 24,
+      "resolveWord": 32
+    },
+    "words": [
+      {
+        "text": "The",
+        "start": 0.4,
+        "end": 0.58
+      },
+      {
+        "text": "patch",
+        "start": 0.6,
+        "end": 0.78
+      },
+      {
+        "text": "fixes",
+        "start": 0.8,
+        "end": 0.98
+      },
+      {
+        "text": "the",
+        "start": 1,
+        "end": 1.18
+      },
+      {
+        "text": "bug",
+        "start": 1.2,
+        "end": 1.38
+      },
+      {
+        "text": "in",
+        "start": 1.4,
+        "end": 1.58
+      },
+      {
+        "text": "this",
+        "start": 1.6,
+        "end": 1.78
+      },
+      {
+        "text": "example.",
+        "start": 1.8,
+        "end": 1.98
+      },
+      {
+        "text": "The",
+        "start": 2,
+        "end": 2.18
+      },
+      {
+        "text": "tests",
+        "start": 2.2,
+        "end": 2.38
+      },
+      {
+        "text": "run",
+        "start": 2.4,
+        "end": 2.58
+      },
+      {
+        "text": "on",
+        "start": 2.6,
+        "end": 2.78
+      },
+      {
+        "text": "the",
+        "start": 2.8,
+        "end": 2.98
+      },
+      {
+        "text": "patch",
+        "start": 3,
+        "end": 3.18
+      },
+      {
+        "text": "before",
+        "start": 3.2,
+        "end": 3.38
+      },
+      {
+        "text": "release.",
+        "start": 3.4,
+        "end": 3.58
+      },
+      {
+        "text": "The",
+        "start": 3.6,
+        "end": 3.78
+      },
+      {
+        "text": "tests",
+        "start": 3.8,
+        "end": 3.98
+      },
+      {
+        "text": "pass",
+        "start": 4,
+        "end": 4.18
+      },
+      {
+        "text": "for",
+        "start": 4.2,
+        "end": 4.38
+      },
+      {
+        "text": "the",
+        "start": 4.4,
+        "end": 4.58
+      },
+      {
+        "text": "patch",
+        "start": 4.6,
+        "end": 4.78
+      },
+      {
+        "text": "after",
+        "start": 4.8,
+        "end": 4.98
+      },
+      {
+        "text": "running.",
+        "start": 5,
+        "end": 5.18
+      },
+      {
+        "text": "The",
+        "start": 5.2,
+        "end": 5.38
+      },
+      {
+        "text": "passing",
+        "start": 5.4,
+        "end": 5.58
+      },
+      {
+        "text": "tests",
+        "start": 5.6,
+        "end": 5.78
+      },
+      {
+        "text": "clear",
+        "start": 5.8,
+        "end": 5.98
+      },
+      {
+        "text": "the",
+        "start": 6,
+        "end": 6.18
+      },
+      {
+        "text": "patch",
+        "start": 6.2,
+        "end": 6.38
+      },
+      {
+        "text": "for",
+        "start": 6.4,
+        "end": 6.58
+      },
+      {
+        "text": "release.",
+        "start": 6.6,
+        "end": 6.78
+      },
+      {
+        "text": "Only",
+        "start": 6.8,
+        "end": 6.98
+      },
+      {
+        "text": "then",
+        "start": 7,
+        "end": 7.18
+      },
+      {
+        "text": "the",
+        "start": 7.2,
+        "end": 7.38
+      },
+      {
+        "text": "patch",
+        "start": 7.4,
+        "end": 7.58
+      },
+      {
+        "text": "is",
+        "start": 7.6,
+        "end": 7.78
+      },
+      {
+        "text": "released",
+        "start": 7.8,
+        "end": 7.98
+      },
+      {
+        "text": "after",
+        "start": 8,
+        "end": 8.18
+      },
+      {
+        "text": "the",
+        "start": 8.2,
+        "end": 8.38
+      },
+      {
+        "text": "passing",
+        "start": 8.4,
+        "end": 8.58
+      },
+      {
+        "text": "check.",
+        "start": 8.6,
+        "end": 8.78
+      }
+    ]
+  },
+  {
+    "name": "software-release-regression-rollback",
+    "durationSec": 10,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "scene": {
+      "kind": "software-release",
+      "preset": "regression-rollback",
+      "label": "A regression in the patch",
+      "checkLabels": ["tests"],
+      "previousVersion": "v1",
+      "outcome": "restores the prior version v1",
+      "subject": "patch",
+      "setupAt": 0.4,
+      "actionAt": 2.4,
+      "responseAt": 4,
+      "checkAt": 5.6,
+      "resolveAt": 7.2
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "tests-contact-before",
+        "frame": 71
+      },
+      {
+        "name": "tests-contact",
+        "frame": 72
+      },
+      {
+        "name": "tests-contact-after",
+        "frame": 73
+      },
+      {
+        "name": "first-result-before",
+        "frame": 119
+      },
+      {
+        "name": "first-result",
+        "frame": 120
+      },
+      {
+        "name": "first-result-after",
+        "frame": 121
+      },
+      {
+        "name": "second-check-before",
+        "frame": 167
+      },
+      {
+        "name": "second-check",
+        "frame": 168
+      },
+      {
+        "name": "second-check-after",
+        "frame": 169
+      },
+      {
+        "name": "join-contact-before",
+        "frame": 167
+      },
+      {
+        "name": "join-contact",
+        "frame": 168
+      },
+      {
+        "name": "join-contact-after",
+        "frame": 169
+      },
+      {
+        "name": "release-contact-before",
+        "frame": 206
+      },
+      {
+        "name": "release-contact",
+        "frame": 207
+      },
+      {
+        "name": "release-contact-after",
+        "frame": 208
+      },
+      {
+        "name": "final-hold-start",
+        "frame": 216
+      },
+      {
+        "name": "final-hold",
+        "frame": 299
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "software-release"
+      },
+      {
+        "category": "technology",
+        "id": "software-release/regression-rollback"
+      }
+    ],
+    "sourceText": "The patch replaces the prior version v1 in this example. The tests run on the patch before release. A regression in the patch fails the tests. The failed tests block release of the patch. Rollback restores the prior version v1 instead of releasing the patch.",
+    "raw": {
+      "kind": "software-release",
+      "preset": "regression-rollback",
+      "label": "A regression in the patch",
+      "checkLabels": ["tests"],
+      "previousVersion": "v1",
+      "outcome": "restores the prior version v1",
+      "subject": "patch",
+      "layout": "stack",
+      "startWord": 0,
+      "endWord": 44,
+      "setupWord": 0,
+      "actionWord": 10,
+      "responseWord": 18,
+      "checkWord": 26,
+      "resolveWord": 34
+    },
+    "words": [
+      {
+        "text": "The",
+        "start": 0.4,
+        "end": 0.58
+      },
+      {
+        "text": "patch",
+        "start": 0.6,
+        "end": 0.78
+      },
+      {
+        "text": "replaces",
+        "start": 0.8,
+        "end": 0.98
+      },
+      {
+        "text": "the",
+        "start": 1,
+        "end": 1.18
+      },
+      {
+        "text": "prior",
+        "start": 1.2,
+        "end": 1.38
+      },
+      {
+        "text": "version",
+        "start": 1.4,
+        "end": 1.58
+      },
+      {
+        "text": "v1",
+        "start": 1.6,
+        "end": 1.78
+      },
+      {
+        "text": "in",
+        "start": 1.8,
+        "end": 1.98
+      },
+      {
+        "text": "this",
+        "start": 2,
+        "end": 2.18
+      },
+      {
+        "text": "example.",
+        "start": 2.2,
+        "end": 2.38
+      },
+      {
+        "text": "The",
+        "start": 2.4,
+        "end": 2.58
+      },
+      {
+        "text": "tests",
+        "start": 2.6,
+        "end": 2.78
+      },
+      {
+        "text": "run",
+        "start": 2.8,
+        "end": 2.98
+      },
+      {
+        "text": "on",
+        "start": 3,
+        "end": 3.18
+      },
+      {
+        "text": "the",
+        "start": 3.2,
+        "end": 3.38
+      },
+      {
+        "text": "patch",
+        "start": 3.4,
+        "end": 3.58
+      },
+      {
+        "text": "before",
+        "start": 3.6,
+        "end": 3.78
+      },
+      {
+        "text": "release.",
+        "start": 3.8,
+        "end": 3.98
+      },
+      {
+        "text": "A",
+        "start": 4,
+        "end": 4.18
+      },
+      {
+        "text": "regression",
+        "start": 4.2,
+        "end": 4.38
+      },
+      {
+        "text": "in",
+        "start": 4.4,
+        "end": 4.58
+      },
+      {
+        "text": "the",
+        "start": 4.6,
+        "end": 4.78
+      },
+      {
+        "text": "patch",
+        "start": 4.8,
+        "end": 4.98
+      },
+      {
+        "text": "fails",
+        "start": 5,
+        "end": 5.18
+      },
+      {
+        "text": "the",
+        "start": 5.2,
+        "end": 5.38
+      },
+      {
+        "text": "tests.",
+        "start": 5.4,
+        "end": 5.58
+      },
+      {
+        "text": "The",
+        "start": 5.6,
+        "end": 5.78
+      },
+      {
+        "text": "failed",
+        "start": 5.8,
+        "end": 5.98
+      },
+      {
+        "text": "tests",
+        "start": 6,
+        "end": 6.18
+      },
+      {
+        "text": "block",
+        "start": 6.2,
+        "end": 6.38
+      },
+      {
+        "text": "release",
+        "start": 6.4,
+        "end": 6.58
+      },
+      {
+        "text": "of",
+        "start": 6.6,
+        "end": 6.78
+      },
+      {
+        "text": "the",
+        "start": 6.8,
+        "end": 6.98
+      },
+      {
+        "text": "patch.",
+        "start": 7,
+        "end": 7.18
+      },
+      {
+        "text": "Rollback",
+        "start": 7.2,
+        "end": 7.38
+      },
+      {
+        "text": "restores",
+        "start": 7.4,
+        "end": 7.58
+      },
+      {
+        "text": "the",
+        "start": 7.6,
+        "end": 7.78
+      },
+      {
+        "text": "prior",
+        "start": 7.8,
+        "end": 7.98
+      },
+      {
+        "text": "version",
+        "start": 8,
+        "end": 8.18
+      },
+      {
+        "text": "v1",
+        "start": 8.2,
+        "end": 8.38
+      },
+      {
+        "text": "instead",
+        "start": 8.4,
+        "end": 8.58
+      },
+      {
+        "text": "of",
+        "start": 8.6,
+        "end": 8.78
+      },
+      {
+        "text": "releasing",
+        "start": 8.8,
+        "end": 8.98
+      },
+      {
+        "text": "the",
+        "start": 9,
+        "end": 9.18
+      },
+      {
+        "text": "patch.",
+        "start": 9.2,
+        "end": 9.38
+      }
+    ]
+  },
+  {
+    "name": "software-release-parallel-release",
+    "durationSec": 10,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "scene": {
+      "kind": "software-release",
+      "preset": "parallel-release",
+      "label": "two checks",
+      "checkLabels": ["Unit tests", "security checks"],
+      "outcome": "patch is released",
+      "subject": "patch",
+      "setupAt": 0.4,
+      "actionAt": 2,
+      "responseAt": 4.2,
+      "checkAt": 5.8,
+      "resolveAt": 7.4
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "tests-contact-before",
+        "frame": 59
+      },
+      {
+        "name": "tests-contact",
+        "frame": 60
+      },
+      {
+        "name": "tests-contact-after",
+        "frame": 61
+      },
+      {
+        "name": "first-result-before",
+        "frame": 125
+      },
+      {
+        "name": "first-result",
+        "frame": 126
+      },
+      {
+        "name": "first-result-after",
+        "frame": 127
+      },
+      {
+        "name": "second-check-before",
+        "frame": 173
+      },
+      {
+        "name": "second-check",
+        "frame": 174
+      },
+      {
+        "name": "second-check-after",
+        "frame": 175
+      },
+      {
+        "name": "join-contact-before",
+        "frame": 182
+      },
+      {
+        "name": "join-contact",
+        "frame": 183
+      },
+      {
+        "name": "join-contact-after",
+        "frame": 184
+      },
+      {
+        "name": "release-contact-before",
+        "frame": 212
+      },
+      {
+        "name": "release-contact",
+        "frame": 213
+      },
+      {
+        "name": "release-contact-after",
+        "frame": 214
+      },
+      {
+        "name": "final-hold-start",
+        "frame": 222
+      },
+      {
+        "name": "final-hold",
+        "frame": 299
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "software-release"
+      },
+      {
+        "category": "technology",
+        "id": "software-release/parallel-release"
+      }
+    ],
+    "sourceText": "The patch is ready for the two checks. Unit tests and security checks run on the patch in parallel. Unit tests pass for the patch after running. Security checks pass for the patch after running. Only after both checks pass and join, the patch is released.",
+    "raw": {
+      "kind": "software-release",
+      "preset": "parallel-release",
+      "label": "two checks",
+      "checkLabels": ["Unit tests", "security checks"],
+      "outcome": "patch is released",
+      "subject": "patch",
+      "layout": "stack",
+      "startWord": 0,
+      "endWord": 45,
+      "setupWord": 0,
+      "actionWord": 8,
+      "responseWord": 19,
+      "checkWord": 27,
+      "resolveWord": 35
+    },
+    "words": [
+      {
+        "text": "The",
+        "start": 0.4,
+        "end": 0.58
+      },
+      {
+        "text": "patch",
+        "start": 0.6,
+        "end": 0.78
+      },
+      {
+        "text": "is",
+        "start": 0.8,
+        "end": 0.98
+      },
+      {
+        "text": "ready",
+        "start": 1,
+        "end": 1.18
+      },
+      {
+        "text": "for",
+        "start": 1.2,
+        "end": 1.38
+      },
+      {
+        "text": "the",
+        "start": 1.4,
+        "end": 1.58
+      },
+      {
+        "text": "two",
+        "start": 1.6,
+        "end": 1.78
+      },
+      {
+        "text": "checks.",
+        "start": 1.8,
+        "end": 1.98
+      },
+      {
+        "text": "Unit",
+        "start": 2,
+        "end": 2.18
+      },
+      {
+        "text": "tests",
+        "start": 2.2,
+        "end": 2.38
+      },
+      {
+        "text": "and",
+        "start": 2.4,
+        "end": 2.58
+      },
+      {
+        "text": "security",
+        "start": 2.6,
+        "end": 2.78
+      },
+      {
+        "text": "checks",
+        "start": 2.8,
+        "end": 2.98
+      },
+      {
+        "text": "run",
+        "start": 3,
+        "end": 3.18
+      },
+      {
+        "text": "on",
+        "start": 3.2,
+        "end": 3.38
+      },
+      {
+        "text": "the",
+        "start": 3.4,
+        "end": 3.58
+      },
+      {
+        "text": "patch",
+        "start": 3.6,
+        "end": 3.78
+      },
+      {
+        "text": "in",
+        "start": 3.8,
+        "end": 3.98
+      },
+      {
+        "text": "parallel.",
+        "start": 4,
+        "end": 4.18
+      },
+      {
+        "text": "Unit",
+        "start": 4.2,
+        "end": 4.38
+      },
+      {
+        "text": "tests",
+        "start": 4.4,
+        "end": 4.58
+      },
+      {
+        "text": "pass",
+        "start": 4.6,
+        "end": 4.78
+      },
+      {
+        "text": "for",
+        "start": 4.8,
+        "end": 4.98
+      },
+      {
+        "text": "the",
+        "start": 5,
+        "end": 5.18
+      },
+      {
+        "text": "patch",
+        "start": 5.2,
+        "end": 5.38
+      },
+      {
+        "text": "after",
+        "start": 5.4,
+        "end": 5.58
+      },
+      {
+        "text": "running.",
+        "start": 5.6,
+        "end": 5.78
+      },
+      {
+        "text": "Security",
+        "start": 5.8,
+        "end": 5.98
+      },
+      {
+        "text": "checks",
+        "start": 6,
+        "end": 6.18
+      },
+      {
+        "text": "pass",
+        "start": 6.2,
+        "end": 6.38
+      },
+      {
+        "text": "for",
+        "start": 6.4,
+        "end": 6.58
+      },
+      {
+        "text": "the",
+        "start": 6.6,
+        "end": 6.78
+      },
+      {
+        "text": "patch",
+        "start": 6.8,
+        "end": 6.98
+      },
+      {
+        "text": "after",
+        "start": 7,
+        "end": 7.18
+      },
+      {
+        "text": "running.",
+        "start": 7.2,
+        "end": 7.38
+      },
+      {
+        "text": "Only",
+        "start": 7.4,
+        "end": 7.58
+      },
+      {
+        "text": "after",
+        "start": 7.6,
+        "end": 7.78
+      },
+      {
+        "text": "both",
+        "start": 7.8,
+        "end": 7.98
+      },
+      {
+        "text": "checks",
+        "start": 8,
+        "end": 8.18
+      },
+      {
+        "text": "pass",
+        "start": 8.2,
+        "end": 8.38
+      },
+      {
+        "text": "and",
+        "start": 8.4,
+        "end": 8.58
+      },
+      {
+        "text": "join,",
+        "start": 8.6,
+        "end": 8.78
+      },
+      {
+        "text": "the",
+        "start": 8.8,
+        "end": 8.98
+      },
+      {
+        "text": "patch",
+        "start": 9,
+        "end": 9.18
+      },
+      {
+        "text": "is",
+        "start": 9.2,
+        "end": 9.38
+      },
+      {
+        "text": "released.",
+        "start": 9.4,
+        "end": 9.58
+      }
+    ]
+  }
+]

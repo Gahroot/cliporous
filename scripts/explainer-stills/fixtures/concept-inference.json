@@ -1,0 +1,1506 @@
+[
+  {
+    "name": "token-choice-next-token",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "token-choice"
+      },
+      {
+        "category": "explanation",
+        "id": "token-choice/next-token"
+      }
+    ],
+    "description": "Synthetic source-grounded illustration, not a measured model result. Fixed camera and bounded authored objects.",
+    "sourceText": "Next word choice shows writer continuing a sentence beginning with Time. writer considers flies and falls after Time. writer selects flies after Time as a continuation. writer considers like and above after flies. writer keeps flies as a continuation for this particular sentence.",
+    "durationSec": 11.4,
+    "plannerInput": {
+      "kind": "token-choice",
+      "preset": "next-token",
+      "startWord": 0,
+      "endWord": 42,
+      "layout": "stack",
+      "label": "Next word choice",
+      "subject": "writer",
+      "outcome": "keeps flies as a continuation",
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 18,
+      "checkWord": 26,
+      "resolveWord": 33,
+      "sentence": "Time",
+      "candidates": [
+        "flies",
+        "falls"
+      ],
+      "selected": "flies",
+      "nextCandidates": [
+        "like",
+        "above"
+      ],
+      "candidateEvidence": {
+        "fromWord": 11,
+        "toWord": 17
+      },
+      "selectionEvidence": {
+        "fromWord": 18,
+        "toWord": 25
+      },
+      "nextEvidence": {
+        "fromWord": 26,
+        "toWord": 32
+      }
+    },
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "source": "Next word choice shows writer continuing a sentence beginning with Time.",
+        "visual": "Orient the sentence and empty continuation slot.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "action",
+        "word": 11,
+        "at": 3.012790698,
+        "source": "writer considers flies and falls after Time.",
+        "visual": "Reveal distinct candidate word tiles.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "response",
+        "word": 18,
+        "at": 4.770930233,
+        "source": "writer selects flies after Time as a continuation.",
+        "visual": "Move only flies into the sentence; keep falls visible.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "check",
+        "word": 26,
+        "at": 6.780232558,
+        "source": "writer considers like and above after flies.",
+        "visual": "Reveal the next candidate words without choosing a winner.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "resolve",
+        "word": 33,
+        "at": 8.538372093,
+        "source": "writer keeps flies as a continuation for this particular sentence.",
+        "visual": "Hold the continued sentence and all remaining alternatives.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      }
+    ],
+    "scene": {
+      "kind": "token-choice",
+      "preset": "next-token",
+      "label": "Next word choice",
+      "subject": "writer",
+      "outcome": "keeps flies as a continuation",
+      "setupAt": 0.3,
+      "actionAt": 3.012790698,
+      "responseAt": 4.770930233,
+      "checkAt": 6.780232558,
+      "resolveAt": 8.538372093,
+      "sentence": "Time",
+      "candidates": [
+        {
+          "id": "candidate-0",
+          "label": "flies"
+        },
+        {
+          "id": "candidate-1",
+          "label": "falls"
+        }
+      ],
+      "selectedId": "candidate-0",
+      "nextCandidates": [
+        {
+          "id": "next-0",
+          "label": "like"
+        },
+        {
+          "id": "next-1",
+          "label": "above"
+        }
+      ],
+      "candidateEvidence": {
+        "fromWord": 11,
+        "toWord": 17
+      },
+      "selectionEvidence": {
+        "fromWord": 18,
+        "toWord": 25
+      },
+      "nextEvidence": {
+        "fromWord": 26,
+        "toWord": 32
+      }
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 24
+      },
+      {
+        "name": "primary-change",
+        "frame": 117
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 173
+      },
+      {
+        "name": "comparison",
+        "frame": 230
+      },
+      {
+        "name": "final-hold",
+        "frame": 282
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ]
+  },
+  {
+    "name": "token-choice-uncertain-choice",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "token-choice"
+      },
+      {
+        "category": "explanation",
+        "id": "token-choice/uncertain-choice"
+      }
+    ],
+    "description": "Synthetic source-grounded illustration, not a measured model result. Fixed camera and bounded authored objects.",
+    "sourceText": "Uncertain word choice shows writer continuing a sentence beginning with Time. writer considers flies and falls and waits after Time. writer tentatively selects flies after Time as a possible continuation. writer considers like and above after flies. writer keeps flies as a tentative continuation and choice remains uncertain.",
+    "durationSec": 11.4,
+    "plannerInput": {
+      "kind": "token-choice",
+      "preset": "uncertain-choice",
+      "startWord": 0,
+      "endWord": 47,
+      "layout": "stack",
+      "label": "Uncertain word choice",
+      "subject": "writer",
+      "outcome": "choice remains uncertain",
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 20,
+      "checkWord": 30,
+      "resolveWord": 37,
+      "sentence": "Time",
+      "candidates": [
+        "flies",
+        "falls",
+        "waits"
+      ],
+      "selected": "flies",
+      "nextCandidates": [
+        "like",
+        "above"
+      ],
+      "candidateEvidence": {
+        "fromWord": 11,
+        "toWord": 19
+      },
+      "selectionEvidence": {
+        "fromWord": 20,
+        "toWord": 29
+      },
+      "nextEvidence": {
+        "fromWord": 30,
+        "toWord": 36
+      },
+      "uncertainty": "choice remains uncertain"
+    },
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "source": "Uncertain word choice shows writer continuing a sentence beginning with Time.",
+        "visual": "Orient the prefix without a verdict.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "action",
+        "word": 11,
+        "at": 2.725,
+        "source": "writer considers flies and falls and waits after Time.",
+        "visual": "Reveal three source candidates at equal scale.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "response",
+        "word": 20,
+        "at": 4.75,
+        "source": "writer tentatively selects flies after Time as a possible continuation.",
+        "visual": "Seat the tentative word with a divided underline; alternatives stay.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "check",
+        "word": 30,
+        "at": 7,
+        "source": "writer considers like and above after flies.",
+        "visual": "Offer subsequent candidates without probabilities.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "resolve",
+        "word": 37,
+        "at": 8.575,
+        "source": "writer keeps flies as a tentative continuation and choice remains uncertain.",
+        "visual": "Hold alternatives and the complete uncertainty qualifier.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      }
+    ],
+    "scene": {
+      "kind": "token-choice",
+      "preset": "uncertain-choice",
+      "label": "Uncertain word choice",
+      "subject": "writer",
+      "outcome": "choice remains uncertain",
+      "setupAt": 0.3,
+      "actionAt": 2.725,
+      "responseAt": 4.75,
+      "checkAt": 7,
+      "resolveAt": 8.575,
+      "sentence": "Time",
+      "candidates": [
+        {
+          "id": "candidate-0",
+          "label": "flies"
+        },
+        {
+          "id": "candidate-1",
+          "label": "falls"
+        },
+        {
+          "id": "candidate-2",
+          "label": "waits"
+        }
+      ],
+      "selectedId": "candidate-0",
+      "nextCandidates": [
+        {
+          "id": "next-0",
+          "label": "like"
+        },
+        {
+          "id": "next-1",
+          "label": "above"
+        }
+      ],
+      "candidateEvidence": {
+        "fromWord": 11,
+        "toWord": 19
+      },
+      "selectionEvidence": {
+        "fromWord": 20,
+        "toWord": 29
+      },
+      "nextEvidence": {
+        "fromWord": 30,
+        "toWord": 36
+      },
+      "uncertainty": "choice remains uncertain"
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 24
+      },
+      {
+        "name": "primary-change",
+        "frame": 112
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 176
+      },
+      {
+        "name": "comparison",
+        "frame": 234
+      },
+      {
+        "name": "final-hold",
+        "frame": 283
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ]
+  },
+  {
+    "name": "expert-selection-single-specialist",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "expert-selection"
+      },
+      {
+        "category": "explanation",
+        "id": "expert-selection/single-specialist"
+      }
+    ],
+    "description": "Synthetic source-grounded illustration, not a measured model result. Fixed camera and bounded authored objects.",
+    "sourceText": "Specialist selection concerns invoice task and these named specialist roles. invoice task selects math expert. invoice task leaves vision expert inactive. math expert returns sum to invoice task for the requested arithmetic. The same task receives the contribution while the other station stays inactive. invoice task holds sum for the requested invoice in this illustration.",
+    "durationSec": 11.4,
+    "plannerInput": {
+      "kind": "expert-selection",
+      "preset": "single-specialist",
+      "startWord": 0,
+      "endWord": 54,
+      "layout": "stack",
+      "label": "Specialist selection",
+      "subject": "invoice task",
+      "outcome": "holds sum",
+      "setupWord": 0,
+      "actionWord": 10,
+      "responseWord": 21,
+      "checkWord": 32,
+      "resolveWord": 44,
+      "experts": [
+        {
+          "label": "math expert",
+          "role": "math",
+          "selected": true,
+          "contribution": "sum",
+          "evidence": {
+            "fromWord": 10,
+            "toWord": 14
+          },
+          "returnEvidence": {
+            "fromWord": 21,
+            "toWord": 31
+          }
+        },
+        {
+          "label": "vision expert",
+          "role": "vision",
+          "selected": false,
+          "evidence": {
+            "fromWord": 15,
+            "toWord": 20
+          }
+        }
+      ]
+    },
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "source": "Specialist selection concerns invoice task and these named specialist roles.",
+        "visual": "Orient one task folder and calculator/camera specialist stations.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "action",
+        "word": 10,
+        "at": 2.213636364,
+        "source": "invoice task selects math expert. invoice task leaves vision expert inactive.",
+        "visual": "Open only the selected calculator station and dispatch its request.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "response",
+        "word": 21,
+        "at": 4.373636364,
+        "source": "math expert returns sum to invoice task for the requested arithmetic.",
+        "visual": "Reveal the named sum contribution at that station.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "check",
+        "word": 32,
+        "at": 6.533636364,
+        "source": "The same task receives the contribution while the other station stays inactive.",
+        "visual": "Return that contribution to the original task folder.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "resolve",
+        "word": 44,
+        "at": 8.89,
+        "source": "invoice task holds sum for the requested invoice in this illustration.",
+        "visual": "Hold the task with its contribution; vision stays inactive.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      }
+    ],
+    "scene": {
+      "kind": "expert-selection",
+      "preset": "single-specialist",
+      "label": "Specialist selection",
+      "subject": "invoice task",
+      "outcome": "holds sum",
+      "setupAt": 0.3,
+      "actionAt": 2.213636364,
+      "responseAt": 4.373636364,
+      "checkAt": 6.533636364,
+      "resolveAt": 8.89,
+      "experts": [
+        {
+          "id": "expert-0",
+          "label": "math expert",
+          "role": "math",
+          "selected": true,
+          "contribution": "sum",
+          "evidence": {
+            "fromWord": 10,
+            "toWord": 14
+          },
+          "returnEvidence": {
+            "fromWord": 21,
+            "toWord": 31
+          }
+        },
+        {
+          "id": "expert-1",
+          "label": "vision expert",
+          "role": "vision",
+          "selected": false,
+          "evidence": {
+            "fromWord": 15,
+            "toWord": 20
+          }
+        }
+      ]
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 24
+      },
+      {
+        "name": "primary-change",
+        "frame": 99
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 164
+      },
+      {
+        "name": "comparison",
+        "frame": 231
+      },
+      {
+        "name": "final-hold",
+        "frame": 292
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ]
+  },
+  {
+    "name": "expert-selection-specialist-team",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "expert-selection"
+      },
+      {
+        "category": "explanation",
+        "id": "expert-selection/specialist-team"
+      }
+    ],
+    "description": "Synthetic source-grounded illustration, not a measured model result. Fixed camera and bounded authored objects.",
+    "sourceText": "Selected specialist team concerns report task and its explicitly named specialist roles. report task selects language expert. report task selects math expert. report task leaves code expert inactive. language expert returns summary to report task. math expert returns chart to report task. The original task receives both contributions while the code station stays inactive. report task holds summary and chart for the requested report in this illustration.",
+    "durationSec": 11.4,
+    "plannerInput": {
+      "kind": "expert-selection",
+      "preset": "specialist-team",
+      "startWord": 0,
+      "endWord": 66,
+      "layout": "stack",
+      "label": "Selected specialist team",
+      "subject": "report task",
+      "outcome": "holds summary and chart",
+      "setupWord": 0,
+      "actionWord": 12,
+      "responseWord": 28,
+      "checkWord": 42,
+      "resolveWord": 54,
+      "experts": [
+        {
+          "label": "language expert",
+          "role": "language",
+          "selected": true,
+          "contribution": "summary",
+          "evidence": {
+            "fromWord": 12,
+            "toWord": 16
+          },
+          "returnEvidence": {
+            "fromWord": 28,
+            "toWord": 34
+          }
+        },
+        {
+          "label": "math expert",
+          "role": "math",
+          "selected": true,
+          "contribution": "chart",
+          "evidence": {
+            "fromWord": 17,
+            "toWord": 21
+          },
+          "returnEvidence": {
+            "fromWord": 35,
+            "toWord": 41
+          }
+        },
+        {
+          "label": "code expert",
+          "role": "code",
+          "selected": false,
+          "evidence": {
+            "fromWord": 22,
+            "toWord": 27
+          }
+        }
+      ]
+    },
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "source": "Selected specialist team concerns report task and its explicitly named specialist roles.",
+        "visual": "Orient the same task and book/calculator/laptop tools.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "action",
+        "word": 12,
+        "at": 2.184328358,
+        "source": "report task selects language expert. report task selects math expert. report task leaves code expert inactive.",
+        "visual": "Select only language and math; leave code shutter closed.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "response",
+        "word": 28,
+        "at": 4.763432836,
+        "source": "language expert returns summary to report task. math expert returns chart to report task.",
+        "visual": "Reveal the two separately identified contributions.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "check",
+        "word": 42,
+        "at": 7.020149254,
+        "source": "The original task receives both contributions while the code station stays inactive.",
+        "visual": "Return both contributions to the same folder.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "resolve",
+        "word": 54,
+        "at": 8.954477612,
+        "source": "report task holds summary and chart for the requested report in this illustration.",
+        "visual": "Hold both contributions and explicit nonselection; no universal architecture claim.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      }
+    ],
+    "scene": {
+      "kind": "expert-selection",
+      "preset": "specialist-team",
+      "label": "Selected specialist team",
+      "subject": "report task",
+      "outcome": "holds summary and chart",
+      "setupAt": 0.3,
+      "actionAt": 2.184328358,
+      "responseAt": 4.763432836,
+      "checkAt": 7.020149254,
+      "resolveAt": 8.954477612,
+      "experts": [
+        {
+          "id": "expert-0",
+          "label": "language expert",
+          "role": "language",
+          "selected": true,
+          "contribution": "summary",
+          "evidence": {
+            "fromWord": 12,
+            "toWord": 16
+          },
+          "returnEvidence": {
+            "fromWord": 28,
+            "toWord": 34
+          }
+        },
+        {
+          "id": "expert-1",
+          "label": "math expert",
+          "role": "math",
+          "selected": true,
+          "contribution": "chart",
+          "evidence": {
+            "fromWord": 17,
+            "toWord": 21
+          },
+          "returnEvidence": {
+            "fromWord": 35,
+            "toWord": 41
+          }
+        },
+        {
+          "id": "expert-2",
+          "label": "code expert",
+          "role": "code",
+          "selected": false,
+          "evidence": {
+            "fromWord": 22,
+            "toWord": 27
+          }
+        }
+      ]
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 24
+      },
+      {
+        "name": "primary-change",
+        "frame": 104
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 177
+      },
+      {
+        "name": "comparison",
+        "frame": 240
+      },
+      {
+        "name": "final-hold",
+        "frame": 294
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ]
+  },
+  {
+    "name": "edge-cloud-local-processing",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "edge-cloud"
+      },
+      {
+        "category": "explanation",
+        "id": "edge-cloud/local-processing"
+      }
+    ],
+    "description": "Synthetic source-grounded illustration, not a measured model result. Fixed camera and bounded authored objects.",
+    "sourceText": "Local camera processing illustrates camera handling a frame on its own processor. camera processes frame locally for this particular illustrated operation. camera produces outline from frame locally on its processor. The resulting outline stays on the device for this operation. camera retains outline from this operation on the same device.",
+    "durationSec": 11.4,
+    "plannerInput": {
+      "kind": "edge-cloud",
+      "preset": "local-processing",
+      "startWord": 0,
+      "endWord": 49,
+      "layout": "stack",
+      "label": "Local camera processing",
+      "subject": "camera",
+      "outcome": "retains outline",
+      "setupWord": 0,
+      "actionWord": 12,
+      "responseWord": 21,
+      "checkWord": 30,
+      "resolveWord": 40,
+      "device": "camera",
+      "localWork": "frame",
+      "localResult": "outline",
+      "localEvidence": {
+        "fromWord": 12,
+        "toWord": 20
+      },
+      "localResultEvidence": {
+        "fromWord": 21,
+        "toWord": 29
+      }
+    },
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "source": "Local camera processing illustrates camera handling a frame on its own processor.",
+        "visual": "Orient a recognizable camera and its visible local chip.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "action",
+        "word": 12,
+        "at": 2.842,
+        "source": "camera processes frame locally for this particular illustrated operation.",
+        "visual": "Move the frame into the camera processor.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "response",
+        "word": 21,
+        "at": 4.786,
+        "source": "camera produces outline from frame locally on its processor.",
+        "visual": "Reveal the source-stated outline on the device.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "check",
+        "word": 30,
+        "at": 6.73,
+        "source": "The resulting outline stays on the device for this operation.",
+        "visual": "Keep that local result on the camera.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "resolve",
+        "word": 40,
+        "at": 8.89,
+        "source": "camera retains outline from this operation on the same device.",
+        "visual": "Hold this local operation only; imply neither privacy nor absence of networking.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      }
+    ],
+    "scene": {
+      "kind": "edge-cloud",
+      "preset": "local-processing",
+      "label": "Local camera processing",
+      "subject": "camera",
+      "outcome": "retains outline",
+      "setupAt": 0.3,
+      "actionAt": 2.842,
+      "responseAt": 4.786,
+      "checkAt": 6.73,
+      "resolveAt": 8.89,
+      "device": "camera",
+      "localWork": "frame",
+      "localResult": "outline",
+      "localEvidence": {
+        "fromWord": 12,
+        "toWord": 20
+      },
+      "localResultEvidence": {
+        "fromWord": 21,
+        "toWord": 29
+      }
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 24
+      },
+      {
+        "name": "primary-change",
+        "frame": 114
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 173
+      },
+      {
+        "name": "comparison",
+        "frame": 234
+      },
+      {
+        "name": "final-hold",
+        "frame": 292
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ]
+  },
+  {
+    "name": "edge-cloud-split-processing",
+    "covers": [
+      {
+        "category": "kind",
+        "id": "edge-cloud"
+      },
+      {
+        "category": "explanation",
+        "id": "edge-cloud/split-processing"
+      }
+    ],
+    "description": "Synthetic source-grounded illustration, not a measured model result. Fixed camera and bounded authored objects.",
+    "sourceText": "Split phone processing illustrates phone handling a photo alongside a cloud service. phone processes photo locally for the first part of this operation. phone produces crop from photo locally on its processor. phone sends only search request to cloud service. cloud service returns matches to phone. phone retains crop and matches for this particular illustrated operation.",
+    "durationSec": 11.4,
+    "plannerInput": {
+      "kind": "edge-cloud",
+      "preset": "split-processing",
+      "startWord": 0,
+      "endWord": 55,
+      "layout": "stack",
+      "label": "Split phone processing",
+      "subject": "phone",
+      "outcome": "retains crop and matches",
+      "setupWord": 0,
+      "actionWord": 12,
+      "responseWord": 23,
+      "checkWord": 32,
+      "resolveWord": 46,
+      "device": "phone",
+      "localWork": "photo",
+      "localResult": "crop",
+      "localEvidence": {
+        "fromWord": 12,
+        "toWord": 22
+      },
+      "localResultEvidence": {
+        "fromWord": 23,
+        "toWord": 31
+      },
+      "remote": {
+        "service": "cloud service",
+        "work": "search request",
+        "result": "matches",
+        "sendEvidence": {
+          "fromWord": 32,
+          "toWord": 39
+        },
+        "returnEvidence": {
+          "fromWord": 40,
+          "toWord": 45
+        }
+      }
+    },
+    "storyboard": [
+      {
+        "beat": "setup",
+        "word": 0,
+        "at": 0.3,
+        "source": "Split phone processing illustrates phone handling a photo alongside a cloud service.",
+        "visual": "Orient phone, its chip and a separate cloud/server silhouette.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "action",
+        "word": 12,
+        "at": 2.564285714,
+        "source": "phone processes photo locally for the first part of this operation.",
+        "visual": "Process the photo locally first.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "response",
+        "word": 23,
+        "at": 4.685714286,
+        "source": "phone produces crop from photo locally on its processor.",
+        "visual": "Keep the crop on the phone.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "check",
+        "word": 32,
+        "at": 6.421428571,
+        "source": "phone sends only search request to cloud service. cloud service returns matches to phone.",
+        "visual": "Send only the named request; return the named matches on a separate path.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      },
+      {
+        "beat": "resolve",
+        "word": 46,
+        "at": 9.121428571,
+        "source": "phone retains crop and matches for this particular illustrated operation.",
+        "visual": "Hold both results on the phone; do not claim all data stayed local.",
+        "camera": "Fixed existing ExplanationStage camera; model and text rails remain reserved."
+      }
+    ],
+    "scene": {
+      "kind": "edge-cloud",
+      "preset": "split-processing",
+      "label": "Split phone processing",
+      "subject": "phone",
+      "outcome": "retains crop and matches",
+      "setupAt": 0.3,
+      "actionAt": 2.564285714,
+      "responseAt": 4.685714286,
+      "checkAt": 6.421428571,
+      "resolveAt": 9.121428571,
+      "device": "phone",
+      "localWork": "photo",
+      "localResult": "crop",
+      "localEvidence": {
+        "fromWord": 12,
+        "toWord": 22
+      },
+      "localResultEvidence": {
+        "fromWord": 23,
+        "toWord": 31
+      },
+      "remote": {
+        "service": "cloud service",
+        "work": "search request",
+        "result": "matches",
+        "sendEvidence": {
+          "fromWord": 32,
+          "toWord": 39
+        },
+        "returnEvidence": {
+          "fromWord": 40,
+          "toWord": 45
+        }
+      }
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 24
+      },
+      {
+        "name": "primary-change",
+        "frame": 109
+      },
+      {
+        "name": "relationship-reveal",
+        "frame": 167
+      },
+      {
+        "name": "comparison",
+        "frame": 233
+      },
+      {
+        "name": "final-hold",
+        "frame": 299
+      }
+    ],
+    "palette": {
+      "bgOuter": "#f6ecd9",
+      "bgInner": "#fff8ed",
+      "card": "#ffffff",
+      "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)",
+      "text": "#23100c",
+      "muted": "#725f58",
+      "accent": "#8254d9",
+      "accent2": "#8b6570",
+      "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50",
+      "negative": "#ad4939",
+      "paper": "#ffffff",
+      "paperText": "#23100c",
+      "clay": [
+        "#c5adeb",
+        "#ead8cc",
+        "#9881bf"
+      ]
+    },
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16"
+      },
+      {
+        "name": "takeover-dark",
+        "layout": "takeover",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#0b0d10",
+          "bgInner": "#242629",
+          "card": "#1f2125",
+          "cardRaised": "#2d2f33",
+          "cardBorder": "rgba(244, 246, 248, 0.09)",
+          "text": "#f6f8f9",
+          "muted": "#8d8f92",
+          "accent": "#4d9dff",
+          "accent2": "#9b8cf7",
+          "accentSoft": "rgba(77, 157, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbfbfc",
+          "paperText": "#0b0c0f",
+          "clay": [
+            "#9dc4f5",
+            "#d9ccee",
+            "#698ebc"
+          ]
+        }
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ]
+  }
+]

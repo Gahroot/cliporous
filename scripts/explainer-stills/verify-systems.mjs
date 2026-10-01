@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Same native evidence engine, restricted to causal kinds/relay presets; full silent movies by default. */
+/** Same native evidence engine, including technology presets and source poses; full silent movies by default. */
 import { runVerification } from './verify-motion.mjs';
 
 runVerification(process.argv.slice(2), 'systems').catch((error) => {

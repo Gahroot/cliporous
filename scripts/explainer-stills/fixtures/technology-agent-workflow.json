@@ -1,0 +1,1013 @@
+[
+  {
+    "name": "agent-workflow-tool-success",
+    "durationSec": 8.5,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "scene": {
+      "kind": "agent-workflow",
+      "preset": "tool-success",
+      "label": "report task",
+      "subject": "report task",
+      "toolLabel": "lookup tool",
+      "outcome": "completes the report task",
+      "setupAt": 0.3,
+      "actionAt": 1.5,
+      "responseAt": 3,
+      "checkAt": 4.5,
+      "resolveAt": 6.5
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "call-before",
+        "frame": 44
+      },
+      {
+        "name": "call",
+        "frame": 45
+      },
+      {
+        "name": "call-after",
+        "frame": 46
+      },
+      {
+        "name": "response-before",
+        "frame": 89
+      },
+      {
+        "name": "response",
+        "frame": 90
+      },
+      {
+        "name": "response-after",
+        "frame": 91
+      },
+      {
+        "name": "check-before",
+        "frame": 134
+      },
+      {
+        "name": "check",
+        "frame": 135
+      },
+      {
+        "name": "check-after",
+        "frame": 136
+      },
+      {
+        "name": "resolve-before",
+        "frame": 194
+      },
+      {
+        "name": "resolve",
+        "frame": 195
+      },
+      {
+        "name": "resolve-after",
+        "frame": 196
+      },
+      {
+        "name": "final-hold-start",
+        "frame": 204
+      },
+      {
+        "name": "final-hold-end",
+        "frame": 254
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "agent-workflow"
+      },
+      {
+        "category": "technology",
+        "id": "agent-workflow/tool-success"
+      }
+    ],
+    "sourceText": "An agent receives a report task. The agent calls the lookup tool. The lookup tool returns a result. The agent checks the result; the result passes the check. The agent completes the report task.",
+    "raw": {
+      "kind": "agent-workflow",
+      "preset": "tool-success",
+      "label": "report task",
+      "subject": "report task",
+      "toolLabel": "lookup tool",
+      "outcome": "completes the report task",
+      "startWord": 0,
+      "endWord": 33,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 6,
+      "responseWord": 12,
+      "checkWord": 18,
+      "resolveWord": 28
+    },
+    "words": [
+      {
+        "text": "An",
+        "start": 0.3,
+        "end": 0.486667
+      },
+      {
+        "text": "agent",
+        "start": 0.486667,
+        "end": 0.673333
+      },
+      {
+        "text": "receives",
+        "start": 0.673333,
+        "end": 0.86
+      },
+      {
+        "text": "a",
+        "start": 0.86,
+        "end": 1.046667
+      },
+      {
+        "text": "report",
+        "start": 1.046667,
+        "end": 1.233333
+      },
+      {
+        "text": "task.",
+        "start": 1.233333,
+        "end": 1.42
+      },
+      {
+        "text": "The",
+        "start": 1.5,
+        "end": 1.736667
+      },
+      {
+        "text": "agent",
+        "start": 1.736667,
+        "end": 1.973333
+      },
+      {
+        "text": "calls",
+        "start": 1.973333,
+        "end": 2.21
+      },
+      {
+        "text": "the",
+        "start": 2.21,
+        "end": 2.446667
+      },
+      {
+        "text": "lookup",
+        "start": 2.446667,
+        "end": 2.683333
+      },
+      {
+        "text": "tool.",
+        "start": 2.683333,
+        "end": 2.92
+      },
+      {
+        "text": "The",
+        "start": 3,
+        "end": 3.236667
+      },
+      {
+        "text": "lookup",
+        "start": 3.236667,
+        "end": 3.473333
+      },
+      {
+        "text": "tool",
+        "start": 3.473333,
+        "end": 3.71
+      },
+      {
+        "text": "returns",
+        "start": 3.71,
+        "end": 3.946667
+      },
+      {
+        "text": "a",
+        "start": 3.946667,
+        "end": 4.183333
+      },
+      {
+        "text": "result.",
+        "start": 4.183333,
+        "end": 4.42
+      },
+      {
+        "text": "The",
+        "start": 4.5,
+        "end": 4.692
+      },
+      {
+        "text": "agent",
+        "start": 4.692,
+        "end": 4.884
+      },
+      {
+        "text": "checks",
+        "start": 4.884,
+        "end": 5.076
+      },
+      {
+        "text": "the",
+        "start": 5.076,
+        "end": 5.268
+      },
+      {
+        "text": "result;",
+        "start": 5.268,
+        "end": 5.46
+      },
+      {
+        "text": "the",
+        "start": 5.46,
+        "end": 5.652
+      },
+      {
+        "text": "result",
+        "start": 5.652,
+        "end": 5.844
+      },
+      {
+        "text": "passes",
+        "start": 5.844,
+        "end": 6.036
+      },
+      {
+        "text": "the",
+        "start": 6.036,
+        "end": 6.228
+      },
+      {
+        "text": "check.",
+        "start": 6.228,
+        "end": 6.42
+      },
+      {
+        "text": "The",
+        "start": 6.5,
+        "end": 6.82
+      },
+      {
+        "text": "agent",
+        "start": 6.82,
+        "end": 7.14
+      },
+      {
+        "text": "completes",
+        "start": 7.14,
+        "end": 7.46
+      },
+      {
+        "text": "the",
+        "start": 7.46,
+        "end": 7.78
+      },
+      {
+        "text": "report",
+        "start": 7.78,
+        "end": 8.1
+      },
+      {
+        "text": "task.",
+        "start": 8.1,
+        "end": 8.42
+      }
+    ]
+  },
+  {
+    "name": "agent-workflow-tool-retry",
+    "durationSec": 11.5,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "scene": {
+      "kind": "agent-workflow",
+      "preset": "tool-retry",
+      "label": "report task",
+      "subject": "report task",
+      "toolLabel": "lookup tool",
+      "outcome": "completes the report task",
+      "setupAt": 0.3,
+      "actionAt": 1.5,
+      "responseAt": 3,
+      "checkAt": 7.3,
+      "resolveAt": 9.3
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "call-before",
+        "frame": 44
+      },
+      {
+        "name": "call",
+        "frame": 45
+      },
+      {
+        "name": "call-after",
+        "frame": 46
+      },
+      {
+        "name": "response-before",
+        "frame": 89
+      },
+      {
+        "name": "response",
+        "frame": 90
+      },
+      {
+        "name": "response-after",
+        "frame": 91
+      },
+      {
+        "name": "retry-start-before",
+        "frame": 130
+      },
+      {
+        "name": "retry-start",
+        "frame": 131
+      },
+      {
+        "name": "retry-start-after",
+        "frame": 132
+      },
+      {
+        "name": "retry-contact-before",
+        "frame": 164
+      },
+      {
+        "name": "retry-contact",
+        "frame": 165
+      },
+      {
+        "name": "retry-contact-after",
+        "frame": 166
+      },
+      {
+        "name": "returned-result-before",
+        "frame": 182
+      },
+      {
+        "name": "returned-result",
+        "frame": 183
+      },
+      {
+        "name": "returned-result-after",
+        "frame": 184
+      },
+      {
+        "name": "check-before",
+        "frame": 218
+      },
+      {
+        "name": "check",
+        "frame": 219
+      },
+      {
+        "name": "check-after",
+        "frame": 220
+      },
+      {
+        "name": "resolve-before",
+        "frame": 278
+      },
+      {
+        "name": "resolve",
+        "frame": 279
+      },
+      {
+        "name": "resolve-after",
+        "frame": 280
+      },
+      {
+        "name": "final-hold-start",
+        "frame": 288
+      },
+      {
+        "name": "final-hold-end",
+        "frame": 344
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "agent-workflow"
+      },
+      {
+        "category": "technology",
+        "id": "agent-workflow/tool-retry"
+      }
+    ],
+    "sourceText": "An agent receives a report task. The agent calls the lookup tool. The first call fails; the agent retries the lookup tool; the lookup tool returns a result. The agent checks the result; the result passes the check. The agent completes the report task.",
+    "raw": {
+      "kind": "agent-workflow",
+      "preset": "tool-retry",
+      "label": "report task",
+      "subject": "report task",
+      "toolLabel": "lookup tool",
+      "outcome": "completes the report task",
+      "startWord": 0,
+      "endWord": 43,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 6,
+      "responseWord": 12,
+      "checkWord": 28,
+      "resolveWord": 38
+    },
+    "words": [
+      {
+        "text": "An",
+        "start": 0.3,
+        "end": 0.486667
+      },
+      {
+        "text": "agent",
+        "start": 0.486667,
+        "end": 0.673333
+      },
+      {
+        "text": "receives",
+        "start": 0.673333,
+        "end": 0.86
+      },
+      {
+        "text": "a",
+        "start": 0.86,
+        "end": 1.046667
+      },
+      {
+        "text": "report",
+        "start": 1.046667,
+        "end": 1.233333
+      },
+      {
+        "text": "task.",
+        "start": 1.233333,
+        "end": 1.42
+      },
+      {
+        "text": "The",
+        "start": 1.5,
+        "end": 1.736667
+      },
+      {
+        "text": "agent",
+        "start": 1.736667,
+        "end": 1.973333
+      },
+      {
+        "text": "calls",
+        "start": 1.973333,
+        "end": 2.21
+      },
+      {
+        "text": "the",
+        "start": 2.21,
+        "end": 2.446667
+      },
+      {
+        "text": "lookup",
+        "start": 2.446667,
+        "end": 2.683333
+      },
+      {
+        "text": "tool.",
+        "start": 2.683333,
+        "end": 2.92
+      },
+      {
+        "text": "The",
+        "start": 3,
+        "end": 3.26375
+      },
+      {
+        "text": "first",
+        "start": 3.26375,
+        "end": 3.5275
+      },
+      {
+        "text": "call",
+        "start": 3.5275,
+        "end": 3.79125
+      },
+      {
+        "text": "fails;",
+        "start": 3.79125,
+        "end": 4.055
+      },
+      {
+        "text": "the",
+        "start": 4.055,
+        "end": 4.31875
+      },
+      {
+        "text": "agent",
+        "start": 4.31875,
+        "end": 4.5825
+      },
+      {
+        "text": "retries",
+        "start": 4.5825,
+        "end": 4.84625
+      },
+      {
+        "text": "the",
+        "start": 4.84625,
+        "end": 5.11
+      },
+      {
+        "text": "lookup",
+        "start": 5.11,
+        "end": 5.37375
+      },
+      {
+        "text": "tool;",
+        "start": 5.37375,
+        "end": 5.6375
+      },
+      {
+        "text": "the",
+        "start": 5.6375,
+        "end": 5.90125
+      },
+      {
+        "text": "lookup",
+        "start": 5.90125,
+        "end": 6.165
+      },
+      {
+        "text": "tool",
+        "start": 6.165,
+        "end": 6.42875
+      },
+      {
+        "text": "returns",
+        "start": 6.42875,
+        "end": 6.6925
+      },
+      {
+        "text": "a",
+        "start": 6.6925,
+        "end": 6.95625
+      },
+      {
+        "text": "result.",
+        "start": 6.95625,
+        "end": 7.22
+      },
+      {
+        "text": "The",
+        "start": 7.3,
+        "end": 7.492
+      },
+      {
+        "text": "agent",
+        "start": 7.492,
+        "end": 7.684
+      },
+      {
+        "text": "checks",
+        "start": 7.684,
+        "end": 7.876
+      },
+      {
+        "text": "the",
+        "start": 7.876,
+        "end": 8.068
+      },
+      {
+        "text": "result;",
+        "start": 8.068,
+        "end": 8.26
+      },
+      {
+        "text": "the",
+        "start": 8.26,
+        "end": 8.452
+      },
+      {
+        "text": "result",
+        "start": 8.452,
+        "end": 8.644
+      },
+      {
+        "text": "passes",
+        "start": 8.644,
+        "end": 8.836
+      },
+      {
+        "text": "the",
+        "start": 8.836,
+        "end": 9.028
+      },
+      {
+        "text": "check.",
+        "start": 9.028,
+        "end": 9.22
+      },
+      {
+        "text": "The",
+        "start": 9.3,
+        "end": 9.653333
+      },
+      {
+        "text": "agent",
+        "start": 9.653333,
+        "end": 10.006667
+      },
+      {
+        "text": "completes",
+        "start": 10.006667,
+        "end": 10.36
+      },
+      {
+        "text": "the",
+        "start": 10.36,
+        "end": 10.713333
+      },
+      {
+        "text": "report",
+        "start": 10.713333,
+        "end": 11.066667
+      },
+      {
+        "text": "task.",
+        "start": 11.066667,
+        "end": 11.42
+      }
+    ]
+  },
+  {
+    "name": "agent-workflow-approval-gate",
+    "durationSec": 11.5,
+    "cases": [
+      {
+        "name": "vertical-stack",
+        "layout": "stack",
+        "aspect": "9:16"
+      },
+      {
+        "name": "landscape-over",
+        "layout": "over",
+        "aspect": "16:9"
+      }
+    ],
+    "scene": {
+      "kind": "agent-workflow",
+      "preset": "approval-gate",
+      "label": "report task",
+      "subject": "report task",
+      "toolLabel": "lookup tool",
+      "outcome": "completes the report task",
+      "setupAt": 0.3,
+      "actionAt": 1.5,
+      "responseAt": 3,
+      "checkAt": 7.3,
+      "resolveAt": 9.3
+    },
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 0
+      },
+      {
+        "name": "call-before",
+        "frame": 44
+      },
+      {
+        "name": "call",
+        "frame": 45
+      },
+      {
+        "name": "call-after",
+        "frame": 46
+      },
+      {
+        "name": "response-before",
+        "frame": 89
+      },
+      {
+        "name": "response",
+        "frame": 90
+      },
+      {
+        "name": "response-after",
+        "frame": 91
+      },
+      {
+        "name": "check-before",
+        "frame": 218
+      },
+      {
+        "name": "check",
+        "frame": 219
+      },
+      {
+        "name": "check-after",
+        "frame": 220
+      },
+      {
+        "name": "resolve-before",
+        "frame": 278
+      },
+      {
+        "name": "resolve",
+        "frame": 279
+      },
+      {
+        "name": "resolve-after",
+        "frame": 280
+      },
+      {
+        "name": "final-hold-start",
+        "frame": 288
+      },
+      {
+        "name": "final-hold-end",
+        "frame": 344
+      }
+    ],
+    "covers": [
+      {
+        "category": "kind",
+        "id": "agent-workflow"
+      },
+      {
+        "category": "technology",
+        "id": "agent-workflow/approval-gate"
+      }
+    ],
+    "sourceText": "An agent receives a report task. The agent calls the lookup tool. The lookup tool returns a result; the agent checks the result; the result passes the check; the task waits for human approval. The person approves the task. The agent completes the report task.",
+    "raw": {
+      "kind": "agent-workflow",
+      "preset": "approval-gate",
+      "label": "report task",
+      "subject": "report task",
+      "toolLabel": "lookup tool",
+      "outcome": "completes the report task",
+      "startWord": 0,
+      "endWord": 44,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 6,
+      "responseWord": 12,
+      "checkWord": 34,
+      "resolveWord": 39
+    },
+    "words": [
+      {
+        "text": "An",
+        "start": 0.3,
+        "end": 0.486667
+      },
+      {
+        "text": "agent",
+        "start": 0.486667,
+        "end": 0.673333
+      },
+      {
+        "text": "receives",
+        "start": 0.673333,
+        "end": 0.86
+      },
+      {
+        "text": "a",
+        "start": 0.86,
+        "end": 1.046667
+      },
+      {
+        "text": "report",
+        "start": 1.046667,
+        "end": 1.233333
+      },
+      {
+        "text": "task.",
+        "start": 1.233333,
+        "end": 1.42
+      },
+      {
+        "text": "The",
+        "start": 1.5,
+        "end": 1.736667
+      },
+      {
+        "text": "agent",
+        "start": 1.736667,
+        "end": 1.973333
+      },
+      {
+        "text": "calls",
+        "start": 1.973333,
+        "end": 2.21
+      },
+      {
+        "text": "the",
+        "start": 2.21,
+        "end": 2.446667
+      },
+      {
+        "text": "lookup",
+        "start": 2.446667,
+        "end": 2.683333
+      },
+      {
+        "text": "tool.",
+        "start": 2.683333,
+        "end": 2.92
+      },
+      {
+        "text": "The",
+        "start": 3,
+        "end": 3.191818
+      },
+      {
+        "text": "lookup",
+        "start": 3.191818,
+        "end": 3.383636
+      },
+      {
+        "text": "tool",
+        "start": 3.383636,
+        "end": 3.575455
+      },
+      {
+        "text": "returns",
+        "start": 3.575455,
+        "end": 3.767273
+      },
+      {
+        "text": "a",
+        "start": 3.767273,
+        "end": 3.959091
+      },
+      {
+        "text": "result;",
+        "start": 3.959091,
+        "end": 4.150909
+      },
+      {
+        "text": "the",
+        "start": 4.150909,
+        "end": 4.342727
+      },
+      {
+        "text": "agent",
+        "start": 4.342727,
+        "end": 4.534545
+      },
+      {
+        "text": "checks",
+        "start": 4.534545,
+        "end": 4.726364
+      },
+      {
+        "text": "the",
+        "start": 4.726364,
+        "end": 4.918182
+      },
+      {
+        "text": "result;",
+        "start": 4.918182,
+        "end": 5.11
+      },
+      {
+        "text": "the",
+        "start": 5.11,
+        "end": 5.301818
+      },
+      {
+        "text": "result",
+        "start": 5.301818,
+        "end": 5.493636
+      },
+      {
+        "text": "passes",
+        "start": 5.493636,
+        "end": 5.685455
+      },
+      {
+        "text": "the",
+        "start": 5.685455,
+        "end": 5.877273
+      },
+      {
+        "text": "check;",
+        "start": 5.877273,
+        "end": 6.069091
+      },
+      {
+        "text": "the",
+        "start": 6.069091,
+        "end": 6.260909
+      },
+      {
+        "text": "task",
+        "start": 6.260909,
+        "end": 6.452727
+      },
+      {
+        "text": "waits",
+        "start": 6.452727,
+        "end": 6.644545
+      },
+      {
+        "text": "for",
+        "start": 6.644545,
+        "end": 6.836364
+      },
+      {
+        "text": "human",
+        "start": 6.836364,
+        "end": 7.028182
+      },
+      {
+        "text": "approval.",
+        "start": 7.028182,
+        "end": 7.22
+      },
+      {
+        "text": "The",
+        "start": 7.3,
+        "end": 7.684
+      },
+      {
+        "text": "person",
+        "start": 7.684,
+        "end": 8.068
+      },
+      {
+        "text": "approves",
+        "start": 8.068,
+        "end": 8.452
+      },
+      {
+        "text": "the",
+        "start": 8.452,
+        "end": 8.836
+      },
+      {
+        "text": "task.",
+        "start": 8.836,
+        "end": 9.22
+      },
+      {
+        "text": "The",
+        "start": 9.3,
+        "end": 9.653333
+      },
+      {
+        "text": "agent",
+        "start": 9.653333,
+        "end": 10.006667
+      },
+      {
+        "text": "completes",
+        "start": 10.006667,
+        "end": 10.36
+      },
+      {
+        "text": "the",
+        "start": 10.36,
+        "end": 10.713333
+      },
+      {
+        "text": "report",
+        "start": 10.713333,
+        "end": 11.066667
+      },
+      {
+        "text": "task.",
+        "start": 11.066667,
+        "end": 11.42
+      }
+    ]
+  }
+]

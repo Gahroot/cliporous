@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-/** Audit the 54 deliverables. A `covers` declaration alone NEVER satisfies --complete. */
+/** Audit the explicit manifest. A `covers` declaration alone NEVER satisfies --complete. */
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { fixtureCoverage, verificationPlan } from './fixture-manifest.mjs';
+import { fixtureCoverage, REQUIRED_TARGET_COUNT, verificationPlan } from './fixture-manifest.mjs';
 import { bundleDigest, localBundle, outputDirectory } from './harness-runtime.mjs';
 import { executionCoverage } from './verification-evidence.mjs';
 import { loadFixtures } from './verification-options.mjs';
@@ -20,7 +20,7 @@ try {
   });
   if (values.help) {
     console.log(
-      'coverage.mjs [--complete] [--report report.json ... --bundle out/remotion] [--out fresh-directory]\nWithout reports this audits declarations only; --complete requires all critical frames for all 54 targets.',
+      `coverage.mjs [--complete] [--report report.json ... --bundle out/remotion] [--out fresh-directory]\nWithout reports this audits declarations only; --complete requires all critical frames for all ${REQUIRED_TARGET_COUNT} targets.`,
     );
   } else {
     if (values.report.length && !values.bundle)
@@ -56,8 +56,8 @@ try {
         .map((t) => `${t.category}:${t.id}`),
     };
     const complete =
-      summary.required === 54 &&
-      summary.criticalFramesExecuted === 54 &&
+      summary.required === REQUIRED_TARGET_COUNT &&
+      summary.criticalFramesExecuted === REQUIRED_TARGET_COUNT &&
       rejectedReports.length === 0;
     const result = {
       schemaVersion: 1,

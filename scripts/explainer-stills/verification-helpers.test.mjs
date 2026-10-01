@@ -6,7 +6,7 @@ import test from 'node:test';
 import { stageCanvasFor } from '../../src/main/remotion/compositions/explainer/types.ts';
 import {
   criticalFrames,
-  FIXTURE_MANIFEST,
+  REQUIRED_TARGET_COUNT,
   sceneBeats,
   targetMatchesScene,
   verificationPlan,
@@ -32,7 +32,7 @@ import {
   pngEvidence,
 } from './verification-evidence.mjs';
 import { parseVerificationArgs, shuffledSamples } from './verification-options.mjs';
-import { movieRange, resolvedComposition } from './verify-motion.mjs';
+import { movieRange, resolvedComposition, runVerification } from './verify-motion.mjs';
 
 function temporary(t) {
   const dir = mkdtempSync(path.join(tmpdir(), 'batchclip-harness-test-'));
@@ -157,10 +157,9 @@ test('coverage declarations must match actual rendered fields, not labels or unu
   );
 });
 
-test('coverage never upgrades 54 declarations into executed evidence', () => {
+test('coverage never upgrades declarations into executed evidence', () => {
   const targets = executionCoverage([]);
-  assert.equal(targets.length, 54);
-  assert.equal(Object.values(FIXTURE_MANIFEST).flat().length, 54);
+  assert.equal(targets.length, REQUIRED_TARGET_COUNT);
   assert(targets.every((row) => !row.criticalFramesExecuted));
 });
 
@@ -277,6 +276,65 @@ test('RSS only sums current process and descendants, regardless of row order', (
   assert.equal(processTreeRss('99 1 4', 10), null);
 });
 
+test('actual host report records finite scoped RSS and preserves failure reporting', async (t) => {
+  const stats = startReport(temporary(t), 'rss-test');
+  const failure = new Error('observed operation failed');
+  try {
+    assert(Number.isFinite(stats.report.rss.peakBytes));
+    assert(stats.report.rss.peakBytes > 0);
+    assert.equal(stats.report.rss.unavailable, null);
+    assert.equal(stats.report.rss.samples, 1);
+    assert.equal(
+      stats.report.rss.scope,
+      process.platform === 'win32'
+        ? 'Node coordinator only; Chrome/FFmpeg descendants unmeasured on Windows'
+        : 'node plus descendants; ps RSS sum sampled every 1000ms (shared pages may double count)',
+    );
+    await assert.rejects(
+      stats.measure({ operation: 'deliberate-failure' }, async () => {
+        throw failure;
+      }),
+      /observed operation failed/,
+    );
+  } finally {
+    stats.finish(failure);
+  }
+  const saved = JSON.parse(readFileSync(stats.reportPath, 'utf8'));
+  assert.equal(saved.status, 'failed');
+  assert.equal(saved.entries[0].error, failure.message);
+  assert.equal(saved.entries[0].errorStack, failure.stack);
+  assert.deepEqual(saved.errors, [failure.message]);
+  assert.deepEqual(saved.failure, { message: failure.message, stack: failure.stack });
+  assert(Number.isFinite(saved.rss.peakBytes) && saved.rss.peakBytes > 0);
+  assert(saved.rss.samples >= 3);
+  assert.equal(saved.rss.unavailable, null);
+
+  // The host-specific no-subprocess branch must not invent memory when its native read fails.
+  if (process.platform === 'win32') {
+    for (const value of [NaN, Infinity, 0, -1, new Error('native RSS unavailable')]) {
+      const memory = t.mock.method(process, 'memoryUsage', () => {
+        if (value instanceof Error) throw value;
+        return { rss: value };
+      });
+      try {
+        const unavailable = startReport(temporary(t), 'rss-unavailable-test');
+        unavailable.finish();
+        const report = JSON.parse(readFileSync(unavailable.reportPath, 'utf8'));
+        assert.equal(report.rss.peakBytes, null);
+        assert.equal(report.rss.samples, 0);
+        assert.match(
+          report.rss.unavailable,
+          /RSS sample must be finite and positive|native RSS unavailable/,
+        );
+        assert.equal(report.status, 'no-evidence');
+        assert.deepEqual(report.errors, []);
+      } finally {
+        memory.mock.restore();
+      }
+    }
+  }
+});
+
 test('output safety refuses repository/symlink targets and existing data without deleting anything', (t) => {
   const dir = temporary(t);
   const sentinel = path.join(dir, 'keep.txt');
@@ -285,7 +343,7 @@ test('output safety refuses repository/symlink targets and existing data without
   assert.equal(readFileSync(sentinel, 'utf8'), 'untouched');
   assert.throws(() => outputDirectory(path.join(ROOT, 'new-verifier-output')), /outside/);
   const link = path.join(dir, 'repo-link');
-  symlinkSync(ROOT, link, 'dir');
+  symlinkSync(ROOT, link, process.platform === 'win32' ? 'junction' : 'dir');
   assert.throws(() => outputDirectory(path.join(link, 'unsafe')), /outside/);
   assert(!existsSync(path.join(ROOT, 'new-verifier-output')));
 });
@@ -415,6 +473,36 @@ test('control and intentional error props reach composition.props, not only getI
   assert.equal(composed.width, 1920);
   assert.equal(selected.props.scene.prop, 'flywheel');
   assert.equal(resolvedComposition(selected, dimensions, { scene: null }).props.scene, null);
+});
+
+test('shared systems runner dry-run derives its audit scope without executing declarations', async (t) => {
+  const bundle = temporary(t);
+  const out = temporary(t);
+  // A local marker is sufficient for planning; it must never be opened for rendering.
+  writeFileSync(path.join(bundle, 'index.html'), 'planning only');
+  await runVerification(
+    [
+      '--bundle',
+      bundle,
+      '--out',
+      out,
+      '--select',
+      'technology:agent-workflow/tool-success',
+      '--dry-run',
+    ],
+    'systems',
+  );
+  const report = JSON.parse(readFileSync(path.join(out, 'report.json'), 'utf8'));
+  assert.equal(report.status, 'planned');
+  assert.equal(report.metrics.renderedFrames, 0);
+  assert.equal(report.cleanup.browserOpened, false);
+  assert.equal(report.entries.length, 0);
+  assert.equal(report.coverage.length, REQUIRED_TARGET_COUNT);
+  assert(report.coverage.every((row) => !row.criticalFramesExecuted));
+  assert.equal(
+    report.coverageScope,
+    `Selected fixture plans only. Run coverage.mjs against ALL fixture plans for a ${REQUIRED_TARGET_COUNT}-item audit.`,
+  );
 });
 
 test('CLI rejects unbounded/ambiguous requests; shuffled samples and movie windows are deterministic', () => {

@@ -1,0 +1,185 @@
+[
+  {
+    "name": "context-window-overflow",
+    "durationSec": 10.2,
+    "cases": [
+      { "name": "vertical-stack", "layout": "stack", "aspect": "9:16" },
+      { "name": "landscape-over", "layout": "over", "aspect": "16:9" }
+    ],
+    "sourceText": "The working window is full. New context enters the working window. The oldest detail leaves the working window. Stored data stays in the separate archive. Stored data remains in the archive.",
+    "wordStepSec": 0.3,
+    "raw": {
+      "kind": "context-window",
+      "preset": "overflow",
+      "label": "working window",
+      "subject": "New context",
+      "outcome": "Stored data remains in the archive",
+      "detailLabel": "oldest detail",
+      "memoryLabel": "Stored data",
+      "startWord": 0,
+      "endWord": 30,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 5,
+      "responseWord": 11,
+      "checkWord": 18,
+      "resolveWord": 25
+    },
+    "scene": {
+      "kind": "context-window",
+      "preset": "overflow",
+      "label": "working window",
+      "subject": "New context",
+      "outcome": "Stored data remains in the archive",
+      "detailLabel": "oldest detail",
+      "memoryLabel": "Stored data",
+      "setupAt": 0.3,
+      "actionAt": 1.5,
+      "responseAt": 3.3,
+      "checkAt": 5.4,
+      "resolveAt": 7.5
+    },
+    "samples": [
+      { "name": "setup", "frame": 9 },
+      { "name": "arrival-before", "frame": 44 },
+      { "name": "arrival", "frame": 45 },
+      { "name": "contact-before", "frame": 98 },
+      { "name": "contact", "frame": 99 },
+      { "name": "contact-after", "frame": 100 },
+      { "name": "ejection", "frame": 130 },
+      { "name": "seat-before", "frame": 161 },
+      { "name": "seat", "frame": 162 },
+      { "name": "seat-after", "frame": 163 },
+      { "name": "resolution", "frame": 225 },
+      { "name": "final-hold-start", "frame": 234 },
+      { "name": "final-hold-end", "frame": 305 }
+    ],
+    "covers": [
+      { "category": "kind", "id": "context-window" },
+      { "category": "technology", "id": "context-window/overflow" }
+    ]
+  },
+  {
+    "name": "context-window-summarisation",
+    "durationSec": 11.4,
+    "cases": [
+      { "name": "vertical-stack", "layout": "stack", "aspect": "9:16" },
+      { "name": "landscape-over", "layout": "over", "aspect": "16:9" }
+    ],
+    "sourceText": "Detailed context fills the working window. Brief summary replaces detailed context in the working window. Brief summary keeps key points but omits some detail. Stored notes remain in the archive. Brief summary omits some detail.",
+    "wordStepSec": 0.3,
+    "raw": {
+      "kind": "context-window",
+      "preset": "summarisation",
+      "label": "Detailed context",
+      "subject": "Detailed context",
+      "outcome": "Brief summary omits some detail",
+      "detailLabel": "Detailed context",
+      "memoryLabel": "Stored notes",
+      "summaryLabel": "Brief summary",
+      "startWord": 0,
+      "endWord": 34,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 6,
+      "responseWord": 15,
+      "checkWord": 24,
+      "resolveWord": 30
+    },
+    "scene": {
+      "kind": "context-window",
+      "preset": "summarisation",
+      "label": "Detailed context",
+      "subject": "Detailed context",
+      "outcome": "Brief summary omits some detail",
+      "detailLabel": "Detailed context",
+      "memoryLabel": "Stored notes",
+      "summaryLabel": "Brief summary",
+      "setupAt": 0.3,
+      "actionAt": 1.8,
+      "responseAt": 4.5,
+      "checkAt": 7.2,
+      "resolveAt": 9
+    },
+    "samples": [
+      { "name": "setup", "frame": 9 },
+      { "name": "replacement-before", "frame": 53 },
+      { "name": "replacement", "frame": 54 },
+      { "name": "omission-before", "frame": 134 },
+      { "name": "omission", "frame": 135 },
+      { "name": "omission-after", "frame": 136 },
+      { "name": "summary-transfer", "frame": 175 },
+      { "name": "seat-before", "frame": 215 },
+      { "name": "seat", "frame": 216 },
+      { "name": "seat-after", "frame": 217 },
+      { "name": "resolution", "frame": 270 },
+      { "name": "final-hold-start", "frame": 279 },
+      { "name": "final-hold-end", "frame": 341 }
+    ],
+    "covers": [
+      { "category": "kind", "id": "context-window" },
+      { "category": "technology", "id": "context-window/summarisation" }
+    ]
+  },
+  {
+    "name": "context-window-memory-retrieval",
+    "durationSec": 12,
+    "cases": [
+      { "name": "vertical-stack", "layout": "stack", "aspect": "9:16" },
+      { "name": "landscape-over", "layout": "over", "aspect": "16:9" }
+    ],
+    "sourceText": "A question needs earlier context. Retrieval selects a relevant budget note from stored notes in the archive. Retrieval brings budget note back into the working window. Stored notes remain in the archive. Budget note is back in the window.",
+    "wordStepSec": 0.28,
+    "raw": {
+      "kind": "context-window",
+      "preset": "memory-retrieval",
+      "label": "earlier context",
+      "subject": "A question",
+      "outcome": "Budget note is back in the window",
+      "detailLabel": "budget note",
+      "memoryLabel": "stored notes",
+      "startWord": 0,
+      "endWord": 38,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 5,
+      "responseWord": 17,
+      "checkWord": 26,
+      "resolveWord": 32
+    },
+    "scene": {
+      "kind": "context-window",
+      "preset": "memory-retrieval",
+      "label": "earlier context",
+      "subject": "A question",
+      "outcome": "Budget note is back in the window",
+      "detailLabel": "budget note",
+      "memoryLabel": "stored notes",
+      "setupAt": 0.3,
+      "actionAt": 1.4,
+      "responseAt": 4.76,
+      "checkAt": 7.28,
+      "resolveAt": 8.96
+    },
+    "samples": [
+      { "name": "setup", "frame": 9 },
+      { "name": "selection-before", "frame": 41 },
+      { "name": "selection", "frame": 42 },
+      { "name": "copy-before", "frame": 142 },
+      { "name": "copy", "frame": 143 },
+      { "name": "copy-after", "frame": 144 },
+      { "name": "return-transfer", "frame": 180 },
+      { "name": "seat-lead-in", "frame": 217 },
+      { "name": "seat-before", "frame": 218 },
+      { "name": "seat", "frame": 219 },
+      { "name": "seat-after", "frame": 220 },
+      { "name": "resolution", "frame": 269 },
+      { "name": "final-hold-start", "frame": 278 },
+      { "name": "final-hold-end", "frame": 359 }
+    ],
+    "covers": [
+      { "category": "kind", "id": "context-window" },
+      { "category": "technology", "id": "context-window/memory-retrieval" }
+    ]
+  }
+]

@@ -1,0 +1,187 @@
+[
+  {
+    "name": "request-routing-cache-hit",
+    "durationSec": 9,
+    "sourceText": "Profile request checks the cache. Cache finds a fresh matching response for profile request. Cache returns that response to profile request. Profile request bypasses backend. Profile request receives the response.",
+    "wordTiming": { "fps": 30, "stepFrames": 8, "durationFrames": 7 },
+    "raw": {
+      "kind": "request-routing",
+      "preset": "cache-hit",
+      "label": "Profile request",
+      "subject": "Profile request",
+      "outcome": "Profile request receives the response",
+      "serviceLabel": "backend",
+      "startWord": 0,
+      "endWord": 29,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 5,
+      "responseWord": 14,
+      "checkWord": 21,
+      "resolveWord": 25
+    },
+    "scene": {
+      "kind": "request-routing",
+      "preset": "cache-hit",
+      "label": "Profile request",
+      "subject": "Profile request",
+      "outcome": "Profile request receives the response",
+      "serviceLabel": "backend",
+      "setupAt": 0.3,
+      "actionAt": 1.3333333333333333,
+      "responseAt": 3.7333333333333334,
+      "checkAt": 5.6,
+      "resolveAt": 6.666666666666667
+    },
+    "cases": [
+      { "name": "vertical-stack", "layout": "stack", "aspect": "9:16" },
+      { "name": "landscape-over", "layout": "over", "aspect": "16:9" }
+    ],
+    "samples": [
+      { "name": "setup", "frame": 9 },
+      { "name": "cache-before", "frame": 39 },
+      { "name": "cache-contact", "frame": 40 },
+      { "name": "cache-after", "frame": 41 },
+      { "name": "response-before", "frame": 111 },
+      { "name": "response", "frame": 112 },
+      { "name": "response-after", "frame": 113 },
+      { "name": "bypass-before", "frame": 167 },
+      { "name": "bypass", "frame": 168 },
+      { "name": "bypass-after", "frame": 169 },
+      { "name": "delivery-before", "frame": 199 },
+      { "name": "delivery", "frame": 200 },
+      { "name": "settled", "frame": 201 },
+      { "name": "final-hold", "frame": 269 }
+    ],
+    "covers": [
+      { "category": "kind", "id": "request-routing" },
+      { "category": "technology", "id": "request-routing/cache-hit" }
+    ]
+  },
+  {
+    "name": "request-routing-cache-miss",
+    "durationSec": 12,
+    "sourceText": "Profile request checks the cache. Cache has no response for profile request, and profile request goes to backend. Backend returns a response for profile request. Only after backend responds, cache stores that response for profile request. Profile request receives the response.",
+    "wordTiming": { "fps": 30, "stepFrames": 8, "durationFrames": 7 },
+    "raw": {
+      "kind": "request-routing",
+      "preset": "cache-miss",
+      "label": "Profile request",
+      "subject": "Profile request",
+      "outcome": "Profile request receives the response",
+      "serviceLabel": "Backend",
+      "startWord": 0,
+      "endWord": 40,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 5,
+      "responseWord": 18,
+      "checkWord": 25,
+      "resolveWord": 36
+    },
+    "scene": {
+      "kind": "request-routing",
+      "preset": "cache-miss",
+      "label": "Profile request",
+      "subject": "Profile request",
+      "outcome": "Profile request receives the response",
+      "serviceLabel": "Backend",
+      "setupAt": 0.3,
+      "actionAt": 1.3333333333333333,
+      "responseAt": 4.8,
+      "checkAt": 6.666666666666667,
+      "resolveAt": 9.6
+    },
+    "cases": [
+      { "name": "vertical-stack", "layout": "stack", "aspect": "9:16" },
+      { "name": "landscape-over", "layout": "over", "aspect": "16:9" }
+    ],
+    "samples": [
+      { "name": "setup", "frame": 9 },
+      { "name": "miss-before", "frame": 39 },
+      { "name": "miss", "frame": 40 },
+      { "name": "miss-after", "frame": 41 },
+      { "name": "backend-before", "frame": 133 },
+      { "name": "backend-contact", "frame": 134 },
+      { "name": "backend-after", "frame": 135 },
+      { "name": "response-before", "frame": 143 },
+      { "name": "response", "frame": 144 },
+      { "name": "response-after", "frame": 145 },
+      { "name": "populate-before", "frame": 199 },
+      { "name": "populate-contact", "frame": 200 },
+      { "name": "populate-after", "frame": 201 },
+      { "name": "delivery-before", "frame": 287 },
+      { "name": "delivery", "frame": 288 },
+      { "name": "settled", "frame": 289 },
+      { "name": "final-hold", "frame": 359 }
+    ],
+    "covers": [
+      { "category": "kind", "id": "request-routing" },
+      { "category": "technology", "id": "request-routing/cache-miss" }
+    ]
+  },
+  {
+    "name": "request-routing-timeout-fallback",
+    "durationSec": 12,
+    "sourceText": "Profile request goes to primary service. Primary service receives profile request. Primary service times out on profile request, so profile request goes to the available backup service. Backup service returns a response for profile request. Profile request receives the response.",
+    "wordTiming": { "fps": 30, "stepFrames": 8, "durationFrames": 7 },
+    "raw": {
+      "kind": "request-routing",
+      "preset": "timeout-fallback",
+      "label": "Profile request",
+      "subject": "Profile request",
+      "outcome": "Profile request receives the response",
+      "serviceLabel": "Primary service",
+      "fallbackLabel": "Backup service",
+      "startWord": 0,
+      "endWord": 39,
+      "layout": "stack",
+      "setupWord": 0,
+      "actionWord": 6,
+      "responseWord": 11,
+      "checkWord": 27,
+      "resolveWord": 35
+    },
+    "scene": {
+      "kind": "request-routing",
+      "preset": "timeout-fallback",
+      "label": "Profile request",
+      "subject": "Profile request",
+      "outcome": "Profile request receives the response",
+      "serviceLabel": "Primary service",
+      "fallbackLabel": "Backup service",
+      "setupAt": 0.3,
+      "actionAt": 1.6,
+      "responseAt": 2.933333333333333,
+      "checkAt": 7.2,
+      "resolveAt": 9.333333333333334
+    },
+    "cases": [
+      { "name": "vertical-stack", "layout": "stack", "aspect": "9:16" },
+      { "name": "landscape-over", "layout": "over", "aspect": "16:9" }
+    ],
+    "samples": [
+      { "name": "setup", "frame": 9 },
+      { "name": "primary-before", "frame": 47 },
+      { "name": "primary-contact", "frame": 48 },
+      { "name": "primary-after", "frame": 49 },
+      { "name": "timeout-before", "frame": 87 },
+      { "name": "timeout", "frame": 88 },
+      { "name": "timeout-after", "frame": 89 },
+      { "name": "alternate-before", "frame": 205 },
+      { "name": "alternate-contact", "frame": 206 },
+      { "name": "alternate-after", "frame": 207 },
+      { "name": "response-before", "frame": 215 },
+      { "name": "response", "frame": 216 },
+      { "name": "response-after", "frame": 217 },
+      { "name": "delivery-before", "frame": 279 },
+      { "name": "delivery", "frame": 280 },
+      { "name": "settled", "frame": 281 },
+      { "name": "final-hold", "frame": 359 }
+    ],
+    "covers": [
+      { "category": "kind", "id": "request-routing" },
+      { "category": "technology", "id": "request-routing/timeout-fallback" }
+    ]
+  }
+]

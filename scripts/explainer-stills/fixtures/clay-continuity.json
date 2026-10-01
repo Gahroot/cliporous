@@ -1,0 +1,86 @@
+[
+  {
+    "name": "continuity-maple-house-contractor",
+    "description": "Synthetic continuity story, first: named trades work on the Maple house. Array order is story order; transition joins this row to the next.",
+    "sourceText": "Trades on the same home: the Maple house has a plumber, electrician and roofer handling their assigned work. Trade reports return for review.",
+    "transition": "fade",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "agent-team", "preset": "contractor-crew",
+      "label": "Trades on the same home", "subject": "Maple house",
+      "roles": ["plumber", "electrician", "roofer"], "outcome": "Trade reports return for review",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "continuity-maple-house-access",
+    "description": "Synthetic continuity story, second: the plumber's key is limited to one room in that same Maple house.",
+    "sourceText": "A key for the plumber opens the utility room in the same Maple house, only while the utility key is active. The bedroom stays restricted. Access stays within the assigned room.",
+    "transition": "fade",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "property-access", "preset": "scoped-key",
+      "label": "A key for the plumber", "subject": "Maple house",
+      "allowedLabel": "utility room", "restrictedLabel": "bedroom",
+      "condition": "only while the utility key is active", "outcome": "Access stays within the assigned room",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  },
+  {
+    "name": "continuity-maple-house-neighborhood",
+    "description": "Synthetic continuity story, third: the same home stays fixed while its illustrated surroundings are compared.",
+    "sourceText": "The same home in context: keep the Maple house fixed while comparing a nearby park with a busy road around it. Surroundings change, not the home.",
+    "durationSec": 7.2,
+    "cases": [{ "name": "vertical-stack-light", "layout": "stack", "aspect": "9:16" }],
+    "palette": {
+      "bgOuter": "#f6ecd9", "bgInner": "#fff8ed", "card": "#ffffff", "cardRaised": "#fffdfa",
+      "cardBorder": "rgba(35, 16, 12, 0.14)", "text": "#23100c", "muted": "#725f58",
+      "accent": "#8254d9", "accent2": "#8b6570", "accentSoft": "rgba(130, 84, 217, 0.18)",
+      "positive": "#367b50", "negative": "#ad4939", "paper": "#ffffff", "paperText": "#23100c",
+      "clay": ["#c5adeb", "#ead8cc", "#9881bf"]
+    },
+    "scene": {
+      "kind": "neighborhood", "preset": "context",
+      "label": "The same home in context", "subject": "Maple house",
+      "contextLabels": ["nearby park", "busy road"], "outcome": "Surroundings change, not the home",
+      "setupAt": 0.3, "actionAt": 1.5, "responseAt": 3, "checkAt": 4.5, "resolveAt": 6
+    },
+    "samples": [
+      { "name": "setup", "frame": 24 },
+      { "name": "main", "frame": 108 },
+      { "name": "distinction", "frame": 162 },
+      { "name": "final-hold-start", "frame": 195 },
+      { "name": "final-hold-end", "frame": 204 }
+    ]
+  }
+]

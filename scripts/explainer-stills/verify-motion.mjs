@@ -8,6 +8,7 @@ import { pathToFileURL } from 'node:url';
 import ffprobe from '@ffprobe-installer/ffprobe';
 import { makeCancelSignal, renderMedia, renderStill, selectComposition } from '@remotion/renderer';
 import ffmpeg from 'ffmpeg-static';
+import { REQUIRED_TARGET_COUNT } from './fixture-manifest.mjs';
 import {
   bundleDigest,
   digest,
@@ -18,6 +19,11 @@ import {
   startReport,
   withDeadline,
 } from './harness-runtime.mjs';
+import {
+  TECHNOLOGY_POSE_EXPORTS,
+  verifyTechnologyPose,
+  withTechnologyPoses,
+} from './system-poses.mjs';
 import {
   alphaStats,
   compareCosts,
@@ -171,6 +177,29 @@ export async function runVerification(args = process.argv.slice(2), mode = 'moti
         `Planned only: ${plan.length} cases, ${stats.report.plannedCriticalFrames} critical frames. No evidence rendered.`,
       );
       return;
+    }
+    const technologyPlans = [
+      ...new Map(
+        plan
+          .filter((p) => Object.hasOwn(TECHNOLOGY_POSE_EXPORTS, p.inputProps.scene.kind))
+          .map((p) => [p.fixtureName, p]),
+      ).values(),
+    ];
+    if (technologyPlans.length) {
+      await stats.measure({ operation: 'source-poses' }, async (entry) => {
+        await withTechnologyPoses((poses, metadata) => {
+          entry.source = metadata;
+          entry.results = technologyPlans.map((p) =>
+            verifyTechnologyPose(
+              {
+                scene: p.inputProps.scene,
+                durationSec: p.composition.durationInFrames / p.composition.fps,
+              },
+              poses,
+            ),
+          );
+        });
+      });
     }
     assert(ffmpeg && existsSync(ffmpeg), 'Local ffmpeg-static required');
     const opened = await openLocalBrowser({ softwareRaster: options['software-raster'] });
@@ -594,8 +623,7 @@ export async function runVerification(args = process.argv.slice(2), mode = 'moti
     if (options['dry-run']) stats.report.execution = 'not-started';
     try {
       stats.report.coverage = executionCoverage(plan, [stats.report]);
-      stats.report.coverageScope =
-        'Selected fixture plans only. Run coverage.mjs against ALL fixture plans for a 54-item audit.';
+      stats.report.coverageScope = `Selected fixture plans only. Run coverage.mjs against ALL fixture plans for a ${REQUIRED_TARGET_COUNT}-item audit.`;
     } catch (error) {
       failure ??= error;
       stats.report.coverageError = error.message;
