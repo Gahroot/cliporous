@@ -1,5 +1,12 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import type { PlannedExplainerScene } from '../ai/explainer-scenes';
+import { isRec } from '../ai/explainer/kind-spec';
+import {
+  type PlannedExplainerScene,
+  parsePlanWithDiagnostics,
+  sceneCues,
+} from '../ai/explainer-scenes';
+import { conceptFixtureWords } from '../remotion/compositions/explainer/concepts/fixture-words';
 import { deriveExplainerPalette } from '../remotion/compositions/explainer/palette';
 import {
   CAUSAL_SCENE_KINDS,
@@ -14,6 +21,152 @@ import {
   spliceExplainerScenes,
 } from './explainer-scenes';
 import type { ResolvedSegment } from './segment-render';
+
+const technologyBeats = {
+  label: 'Example story',
+  subject: 'Request',
+  outcome: 'Result checked',
+  setupAt: 0.4,
+  actionAt: 1.3,
+  responseAt: 2.5,
+  checkAt: 3.7,
+  resolveAt: 4.9,
+};
+
+const technologyBodies: ExplainerScene[] = [
+  { ...technologyBeats, kind: 'agent-workflow', preset: 'tool-retry', toolLabel: 'Lookup' },
+  {
+    ...technologyBeats,
+    kind: 'retrieval-grounding',
+    preset: 'no-evidence',
+    sources: [],
+    outcome: 'No evidence',
+  },
+  {
+    ...technologyBeats,
+    kind: 'context-window',
+    preset: 'memory-retrieval',
+    detailLabel: 'Earlier detail',
+    memoryLabel: 'Stored notes',
+  },
+  {
+    ...technologyBeats,
+    kind: 'software-release',
+    preset: 'parallel-release',
+    checkLabels: ['Unit tests', 'Review'],
+  },
+  {
+    ...technologyBeats,
+    kind: 'request-routing',
+    preset: 'timeout-fallback',
+    serviceLabel: 'Primary',
+    fallbackLabel: 'Replica',
+  },
+];
+
+// Concurrent authored families share the same clock contract. Keep the exact-kind
+// guard honest by exercising their real scene shapes through the same production glue.
+const explanationBodies: ExplainerScene[] = [
+  { ...technologyBeats, kind: 'house-cutaway', preset: 'rooms', parts: ['Kitchen', 'Study'] },
+  { ...technologyBeats, kind: 'house-build', preset: 'construct', planLabel: 'Ground floor' },
+  { ...technologyBeats, kind: 'house-renovation', preset: 'cosmetic', partLabel: 'Paint' },
+  {
+    ...technologyBeats,
+    kind: 'property-access',
+    preset: 'scoped-key',
+    allowedLabel: 'Office',
+    restrictedLabel: 'Store room',
+  },
+  {
+    ...technologyBeats,
+    kind: 'neighborhood',
+    preset: 'context',
+    contextLabels: ['School', 'Transit'],
+  },
+  { ...technologyBeats, kind: 'floorplan-fit', preset: 'fits', items: ['Desk', 'Sofa'] },
+  { ...technologyBeats, kind: 'house-options', preset: 'compare', options: ['House A', 'House B'] },
+  {
+    ...technologyBeats,
+    kind: 'property-lifecycle',
+    preset: 'maintenance',
+    stageLabels: ['Inspection', 'Repair'],
+  },
+  { ...technologyBeats, kind: 'agent-team', preset: 'handoff', roles: ['Writer', 'Reviewer'] },
+  { ...technologyBeats, kind: 'agent-plan', preset: 'sequence', steps: ['Inspect', 'Test'] },
+  {
+    ...technologyBeats,
+    kind: 'agent-budget',
+    preset: 'approval-limit',
+    limitLabel: 'Approval limit',
+    requestLabel: 'Extra search',
+  },
+  {
+    ...technologyBeats,
+    kind: 'model-training',
+    preset: 'training-cycle',
+    exampleLabel: 'Examples',
+    modelLabel: 'Model',
+    feedbackLabel: 'Feedback',
+  },
+  {
+    ...technologyBeats,
+    kind: 'model-evaluation',
+    preset: 'regression',
+    leftLabel: 'Baseline',
+    rightLabel: 'Candidate',
+    caseLabels: ['Case A', 'Case B'],
+  },
+  {
+    ...technologyBeats,
+    kind: 'evidence-conflict',
+    preset: 'unresolved',
+    sources: ['Report A', 'Report B'],
+    claims: ['Finding A', 'Finding B'],
+  },
+];
+
+// The newer concept batch also extends the causal registry. Parse one real fixture
+// per kind; do not weaken the exact-kind guard or accept unvalidated JSON scene casts.
+function conceptBodies(): ExplainerScene[] {
+  const found = new Map<string, ExplainerScene>();
+  for (const pack of [
+    'information',
+    'inference',
+    'business-operations',
+    'business-populations',
+    'perspective',
+    'adaptive',
+  ]) {
+    const fixtures: unknown = JSON.parse(
+      readFileSync(`scripts/explainer-stills/fixtures/concept-${pack}.json`, 'utf8'),
+    );
+    if (!Array.isArray(fixtures)) throw new Error(`Missing concept fixtures: ${pack}`);
+    for (const fixture of fixtures) {
+      if (
+        !isRec(fixture) ||
+        !isRec(fixture.scene) ||
+        typeof fixture.scene.kind !== 'string' ||
+        typeof fixture.sourceText !== 'string' ||
+        typeof fixture.durationSec !== 'number' ||
+        !isRec(fixture.plannerInput)
+      )
+        throw new Error(`Invalid concept fixture: ${pack}`);
+      if (found.has(fixture.scene.kind)) continue;
+      const result = parsePlanWithDiagnostics(
+        { scenes: [fixture.plannerInput] },
+        conceptFixtureWords(fixture.sourceText, fixture.durationSec),
+        { minStart: 0, maxEnd: 60 },
+      );
+      const parsed = result.accepted[0]?.scene;
+      if (!parsed || parsed.kind !== fixture.scene.kind || result.rejected.length > 0)
+        throw new Error(`Concept fixture did not parse: ${fixture.scene.kind}`);
+      // This test isolates clock/layout plumbing in the same six-second window.
+      // Source parser/duration checks remain in concept-library.test.ts.
+      found.set(parsed.kind, { ...parsed, ...technologyBeats });
+    }
+  }
+  return [...found.values()];
+}
 
 const bodies: ExplainerScene[] = [
   {
@@ -90,6 +243,9 @@ const bodies: ExplainerScene[] = [
     explainAt: 3,
     returnAt: 4.5,
   },
+  ...technologyBodies,
+  ...explanationBodies,
+  ...conceptBodies(),
 ];
 
 function planned(scene: ExplainerScene, startTime = 20): PlannedExplainerScene {
@@ -176,6 +332,45 @@ describe('causal scenes through the production short-form and landscape glue', (
     const groups = groupPlannedScenes([planned(first)]);
     const pieces = spliceExplainerScenes([speaker(18, 22), speaker(23, 30)], groups, 20);
     expect(pieces.every((piece) => !piece.group)).toBe(true);
+  });
+
+  it.each(
+    technologyBodies,
+  )('$kind preserves its real sparse source cues and all five beats', (body) => {
+    const input = planned(body, 32);
+    input.cues = sceneCues(input);
+    expect(input.cues.length).toBeGreaterThan(0);
+    // Retry has five authored contact/check events; no per-token/frame cues.
+    expect(input.cues.length).toBeLessThanOrEqual(5);
+    const [group] = groupPlannedScenes([input]);
+    const render = buildGroupRenderPlan(group, group, deriveExplainerPalette());
+    expect(render.cues).toEqual(
+      [{ kind: 'whoosh', at: input.startTime + 0.02, gain: 0.45 }, ...input.cues].sort(
+        (a, b) => a.at - b.at,
+      ),
+    );
+    expect(mapSceneTimes(render.props.scenes[0].scene, () => 0)).toEqual(
+      mapSceneTimes(body, () => 0),
+    );
+    beats(render.props.scenes[0].scene).forEach((time, i) => {
+      expect(time).toBeCloseTo(beats(body)[i], 10);
+    });
+    expect(beats(body)).toHaveLength(5);
+    expect(input.cues.every((cue) => cue.at >= 32 && cue.at < 38)).toBe(true);
+  });
+
+  it.each(
+    technologyBodies,
+  )('$kind chains after a different causal family without shifting its clock', (body) => {
+    const [group] = groupPlannedScenes([
+      planned(bodies[0]),
+      { ...planned(body, 26), chained: true },
+    ]);
+    const render = buildGroupRenderPlan(group, group, deriveExplainerPalette());
+    expect(render.props.scenes).toHaveLength(2);
+    expect(render.props.scenes[1].scene).toEqual(body);
+    expect(fitGroupsToSpeakerRanges([group], [{ start: 20.1, end: 32 }])).toEqual([]);
+    expect(fitGroupsToSpeakerRanges([group], [{ start: 20, end: 31.9 }])).toEqual([]);
   });
 
   it('chains without advancing the second scene clock into the transition', () => {
