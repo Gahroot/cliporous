@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { pickQuoteProp, quotePropAppearSec, quotePropCues } from './quote-graphics';
 
 const words = (text: string, start = 10, step = 0.3) =>
@@ -7,6 +7,20 @@ const words = (text: string, start = 10, step = 0.3) =>
     .map((w, i) => ({ text: w, start: start + i * step, end: start + i * step + 0.25 }));
 
 describe('pickQuoteProp', () => {
+  it('labels deterministic quote-card motifs separately from planner choices', () => {
+    const observe = vi.fn();
+    expect(
+      pickQuoteProp(words('AI drives this business'), { startTime: 10, endTime: 20 }, observe)
+        ?.prop,
+    ).toBe('chip');
+    expect(observe).toHaveBeenCalledWith({
+      stage: 'quote-prop',
+      action: 'accepted',
+      reason: 'deterministic-keyword',
+      prop: 'chip',
+    });
+    expect(JSON.stringify(observe.mock.calls)).not.toContain('business');
+  });
   it.each([
     ['That one idea changed everything', 'lightbulb', 2],
     ['Stop chasing money and build a system', 'coins', 2],

@@ -88,7 +88,11 @@ const api = {
 
   // Long-form (Hormozi 16:9) edit plan
   generateLongformEditPlan: invoke(I.AI_GENERATE_LONGFORM_EDIT_PLAN),
+  cancelLongformEditPlan: invoke(I.AI_CANCEL_LONGFORM_EDIT_PLAN),
   onLongformEditProgress: listen(S.AI_LONGFORM_EDIT_PROGRESS),
+  renderLongformScenePreview: invoke(I.RENDER_LONGFORM_SCENE_PREVIEW),
+  cancelLongformScenePreview: invoke(I.RENDER_CANCEL_LONGFORM_SCENE_PREVIEW),
+  cleanupLongformScenePreview: invoke(I.RENDER_CLEANUP_LONGFORM_SCENE_PREVIEW),
 
   // Face detection
   detectFaceCrops: invoke(I.FACE_DETECT_CROPS),

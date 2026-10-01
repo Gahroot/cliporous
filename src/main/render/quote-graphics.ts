@@ -16,6 +16,7 @@
 import { randomUUID } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import type { PlanningObserver } from '../ai/explainer/planning-diagnostics';
 import { log } from '../logger';
 import {
   HERO_CATALOG,
@@ -70,6 +71,7 @@ export interface QuotePropPick {
 export function pickQuoteProp(
   words: readonly QuoteWord[],
   window: { startTime: number; endTime: number },
+  observe?: PlanningObserver,
 ): QuotePropPick | null {
   const inWindow = words.filter((w) => w.start >= window.startTime && w.start < window.endTime);
   if (inWindow.length === 0) return null;
@@ -103,6 +105,12 @@ export function pickQuoteProp(
   const down = DOWN_TONE_WORDS[best.prop];
   const tone: HeroTone | undefined =
     down && heroHasDownTone(best.prop) && down.test(best.match) ? 'down' : undefined;
+  observe?.({
+    stage: 'quote-prop',
+    action: 'accepted',
+    reason: 'deterministic-keyword',
+    prop: best.prop,
+  });
   return { prop: best.prop, wordStart: word.start, ...(tone ? { tone } : {}) };
 }
 
@@ -129,6 +137,7 @@ export function quotePropCues(pick: QuotePropPick, sourceAt: number, endTime: nu
 }
 
 export interface QuoteGraphicsOptions {
+  onDiagnostic?: PlanningObserver;
   segments: ResolvedSegment[];
   words: readonly QuoteWord[];
   /** Everything in `QuoteGraphicProps` except the per-card prop/timing. */
@@ -148,7 +157,7 @@ export async function applyQuoteGraphics(opts: QuoteGraphicsOptions): Promise<Qu
   opts.segments.forEach((seg, index) => {
     if (seg.archetype !== 'fullscreen-quote') return;
     if (seg.endTime - seg.startTime < QUOTE_GRAPHIC_MIN_SEC) return;
-    const pick = pickQuoteProp(opts.words, seg);
+    const pick = pickQuoteProp(opts.words, seg, opts.onDiagnostic);
     if (!pick) return;
     const at = quotePropAppearSec(pick.wordStart, seg);
     jobs.push({
@@ -188,6 +197,13 @@ export async function applyQuoteGraphics(opts: QuoteGraphicsOptions): Promise<Qu
       tempFiles.push(outputPath);
       segments[job.index] = { ...seg, videoPath: outputPath };
       cues.push(...job.cues);
+      opts.onDiagnostic?.({
+        stage: 'quote-prop',
+        action: 'rendered',
+        reason: 'deterministic-render-complete',
+        prop: job.props.prop,
+        index: job.index,
+      });
       log(
         'info',
         'quote-graphic',
@@ -195,6 +211,13 @@ export async function applyQuoteGraphics(opts: QuoteGraphicsOptions): Promise<Qu
           `${seg.endTime.toFixed(2)}s in ${Date.now() - started}ms`,
       );
     } catch (err) {
+      opts.onDiagnostic?.({
+        stage: 'quote-prop',
+        action: 'fallback',
+        reason: 'deterministic-render-failed',
+        prop: job.props.prop,
+        index: job.index,
+      });
       log(
         'warn',
         'quote-graphic',

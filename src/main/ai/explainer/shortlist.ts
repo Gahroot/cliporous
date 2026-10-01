@@ -15,9 +15,14 @@
  */
 
 import { HERO_CATALOG } from '../../remotion/compositions/explainer/hero-catalog';
-import { HERO_PROPS, type HeroProp } from '../../remotion/compositions/explainer/types';
+import {
+  type ExplainerSceneKind,
+  HERO_PROPS,
+  type HeroProp,
+} from '../../remotion/compositions/explainer/types';
 import type { AnyKindSpec, PlannerWord } from './kind-spec';
 import { ALL_KIND_SPECS } from './kinds';
+import { OUTLINE_LIMITS, type PlanningIdea } from './planning-outline';
 
 export const SHORTLIST_LIMITS = {
   /** Max kinds listed in the prompt. */
@@ -136,6 +141,57 @@ export function buildShortlist(
   return {
     kinds: specs.filter((s) => chosen.has(s.kind)),
     heroProps: HERO_PROPS.filter((p) => props.has(p)),
+    scores,
+  };
+}
+
+/** Up to 18 explicit selections plus a small relevant supplement, never a backfill. */
+export const IDEA_SHORTLIST_MAX_KINDS = 24;
+
+export function buildIdeaShortlist(
+  words: readonly PlannerWord[],
+  ideas: readonly PlanningIdea[],
+  penalty?: (choice: { kind: ExplainerSceneKind; prop?: HeroProp }) => number,
+): Shortlist {
+  // Callers pass validated outlines. These caps also bound accidental oversized typed input.
+  const bounded = ideas.slice(0, OUTLINE_LIMITS.maxIdeas);
+  const chosen = new Set(
+    bounded.flatMap((idea) => idea.kinds.slice(0, OUTLINE_LIMITS.maxKindsPerIdea)),
+  );
+  const texts = bounded.map((idea) => shortlistText(words.slice(idea.startWord, idea.endWord + 1)));
+  const scores: Record<string, number> = {};
+  for (const spec of ALL_KIND_SPECS) {
+    const score = Math.max(0, ...texts.map((text) => scoreKind(spec, text)));
+    if (score > 0) scores[spec.kind] = score;
+  }
+  // Recency can break relevance ties, not overrule stronger evidence or explicit selections.
+  const cost = (choice: { kind: ExplainerSceneKind; prop?: HeroProp }): number => {
+    const value = penalty?.(choice) ?? 0;
+    return Number.isFinite(value) ? Math.min(0.5, Math.max(0, value)) : 0;
+  };
+  const supplements = ALL_KIND_SPECS.filter(
+    (spec) => !chosen.has(spec.kind) && (scores[spec.kind] ?? 0) > 0,
+  )
+    .map((spec) => ({ kind: spec.kind, rank: scores[spec.kind] - cost({ kind: spec.kind }) }))
+    .sort((a, b) => b.rank - a.rank || (a.kind < b.kind ? -1 : 1));
+  for (const { kind } of supplements) {
+    if (chosen.size >= IDEA_SHORTLIST_MAX_KINDS) break;
+    chosen.add(kind);
+  }
+  const props = new Set(
+    HERO_PROPS.map((prop) => ({
+      prop,
+      rank: Math.max(0, ...texts.map((text) => countHits(HERO_CATALOG[prop].triggers, text))),
+    }))
+      .filter((entry) => entry.rank > 0)
+      .map(({ prop, rank }) => ({ prop, rank: rank - cost({ kind: 'hero', prop }) }))
+      .sort((a, b) => b.rank - a.rank || (a.prop < b.prop ? -1 : 1))
+      .slice(0, SHORTLIST_LIMITS.maxProps)
+      .map((entry) => entry.prop),
+  );
+  return {
+    kinds: ALL_KIND_SPECS.filter((spec) => chosen.has(spec.kind)),
+    heroProps: HERO_PROPS.filter((prop) => props.has(prop)),
     scores,
   };
 }

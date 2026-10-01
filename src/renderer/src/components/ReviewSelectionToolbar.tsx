@@ -2,13 +2,13 @@ import {
   Captions,
   Check,
   CircleDashed,
-  Clapperboard,
   Columns2,
   MousePointer2,
   Repeat2,
   SlidersHorizontal,
   Sparkles,
   Type,
+  Upload,
   X,
   ZoomIn,
 } from 'lucide-react';
@@ -67,11 +67,10 @@ export function ReviewSelectionToolbar({
           <p className="text-sm font-semibold">
             {selectedCount} {selectedCount === 1 ? 'clip' : 'clips'} selected
           </p>
-          {hiddenSelectedCount > 0 && (
-            <p className="text-[11px] text-muted-foreground">
-              {hiddenSelectedCount} hidden by the current filter
-            </p>
-          )}
+          <p className="text-[11px] text-muted-foreground">
+            Selection is not approval.
+            {hiddenSelectedCount > 0 && ` ${hiddenSelectedCount} hidden by the current filter`}
+          </p>
         </div>
         <Button
           type="button"
@@ -80,7 +79,7 @@ export function ReviewSelectionToolbar({
           onClick={onSelectAll}
           disabled={visibleCount === 0}
         >
-          {allVisibleSelected ? 'Clear all' : `Select all (${visibleCount})`}
+          {allVisibleSelected ? 'Clear all' : `Select visible (${visibleCount})`}
         </Button>
         {hasSelection && (
           <Button type="button" size="sm" variant="ghost" onClick={onClear}>
@@ -221,8 +220,8 @@ export function ReviewSelectionToolbar({
           onClick={onRender}
           aria-keyshortcuts="R"
         >
-          <Clapperboard aria-hidden="true" />
-          Render ({selectedCount})
+          <Upload aria-hidden="true" />
+          Export selected ({selectedCount})
         </Button>
         <Button type="button" size="sm" variant="ghost" onClick={onDone}>
           Done

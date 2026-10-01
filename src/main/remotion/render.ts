@@ -13,7 +13,7 @@
 import { existsSync, mkdirSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { renderMedia, selectComposition } from '@remotion/renderer';
+import { makeCancelSignal, renderMedia, selectComposition } from '@remotion/renderer';
 import { app } from 'electron';
 
 let bundlePromise: Promise<string> | null = null;
@@ -132,11 +132,16 @@ export interface RenderRemotionOptions {
    * during long block renders instead of freezing until the segment finishes.
    */
   onProgress?: ((progress: number) => void) | undefined;
+  signal?: AbortSignal;
+  /** Limit frame workers for long-form 3D jobs without changing portrait defaults. */
+  concurrency?: number;
 }
 
 export async function renderRemotionSegment(opts: RenderRemotionOptions): Promise<string> {
+  opts.signal?.throwIfAborted();
   ensureWritableRemotionWorkingDirectory();
   const serveUrl = await getBundle();
+  opts.signal?.throwIfAborted();
   const binariesDirectory = resolveRemotionBinariesDirectory();
 
   const composition = await selectComposition({
@@ -144,7 +149,9 @@ export async function renderRemotionSegment(opts: RenderRemotionOptions): Promis
     id: opts.compositionId,
     inputProps: opts.inputProps,
     binariesDirectory,
+    timeoutInMilliseconds: 30_000,
   });
+  opts.signal?.throwIfAborted();
 
   const durationInFrames = Math.max(1, Math.round(opts.durationSec * opts.fps));
   const outPath =
@@ -154,33 +161,42 @@ export async function renderRemotionSegment(opts: RenderRemotionOptions): Promis
       `${opts.compositionId}.${opts.transparent ? 'mov' : 'mp4'}`,
     );
 
-  await renderMedia({
-    serveUrl,
-    composition: {
-      ...composition,
-      durationInFrames,
-      fps: opts.fps,
-      width: opts.width,
-      height: opts.height,
-    },
-    codec: opts.transparent ? 'prores' : 'h264',
-    proResProfile: opts.transparent ? '4444' : undefined,
-    // ProRes defaults to yuv420p (no alpha). Without an alpha-carrying pixel
-    // format the "transparent" areas bake to black and composite as a black
-    // screen behind the overlay. yuva444p10le is the alpha-capable ProRes 4444
-    // format; paired with the PNG image format this preserves the alpha channel.
-    pixelFormat: opts.transparent ? 'yuva444p10le' : undefined,
-    outputLocation: outPath,
-    inputProps: opts.inputProps,
-    imageFormat: 'png',
-    chromiumOptions: { gl: 'angle' },
-    binariesDirectory,
-    // Forward Remotion's per-frame progress (0..1) so block segments advance
-    // the render bar smoothly rather than stalling for the whole encode. The
-    // wrapper is always defined (no-ops via optional chaining when the caller
-    // passed nothing) to stay clean under exactOptionalPropertyTypes.
-    onProgress: ({ progress }) => opts.onProgress?.(progress),
-  });
-
-  return outPath;
+  const { cancelSignal, cancel } = makeCancelSignal();
+  opts.signal?.addEventListener('abort', cancel, { once: true });
+  try {
+    opts.signal?.throwIfAborted();
+    await renderMedia({
+      serveUrl,
+      cancelSignal,
+      concurrency: opts.concurrency,
+      composition: {
+        ...composition,
+        durationInFrames,
+        fps: opts.fps,
+        width: opts.width,
+        height: opts.height,
+      },
+      codec: opts.transparent ? 'prores' : 'h264',
+      proResProfile: opts.transparent ? '4444' : undefined,
+      // ProRes defaults to yuv420p (no alpha). Without an alpha-carrying pixel
+      // format the "transparent" areas bake to black and composite as a black
+      // screen behind the overlay. yuva444p10le is the alpha-capable ProRes 4444
+      // format; paired with the PNG image format this preserves the alpha channel.
+      pixelFormat: opts.transparent ? 'yuva444p10le' : undefined,
+      outputLocation: outPath,
+      inputProps: opts.inputProps,
+      imageFormat: 'png',
+      chromiumOptions: { gl: 'angle' },
+      binariesDirectory,
+      // Forward Remotion's per-frame progress (0..1) so block segments advance
+      // the render bar smoothly rather than stalling for the whole encode. The
+      // wrapper is always defined (no-ops via optional chaining when the caller
+      // passed nothing) to stay clean under exactOptionalPropertyTypes.
+      onProgress: ({ progress }) => opts.onProgress?.(progress),
+    });
+    opts.signal?.throwIfAborted();
+    return outPath;
+  } finally {
+    opts.signal?.removeEventListener('abort', cancel);
+  }
 }

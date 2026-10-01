@@ -4,6 +4,7 @@ import type { LongformEditPlan } from '@shared/types';
 import { useStore } from '@/store';
 import type { ClipCandidate, PipelineStage, RenderProgress, SourceVideo } from '@/store/types';
 import { DEFAULT_PROJECT_WORKSPACE } from '@/store/workspace-slice';
+import { createQaScenePlan, QA_SCENE_DURATION, QA_SCENE_WORDS } from './scene-fixture';
 
 export const QA_NOW = Date.UTC(2026, 6, 17, 14, 30, 0);
 export const QA_PROJECT_PATH = '/QA-Fixtures/Founder-story.batchclip';
@@ -22,6 +23,8 @@ export const QA_STATE_IDS = [
   'missing-media',
   'inspector',
   'cut-plan',
+  'scene-review',
+  'scene-export',
   'render-queue',
   'render-cancelling',
   'partial-success',
@@ -294,6 +297,7 @@ function renderItems(mode: 'queue' | 'partial' | 'complete'): RenderProgress[] {
 
 export function seedQaState(stateId: QaStateId): void {
   useStore.getState().reset();
+  const isSceneFixture = stateId === 'scene-review' || stateId === 'scene-export';
   const hasSource = ![
     'showcase',
     'lobby',
@@ -310,7 +314,7 @@ export function seedQaState(stateId: QaStateId): void {
         ? 'error'
         : stateId === 'render-queue' || stateId === 'render-cancelling'
           ? 'rendering'
-          : stateId === 'partial-success' || stateId === 'completion'
+          : stateId === 'partial-success' || stateId === 'completion' || stateId === 'scene-export'
             ? 'done'
             : 'ready';
 
@@ -367,7 +371,7 @@ export function seedQaState(stateId: QaStateId): void {
     };
     store.settings.outputDirectory = '/QA-Fixtures/Exports';
     store.settings.geminiApiKey = '';
-    store.settings.outputMode = stateId === 'cut-plan' ? 'longform' : 'short';
+    store.settings.outputMode = stateId === 'cut-plan' || isSceneFixture ? 'longform' : 'short';
     store.pythonStatus =
       stateId === 'setup'
         ? 'not-setup'
@@ -464,6 +468,71 @@ export function seedQaState(stateId: QaStateId): void {
     savedRevision: 0,
     lastSaveError: null,
   });
+  if (isSceneFixture) {
+    const sourceId = QA_SOURCE.id;
+    const plan = createQaScenePlan();
+    useStore.setState({
+      sources: [
+        {
+          ...QA_SOURCE,
+          name: 'Local scene-review media fixture',
+          duration: QA_SCENE_DURATION,
+          path: new URL('/__qa-media.mp4', window.location.href).href,
+        },
+      ],
+      clips: {},
+      stitchedClips: {},
+      transcriptions: {
+        [sourceId]: {
+          words: QA_SCENE_WORDS,
+          text: QA_SCENE_WORDS.map((word) => word.text).join(' '),
+          formattedForAI: '',
+          segments: [],
+        },
+      },
+    });
+    useStore.getState().setLongformPlan(sourceId, { plan, skin: 'editorial', paletteId: 'brand' });
+    if (stateId === 'scene-export') {
+      useStore.getState().acceptLongformPlan(sourceId, 'editorial', 'brand');
+      useStore.getState().setLongformReconciliation(sourceId, {
+        renderedAt: QA_NOW,
+        outputPath: '/QA-Fixtures/Exports/scene-review.mp4',
+        phrases: { planned: 0, eligible: 0, rendered: 0, dropped: 0 },
+        blocks: { planned: 0, eligible: 0, rendered: 0, dropped: 0 },
+        cards: { planned: 0, eligible: 0, rendered: 0, dropped: 0 },
+        fallbacks: [
+          {
+            type: 'segment',
+            count: 1,
+            reason: 'Local fixture: explanation unavailable, speaker footage kept.',
+          },
+        ],
+        scenes: { planned: 3, eligible: 2, rendered: 1, dropped: 2 },
+        sceneResults: plan.scenes.map((item, index) => ({
+          id: item.id,
+          kind: item.kind,
+          startTime: item.startTime,
+          endTime: item.endTime,
+          status: index === 0 ? 'rendered' : index === 1 ? 'failed' : 'omitted',
+          ...(index === 1 ? { reason: 'Local fixture: draft render unavailable.' } : {}),
+        })),
+      });
+      useStore.setState({
+        renderProgress: [
+          {
+            clipId: sourceId,
+            sourceId,
+            kind: 'longform',
+            status: 'done',
+            percent: 100,
+            outputPath: '/QA-Fixtures/Exports/scene-review.mp4',
+          },
+        ],
+        renderCompletedAt: QA_NOW,
+      });
+    }
+    useStore.setState({ isDirty: false });
+  }
 }
 
 export function qaRecoveryJson(): string {

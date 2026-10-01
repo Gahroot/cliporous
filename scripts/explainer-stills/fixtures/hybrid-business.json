@@ -1,0 +1,2426 @@
+[
+  {
+    "name": "cash-receivable-gap-diagram",
+    "sourceText": "Profit versus cash follows Shop in an illustrative example. Shop records sales of 100 USD. Shop has total costs of 70 USD. Shop pays 70 USD in costs today. Customer pays 100 USD to Shop next month. Shop records profit of 30 USD. Payment arrives later. Cash and profit have different timing.",
+    "sourceWords": [
+      {
+        "text": "Profit",
+        "start": 0.25,
+        "end": 0.3318181818181818
+      },
+      {
+        "text": "versus",
+        "start": 0.3318181818181818,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "cash",
+        "start": 0.41363636363636364,
+        "end": 0.4954545454545455
+      },
+      {
+        "text": "follows",
+        "start": 0.4954545454545455,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "Shop",
+        "start": 0.5772727272727273,
+        "end": 0.6590909090909092
+      },
+      {
+        "text": "in",
+        "start": 0.6590909090909092,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "an",
+        "start": 0.740909090909091,
+        "end": 0.8227272727272728
+      },
+      {
+        "text": "illustrative",
+        "start": 0.8227272727272728,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "example.",
+        "start": 0.9045454545454545,
+        "end": 0.9863636363636363
+      },
+      {
+        "text": "Shop",
+        "start": 0.9863636363636363,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "records",
+        "start": 1.0681818181818183,
+        "end": 1.15
+      },
+      {
+        "text": "sales",
+        "start": 1.15,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "of",
+        "start": 1.231818181818182,
+        "end": 1.3136363636363637
+      },
+      {
+        "text": "100",
+        "start": 1.3136363636363637,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "USD.",
+        "start": 1.3954545454545455,
+        "end": 1.4772727272727273
+      },
+      {
+        "text": "Shop",
+        "start": 1.4772727272727273,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "has",
+        "start": 1.559090909090909,
+        "end": 1.6409090909090909
+      },
+      {
+        "text": "total",
+        "start": 1.6409090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "costs",
+        "start": 1.7227272727272727,
+        "end": 1.8045454545454547
+      },
+      {
+        "text": "of",
+        "start": 1.8045454545454547,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "70",
+        "start": 1.8863636363636365,
+        "end": 1.9681818181818185
+      },
+      {
+        "text": "USD.",
+        "start": 1.9681818181818185,
+        "end": 2.05
+      },
+      {
+        "text": "Shop",
+        "start": 2.15,
+        "end": 2.407142857142857
+      },
+      {
+        "text": "pays",
+        "start": 2.407142857142857,
+        "end": 2.664285714285714
+      },
+      {
+        "text": "70",
+        "start": 2.664285714285714,
+        "end": 2.9214285714285713
+      },
+      {
+        "text": "USD",
+        "start": 2.9214285714285713,
+        "end": 3.178571428571429
+      },
+      {
+        "text": "in",
+        "start": 3.178571428571429,
+        "end": 3.435714285714286
+      },
+      {
+        "text": "costs",
+        "start": 3.435714285714286,
+        "end": 3.692857142857143
+      },
+      {
+        "text": "today.",
+        "start": 3.692857142857143,
+        "end": 3.95
+      },
+      {
+        "text": "Customer",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "pays",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "100",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "USD",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "to",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "Shop",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "next",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "month.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "Shop",
+        "start": 5.949999999999999,
+        "end": 6.249999999999999
+      },
+      {
+        "text": "records",
+        "start": 6.249999999999999,
+        "end": 6.549999999999999
+      },
+      {
+        "text": "profit",
+        "start": 6.549999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "of",
+        "start": 6.85,
+        "end": 7.1499999999999995
+      },
+      {
+        "text": "30",
+        "start": 7.1499999999999995,
+        "end": 7.449999999999999
+      },
+      {
+        "text": "USD.",
+        "start": 7.449999999999999,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Payment",
+        "start": 7.85,
+        "end": 8.049999999999999
+      },
+      {
+        "text": "arrives",
+        "start": 8.049999999999999,
+        "end": 8.25
+      },
+      {
+        "text": "later.",
+        "start": 8.25,
+        "end": 8.45
+      },
+      {
+        "text": "Cash",
+        "start": 8.45,
+        "end": 8.65
+      },
+      {
+        "text": "and",
+        "start": 8.65,
+        "end": 8.85
+      },
+      {
+        "text": "profit",
+        "start": 8.85,
+        "end": 9.05
+      },
+      {
+        "text": "have",
+        "start": 9.05,
+        "end": 9.25
+      },
+      {
+        "text": "different",
+        "start": 9.25,
+        "end": 9.45
+      },
+      {
+        "text": "timing.",
+        "start": 9.45,
+        "end": 9.649999999999999
+      }
+    ],
+    "plannerInput": {
+      "kind": "cash-timing",
+      "preset": "receivable-gap",
+      "visualMode": "diagram",
+      "label": "Profit versus cash",
+      "subject": "Shop",
+      "outcome": "Payment arrives later",
+      "evidence": "illustrative",
+      "business": {
+        "id": "shop",
+        "label": "Shop"
+      },
+      "customer": {
+        "id": "customer",
+        "label": "Customer"
+      },
+      "sales": {
+        "minorUnits": 10000,
+        "currency": "USD"
+      },
+      "totalCosts": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "cashPaid": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "profitMinor": 3000,
+      "paidWhen": "today",
+      "receivedWhen": "next month",
+      "setupWord": 0,
+      "actionWord": 22,
+      "responseWord": 29,
+      "checkWord": 37,
+      "resolveWord": 43,
+      "startWord": 0,
+      "endWord": 51,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "cash-timing",
+      "preset": "receivable-gap",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "Profit versus cash",
+      "subject": "Shop",
+      "outcome": "Payment arrives later",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "business": {
+        "id": "shop",
+        "label": "Shop"
+      },
+      "customer": {
+        "id": "customer",
+        "label": "Customer"
+      },
+      "sales": {
+        "minorUnits": 10000,
+        "currency": "USD"
+      },
+      "totalCosts": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "cashPaid": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "profitMinor": 3000,
+      "paidWhen": "today",
+      "receivedWhen": "next month"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "cash-timing",
+      "receivable-gap",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "cash-inventory-before-sales-diagram",
+    "sourceText": "Profit versus cash follows Shop in an illustrative example. Shop records sales of 100 USD. Shop has total costs of 70 USD. Shop pays 70 USD for inventory today. Customer pays 100 USD to Shop next month. Shop records profit of 30 USD. Payment arrives later. Cash and profit have different timing.",
+    "sourceWords": [
+      {
+        "text": "Profit",
+        "start": 0.25,
+        "end": 0.3318181818181818
+      },
+      {
+        "text": "versus",
+        "start": 0.3318181818181818,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "cash",
+        "start": 0.41363636363636364,
+        "end": 0.4954545454545455
+      },
+      {
+        "text": "follows",
+        "start": 0.4954545454545455,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "Shop",
+        "start": 0.5772727272727273,
+        "end": 0.6590909090909092
+      },
+      {
+        "text": "in",
+        "start": 0.6590909090909092,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "an",
+        "start": 0.740909090909091,
+        "end": 0.8227272727272728
+      },
+      {
+        "text": "illustrative",
+        "start": 0.8227272727272728,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "example.",
+        "start": 0.9045454545454545,
+        "end": 0.9863636363636363
+      },
+      {
+        "text": "Shop",
+        "start": 0.9863636363636363,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "records",
+        "start": 1.0681818181818183,
+        "end": 1.15
+      },
+      {
+        "text": "sales",
+        "start": 1.15,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "of",
+        "start": 1.231818181818182,
+        "end": 1.3136363636363637
+      },
+      {
+        "text": "100",
+        "start": 1.3136363636363637,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "USD.",
+        "start": 1.3954545454545455,
+        "end": 1.4772727272727273
+      },
+      {
+        "text": "Shop",
+        "start": 1.4772727272727273,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "has",
+        "start": 1.559090909090909,
+        "end": 1.6409090909090909
+      },
+      {
+        "text": "total",
+        "start": 1.6409090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "costs",
+        "start": 1.7227272727272727,
+        "end": 1.8045454545454547
+      },
+      {
+        "text": "of",
+        "start": 1.8045454545454547,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "70",
+        "start": 1.8863636363636365,
+        "end": 1.9681818181818185
+      },
+      {
+        "text": "USD.",
+        "start": 1.9681818181818185,
+        "end": 2.05
+      },
+      {
+        "text": "Shop",
+        "start": 2.15,
+        "end": 2.407142857142857
+      },
+      {
+        "text": "pays",
+        "start": 2.407142857142857,
+        "end": 2.664285714285714
+      },
+      {
+        "text": "70",
+        "start": 2.664285714285714,
+        "end": 2.9214285714285713
+      },
+      {
+        "text": "USD",
+        "start": 2.9214285714285713,
+        "end": 3.178571428571429
+      },
+      {
+        "text": "for",
+        "start": 3.178571428571429,
+        "end": 3.435714285714286
+      },
+      {
+        "text": "inventory",
+        "start": 3.435714285714286,
+        "end": 3.692857142857143
+      },
+      {
+        "text": "today.",
+        "start": 3.692857142857143,
+        "end": 3.95
+      },
+      {
+        "text": "Customer",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "pays",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "100",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "USD",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "to",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "Shop",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "next",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "month.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "Shop",
+        "start": 5.949999999999999,
+        "end": 6.249999999999999
+      },
+      {
+        "text": "records",
+        "start": 6.249999999999999,
+        "end": 6.549999999999999
+      },
+      {
+        "text": "profit",
+        "start": 6.549999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "of",
+        "start": 6.85,
+        "end": 7.1499999999999995
+      },
+      {
+        "text": "30",
+        "start": 7.1499999999999995,
+        "end": 7.449999999999999
+      },
+      {
+        "text": "USD.",
+        "start": 7.449999999999999,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Payment",
+        "start": 7.85,
+        "end": 8.049999999999999
+      },
+      {
+        "text": "arrives",
+        "start": 8.049999999999999,
+        "end": 8.25
+      },
+      {
+        "text": "later.",
+        "start": 8.25,
+        "end": 8.45
+      },
+      {
+        "text": "Cash",
+        "start": 8.45,
+        "end": 8.65
+      },
+      {
+        "text": "and",
+        "start": 8.65,
+        "end": 8.85
+      },
+      {
+        "text": "profit",
+        "start": 8.85,
+        "end": 9.05
+      },
+      {
+        "text": "have",
+        "start": 9.05,
+        "end": 9.25
+      },
+      {
+        "text": "different",
+        "start": 9.25,
+        "end": 9.45
+      },
+      {
+        "text": "timing.",
+        "start": 9.45,
+        "end": 9.649999999999999
+      }
+    ],
+    "plannerInput": {
+      "kind": "cash-timing",
+      "preset": "inventory-before-sales",
+      "visualMode": "diagram",
+      "label": "Profit versus cash",
+      "subject": "Shop",
+      "outcome": "Payment arrives later",
+      "evidence": "illustrative",
+      "business": {
+        "id": "shop",
+        "label": "Shop"
+      },
+      "customer": {
+        "id": "customer",
+        "label": "Customer"
+      },
+      "sales": {
+        "minorUnits": 10000,
+        "currency": "USD"
+      },
+      "totalCosts": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "cashPaid": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "profitMinor": 3000,
+      "paidWhen": "today",
+      "receivedWhen": "next month",
+      "setupWord": 0,
+      "actionWord": 22,
+      "responseWord": 29,
+      "checkWord": 37,
+      "resolveWord": 43,
+      "startWord": 0,
+      "endWord": 51,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "cash-timing",
+      "preset": "inventory-before-sales",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "Profit versus cash",
+      "subject": "Shop",
+      "outcome": "Payment arrives later",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "business": {
+        "id": "shop",
+        "label": "Shop"
+      },
+      "customer": {
+        "id": "customer",
+        "label": "Customer"
+      },
+      "sales": {
+        "minorUnits": 10000,
+        "currency": "USD"
+      },
+      "totalCosts": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "cashPaid": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "profitMinor": 3000,
+      "paidWhen": "today",
+      "receivedWhen": "next month"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "cash-timing",
+      "inventory-before-sales",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "cash-receivable-gap-hybrid",
+    "sourceText": "Profit versus cash follows Shop in an illustrative example. Shop records sales of 100 USD. Shop has total costs of 70 USD. Shop pays 70 USD in costs today. Customer pays 100 USD to Shop next month. Shop records profit of 30 USD. Payment arrives later. Cash and profit have different timing.",
+    "sourceWords": [
+      {
+        "text": "Profit",
+        "start": 0.25,
+        "end": 0.3318181818181818
+      },
+      {
+        "text": "versus",
+        "start": 0.3318181818181818,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "cash",
+        "start": 0.41363636363636364,
+        "end": 0.4954545454545455
+      },
+      {
+        "text": "follows",
+        "start": 0.4954545454545455,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "Shop",
+        "start": 0.5772727272727273,
+        "end": 0.6590909090909092
+      },
+      {
+        "text": "in",
+        "start": 0.6590909090909092,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "an",
+        "start": 0.740909090909091,
+        "end": 0.8227272727272728
+      },
+      {
+        "text": "illustrative",
+        "start": 0.8227272727272728,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "example.",
+        "start": 0.9045454545454545,
+        "end": 0.9863636363636363
+      },
+      {
+        "text": "Shop",
+        "start": 0.9863636363636363,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "records",
+        "start": 1.0681818181818183,
+        "end": 1.15
+      },
+      {
+        "text": "sales",
+        "start": 1.15,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "of",
+        "start": 1.231818181818182,
+        "end": 1.3136363636363637
+      },
+      {
+        "text": "100",
+        "start": 1.3136363636363637,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "USD.",
+        "start": 1.3954545454545455,
+        "end": 1.4772727272727273
+      },
+      {
+        "text": "Shop",
+        "start": 1.4772727272727273,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "has",
+        "start": 1.559090909090909,
+        "end": 1.6409090909090909
+      },
+      {
+        "text": "total",
+        "start": 1.6409090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "costs",
+        "start": 1.7227272727272727,
+        "end": 1.8045454545454547
+      },
+      {
+        "text": "of",
+        "start": 1.8045454545454547,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "70",
+        "start": 1.8863636363636365,
+        "end": 1.9681818181818185
+      },
+      {
+        "text": "USD.",
+        "start": 1.9681818181818185,
+        "end": 2.05
+      },
+      {
+        "text": "Shop",
+        "start": 2.15,
+        "end": 2.407142857142857
+      },
+      {
+        "text": "pays",
+        "start": 2.407142857142857,
+        "end": 2.664285714285714
+      },
+      {
+        "text": "70",
+        "start": 2.664285714285714,
+        "end": 2.9214285714285713
+      },
+      {
+        "text": "USD",
+        "start": 2.9214285714285713,
+        "end": 3.178571428571429
+      },
+      {
+        "text": "in",
+        "start": 3.178571428571429,
+        "end": 3.435714285714286
+      },
+      {
+        "text": "costs",
+        "start": 3.435714285714286,
+        "end": 3.692857142857143
+      },
+      {
+        "text": "today.",
+        "start": 3.692857142857143,
+        "end": 3.95
+      },
+      {
+        "text": "Customer",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "pays",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "100",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "USD",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "to",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "Shop",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "next",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "month.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "Shop",
+        "start": 5.949999999999999,
+        "end": 6.249999999999999
+      },
+      {
+        "text": "records",
+        "start": 6.249999999999999,
+        "end": 6.549999999999999
+      },
+      {
+        "text": "profit",
+        "start": 6.549999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "of",
+        "start": 6.85,
+        "end": 7.1499999999999995
+      },
+      {
+        "text": "30",
+        "start": 7.1499999999999995,
+        "end": 7.449999999999999
+      },
+      {
+        "text": "USD.",
+        "start": 7.449999999999999,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Payment",
+        "start": 7.85,
+        "end": 8.049999999999999
+      },
+      {
+        "text": "arrives",
+        "start": 8.049999999999999,
+        "end": 8.25
+      },
+      {
+        "text": "later.",
+        "start": 8.25,
+        "end": 8.45
+      },
+      {
+        "text": "Cash",
+        "start": 8.45,
+        "end": 8.65
+      },
+      {
+        "text": "and",
+        "start": 8.65,
+        "end": 8.85
+      },
+      {
+        "text": "profit",
+        "start": 8.85,
+        "end": 9.05
+      },
+      {
+        "text": "have",
+        "start": 9.05,
+        "end": 9.25
+      },
+      {
+        "text": "different",
+        "start": 9.25,
+        "end": 9.45
+      },
+      {
+        "text": "timing.",
+        "start": 9.45,
+        "end": 9.649999999999999
+      }
+    ],
+    "plannerInput": {
+      "kind": "cash-timing",
+      "preset": "receivable-gap",
+      "visualMode": "hybrid",
+      "label": "Profit versus cash",
+      "subject": "Shop",
+      "outcome": "Payment arrives later",
+      "evidence": "illustrative",
+      "business": {
+        "id": "shop",
+        "label": "Shop"
+      },
+      "customer": {
+        "id": "customer",
+        "label": "Customer"
+      },
+      "sales": {
+        "minorUnits": 10000,
+        "currency": "USD"
+      },
+      "totalCosts": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "cashPaid": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "profitMinor": 3000,
+      "paidWhen": "today",
+      "receivedWhen": "next month",
+      "setupWord": 0,
+      "actionWord": 22,
+      "responseWord": 29,
+      "checkWord": 37,
+      "resolveWord": 43,
+      "startWord": 0,
+      "endWord": 51,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "cash-timing",
+      "preset": "receivable-gap",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "Profit versus cash",
+      "subject": "Shop",
+      "outcome": "Payment arrives later",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "business": {
+        "id": "shop",
+        "label": "Shop"
+      },
+      "customer": {
+        "id": "customer",
+        "label": "Customer"
+      },
+      "sales": {
+        "minorUnits": 10000,
+        "currency": "USD"
+      },
+      "totalCosts": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "cashPaid": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "profitMinor": 3000,
+      "paidWhen": "today",
+      "receivedWhen": "next month"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "cash-timing",
+      "receivable-gap",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "cash-inventory-before-sales-hybrid",
+    "sourceText": "Profit versus cash follows Shop in an illustrative example. Shop records sales of 100 USD. Shop has total costs of 70 USD. Shop pays 70 USD for inventory today. Customer pays 100 USD to Shop next month. Shop records profit of 30 USD. Payment arrives later. Cash and profit have different timing.",
+    "sourceWords": [
+      {
+        "text": "Profit",
+        "start": 0.25,
+        "end": 0.3318181818181818
+      },
+      {
+        "text": "versus",
+        "start": 0.3318181818181818,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "cash",
+        "start": 0.41363636363636364,
+        "end": 0.4954545454545455
+      },
+      {
+        "text": "follows",
+        "start": 0.4954545454545455,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "Shop",
+        "start": 0.5772727272727273,
+        "end": 0.6590909090909092
+      },
+      {
+        "text": "in",
+        "start": 0.6590909090909092,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "an",
+        "start": 0.740909090909091,
+        "end": 0.8227272727272728
+      },
+      {
+        "text": "illustrative",
+        "start": 0.8227272727272728,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "example.",
+        "start": 0.9045454545454545,
+        "end": 0.9863636363636363
+      },
+      {
+        "text": "Shop",
+        "start": 0.9863636363636363,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "records",
+        "start": 1.0681818181818183,
+        "end": 1.15
+      },
+      {
+        "text": "sales",
+        "start": 1.15,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "of",
+        "start": 1.231818181818182,
+        "end": 1.3136363636363637
+      },
+      {
+        "text": "100",
+        "start": 1.3136363636363637,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "USD.",
+        "start": 1.3954545454545455,
+        "end": 1.4772727272727273
+      },
+      {
+        "text": "Shop",
+        "start": 1.4772727272727273,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "has",
+        "start": 1.559090909090909,
+        "end": 1.6409090909090909
+      },
+      {
+        "text": "total",
+        "start": 1.6409090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "costs",
+        "start": 1.7227272727272727,
+        "end": 1.8045454545454547
+      },
+      {
+        "text": "of",
+        "start": 1.8045454545454547,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "70",
+        "start": 1.8863636363636365,
+        "end": 1.9681818181818185
+      },
+      {
+        "text": "USD.",
+        "start": 1.9681818181818185,
+        "end": 2.05
+      },
+      {
+        "text": "Shop",
+        "start": 2.15,
+        "end": 2.407142857142857
+      },
+      {
+        "text": "pays",
+        "start": 2.407142857142857,
+        "end": 2.664285714285714
+      },
+      {
+        "text": "70",
+        "start": 2.664285714285714,
+        "end": 2.9214285714285713
+      },
+      {
+        "text": "USD",
+        "start": 2.9214285714285713,
+        "end": 3.178571428571429
+      },
+      {
+        "text": "for",
+        "start": 3.178571428571429,
+        "end": 3.435714285714286
+      },
+      {
+        "text": "inventory",
+        "start": 3.435714285714286,
+        "end": 3.692857142857143
+      },
+      {
+        "text": "today.",
+        "start": 3.692857142857143,
+        "end": 3.95
+      },
+      {
+        "text": "Customer",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "pays",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "100",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "USD",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "to",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "Shop",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "next",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "month.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "Shop",
+        "start": 5.949999999999999,
+        "end": 6.249999999999999
+      },
+      {
+        "text": "records",
+        "start": 6.249999999999999,
+        "end": 6.549999999999999
+      },
+      {
+        "text": "profit",
+        "start": 6.549999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "of",
+        "start": 6.85,
+        "end": 7.1499999999999995
+      },
+      {
+        "text": "30",
+        "start": 7.1499999999999995,
+        "end": 7.449999999999999
+      },
+      {
+        "text": "USD.",
+        "start": 7.449999999999999,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Payment",
+        "start": 7.85,
+        "end": 8.049999999999999
+      },
+      {
+        "text": "arrives",
+        "start": 8.049999999999999,
+        "end": 8.25
+      },
+      {
+        "text": "later.",
+        "start": 8.25,
+        "end": 8.45
+      },
+      {
+        "text": "Cash",
+        "start": 8.45,
+        "end": 8.65
+      },
+      {
+        "text": "and",
+        "start": 8.65,
+        "end": 8.85
+      },
+      {
+        "text": "profit",
+        "start": 8.85,
+        "end": 9.05
+      },
+      {
+        "text": "have",
+        "start": 9.05,
+        "end": 9.25
+      },
+      {
+        "text": "different",
+        "start": 9.25,
+        "end": 9.45
+      },
+      {
+        "text": "timing.",
+        "start": 9.45,
+        "end": 9.649999999999999
+      }
+    ],
+    "plannerInput": {
+      "kind": "cash-timing",
+      "preset": "inventory-before-sales",
+      "visualMode": "hybrid",
+      "label": "Profit versus cash",
+      "subject": "Shop",
+      "outcome": "Payment arrives later",
+      "evidence": "illustrative",
+      "business": {
+        "id": "shop",
+        "label": "Shop"
+      },
+      "customer": {
+        "id": "customer",
+        "label": "Customer"
+      },
+      "sales": {
+        "minorUnits": 10000,
+        "currency": "USD"
+      },
+      "totalCosts": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "cashPaid": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "profitMinor": 3000,
+      "paidWhen": "today",
+      "receivedWhen": "next month",
+      "setupWord": 0,
+      "actionWord": 22,
+      "responseWord": 29,
+      "checkWord": 37,
+      "resolveWord": 43,
+      "startWord": 0,
+      "endWord": 51,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "cash-timing",
+      "preset": "inventory-before-sales",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "Profit versus cash",
+      "subject": "Shop",
+      "outcome": "Payment arrives later",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "business": {
+        "id": "shop",
+        "label": "Shop"
+      },
+      "customer": {
+        "id": "customer",
+        "label": "Customer"
+      },
+      "sales": {
+        "minorUnits": 10000,
+        "currency": "USD"
+      },
+      "totalCosts": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "cashPaid": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "profitMinor": 3000,
+      "paidWhen": "today",
+      "receivedWhen": "next month"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "cash-timing",
+      "inventory-before-sales",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  }
+]

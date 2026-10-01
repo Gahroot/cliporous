@@ -364,7 +364,7 @@ function RoutingLabels({
   return (
     <>
       {scene.condition && (
-        <TechText x={72} y={151} width={936} size={30} align="center">
+        <TechText slot="condition" x={72} y={151} width={936} size={30} align="center">
           {scene.condition}
         </TechText>
       )}

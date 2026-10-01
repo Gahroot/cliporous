@@ -28,6 +28,9 @@ jobs:
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
         run: npm ci
 
+      - name: Install pinned planner helper for offline SDK tests
+        run: npm ci --prefix scripts/planner-eval/gg-client --ignore-scripts --omit=optional
+
       - name: Biome check (format + lint)
         run: npm run check
 

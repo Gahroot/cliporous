@@ -297,7 +297,7 @@ function ContextLabels({
   return (
     <>
       {scene.condition && (
-        <TechText x={72} y={216} width={936} size={24} align="center">
+        <TechText slot="condition" x={72} y={216} width={936} size={24} align="center">
           {scene.condition}
         </TechText>
       )}
@@ -324,7 +324,7 @@ function ContextLabels({
           opacity={pose.outsideOpacity}
         />
       )}
-      <TechText x={72} y={762} width={936} size={28} align="center">
+      <TechText slot="status" x={72} y={762} width={936} size={28} align="center">
         {phase}
       </TechText>
       <Outcome

@@ -623,6 +623,7 @@ export interface AppState {
 
   // Long-form edit plans (keyed by source ID)
   longformPlans: Record<string, import('./longform-slice').LongformPlanRecord>;
+  longformReviewFocus: import('./longform-slice').LongformReviewFocus | null;
 
   // Exact project workspace and creator guidance
   workspace: ProjectWorkspace;
@@ -727,6 +728,8 @@ export interface AppState {
   setTranscription: (sourceId: string, data: TranscriptionData) => void;
 
   // Actions — Long-form edit plans
+  setLongformReviewFocus: (target: import('./longform-slice').LongformReviewFocus | null) => void;
+  focusLongformScene: (sourceId: string, sceneId: string) => boolean;
   setLongformPlan: (
     sourceId: string,
     record: import('./longform-slice').LongformPlanRecord,
@@ -739,6 +742,7 @@ export interface AppState {
   ) => void;
   restoreLongformPlanVersion: (sourceId: string, versionId: string) => void;
   acceptLongformPlan: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
+  setLongformPlanStyle: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
   rejectLongformPlan: (sourceId: string) => void;
   addLongformPlanFeedback: (
     sourceId: string,

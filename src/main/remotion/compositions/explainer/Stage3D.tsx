@@ -19,7 +19,7 @@ import type React from 'react';
 import { useLayoutEffect } from 'react';
 import { mixHex } from './palette';
 import { StudioEnvironment } from './StudioEnvironment';
-import { useSceneTime, useStage } from './stage';
+import { StageSpace, useSceneTime, useStage, useWideStage } from './stage';
 import { type CameraSpec, cameraRig } from './three-helpers';
 import { EXPLAINER_STAGE_HEIGHT, EXPLAINER_STAGE_WIDTH } from './types';
 
@@ -68,39 +68,42 @@ export const Stage3D: React.FC<Stage3DProps> = ({
   children,
 }) => {
   const S = useStage();
+  const wide = useWideStage();
   const spec = useRigCamera(camera, { focusAt, driftDeg, pushAmount, bobAmount });
   const sky = mixHex(S.text, '#ffffff', 0.4);
   const ground = S.bgInner;
 
   return (
-    <ThreeCanvas
-      width={EXPLAINER_STAGE_WIDTH}
-      height={EXPLAINER_STAGE_HEIGHT}
-      camera={{ position: spec.position, fov: spec.fov }}
-      flat
-      gl={{ alpha: true, antialias: true, preserveDrawingBuffer: true }}
-      style={{ position: 'absolute', inset: 0 }}
-    >
-      <RigCamera spec={spec} />
-      <StudioEnvironment />
-      <ambientLight intensity={0.32} />
-      <hemisphereLight args={[sky, ground, 0.95]} />
-      {/* Key light upper-left, soft fill right, faint rim from behind. */}
-      <directionalLight position={[-3.5, 6, 5]} intensity={2.3} />
-      <directionalLight position={[5, 1.5, 3]} intensity={0.45} />
-      <directionalLight position={[0, 3, -6]} intensity={0.6} color={S.accent2} />
-      {groundY !== undefined && (
-        <ContactShadows
-          position={[0, groundY, 0]}
-          scale={shadowScale}
-          opacity={0.55}
-          blur={2.6}
-          far={4}
-          resolution={512}
-          color="#000000"
-        />
-      )}
-      {children}
-    </ThreeCanvas>
+    <StageSpace>
+      <ThreeCanvas
+        width={wide?.model.width ?? EXPLAINER_STAGE_WIDTH}
+        height={wide?.model.height ?? EXPLAINER_STAGE_HEIGHT}
+        camera={{ position: spec.position, fov: spec.fov }}
+        flat
+        gl={{ alpha: true, antialias: true, preserveDrawingBuffer: true }}
+        style={{ position: 'absolute', left: wide?.model.x ?? 0, top: wide?.model.y ?? 0 }}
+      >
+        <RigCamera spec={spec} />
+        <StudioEnvironment />
+        <ambientLight intensity={0.32} />
+        <hemisphereLight args={[sky, ground, 0.95]} />
+        {/* Key light upper-left, soft fill right, faint rim from behind. */}
+        <directionalLight position={[-3.5, 6, 5]} intensity={2.3} />
+        <directionalLight position={[5, 1.5, 3]} intensity={0.45} />
+        <directionalLight position={[0, 3, -6]} intensity={0.6} color={S.accent2} />
+        {groundY !== undefined && (
+          <ContactShadows
+            position={[0, groundY, 0]}
+            scale={shadowScale}
+            opacity={0.55}
+            blur={2.6}
+            far={4}
+            resolution={512}
+            color="#000000"
+          />
+        )}
+        {children}
+      </ThreeCanvas>
+    </StageSpace>
   );
 };

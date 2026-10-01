@@ -50,6 +50,10 @@ export const InvokeChannels = {
   AI_ANALYZE_WORD_EMPHASIS: 'ai:analyzeWordEmphasis',
   AI_STITCH_TRANSCRIPT: 'ai:stitchTranscript',
   AI_GENERATE_LONGFORM_EDIT_PLAN: 'ai:generateLongformEditPlan',
+  AI_CANCEL_LONGFORM_EDIT_PLAN: 'ai:cancelLongformEditPlan',
+  RENDER_LONGFORM_SCENE_PREVIEW: 'render:longformScenePreview',
+  RENDER_CANCEL_LONGFORM_SCENE_PREVIEW: 'render:cancelLongformScenePreview',
+  RENDER_CLEANUP_LONGFORM_SCENE_PREVIEW: 'render:cleanupLongformScenePreview',
   AI_PROMO_SPLIT: 'ai:promoSplit',
 
   // Face detection

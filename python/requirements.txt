@@ -7,4 +7,6 @@ opencv-python-headless
 numpy
 scikit-learn
 scenedetect
-yt-dlp
+yt-dlp[default]
+yt-dlp-ejs
+deno

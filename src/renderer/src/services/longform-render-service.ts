@@ -1,5 +1,12 @@
+import { isLongformPalette } from '@shared/longform-palette';
+import {
+  isSceneFirstLongformPlan,
+  longformSourceFingerprint,
+  sceneFirstPlanProblem,
+} from '@shared/longform-scenes';
 import { BUILTIN_PALETTES } from '@shared/palettes';
 import { toast } from 'sonner';
+import { longformApprovalProblem } from '@/lib/longform-approval';
 import { useStore } from '@/store';
 import type { RenderProgress, SourceVideo } from '@/store/types';
 import { estimateExport, hashRenderOptions, runExportPreflight } from './export-queue';
@@ -13,6 +20,7 @@ export interface StartLongformRenderResult {
     | 'source-offline'
     | 'no-plan'
     | 'plan-not-approved'
+    | 'plan-invalid'
     | 'palette-unavailable'
     | 'no-output-dir'
     | 'preflight-blocked'
@@ -31,10 +39,27 @@ function getReadyLongform():
   if (source.mediaStatus === 'offline') return { reason: 'source-offline' };
   const record = state.getLongformPlan(sourceId);
   if (!record) return { reason: 'no-plan' };
-  if (record.status !== 'accepted') return { reason: 'plan-not-approved' };
-  const paletteAvailable = [...BUILTIN_PALETTES, ...state.settings.customPalettes].some(
-    (palette) => palette.id === state.settings.longformPaletteId,
-  );
+  if (record.validationProblem || longformApprovalProblem(record))
+    return { reason: 'plan-invalid' };
+  if (
+    record.status !== 'accepted' ||
+    ((isSceneFirstLongformPlan(record.plan) || record.approvedVersionId != null) &&
+      record.approvedVersionId !== record.activeVersionId)
+  )
+    return { reason: 'plan-not-approved' };
+  if (isSceneFirstLongformPlan(record.plan)) {
+    const words = state.transcriptions[sourceId]?.words ?? [];
+    if (
+      sceneFirstPlanProblem(record.plan) ||
+      record.plan.sourceFingerprint !== longformSourceFingerprint(words, source.duration)
+    )
+      return { reason: 'plan-invalid' };
+  }
+  const paletteAvailable =
+    (isLongformPalette(record.palette) && record.palette.id === record.paletteId) ||
+    [...BUILTIN_PALETTES, ...state.settings.customPalettes].some(
+      (palette) => palette.id === record.paletteId,
+    );
   if (!paletteAvailable) return { reason: 'palette-unavailable' };
   return { state, source, sourceId };
 }
@@ -65,8 +90,8 @@ function makeLongformQueueRow(
     optionsHash: hashRenderOptions({
       plan: state.getLongformPlan(source.id)?.activeVersionId,
       quality: state.settings.renderQuality,
-      skin: state.settings.longformSkin,
-      palette: state.settings.longformPaletteId,
+      skin: state.getLongformPlan(source.id)?.skin,
+      palette: state.getLongformPlan(source.id)?.paletteId,
     }),
     percent: 0,
     status: 'queued',
@@ -92,6 +117,8 @@ function explainReadinessFailure(reason: LongformFailureReason): void {
     toast.error('No Cut Plan is available');
   } else if (reason === 'plan-not-approved') {
     toast.error('Accept the Cut Plan before rendering');
+  } else if (reason === 'plan-invalid') {
+    toast.error('This Cut Plan no longer matches its source. Review a new draft before rendering.');
   } else if (reason === 'palette-unavailable') {
     toast.error('Restore or select a palette before rendering');
   } else {
@@ -155,6 +182,21 @@ export async function startLongformRender(): Promise<StartLongformRenderResult> 
     return { started: false, reason: 'preflight-blocked' };
   }
 
+  const latest = getReadyLongform();
+  if ('reason' in latest) {
+    explainReadinessFailure(latest.reason);
+    return { started: false, reason: latest.reason };
+  }
+  if (
+    latest.sourceId !== sourceId ||
+    latest.state.getLongformPlan(sourceId)?.activeVersionId !== record.activeVersionId
+  )
+    return { started: false, reason: 'plan-not-approved' };
+  if (latest.source.path !== source.path || latest.source.duration !== source.duration) {
+    toast.error('The source changed during export checks. Start the export again.');
+    return { started: false, reason: 'plan-invalid' };
+  }
+
   state.clearRenderErrors();
   state.setLongformReconciliation(sourceId, null);
   state.setRenderProgress([makeLongformQueueRow(source, state, preflight.estimate)]);
@@ -167,15 +209,21 @@ export async function startLongformRender(): Promise<StartLongformRenderResult> 
     await window.api.startBatchRender({
       outputDirectory,
       outputProfile: 'longform',
-      longformEditPlan: record.plan as unknown as NonNullable<
-        Parameters<typeof window.api.startBatchRender>[0]['longformEditPlan']
-      >,
-      longformSkinId: state.settings.longformSkin,
-      longformPaletteId: state.settings.longformPaletteId,
-      customPalettes: state.settings.customPalettes ?? LONGFORM_RENDER_DEFAULTS.customPalettes,
+      longformEditPlan: record.plan,
+      longformSkinId: record.skin,
+      longformPaletteId: record.paletteId,
+      explainerScenesEnabled: state.settings.explainerScenesEnabled,
+      ...(isSceneFirstLongformPlan(record.plan)
+        ? { longformEditsEnabled: state.settings.explainerScenesEnabled }
+        : {}),
+      customPalettes: record.palette
+        ? [{ ...record.palette }]
+        : (state.settings.customPalettes ?? LONGFORM_RENDER_DEFAULTS.customPalettes),
       renderQuality: state.settings.renderQuality,
       developerMode: state.settings.developerMode,
-      geminiApiKey: state.settings.geminiApiKey,
+      ...(isSceneFirstLongformPlan(record.plan)
+        ? {}
+        : { geminiApiKey: state.settings.geminiApiKey }),
       sourceMeta: {
         name: source.name,
         path: source.path,

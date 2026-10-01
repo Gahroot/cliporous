@@ -5,6 +5,8 @@ import {
   Eye,
   FileVideo,
   FolderOpen,
+  LayoutGrid,
+  List,
   ListX,
   MoreHorizontal,
   Pencil,
@@ -54,6 +56,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { revealItemLabel } from '@/lib/platform';
+import { cn } from '@/lib/utils';
 
 interface RecentProjectLibraryProps {
   projects: RecentProjectEntry[];
@@ -84,29 +87,39 @@ function formatRelativeTime(timestamp: number): string {
   return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(timestamp);
 }
 
+const STAGE_LABELS: Record<string, string> = {
+  idle: 'Source',
+  downloading: 'Importing',
+  transcribing: 'Transcribing',
+  scoring: 'Finding moments',
+  'detecting-faces': 'Framing faces',
+  thumbnails: 'Building selects',
+  ready: 'Review',
+  rendering: 'Exporting',
+  done: 'Exported',
+  error: 'Needs attention',
+  'ai-editing': 'Building edit',
+};
+
 function stageLabel(stage: string | undefined): string {
   if (!stage) return 'Source';
-  const labels: Record<string, string> = {
-    idle: 'Source',
-    downloading: 'Importing',
-    transcribing: 'Transcribing',
-    scoring: 'Finding moments',
-    'detecting-faces': 'Framing faces',
-    thumbnails: 'Building selects',
-    ready: 'Review',
-    rendering: 'Exporting',
-    done: 'Exported',
-    error: 'Needs attention',
-    'ai-editing': 'Building edit',
-  };
-  return labels[stage] ?? stage.replace(/-/g, ' ');
+  return STAGE_LABELS[stage] ?? stage.replace(/-/g, ' ');
+}
+
+function nextAction(project: RecentProjectEntry): string {
+  if (project.missingMedia) return 'Open to relink media';
+  if (project.stage === 'error') return 'Open to recover';
+  if (project.stage === 'ready') return 'Resume review';
+  if (project.stage === 'done') return 'Review exports';
+  return 'Open saved progress';
 }
 
 function ProjectPoster({ project }: { project: RecentProjectEntry }): React.JSX.Element {
-  if (project.poster) {
+  const poster = project.poster || project.selectedFrames?.[0];
+  if (poster) {
     return (
       <img
-        src={project.poster}
+        src={poster}
         alt=""
         className="h-full w-full object-cover"
         draggable={false}
@@ -140,24 +153,42 @@ export function RecentProjectLibrary({
 }: RecentProjectLibraryProps): React.JSX.Element {
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<'recent' | 'pinned'>('recent');
+  const [view, setView] = useState<'list' | 'grid'>('grid');
+  const [kind, setKind] = useState<'all' | 'short' | 'longform'>('all');
+  const [status, setStatus] = useState('all');
   const [renameProject, setRenameProject] = useState<RecentProjectEntry | null>(null);
   const [renameValue, setRenameValue] = useState('');
   const [deleteProject, setDeleteProject] = useState<RecentProjectEntry | null>(null);
 
   const visibleProjects = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase();
-    const matches = normalizedQuery
-      ? projects.filter((project) =>
-          [project.name, project.sourceName ?? '', project.path].some((value) =>
-            value.toLocaleLowerCase().includes(normalizedQuery),
-          ),
-        )
-      : [...projects];
-    return matches.sort((left, right) => {
-      if (sort === 'pinned' && left.pinned !== right.pinned) return left.pinned ? -1 : 1;
-      return right.lastOpened - left.lastOpened;
+    const normalizedQuery = query.trim().toLowerCase();
+    const matches = projects.filter((project) => {
+      if (kind !== 'all' && (project.kind ?? 'short') !== kind) return false;
+      if (status === 'missing-media') {
+        if (!project.missingMedia) return false;
+      } else if (status !== 'all' && (project.stage || 'idle') !== status) {
+        return false;
+      }
+      return [project.name, project.sourceName ?? '', project.path].some((value) =>
+        value.toLowerCase().includes(normalizedQuery),
+      );
     });
-  }, [projects, query, sort]);
+    return matches.sort((left, right) => {
+      if (sort === 'pinned' && Boolean(left.pinned) !== Boolean(right.pinned)) {
+        return left.pinned ? -1 : 1;
+      }
+      return (
+        right.lastOpened - left.lastOpened ||
+        (left.path < right.path ? -1 : left.path > right.path ? 1 : 0)
+      );
+    });
+  }, [projects, query, sort, kind, status]);
+
+  const clearFilters = (): void => {
+    setQuery('');
+    setKind('all');
+    setStatus('all');
+  };
 
   const openRename = (project: RecentProjectEntry): void => {
     setRenameProject(project);
@@ -166,18 +197,19 @@ export function RecentProjectLibrary({
 
   return (
     <section className="space-y-3" aria-labelledby="recent-projects-title">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-3">
         <div>
           <h2 id="recent-projects-title" className="text-base font-semibold tracking-tight">
             Recent projects
           </h2>
           <p className="text-muted-foreground mt-0.5 text-xs">
-            Resume at the last stage with your source, selects, and export state intact.
+            Open saved sources, selects and export progress. Interrupted work does not restart
+            automatically.
           </p>
         </div>
         {!loading && !error && projects.length > 0 && (
-          <div className="flex w-full gap-2 sm:w-auto">
-            <div className="relative min-w-0 flex-1 sm:w-64">
+          <div className="flex w-full flex-wrap items-center gap-2">
+            <div className="relative min-w-0 basis-full sm:basis-48 sm:flex-1">
               <Search
                 className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
                 aria-hidden
@@ -191,6 +223,39 @@ export function RecentProjectLibrary({
                 className="pl-9"
               />
             </div>
+            <Select
+              value={kind}
+              onValueChange={(value) => setKind(value as 'all' | 'short' | 'longform')}
+            >
+              <SelectTrigger
+                className="w-auto min-w-32 flex-1 sm:flex-none"
+                aria-label="Filter project kind"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All kinds</SelectItem>
+                <SelectItem value="short">Short clips</SelectItem>
+                <SelectItem value="longform">Long-form</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger
+                className="w-auto min-w-36 flex-1 sm:flex-none"
+                aria-label="Filter saved status"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="missing-media">Media missing</SelectItem>
+                {Object.entries(STAGE_LABELS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={sort} onValueChange={(value) => setSort(value as 'recent' | 'pinned')}>
               <SelectTrigger className="w-32" aria-label="Sort projects">
                 <SelectValue />
@@ -200,6 +265,31 @@ export function RecentProjectLibrary({
                 <SelectItem value="pinned">Pinned first</SelectItem>
               </SelectContent>
             </Select>
+            <fieldset className="flex gap-1" aria-label="Project view">
+              <Button
+                type="button"
+                size="sm"
+                variant={view === 'grid' ? 'secondary' : 'ghost'}
+                aria-pressed={view === 'grid'}
+                onClick={() => setView('grid')}
+              >
+                <LayoutGrid className="h-4 w-4" aria-hidden /> Grid
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={view === 'list' ? 'secondary' : 'ghost'}
+                aria-pressed={view === 'list'}
+                onClick={() => setView('list')}
+              >
+                <List className="h-4 w-4" aria-hidden /> List
+              </Button>
+            </fieldset>
+            {(query.trim() || kind !== 'all' || status !== 'all') && (
+              <Button type="button" size="sm" variant="ghost" onClick={clearFilters}>
+                Clear filters
+              </Button>
+            )}
           </div>
         )}
       </div>
@@ -207,7 +297,10 @@ export function RecentProjectLibrary({
       {loading ? (
         <ProjectListSkeleton />
       ) : error ? (
-        <Card className="border-destructive/40 bg-card flex flex-col items-start gap-3 p-5">
+        <Card
+          role="alert"
+          className="border-destructive/40 bg-card flex flex-col items-start gap-3 p-5"
+        >
           <div className="flex items-start gap-3">
             <AlertTriangle className="text-destructive mt-0.5 h-5 w-5 shrink-0" aria-hidden />
             <div>
@@ -230,11 +323,16 @@ export function RecentProjectLibrary({
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
-            <Button size="sm" onClick={onNewProject}>
+            <Button size="sm" disabled={busyPath !== null} onClick={onNewProject}>
               <Plus className="h-4 w-4" aria-hidden />
               New project
             </Button>
-            <Button size="sm" variant="outline" onClick={onOpenProjectFile}>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={busyPath !== null}
+              onClick={onOpenProjectFile}
+            >
               <FolderOpen className="h-4 w-4" aria-hidden />
               Open project
             </Button>
@@ -244,13 +342,17 @@ export function RecentProjectLibrary({
         <Card className="bg-card/70 flex flex-col items-center gap-3 border-dashed px-6 py-8 text-center">
           <Search className="text-muted-foreground h-6 w-6" aria-hidden />
           <div role="status" aria-live="polite">
-            <p className="text-sm font-semibold">No projects match “{query.trim()}”</p>
+            <p className="text-sm font-semibold">
+              {query.trim()
+                ? `No projects match “${query.trim()}”`
+                : 'No projects match these filters'}
+            </p>
             <p className="text-muted-foreground mt-1 text-xs">
-              Try a project name, source, or path.
+              Change the kind or saved status, or search by project name, source or path.
             </p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => setQuery('')}>
-            Clear search
+          <Button variant="outline" size="sm" onClick={clearFilters}>
+            Show all projects
           </Button>
         </Card>
       ) : (
@@ -258,19 +360,40 @@ export function RecentProjectLibrary({
           <p className="sr-only" role="status" aria-live="polite">
             {visibleProjects.length} project{visibleProjects.length === 1 ? '' : 's'} shown
           </p>
-          <ul className="space-y-2 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-150">
+          <ul
+            aria-label="Saved projects"
+            className={
+              view === 'grid' ? 'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3' : 'space-y-2'
+            }
+          >
             {visibleProjects.map((project) => {
               const busy = busyPath === project.path;
               return (
-                <li key={project.path}>
-                  <Card className="bg-card/80 group flex min-w-0 overflow-hidden border-border/80 transition-[border-color,box-shadow] duration-150 hover:border-primary/45 hover:shadow-sm focus-within:border-primary/55">
+                <li key={project.path} className="min-w-0">
+                  <Card
+                    className={cn(
+                      'bg-card/80 group flex min-w-0 overflow-hidden border-border/80 transition-[border-color,box-shadow] duration-150 hover:border-primary/45 hover:shadow-sm focus-within:border-primary/55',
+                      view === 'grid' && 'h-full flex-col',
+                    )}
+                  >
                     <button
                       type="button"
-                      className="flex min-w-0 flex-1 items-stretch text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset focus-visible:outline-none"
+                      className={cn(
+                        'flex min-w-0 flex-1 items-stretch text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset focus-visible:outline-none',
+                        view === 'grid' && 'flex-col',
+                      )}
+                      aria-busy={busy}
                       onClick={() => onOpen(project)}
-                      disabled={busy}
+                      disabled={busyPath !== null}
                     >
-                      <span className="bg-muted relative hidden h-28 w-40 shrink-0 overflow-hidden sm:block">
+                      <span
+                        className={cn(
+                          'bg-muted relative shrink-0 overflow-hidden',
+                          view === 'grid'
+                            ? 'block aspect-video w-full'
+                            : 'hidden h-28 w-40 sm:block',
+                        )}
+                      >
                         <ProjectPoster project={project} />
                         {project.pinned && (
                           <span className="bg-black/70 absolute top-2 left-2 flex h-6 w-6 items-center justify-center rounded text-white">
@@ -280,7 +403,7 @@ export function RecentProjectLibrary({
                         )}
                       </span>
                       <span className="flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3">
-                        <span className="flex min-w-0 items-center gap-2">
+                        <span className="flex min-w-0 flex-wrap items-center gap-2">
                           <span className="truncate text-sm font-semibold">{project.name}</span>
                           {project.missingMedia && (
                             <span className="indicator-warning shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium">
@@ -303,15 +426,30 @@ export function RecentProjectLibrary({
                           <span aria-hidden>·</span>
                           <span>{project.selectedCount ?? 0} selects</span>
                           <span aria-hidden>·</span>
-                          <span>Stage: {stageLabel(project.stage)}</span>
+                          <span>Saved stage: {stageLabel(project.stage)}</span>
+                        </span>
+                        <span className="text-xs font-medium text-primary">
+                          {busy ? 'Working…' : nextAction(project)}
                         </span>
                       </span>
-                      <span className="text-muted-foreground hidden shrink-0 items-center px-3 text-xs tabular-nums min-[760px]:flex">
+                      <span
+                        className={cn(
+                          'text-muted-foreground shrink-0 text-xs tabular-nums',
+                          view === 'grid'
+                            ? 'px-4 pb-3'
+                            : 'hidden items-center px-3 min-[760px]:flex',
+                        )}
+                      >
                         {formatRelativeTime(project.lastOpened)}
                       </span>
                     </button>
 
-                    <div className="border-border/70 flex shrink-0 items-center border-l px-1.5">
+                    <div
+                      className={cn(
+                        'border-border/70 flex shrink-0 items-center px-1.5',
+                        view === 'grid' ? 'justify-end border-t' : 'border-l',
+                      )}
+                    >
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
@@ -319,30 +457,52 @@ export function RecentProjectLibrary({
                             size="icon"
                             className="h-10 w-10"
                             aria-label={`Project actions for ${project.name}`}
-                            disabled={busy}
+                            disabled={busyPath !== null}
                           >
                             <MoreHorizontal className="h-4 w-4" aria-hidden />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-52">
-                          <DropdownMenuItem onSelect={() => onReveal(project)}>
+                          <DropdownMenuItem
+                            disabled={busyPath !== null}
+                            onSelect={() => onOpen(project)}
+                          >
+                            <FolderOpen /> {nextAction(project)}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            disabled={busyPath !== null}
+                            onSelect={() => onReveal(project)}
+                          >
                             <Eye /> {revealItemLabel()}
                           </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => onPin(project)}>
+                          <DropdownMenuItem
+                            disabled={busyPath !== null}
+                            onSelect={() => onPin(project)}
+                          >
                             {project.pinned ? <PinOff /> : <Pin />}
                             {project.pinned ? 'Unpin project' : 'Pin project'}
                           </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => openRename(project)}>
+                          <DropdownMenuItem
+                            disabled={busyPath !== null}
+                            onSelect={() => openRename(project)}
+                          >
                             <Pencil /> Rename
                           </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => onDuplicate(project)}>
+                          <DropdownMenuItem
+                            disabled={busyPath !== null}
+                            onSelect={() => onDuplicate(project)}
+                          >
                             <Copy /> Duplicate
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onSelect={() => onRemove(project)}>
+                          <DropdownMenuItem
+                            disabled={busyPath !== null}
+                            onSelect={() => onRemove(project)}
+                          >
                             <ListX /> Remove from Recents
                           </DropdownMenuItem>
                           <DropdownMenuItem
+                            disabled={busyPath !== null}
                             className="text-destructive focus:text-destructive"
                             onSelect={() => setDeleteProject(project)}
                           >
@@ -377,7 +537,12 @@ export function RecentProjectLibrary({
               value={renameValue}
               onChange={(event) => setRenameValue(event.target.value)}
               onKeyDown={(event) => {
-                if (event.key === 'Enter' && renameProject && renameValue.trim()) {
+                if (
+                  event.key === 'Enter' &&
+                  busyPath === null &&
+                  renameProject &&
+                  renameValue.trim()
+                ) {
                   onRename(renameProject, renameValue.trim());
                   setRenameProject(null);
                 }
@@ -390,9 +555,9 @@ export function RecentProjectLibrary({
               Cancel
             </Button>
             <Button
-              disabled={!renameValue.trim() || busyPath === renameProject?.path}
+              disabled={!renameValue.trim() || busyPath !== null}
               onClick={() => {
-                if (!renameProject) return;
+                if (!renameProject || busyPath !== null) return;
                 onRename(renameProject, renameValue.trim());
                 setRenameProject(null);
               }}
@@ -419,8 +584,8 @@ export function RecentProjectLibrary({
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              disabled={busyPath === deleteProject?.path}
-              onClick={() => deleteProject && onDelete(deleteProject)}
+              disabled={busyPath !== null}
+              onClick={() => busyPath === null && deleteProject && onDelete(deleteProject)}
             >
               {busyPath === deleteProject?.path ? 'Deleting…' : 'Delete project file'}
             </AlertDialogAction>

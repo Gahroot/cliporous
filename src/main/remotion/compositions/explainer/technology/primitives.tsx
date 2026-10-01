@@ -1,5 +1,6 @@
 import type React from 'react';
-import { useStage } from '../stage';
+import type { EditorialSlot } from '../longform-stage-layout';
+import { useStage, useWideStage, WideStageText } from '../stage';
 import type { TechnologyPoint } from './motion';
 import type { TechnologyStatus } from './types';
 
@@ -11,6 +12,7 @@ export function TechText({
   size = 36,
   align = 'left',
   opacity = 1,
+  slot,
 }: {
   x: number;
   y: number;
@@ -19,8 +21,14 @@ export function TechText({
   size?: number;
   align?: 'left' | 'center' | 'right';
   opacity?: number;
+  /** Editorial text reflows; model-attached labels keep their authored anchor coordinates. */
+  slot?: EditorialSlot;
 }): React.ReactElement {
   const S = useStage();
+  const wide = useWideStage();
+  if (wide && slot && typeof children === 'string') {
+    return <WideStageText slot={slot} text={children} size={size} opacity={opacity} />;
+  }
   return (
     <div
       style={{
@@ -379,6 +387,17 @@ export function Outcome({
   status?: TechnologyStatus;
 }): React.ReactElement {
   const S = useStage();
+  const wide = useWideStage();
+  if (wide)
+    return (
+      <WideStageText
+        slot="outcome"
+        text={text}
+        size={36}
+        opacity={opacity}
+        marker={<StatusMark status={status} />}
+      />
+    );
   return (
     <div
       style={{

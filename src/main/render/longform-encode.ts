@@ -12,17 +12,25 @@
 // at the target fps, AAC 48 kHz) so the concat demuxer can stream-copy them.
 // ---------------------------------------------------------------------------
 
+import { writeFileSync } from 'node:fs';
+import { LANDSCAPE_FPS } from '../aspect-ratios';
 import {
   disableGpuEncoderForSession,
+  type FfmpegCommand,
   ffmpeg,
   getEncoder,
   getSoftwareEncoder,
   isGpuEncoderDisabled,
   isGpuSessionError,
+  isHardwareEncoder,
   type QualityParams,
 } from '../ffmpeg';
+import {
+  buildLongformSceneLayout,
+  type LongformSceneLayoutOptions,
+} from '../layouts/longform-layouts';
 import type { SegmentLayoutResult } from '../layouts/segment-layouts';
-import { toFFmpegPath } from './helpers';
+import { type ComplexFilterArgs, complexFilterArgs, toFFmpegPath } from './helpers';
 import { xfadeTransitionFor } from './layout-transitions';
 import { getIntermediateQuality } from './quality';
 import { quantizeToFrames, xfadeOffsetArg } from './transition-easing';
@@ -62,6 +70,188 @@ function pickEncoder(qp: QualityParams): { encoder: string; presetFlag: string[]
   return sw
     ? { encoder: sw.encoder, presetFlag: sw.presetFlag }
     : { encoder: detected.encoder, presetFlag: detected.presetFlag };
+}
+
+// ---------------------------------------------------------------------------
+// Scene-first encodes. Video-only segments; narration is encoded once from source.
+// ---------------------------------------------------------------------------
+
+interface SceneEncodeControl {
+  signal?: AbortSignal | undefined;
+  onProgress?: ((percent: number) => void) | undefined;
+  qualityParams?: QualityParams | undefined;
+}
+
+/** Do not use the legacy broad 'Error initializing' heuristic for bad inputs/filter graphs. */
+function isSceneHardwareFailure(encoder: string, message: string): boolean {
+  return (
+    isHardwareEncoder(encoder) &&
+    (/OpenEncodeSessionEx failed|No (?:NVENC )?capable devices found|Cannot load (?:nvcuda|nvEncodeAPI|libcuda)|CUDA_ERROR_|3221225477/i.test(
+      message,
+    ) ||
+      /Driver does not support the required nvenc API|Error (?:initializing an internal|creating (?:a|an)) MFX session|cannot create compression session/i.test(
+        message,
+      ))
+  );
+}
+
+/** Abort only this process, wait for its exit, and never retry cancellation on the GPU. */
+function runSceneEncode(
+  create: (encoder: string, presetFlag: string[]) => FfmpegCommand,
+  outputPath: string,
+  control: SceneEncodeControl,
+): Promise<void> {
+  const { signal, onProgress } = control;
+  const qp = control.qualityParams ?? getIntermediateQuality();
+  return new Promise((resolve, reject) => {
+    let fallbackAttempted = false;
+    const run = (encoder: string, presetFlag: string[]): void => {
+      if (signal?.aborted) {
+        reject(signal.reason);
+        return;
+      }
+      const cmd = create(encoder, presetFlag);
+      const abort = (): void => cmd.kill('SIGTERM');
+      const cleanup = (): void => signal?.removeEventListener('abort', abort);
+      const stderr: string[] = [];
+      signal?.addEventListener('abort', abort, { once: true });
+      cmd
+        .on('stderr', (line: string) => {
+          stderr.push(line);
+          if (stderr.length > 20) stderr.shift();
+        })
+        .on('progress', (progress: { percent?: number }) =>
+          onProgress?.(Math.min(99, progress.percent ?? 0)),
+        )
+        .on('end', () => {
+          cleanup();
+          if (signal?.aborted) reject(signal.reason);
+          else {
+            onProgress?.(100);
+            resolve();
+          }
+        })
+        .on('error', (error: Error) => {
+          cleanup();
+          if (signal?.aborted) {
+            reject(signal.reason);
+            return;
+          }
+          if (
+            !fallbackAttempted &&
+            isSceneHardwareFailure(encoder, `${error.message}\n${stderr.join('\n')}`)
+          ) {
+            fallbackAttempted = true;
+            disableGpuEncoderForSession();
+            const fallback = getSoftwareEncoder(qp);
+            run(fallback.encoder, fallback.presetFlag);
+          } else reject(new Error(`${error.message}\n[stderr tail] ${stderr.join('\n')}`));
+        });
+      try {
+        cmd.save(toFFmpegPath(outputPath));
+      } catch (error) {
+        cleanup();
+        reject(error);
+      }
+    };
+    const encoder = pickEncoder(qp);
+    run(encoder.encoder, encoder.presetFlag);
+  });
+}
+
+export interface EncodeLongformSceneSegmentOptions
+  extends LongformSceneLayoutOptions,
+    SceneEncodeControl {
+  sourceVideoPath: string;
+  outputPath: string;
+  startTime: number;
+  visualPath?: string;
+}
+
+export function encodeLongformSceneSegment(opts: EncodeLongformSceneSegmentOptions): Promise<void> {
+  if (Boolean(opts.visualPath) !== Boolean(opts.presentation))
+    throw new Error('Scene presentation requires its rendered visual.');
+  const filter = buildLongformSceneLayout(opts);
+  return runSceneEncode(
+    (encoder, presetFlag) => {
+      const cmd = ffmpeg(toFFmpegPath(opts.sourceVideoPath))
+        .inputOptions(['-protocol_whitelist', 'file,pipe'])
+        .seekInput(opts.startTime);
+      if (opts.visualPath)
+        cmd.input(toFFmpegPath(opts.visualPath)).inputOptions(['-protocol_whitelist', 'file,pipe']);
+      return cmd
+        .frames(opts.frameCount)
+        .outputOptions([
+          '-filter_complex',
+          filter,
+          '-map',
+          '[outv]',
+          '-an',
+          ...intermediateSink(encoder, presetFlag, LANDSCAPE_FPS),
+        ]);
+    },
+    opts.outputPath,
+    opts,
+  );
+}
+
+export interface ConcatLongformSceneSegmentsOptions extends SceneEncodeControl {
+  segments: readonly { path: string; frameCount: number }[];
+  /** Owned by the caller's request temp directory. */
+  listPath: string;
+  sourceVideoPath: string;
+  outputPath: string;
+  audioStartTime: number;
+  duration: number;
+  /** Determined from source metadata before any scene render; false emits bounded silence. */
+  sourceHasAudio: boolean;
+}
+
+/** One decoder at a time, no per-segment audio seams and no duration taken from media metadata. */
+export function concatLongformSceneSegments(
+  opts: ConcatLongformSceneSegmentsOptions,
+): Promise<void> {
+  opts.signal?.throwIfAborted();
+  const frames = opts.segments.reduce((total, segment) => total + segment.frameCount, 0);
+  if (!frames) throw new Error('Cannot concatenate an empty scene timeline.');
+  writeFileSync(
+    opts.listPath,
+    opts.segments
+      .map(
+        (segment) =>
+          `file '${toFFmpegPath(segment.path).replace(/'/g, "'\\''")}'\nduration ${segment.frameCount / LANDSCAPE_FPS}\n`,
+      )
+      .join(''),
+  );
+  const audio = opts.sourceHasAudio ? '[1:a]aresample=48000,apad' : 'anullsrc=r=48000:cl=stereo';
+  const filter =
+    `[0:v]setpts=N/${LANDSCAPE_FPS}/TB,trim=end_frame=${frames},setsar=1,format=yuv420p[outv];` +
+    `${audio},atrim=duration=${opts.duration},asetpts=PTS-STARTPTS[outa]`;
+  return runSceneEncode(
+    (encoder, presetFlag) => {
+      const cmd = ffmpeg()
+        .input(toFFmpegPath(opts.listPath))
+        .inputOptions(['-f', 'concat', '-safe', '0', '-protocol_whitelist', 'file,pipe']);
+      if (opts.sourceHasAudio)
+        cmd
+          .input(toFFmpegPath(opts.sourceVideoPath))
+          .inputOptions(['-protocol_whitelist', 'file,pipe'])
+          .seekInput(opts.audioStartTime);
+      return cmd
+        .duration(opts.duration)
+        .outputOptions([
+          '-filter_complex',
+          filter,
+          '-map',
+          '[outv]',
+          '-map',
+          '[outa]',
+          ...intermediateSink(encoder, presetFlag, LANDSCAPE_FPS),
+        ]);
+    },
+    opts.outputPath,
+    opts,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -410,6 +600,7 @@ export function concatNormalizedSegments(
   }
 
   const filterComplex = buildNormalizedConcatFilter(segments, fps, options);
+  const filterArgs = complexFilterArgs(filterComplex);
   const qp = getIntermediateQuality();
 
   return new Promise<void>((resolve, reject) => {
@@ -425,8 +616,7 @@ export function concatNormalizedSegments(
 
       cmd
         .outputOptions([
-          '-filter_complex',
-          filterComplex,
+          ...filterArgs.options,
           '-map',
           '[outv]',
           '-map',
@@ -454,7 +644,7 @@ export function concatNormalizedSegments(
     const gpuDisabled = isGpuEncoderDisabled();
     const selected = gpuDisabled ? getSoftwareEncoder(qp) : getEncoder(qp);
     run(selected.encoder, selected.presetFlag, !gpuDisabled && selected.encoder !== 'libx264');
-  });
+  }).finally(filterArgs.dispose);
 }
 
 // ---------------------------------------------------------------------------
@@ -486,6 +676,8 @@ export interface CompositePhraseOverlaysOptions {
 export function compositePhraseOverlays(opts: CompositePhraseOverlaysOptions): Promise<void> {
   const { inputPath, outputPath, overlays, qualityParams } = opts;
 
+  const scripts: ComplexFilterArgs[] = [];
+
   return new Promise<void>((resolve, reject) => {
     let fallbackAttempted = false;
 
@@ -515,12 +707,12 @@ export function compositePhraseOverlays(opts: CompositePhraseOverlaysOptions): P
       // Normalize pixel format on a separate node — appending a filter after a
       // labelled pad ([outv]) is invalid filtergraph syntax.
       steps.push(`[${prev}]format=yuv420p[outv]`);
-      const filterComplex = steps.join(';');
+      const filterArgs = complexFilterArgs(steps.join(';'));
+      scripts.push(filterArgs);
 
       cmd
         .outputOptions([
-          '-filter_complex',
-          filterComplex,
+          ...filterArgs.options,
           '-map',
           '[outv]',
           '-map',
@@ -559,6 +751,8 @@ export function compositePhraseOverlays(opts: CompositePhraseOverlaysOptions): P
       ? getSoftwareEncoder(qualityParams)
       : getEncoder(qualityParams);
     run(encoder, presetFlag, true);
+  }).finally(() => {
+    for (const script of scripts) script.dispose();
   });
 }
 
@@ -598,6 +792,8 @@ export interface CompositeDelosCardsOptions {
 export function compositeDelosCards(opts: CompositeDelosCardsOptions): Promise<void> {
   const { inputPath, outputPath, overlays, width, height, qualityParams } = opts;
 
+  const scripts: ComplexFilterArgs[] = [];
+
   return new Promise<void>((resolve, reject) => {
     let fallbackAttempted = false;
 
@@ -627,12 +823,12 @@ export function compositeDelosCards(opts: CompositeDelosCardsOptions): Promise<v
         prev = outLabel;
       });
       steps.push(`[${prev}]format=yuv420p[outv]`);
-      const filterComplex = steps.join(';');
+      const filterArgs = complexFilterArgs(steps.join(';'));
+      scripts.push(filterArgs);
 
       cmd
         .outputOptions([
-          '-filter_complex',
-          filterComplex,
+          ...filterArgs.options,
           '-map',
           '[outv]',
           '-map',
@@ -671,5 +867,7 @@ export function compositeDelosCards(opts: CompositeDelosCardsOptions): Promise<v
       ? getSoftwareEncoder(qualityParams)
       : getEncoder(qualityParams);
     run(encoder, presetFlag, true);
+  }).finally(() => {
+    for (const script of scripts) script.dispose();
   });
 }

@@ -22,7 +22,15 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
+import { getLongformLayout, type LongformLayout } from '../../../../shared/longform-layout';
+import type { LongformPresentation } from '../../../../shared/longform-scenes';
 import { EASE } from '../../shared/easing';
+import {
+  type EditorialSlot,
+  fitEditorialText,
+  longformTextRegions,
+  modelSpaceTransform,
+} from './longform-stage-layout';
 import { motionProgress } from './motion-tokens';
 import { deriveExplainerPalette } from './palette';
 import {
@@ -46,6 +54,9 @@ export interface ExplainerContextValue {
   palette: ExplainerPalette;
   layout: ExplainerLayout;
   aspect: ExplainerAspect;
+  presentation?: LongformPresentation;
+  /** SceneFrame opts modern family owners into native landscape regions. */
+  nativeStage?: boolean;
   /** Content box override; `stageSafeBox(layout, aspect)` when absent. */
   safe?: StageSafeBox | undefined;
   /** Extras of the scene currently rendering (pulses, overlay stamp …). */
@@ -104,13 +115,17 @@ export interface LayoutInfo {
   unit: number;
   /** True for the transparent `over` layout (no backdrop, glass card). */
   floating: boolean;
+  /** Absolute shared compositor rectangles, only for explicit landscape presentations. */
+  longform?: LongformLayout;
 }
 
 export function useLayout(): LayoutInfo {
-  const { layout, aspect, safe: safeOverride } = useContext(ExplainerContext);
+  const { layout, aspect, safe: safeOverride, presentation } = useContext(ExplainerContext);
   return useMemo(() => {
     const canvas = stageCanvasFor(layout, aspect);
-    const safe = safeOverride ?? stageSafeBox(layout, aspect);
+    const longform =
+      presentation && aspect === '16:9' ? getLongformLayout(presentation) : undefined;
+    const safe = longform?.explanation ?? safeOverride ?? stageSafeBox(layout, aspect);
     const unit = Math.min(safe.width / 960, safe.height / 840);
     return {
       layout,
@@ -119,10 +134,84 @@ export function useLayout(): LayoutInfo {
       height: canvas.height,
       safe,
       unit: Math.max(0.55, Math.min(1.25, unit)),
-      floating: layout === 'over',
+      floating: !longform && layout === 'over',
+      longform,
     };
-  }, [layout, aspect, safeOverride]);
+  }, [layout, aspect, safeOverride, presentation]);
 }
+
+/** Only modern family owners use this. Older art remains a deliberately contained composition. */
+export function useWideStage(): LongformLayout | undefined {
+  const { nativeStage } = useExplainerContext();
+  const { longform } = useLayout();
+  return nativeStage ? longform : undefined;
+}
+
+/**
+ * Leave the authored anchor coordinate system to draw in real composition pixels.
+ * The inverse transform cancels SceneFrame's model-anchor mapping. This keeps one
+ * genuinely rectangular WebGL viewport while existing model labels track exactly.
+ */
+export const StageSpace: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const wide = useWideStage();
+  if (!wide) return <>{children}</>;
+  const m = modelSpaceTransform(wide.model);
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: -m.x / m.scale,
+        top: -m.y / m.scale,
+        width: wide.width,
+        height: wide.height,
+        transform: `scale(${1 / m.scale})`,
+        transformOrigin: 'top left',
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+/** Palette/font-preserving editorial rail with deterministic, non-truncating long-label wrapping. */
+export const WideStageText: React.FC<{
+  slot: EditorialSlot;
+  text: string;
+  size?: number;
+  opacity?: number;
+  marker?: React.ReactNode;
+}> = ({ slot, text, size = 36, opacity = 1, marker }) => {
+  const wide = useWideStage();
+  const S = useStage();
+  if (!wide) return null;
+  const region = longformTextRegions(wide)[slot];
+  const fit = fitEditorialText(text, { ...region, width: region.width - (marker ? 56 : 0) }, size);
+  return (
+    <StageSpace>
+      <div
+        data-longform-text={slot}
+        style={{
+          position: 'absolute',
+          left: region.x,
+          top: region.y,
+          width: region.width,
+          fontFamily: S.font,
+          fontSize: fit.fontSize,
+          fontWeight: slot === 'title' ? 750 : 650,
+          lineHeight: 1.16,
+          color: slot === 'evidence' ? S.muted : S.text,
+          opacity,
+          overflowWrap: 'anywhere',
+          display: 'flex',
+          gap: 20,
+        }}
+      >
+        {marker && <div style={{ width: 36, flexShrink: 0 }}>{marker}</div>}
+        <div style={{ whiteSpace: 'pre-line' }}>{fit.lines.join('\n')}</div>
+      </div>
+    </StageSpace>
+  );
+};
 
 /** v1 constant, kept for code that has no provider (default palette). */
 export const STAGE = {

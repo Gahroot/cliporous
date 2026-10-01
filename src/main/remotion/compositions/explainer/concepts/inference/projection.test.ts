@@ -27,6 +27,8 @@ vi.mock('../../stage', async (original) => {
   return {
     ...actual,
     useStage: () => actual.STAGE,
+    // These projections retain the legacy stage; native widescreen has separate coverage.
+    useWideStage: () => undefined,
     useSceneTime: () => ({ t: clock.t, frame: clock.t * 30, fps: 30 }),
   };
 });

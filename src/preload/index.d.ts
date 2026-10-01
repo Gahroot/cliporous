@@ -14,6 +14,11 @@ import type {
   NativeNotificationClick,
   NativeNotificationOptions,
 } from '@shared/jobs';
+import type {
+  LongformGenerationRequest,
+  LongformPlanningProgress,
+  LongformScenePreviewRequest,
+} from '@shared/longform-scenes';
 import type { MediaPathStatus, MediaSearchResult, MediaSearchSource } from '@shared/media';
 import type { ProjectLoadResult, ProjectSaveOptions } from '@shared/project';
 import type {
@@ -23,7 +28,7 @@ import type {
   PythonSetupStatus,
 } from '@shared/python-setup';
 import type { RecentProjectEntry, RecentProjectRenameResult } from '@shared/recent-projects';
-import type { LongformRenderReconciliation } from '@shared/types';
+import type { LongformEditPlan, LongformRenderReconciliation } from '@shared/types';
 import type { AppUpdateState } from '@shared/updater';
 
 // ---------------------------------------------------------------------------
@@ -79,46 +84,6 @@ interface PromoClip {
   text: string;
   label: string;
   wordTimestamps: WordTimestamp[];
-}
-
-// ---------------------------------------------------------------------------
-// Long-form (Hormozi 16:9) edit plan
-// ---------------------------------------------------------------------------
-
-interface LongformPhraseEmphasis {
-  text: string;
-  startTime: number;
-  endTime: number;
-  accentColor?: string;
-}
-
-/**
- * Skinned content-block placement. The renderer treats blocks opaquely (it
- * only reads `blocks.length` for the planning toast), so this mirrors the
- * shared `BlockPlacement` discriminated union loosely — the authoritative,
- * fully-typed definition lives in `src/shared/types.ts`.
- */
-interface LongformBlockPlacement {
-  kind: string;
-  startTime: number;
-  endTime: number;
-  kicker: string;
-  heading: string;
-  accentColor?: string;
-  [key: string]: unknown;
-}
-
-interface LongformEditPlan {
-  phrases: LongformPhraseEmphasis[];
-  blocks: LongformBlockPlacement[];
-  cards?: Array<{
-    kind: string;
-    startTime: number;
-    endTime: number;
-    sourceText?: string;
-  }>;
-  reasoning: string;
-  generatedAt: number;
 }
 
 interface TranscriptionProgress {
@@ -444,6 +409,7 @@ interface RenderBatchOptions {
   outputProfile?: import('@shared/types').OutputProfile;
   /** AI-generated long-form edit plan. Required when `outputProfile` is `'longform'`. */
   longformEditPlan?: LongformEditPlan;
+  longformEditsEnabled?: boolean;
   /**
    * User-chosen visual skin for long-form content blocks. Falls back to the
    * default block skin on the main side. Ignored outside `'longform'`.
@@ -739,10 +705,18 @@ interface Api {
     words: WordTimestamp[],
     videoDuration: number,
     feedback?: string[],
+    options?: Pick<
+      LongformGenerationRequest,
+      'requestId' | 'mode' | 'previousPlan' | 'preservedSceneIds' | 'sectionIds'
+    >,
   ) => Promise<LongformEditPlan>;
+  cancelLongformEditPlan: (requestId?: string) => Promise<void>;
   onLongformEditProgress: (
-    callback: (data: { stage: 'ai-editing'; window: number; total: number }) => void,
+    callback: (data: LongformPlanningProgress & { stage: 'ai-editing' }) => void,
   ) => () => void;
+  renderLongformScenePreview: (request: LongformScenePreviewRequest) => Promise<string>;
+  cancelLongformScenePreview: (requestId: string) => Promise<void>;
+  cleanupLongformScenePreview: (path: string) => Promise<void>;
 
   // Face detection
   detectFaceCrops: (

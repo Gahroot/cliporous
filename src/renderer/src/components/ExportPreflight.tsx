@@ -9,7 +9,7 @@ import {
   Settings,
   Timer,
 } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -51,7 +51,7 @@ function PreflightMetric({
         <Icon className="h-3.5 w-3.5" aria-hidden />
         {label}
       </p>
-      <p className="mt-1 truncate text-sm font-medium text-foreground" title={value}>
+      <p className="mt-1 break-words text-sm font-medium text-foreground" title={value}>
         {value}
       </p>
       {detail && <p className="mt-0.5 text-[11px] text-muted-foreground">{detail}</p>}
@@ -69,19 +69,25 @@ export function ExportPreflight({
 }: ExportPreflightProps): React.JSX.Element {
   const settings = useStore((state) => state.settings);
   const setOutputDirectory = useStore((state) => state.setOutputDirectory);
+  const clips = useStore((state) => state.clips);
+  const stitchedClips = useStore((state) => state.stitchedClips);
+  const pendingQueue = useMemo(() => queue.filter((item) => item.status === 'queued'), [queue]);
+  const requestRef = useRef(0);
+  const [launching, setLaunching] = useState(false);
   const [result, setResult] = useState<ExportPreflightResult | null>(null);
   const [checking, setChecking] = useState(true);
   const [checkError, setCheckError] = useState<string | null>(null);
   const queueSignature = useMemo(
-    () =>
-      queue.map((item) => `${item.clipId}:${item.durationSeconds ?? 0}:${item.status}`).join('|'),
-    [queue],
+    () => pendingQueue.map((item) => `${item.clipId}:${item.durationSeconds ?? 0}`).join('|'),
+    [pendingQueue],
   );
   const sourceSignature = sourcePaths.join('|');
 
   const check = useCallback(async (): Promise<void> => {
+    const request = ++requestRef.current;
     setChecking(true);
     setCheckError(null);
+    setResult(null);
     try {
       const destination =
         settings.outputDirectory ??
@@ -89,26 +95,51 @@ export function ExportPreflight({
       const next = await runExportPreflight({
         destination,
         sourcePaths,
-        queue: queue.filter((item) => item.status !== 'cancelled'),
+        queue: pendingQueue,
         settings,
         outputMode,
       });
-      setResult(next);
+      if (request === requestRef.current) setResult(next);
     } catch (caught) {
-      setCheckError(caught instanceof Error ? caught.message : String(caught));
+      if (request === requestRef.current) {
+        setCheckError(caught instanceof Error ? caught.message : String(caught));
+      }
     } finally {
-      setChecking(false);
+      if (request === requestRef.current) setChecking(false);
     }
-  }, [outputMode, queue, settings, sourcePaths]);
+  }, [outputMode, pendingQueue, settings, sourcePaths]);
 
   useEffect(() => {
     void queueSignature;
     void sourceSignature;
     void check();
+    return () => {
+      requestRef.current += 1;
+    };
   }, [check, queueSignature, sourceSignature]);
 
   const blockers = result?.issues.filter((issue) => issue.severity === 'blocker') ?? [];
   const warnings = result?.issues.filter((issue) => issue.severity === 'warning') ?? [];
+  const reviewCounts = { approved: 0, pending: 0, rejected: 0 };
+  for (const item of pendingQueue) {
+    const id = item.sourceId ?? sourceId;
+    const clip = id
+      ? [...(clips[id] ?? []), ...(stitchedClips[id] ?? [])].find((clip) => clip.id === item.clipId)
+      : undefined;
+    if (clip) reviewCounts[clip.status] += 1;
+  }
+  const stitchedCount = pendingQueue.filter((item) => item.kind === 'stitched').length;
+  const fileCount = pendingQueue.length;
+  const startDisabled =
+    checking ||
+    starting ||
+    launching ||
+    !result ||
+    !!checkError ||
+    blockers.length > 0 ||
+    fileCount === 0 ||
+    !sourceId ||
+    sourcePaths.length === 0;
 
   const chooseDestination = async (): Promise<void> => {
     const path = await window.api.openDirectory();
@@ -134,7 +165,7 @@ export function ExportPreflight({
     <Card className="border-border/80 bg-card/85 p-4" aria-busy={checking}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-foreground">Export preflight</p>
+          <h2 className="text-sm font-semibold text-foreground">Before you export</h2>
           <p className="mt-1 text-xs text-muted-foreground">
             Destination, media, space, and encoder are checked before expensive work starts.
           </p>
@@ -143,20 +174,45 @@ export function ExportPreflight({
           variant="outline"
           size="sm"
           onClick={() => void check()}
-          disabled={checking || starting}
+          disabled={checking || starting || launching}
         >
           {checking ? <Loader2 className="animate-spin" aria-hidden /> : <Gauge aria-hidden />}
           {checking ? 'Checking' : 'Check again'}
         </Button>
       </div>
 
+      <section aria-label="Export scope" className="mt-4 space-y-1 text-xs">
+        <p className="font-semibold text-foreground">
+          {fileCount} {outputMode === 'longform' ? 'full-length video' : 'queued clip'}
+          {fileCount === 1 ? '' : 's'}
+          {' · '}
+          {fileCount} {fileCount === 1 ? 'file' : 'files'}
+        </p>
+        <p className="text-muted-foreground">
+          {outputMode === 'longform'
+            ? 'The approved plan, across the whole source video.'
+            : 'Only the queued clips below. Finished, failed, and cancelled items are not included.'}
+        </p>
+        {outputMode === 'short' && (
+          <p className="text-muted-foreground">
+            {reviewCounts.approved} approved · {reviewCounts.pending} unreviewed ·{' '}
+            {reviewCounts.rejected} rejected
+            {stitchedCount > 0 &&
+              ` · ${stitchedCount} stitched ${stitchedCount === 1 ? 'story' : 'stories'}`}
+          </p>
+        )}
+        <p>
+          Fixed format: {outputMode === 'longform' ? '1920×1080 · 16:9' : '1080×1920 · 9:16'} · 30
+          fps
+        </p>
+        <p className="break-all">
+          Destination:{' '}
+          {result?.destination || settings.outputDirectory || 'Checking the default export folder…'}
+        </p>
+      </section>
+
       {result && (
-        <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-4 border-y border-border/80 py-4 md:grid-cols-3 xl:grid-cols-6">
-          <PreflightMetric
-            icon={FolderOpen}
-            label="Destination"
-            value={result.destination || 'Not set'}
-          />
+        <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-4 border-y border-border/80 py-4 md:grid-cols-3 xl:grid-cols-5">
           <PreflightMetric
             icon={HardDrive}
             label="Free space"
@@ -197,10 +253,15 @@ export function ExportPreflight({
       )}
 
       <div className="mt-3 space-y-2" aria-live="polite">
+        {(!sourceId || sourcePaths.length === 0) && (
+          <p className="text-xs text-destructive">
+            Source media is unavailable. Relink the source before exporting.
+          </p>
+        )}
         {checkError && (
           <div className="flex items-start gap-2 rounded-md border border-destructive/35 bg-destructive/10 p-3 text-xs text-destructive">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-            <div className="min-w-0 flex-1">
+            <div className="min-w-[160px] flex-1">
               <p className="font-semibold">Preflight could not finish</p>
               <p className="mt-0.5">{checkError}</p>
             </div>
@@ -210,14 +271,14 @@ export function ExportPreflight({
           <div
             key={issue.id}
             className={cn(
-              'flex items-start gap-2 rounded-md border p-3 text-xs',
+              'flex flex-wrap items-start gap-2 rounded-md border p-3 text-xs',
               issue.severity === 'blocker'
                 ? 'border-destructive/35 bg-destructive/10 text-destructive'
                 : 'border-warning/35 bg-warning/10 text-foreground',
             )}
           >
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-            <div className="min-w-0 flex-1">
+            <div className="min-w-[160px] flex-1">
               <p className="font-semibold">{issue.title}</p>
               <p className="mt-0.5 text-muted-foreground">{issue.detail}</p>
             </div>
@@ -244,12 +305,16 @@ export function ExportPreflight({
             )}
           </div>
         ))}
-        {result && blockers.length === 0 && warnings.length === 0 && (
-          <div className="flex items-center gap-2 rounded-md border border-success/35 bg-success/10 p-3 text-xs text-success">
-            <Check className="h-4 w-4" aria-hidden />
-            Ready to export. Source media and destination checks passed.
-          </div>
-        )}
+        {result &&
+          sourceId &&
+          sourcePaths.length > 0 &&
+          blockers.length === 0 &&
+          warnings.length === 0 && (
+            <div className="flex items-center gap-2 rounded-md border border-success/35 bg-success/10 p-3 text-xs text-success">
+              <Check className="h-4 w-4" aria-hidden />
+              Ready to export. Source media and destination checks passed.
+            </div>
+          )}
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -259,19 +324,23 @@ export function ExportPreflight({
         </p>
         <Button
           size="sm"
-          onClick={() => {
-            if (blockers.length > 0) {
-              toast.error('Resolve the preflight blockers before exporting');
-              return;
+          onClick={async () => {
+            if (startDisabled) return;
+            setLaunching(true);
+            try {
+              await onStart();
+            } catch (caught) {
+              toast.error(caught instanceof Error ? caught.message : "Couldn't start the export");
+            } finally {
+              setLaunching(false);
             }
-            void onStart();
           }}
-          disabled={checking || starting || !result || blockers.length > 0 || queue.length === 0}
+          disabled={startDisabled}
         >
-          {starting && <Loader2 className="animate-spin" aria-hidden />}
-          {starting
+          {(starting || launching) && <Loader2 className="animate-spin" aria-hidden />}
+          {starting || launching
             ? 'Starting export'
-            : `Start ${result?.clipCount ?? queue.length} ${queue.length === 1 ? 'export' : 'exports'}`}
+            : `Start ${fileCount} ${fileCount === 1 ? 'export' : 'exports'}`}
         </Button>
       </div>
     </Card>

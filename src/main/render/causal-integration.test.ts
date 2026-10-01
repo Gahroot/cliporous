@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { allHybridFixtures } from '../ai/explainer/hybrid-test-fixtures';
 import { isRec } from '../ai/explainer/kind-spec';
 import {
   type PlannedExplainerScene,
@@ -168,6 +169,21 @@ function conceptBodies(): ExplainerScene[] {
   return [...found.values()];
 }
 
+function hybridBodies(): ExplainerScene[] {
+  const found = new Map<string, ExplainerScene>();
+  for (const { fixture } of allHybridFixtures()) {
+    const result = parsePlanWithDiagnostics({ scenes: [fixture.raw] }, fixture.words, {
+      minStart: 0,
+      maxEnd: 90,
+    });
+    const parsed = result.accepted[0]?.scene;
+    if (!parsed || result.rejected.length) throw new Error('Hybrid source fixture did not parse');
+    // This suite isolates six-second clock/layout plumbing; hybrid-library verifies full source windows.
+    if (!found.has(parsed.kind)) found.set(parsed.kind, { ...parsed, ...technologyBeats });
+  }
+  return [...found.values()];
+}
+
 const bodies: ExplainerScene[] = [
   {
     kind: 'bottleneck',
@@ -246,6 +262,7 @@ const bodies: ExplainerScene[] = [
   ...technologyBodies,
   ...explanationBodies,
   ...conceptBodies(),
+  ...hybridBodies(),
 ];
 
 function planned(scene: ExplainerScene, startTime = 20): PlannedExplainerScene {

@@ -907,7 +907,7 @@ export function ClipDetail({
 
   const inspectorHeadingId = `clip-inspector-heading-${clip?.id ?? 'empty'}`;
   const inspectorSummary = clip
-    ? `${regularClip?.scoreSource === 'manual' ? 'Not scored' : `Score ${Math.round(clip.score)}`} · ${duration.toFixed(1)}s`
+    ? `${regularClip?.scoreSource === 'manual' ? 'Not scored' : `AI score ${Math.round(clip.score)} (advisory)`} · ${duration.toFixed(1)}s`
     : 'No clip selected.';
   const inspectorContent = (
     <>
@@ -1026,6 +1026,7 @@ export function ClipDetail({
                       <video
                         ref={stitchedVideoRef}
                         data-review-player="true"
+                        aria-label={`Source ranges for ${stitchedClip.hookText || 'stitched clip'}`}
                         src={sourceUrl}
                         controls
                         playsInline
@@ -1061,9 +1062,9 @@ export function ClipDetail({
                     </div>
                   )}
                 </div>
-                <p className="px-4 pb-2 text-center text-[10px] leading-tight text-muted-foreground">
-                  Plays each source range in sequence with an approximate 9:16 layout guide. Final
-                  burn-in may vary slightly.
+                <p className="px-4 pb-2 text-center text-[10px] leading-tight text-white/65">
+                  Source media · plays each range in sequence with an approximate layout guide. Not
+                  an edited preview or final export.
                 </p>
               </div>
               <div className="flex flex-col gap-6 p-4">
@@ -1073,7 +1074,7 @@ export function ClipDetail({
                     <Label className="text-sm font-medium">Stitched clip</Label>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Range editing isn’t supported yet. Approve to render or reject.
+                    Range editing isn’t supported yet. Review this clip before preparing an export.
                   </p>
                 </section>
 
@@ -1127,7 +1128,7 @@ export function ClipDetail({
                   <>
                     <EditorialPlayer
                       src={previewPlayerUrl}
-                      label={`Preview of ${regularClip.hookText || 'selected clip'}`}
+                      label={`${showingRenderedPreview ? 'Edited preview' : 'Source media'} of ${regularClip.hookText || 'selected clip'}`}
                       selectionStart={previewSelectionStart}
                       selectionEnd={previewSelectionEnd}
                       initialTime={previewInitialTime}
@@ -1156,10 +1157,10 @@ export function ClipDetail({
                     />
                     <p className="px-4 pb-2 text-center text-[10px] leading-tight text-white/55">
                       {showingRenderedPreview
-                        ? 'Low-quality render for editorial review. Final export can include additional enabled effects.'
+                        ? 'Edited preview · low quality, not the final export. Final export can include additional enabled effects.'
                         : renderedPreviewForStatus.status === 'failed'
-                          ? 'Live layout guide shown after the rendered preview failed.'
-                          : 'Live layout guide shown immediately while the rendered preview is prepared.'}
+                          ? 'Source media · approximate layout guide after the edited preview failed. Not the final export.'
+                          : 'Source media · approximate layout guide while the edited preview is prepared. Not the final export.'}
                     </p>
                   </>
                 ) : sourceOffline || sourceChecking ? (

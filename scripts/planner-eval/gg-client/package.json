@@ -1,0 +1,12 @@
+{
+  "name": "batchclip-planner-chatgpt-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Opt-in, isolated ChatGPT subscription transport for planner evaluation; not an app dependency.",
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "@kenkaiiii/gg-ai": "5.67.1",
+    "@kenkaiiii/gg-core": "5.67.1"
+  }
+}

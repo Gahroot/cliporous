@@ -1,3 +1,4 @@
+import { isSceneFirstPlanEnvelope } from '@shared/longform-scenes';
 import { ArrowRightLeft, History, RotateCcw } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { compareLongformPlans, humanizeLongformKind } from '@/lib/longform-plan';
+import {
+  compareLongformPlans,
+  humanizeLongformKind,
+  isScenePlanForReview,
+} from '@/lib/longform-plan';
 import type { LongformPlanVersion } from '@/store/longform-slice';
 
 interface CutPlanVersionDialogProps {
@@ -29,11 +34,30 @@ function versionLabel(version: LongformPlanVersion, index: number): string {
 
 function VersionSummary({ version }: { version: LongformPlanVersion }): React.JSX.Element {
   const plan = version.plan;
+  const scenePlan = isSceneFirstPlanEnvelope(plan) ? plan : null;
+  const unsupported = isScenePlanForReview(plan) && !scenePlan;
   const kinds = new Map<string, number>();
-  for (const block of plan.blocks) kinds.set(block.kind, (kinds.get(block.kind) ?? 0) + 1);
+  for (const item of scenePlan?.scenes ?? (unsupported ? [] : plan.blocks))
+    kinds.set(item.kind, (kinds.get(item.kind) ?? 0) + 1);
+  const counts = scenePlan
+    ? [
+        ['Included scenes', scenePlan.scenes.filter((scene) => !scene.omitted).length],
+        ['Omitted scenes', scenePlan.scenes.filter((scene) => scene.omitted).length],
+        [
+          'Failed sections',
+          scenePlan.sections.filter((section) => section.status === 'failed').length,
+        ],
+      ]
+    : unsupported
+      ? []
+      : [
+          ['Phrases', plan.phrases.length],
+          ['Blocks', plan.blocks.length],
+          ['Cards', plan.cards?.length ?? 0],
+        ];
   return (
     <section
-      className="rounded-lg border border-border bg-card p-4"
+      className="min-w-0 rounded-lg border border-border bg-card p-4 [overflow-wrap:anywhere]"
       aria-label="Plan version summary"
     >
       <div className="flex items-start justify-between gap-3">
@@ -45,19 +69,23 @@ function VersionSummary({ version }: { version: LongformPlanVersion }): React.JS
         </div>
         <History className="h-4 w-4 text-muted-foreground" aria-hidden />
       </div>
-      <dl className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-        <div className="rounded border border-border/70 bg-muted/45 px-2 py-2">
-          <dt className="text-muted-foreground">Phrases</dt>
-          <dd className="mt-1 text-base font-semibold tabular-nums">{plan.phrases.length}</dd>
-        </div>
-        <div className="rounded border border-border/70 bg-muted/45 px-2 py-2">
-          <dt className="text-muted-foreground">Blocks</dt>
-          <dd className="mt-1 text-base font-semibold tabular-nums">{plan.blocks.length}</dd>
-        </div>
-        <div className="rounded border border-border/70 bg-muted/45 px-2 py-2">
-          <dt className="text-muted-foreground">Cards</dt>
-          <dd className="mt-1 text-base font-semibold tabular-nums">{plan.cards?.length ?? 0}</dd>
-        </div>
+      <p className="mt-3 text-xs text-muted-foreground">
+        {scenePlan ? 'Scene-first plan' : unsupported ? 'Unsupported saved plan' : 'Legacy plan'}
+        {version.paletteId ? ` · Palette: ${version.paletteId}` : ''}
+      </p>
+      {(unsupported || version.validationProblem) && (
+        <p className="mt-2 text-xs text-warning">
+          {version.validationProblem ||
+            'Saved data is retained, but this version cannot be exported.'}
+        </p>
+      )}
+      <dl className="mt-4 grid grid-cols-1 gap-2 text-center text-xs sm:grid-cols-3">
+        {counts.map(([label, count]) => (
+          <div key={label} className="rounded border border-border/70 bg-muted/45 px-2 py-2">
+            <dt className="text-muted-foreground">{label}</dt>
+            <dd className="mt-1 text-base font-semibold tabular-nums">{count}</dd>
+          </div>
+        ))}
       </dl>
       {kinds.size > 0 && (
         <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
@@ -84,8 +112,10 @@ export function CutPlanVersionDialog({
 
   useEffect(() => {
     if (!open || versions.length === 0) return;
-    const active = versions.find((version) => version.id === activeVersionId) ?? versions.at(-1);
-    const previous = versions.at(Math.max(0, versions.length - 2));
+    const activeIndex = versions.findIndex((version) => version.id === activeVersionId);
+    const index = activeIndex < 0 ? versions.length - 1 : activeIndex;
+    const active = versions[index];
+    const previous = versions[Math.max(0, index - 1)];
     setRightId(active?.id ?? '');
     setLeftId(previous?.id ?? active?.id ?? '');
   }, [activeVersionId, open, versions]);
@@ -99,23 +129,25 @@ export function CutPlanVersionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[88vh] max-w-4xl overflow-y-auto">
+      <DialogContent className="max-h-[88vh] w-[calc(100%_-_2rem)] min-w-0 max-w-4xl overflow-y-auto [overflow-wrap:anywhere]">
         <DialogHeader>
           <DialogTitle>Compare Cut Plan versions</DialogTitle>
           <DialogDescription>
             Compare generated, edited, and approved plans. Restoring uses saved work and does not
-            call AI.
+            call AI. Restored and regenerated versions are drafts requiring review, not approval.
+            Scene changes are matched by stable scene ID. Start with the active version and its
+            prior snapshot.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="space-y-1.5">
+          <div className="min-w-0 space-y-1.5">
             <Label htmlFor="cut-plan-left-version">Earlier version</Label>
             <select
               id="cut-plan-left-version"
               value={leftId}
               onChange={(event) => setLeftId(event.target.value)}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-9 w-full min-w-0 max-w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {versions.map((version, index) => (
                 <option key={version.id} value={version.id}>
@@ -124,13 +156,13 @@ export function CutPlanVersionDialog({
               ))}
             </select>
           </div>
-          <div className="space-y-1.5">
+          <div className="min-w-0 space-y-1.5">
             <Label htmlFor="cut-plan-right-version">Later version</Label>
             <select
               id="cut-plan-right-version"
               value={rightId}
               onChange={(event) => setRightId(event.target.value)}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-9 w-full min-w-0 max-w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {versions.map((version, index) => (
                 <option key={version.id} value={version.id}>
@@ -160,6 +192,9 @@ export function CutPlanVersionDialog({
                   <strong>{diff.timingChanges}</strong> timing changes
                 </span>
                 <span>
+                  <strong>{diff.contentChanges}</strong> scene changes
+                </span>
+                <span>
                   <strong>{diff.unchanged}</strong> unchanged
                 </span>
               </div>
@@ -170,6 +205,18 @@ export function CutPlanVersionDialog({
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Close
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (!left) return;
+              onRestore(left.id);
+              onOpenChange(false);
+            }}
+            disabled={!left || left.id === activeVersionId}
+          >
+            <RotateCcw />
+            Restore earlier version
           </Button>
           <Button
             onClick={() => {

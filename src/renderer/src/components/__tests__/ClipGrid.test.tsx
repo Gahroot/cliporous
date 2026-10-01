@@ -28,9 +28,16 @@ vi.mock('sonner', () => ({
   }),
 }));
 
-const startApprovedRender = vi.fn(async (_options?: unknown) => ({ started: true }) as const);
+const startApprovedRender = vi.fn(async (_options?: { clipIds?: readonly string[] }) => ({
+  started: true,
+}));
 vi.mock('@/services/render-service', () => ({
-  prepareApprovedRender: (options?: unknown) => startApprovedRender(options),
+  prepareApprovedRender: (options?: { clipIds?: readonly string[] }) =>
+    startApprovedRender(options),
+}));
+const processVideo = vi.fn(async (_source: SourceVideo, _resumeFrom?: string) => {});
+vi.mock('@/hooks/usePipeline', () => ({
+  usePipeline: () => ({ processVideo }),
 }));
 
 // ---------------------------------------------------------------------------
@@ -69,6 +76,49 @@ const CLIPS: ClipCandidate[] = [
   makeClip({ id: 'c4', score: 60, hookText: 'Fourth hook line' }),
 ];
 
+function makeStitched(id: string, status: ClipCandidate['status']): StitchedClipCandidate {
+  return {
+    id,
+    sourceId: SOURCE.id,
+    sourceRanges: [
+      { startTime: 100, endTime: 104, role: 'hook' },
+      { startTime: 130, endTime: 136, role: 'main-payoff' },
+    ],
+    duration: 10,
+    text: 'A stitched story with a payoff.',
+    score: 86,
+    hookText: `Stitched ${id}`,
+    reasoning: 'Connects an opening with a later payoff.',
+    status,
+  };
+}
+
+const BUSY_STATES = [
+  {
+    name: 'processing',
+    apply: () => useStore.getState().setPipeline({ stage: 'scoring', percent: 0, message: '' }),
+  },
+  {
+    name: 'export preparation',
+    apply: () => useStore.getState().setPipeline({ stage: 'rendering', percent: 0, message: '' }),
+  },
+  { name: 'rendering', apply: () => useStore.getState().setIsRendering(true) },
+  {
+    name: 'processing cancellation',
+    apply: () =>
+      useStore.setState((state) => ({
+        processingCancellation: { ...state.processingCancellation, status: 'cancelling' },
+      })),
+  },
+  {
+    name: 'render cancellation',
+    apply: () =>
+      useStore.setState((state) => ({
+        renderCancellation: { ...state.renderCancellation, status: 'cancelling' },
+      })),
+  },
+];
+
 function pressKey(target: Window | Element, value: string, init: KeyboardEventInit = {}): void {
   const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init });
   Object.defineProperty(event, 'key', { value });
@@ -80,6 +130,8 @@ function pressKey(target: Window | Element, value: string, init: KeyboardEventIn
 // ---------------------------------------------------------------------------
 
 beforeEach(() => {
+  startApprovedRender.mockReset().mockResolvedValue({ started: true });
+  processVideo.mockReset().mockResolvedValue(undefined);
   resetStore();
   installApiStub();
   setDisplayPreferences({ ...DEFAULT_DISPLAY_PREFERENCES });
@@ -169,21 +221,23 @@ describe('ClipGrid', () => {
     const { ClipGrid } = await import('@/components/ClipGrid');
     render(<ClipGrid />);
 
-    fireEvent.click(screen.getByRole('button', { name: /Render All/ }));
+    fireEvent.click(screen.getByRole('button', { name: /^Prepare 4 clips for export$/ }));
 
     expect(startApprovedRender).not.toHaveBeenCalled();
     const dialog = await screen.findByRole('alertdialog');
-    expect(within(dialog).getByText(/Render all 4 clips\?/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/Prepare all 4 clips for export\?/)).toBeInTheDocument();
     expect(
-      within(dialog).getByText(/includes 1 rejected clip.*review decisions will stay exactly/i),
+      within(dialog).getByText(
+        /3 unreviewed and 1 rejected included.*review decisions will not change/i,
+      ),
     ).toBeInTheDocument();
 
-    fireEvent.click(within(dialog).getByRole('button', { name: /Render all 4/ }));
+    fireEvent.click(within(dialog).getByRole('button', { name: /^Prepare 4 clips for export$/ }));
     await waitFor(() => {
       expect(startApprovedRender).toHaveBeenCalledWith({
         clipIds: ['c1', 'c2', 'c3', 'c4'],
       });
-      expect(screen.getByRole('button', { name: /Render All/ })).toBeEnabled();
+      expect(screen.getByRole('button', { name: /^Prepare 4 clips for export$/ })).toBeEnabled();
     });
     expect(useStore.getState().clips[SOURCE.id]?.map((clip) => clip.status)).toEqual([
       'pending',
@@ -199,7 +253,7 @@ describe('ClipGrid', () => {
     const { ClipGrid } = await import('@/components/ClipGrid');
     render(<ClipGrid />);
 
-    fireEvent.click(screen.getByRole('button', { name: /Render All/ }));
+    fireEvent.click(screen.getByRole('button', { name: /^Prepare 4 clips for export$/ }));
     const dialog = await screen.findByRole('alertdialog');
     fireEvent.click(within(dialog).getByRole('button', { name: /Cancel/ }));
 
@@ -212,12 +266,12 @@ describe('ClipGrid', () => {
     const { ClipGrid } = await import('@/components/ClipGrid');
     render(<ClipGrid />);
 
-    fireEvent.click(screen.getByRole('button', { name: /Render All/ }));
+    fireEvent.click(screen.getByRole('button', { name: /^Prepare 4 clips for export$/ }));
 
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     await waitFor(() => {
       expect(startApprovedRender).toHaveBeenCalledTimes(1);
-      expect(screen.getByRole('button', { name: /Render All/ })).toBeEnabled();
+      expect(screen.getByRole('button', { name: /^Prepare 4 clips for export$/ })).toBeEnabled();
     });
   });
 
@@ -246,6 +300,190 @@ describe('ClipGrid', () => {
     expect(screen.getByText(/lowering the minimum score in/i)).toBeInTheDocument();
     // Must NOT show the misleading cold-start prompt.
     expect(screen.queryByText('No clips yet')).not.toBeInTheDocument();
+  });
+
+  it.each([
+    'all',
+    'approved',
+    'selected',
+  ] as const)('prepares the exact %s export scope across hidden selections and both clip kinds', async (scope) => {
+    const service = await vi.importActual<typeof import('@/services/render-service')>(
+      '@/services/render-service',
+    );
+    startApprovedRender.mockImplementation(service.prepareApprovedRender);
+    const store = useStore.getState();
+    store.updateClipStatus(SOURCE.id, 'c1', 'approved');
+    store.updateClipStatus(SOURCE.id, 'c3', 'rejected');
+    store.setStitchedClips(SOURCE.id, [
+      makeStitched('s1', 'approved'),
+      makeStitched('s2', 'rejected'),
+      makeStitched('s3', 'pending'),
+    ]);
+    const before = useStore.getState();
+    const { ClipGrid } = await import('@/components/ClipGrid');
+    render(<ClipGrid />);
+
+    expect(screen.getByText('3 left to review')).toBeInTheDocument();
+    expect(
+      screen.getByText('AI scores are suggestions. You decide what to export.'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Prepare 7 clips for export' }),
+    ).toHaveAccessibleDescription('All clips · 3 unreviewed · 2 rejected');
+    fireEvent.click(screen.getByRole('button', { name: 'Select' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /Select Second hook line/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /Select Stitched s2/ }));
+    expect(screen.queryByRole('button', { name: 'Compare' })).not.toBeInTheDocument();
+    act(() => store.setWorkspaceFilter('approved'));
+    expect(
+      screen.getByText(/Selection is not approval\. 2 hidden by the current filter/),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Select visible (2)' })).toBeEnabled();
+    expect(Array.from(useStore.getState().selectedClipIds)).toEqual(['c2', 's2']);
+
+    const buttonName =
+      scope === 'all'
+        ? 'Prepare 7 clips for export'
+        : scope === 'approved'
+          ? 'Prepare 2 approved clips for export'
+          : 'Export selected (2)';
+    fireEvent.click(screen.getByRole('button', { name: buttonName }));
+    if (scope !== 'approved') {
+      const dialog = await screen.findByRole('alertdialog');
+      expect(startApprovedRender).not.toHaveBeenCalled();
+      expect(
+        within(dialog).getByText(
+          scope === 'all'
+            ? /3 unreviewed and 2 rejected included/
+            : /1 unreviewed and 1 rejected included\. 2 hidden by the current filter/,
+        ),
+      ).toBeInTheDocument();
+      fireEvent.click(within(dialog).getByRole('button', { name: buttonName }));
+    }
+    const expectedIds =
+      scope === 'all'
+        ? ['c1', 'c2', 'c3', 'c4', 's1', 's2', 's3']
+        : scope === 'approved'
+          ? ['c1', 's1']
+          : ['c2', 's2'];
+    await waitFor(() =>
+      expect(useStore.getState().renderProgress.map((item) => item.clipId)).toEqual(expectedIds),
+    );
+    expect(startApprovedRender).toHaveBeenCalledTimes(1);
+    expect(useStore.getState().clips[SOURCE.id]).toEqual(before.clips[SOURCE.id]);
+    expect(useStore.getState().stitchedClips[SOURCE.id]).toEqual(before.stitchedClips[SOURCE.id]);
+    expect(window.api.startBatchRender).not.toHaveBeenCalled();
+  });
+
+  it('reprocesses zero results only after explicit confirmation without resetting source or transcript', async () => {
+    const store = useStore.getState();
+    store.setClips(SOURCE.id, []);
+    const before = useStore.getState();
+    let finish: () => void = () => {};
+    processVideo.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const { ClipGrid } = await import('@/components/ClipGrid');
+    render(<ClipGrid />);
+
+    expect(processVideo).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Transcript' })).toBeEnabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Open Settings' }));
+    expect(window.api.openSettingsWindow).toHaveBeenCalledTimes(1);
+    expect(processVideo).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Reprocess with current settings' }));
+    let dialog = await screen.findByRole('alertdialog');
+    expect(within(dialog).getByText(/uses AI and may incur usage costs/)).toBeInTheDocument();
+    expect(processVideo).not.toHaveBeenCalled();
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    expect(processVideo).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Reprocess with current settings' }));
+    dialog = await screen.findByRole('alertdialog');
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Reprocess now' }));
+    expect(processVideo).toHaveBeenCalledExactlyOnceWith(SOURCE, 'scoring');
+    const retry = screen.getByRole('button', { name: 'Reprocess with current settings' });
+    expect(retry).toBeDisabled();
+    fireEvent.click(retry);
+    expect(processVideo).toHaveBeenCalledTimes(1);
+    expect(useStore.getState().sources).toEqual(before.sources);
+    expect(useStore.getState().transcriptions).toEqual(before.transcriptions);
+    expect(useStore.getState().clips[SOURCE.id]).toEqual([]);
+    await act(async () => finish());
+    expect(retry).toBeEnabled();
+  });
+
+  it.each(BUSY_STATES)('refuses a pending retry confirmation during $name', async ({ apply }) => {
+    useStore.getState().setClips(SOURCE.id, []);
+    const { ClipGrid } = await import('@/components/ClipGrid');
+    render(<ClipGrid />);
+    fireEvent.click(screen.getByRole('button', { name: 'Reprocess with current settings' }));
+    const dialog = await screen.findByRole('alertdialog');
+    act(apply);
+    const confirm = within(dialog).getByRole('button', { name: 'Reprocess now' });
+    expect(confirm).toBeDisabled();
+    fireEvent.click(confirm);
+    expect(processVideo).not.toHaveBeenCalled();
+  });
+
+  it.each(BUSY_STATES)('guards export buttons, confirmation and R during $name', async ({
+    apply,
+  }) => {
+    useStore.getState().updateClipStatus(SOURCE.id, 'c1', 'approved');
+    const { ClipGrid } = await import('@/components/ClipGrid');
+    render(<ClipGrid />);
+    fireEvent.click(screen.getByRole('button', { name: 'Select' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /Select Second hook line/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Export selected (1)' }));
+    const dialog = await screen.findByRole('alertdialog');
+    act(apply);
+    const confirm = within(dialog).getByRole('button', { name: 'Export selected (1)' });
+    expect(confirm).toBeDisabled();
+    fireEvent.click(confirm);
+    expect(startApprovedRender).not.toHaveBeenCalled();
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    for (const name of [
+      'Prepare 4 clips for export',
+      'Prepare 1 approved clip for export',
+      'Export selected (1)',
+    ]) {
+      const button = screen.getByRole('button', { name });
+      expect(button).toBeDisabled();
+      fireEvent.click(button);
+    }
+    pressKey(window, 'r');
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(startApprovedRender).not.toHaveBeenCalled();
+  });
+
+  it('suppresses triage, selection, export and undo while the display menu owns the keyboard', async () => {
+    setDisplayPreferences({ reviewAutoAdvance: false });
+    const { ClipGrid } = await import('@/components/ClipGrid');
+    render(<ClipGrid />);
+    pressKey(window, 'ArrowRight');
+    pressKey(window, 'a');
+    expect(useStore.getState().clips[SOURCE.id]?.[0]?.status).toBe('approved');
+    fireEvent.click(screen.getByRole('button', { name: 'Select' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /Select First hook line/ }));
+    const trigger = screen.getByRole('button', { name: 'View options' });
+    fireEvent.keyDown(trigger, { key: 'ArrowDown' });
+    const option = await screen.findByRole('menuitemradio', { name: 'Source time' });
+    for (const key of ['a', 'x', 'u', 's', 'r', 'ArrowRight']) pressKey(option, key);
+    pressKey(option, 'a', { ctrlKey: true });
+    pressKey(option, 'z', { ctrlKey: true });
+    pressKey(window, 'r');
+    expect(useStore.getState().clips[SOURCE.id]?.[0]?.status).toBe('approved');
+    expect(useStore.getState().workspace.selectedClipId).toBe('c1');
+    expect(Array.from(useStore.getState().selectedClipIds)).toEqual(['c1']);
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(startApprovedRender).not.toHaveBeenCalled();
+    fireEvent.click(option);
+    expect(useStore.getState().workspace.clipSort).toBe('source-time');
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    pressKey(window, 'z', { ctrlKey: true });
+    expect(useStore.getState().clips[SOURCE.id]?.[0]?.status).toBe('pending');
   });
 
   it('opens the ClipDetail Sheet when a card is clicked', async () => {
@@ -378,14 +616,16 @@ describe('ClipGrid', () => {
 
     pressKey(window, 'r');
     const renderDialog = await screen.findByRole('alertdialog');
-    expect(within(renderDialog).getByText('Render selected clip?')).toBeInTheDocument();
+    expect(
+      within(renderDialog).getByText('Prepare 1 selected clip for export?'),
+    ).toBeInTheDocument();
     expect(startApprovedRender).not.toHaveBeenCalled();
 
     pressKey(renderDialog, 'a');
     expect(useStore.getState().clips[SOURCE.id]?.find((clip) => clip.id === 'c2')?.status).toBe(
       'pending',
     );
-    fireEvent.click(within(renderDialog).getByRole('button', { name: 'Render selected' }));
+    fireEvent.click(within(renderDialog).getByRole('button', { name: 'Export selected (1)' }));
     await waitFor(() => expect(startApprovedRender).toHaveBeenCalledWith({ clipIds: ['c2'] }));
   });
 
@@ -513,10 +753,12 @@ describe('ClipGrid', () => {
         .map((clip) => clip.status),
     ).toEqual(['pending', 'pending']);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Render (2)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Export selected (2)' }));
     const renderDialog = await screen.findByRole('alertdialog');
-    expect(within(renderDialog).getByText('Render 2 selected clips?')).toBeInTheDocument();
-    fireEvent.click(within(renderDialog).getByRole('button', { name: 'Render selected (2)' }));
+    expect(
+      within(renderDialog).getByText('Prepare 2 selected clips for export?'),
+    ).toBeInTheDocument();
+    fireEvent.click(within(renderDialog).getByRole('button', { name: 'Export selected (2)' }));
     await waitFor(() =>
       expect(startApprovedRender).toHaveBeenCalledWith({ clipIds: ['c1', 'c2'] }),
     );
@@ -545,7 +787,14 @@ describe('ClipGrid', () => {
     const { ClipGrid } = await import('@/components/ClipGrid');
     render(<ClipGrid />);
 
-    expect(screen.getByRole('combobox', { name: 'Grid density' })).toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: 'Grid density' })).not.toBeInTheDocument();
+    const viewOptions = screen.getByRole('button', { name: 'View options' });
+    fireEvent.keyDown(viewOptions, { key: 'ArrowDown' });
+    expect(await screen.findByRole('menuitemradio', { name: 'Comfortable' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
     expect(screen.getAllByRole('button', { name: /^Clip:/ })[0]).toHaveAttribute(
       'data-density',
       'comfortable',
@@ -554,7 +803,8 @@ describe('ClipGrid', () => {
       /source 0:00.0/,
     );
 
-    act(() => setDisplayPreferences({ gridDensity: 'compact' }));
+    fireEvent.keyDown(viewOptions, { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByRole('menuitemradio', { name: 'Compact' }));
     expect(screen.getAllByRole('button', { name: /^Clip:/ })[0]).toHaveAttribute(
       'data-density',
       'compact',

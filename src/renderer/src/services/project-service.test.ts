@@ -527,6 +527,20 @@ describe('project-service · saveProject ↔ loadProjectFromPath round-trip', ()
 });
 
 describe('project-service · exact-session resume', () => {
+  it('does not persist scene focus and clears a previous project target on load', async () => {
+    populateStore();
+    useStore.setState({
+      longformReviewFocus: { sourceId: SOURCE_A.id, sceneId: 'previous-project-scene' },
+    });
+    expect(await saveProject()).toBe(SAVE_PATH);
+    expect(vfs.saved.get(SAVE_PATH)).not.toContain('longformReviewFocus');
+
+    expect(await loadProjectFromPath(SAVE_PATH)).toBe(true);
+    expect(useStore.getState().longformReviewFocus).toBeNull();
+    expect(useStore.getState().longformPlans).toEqual(PLAN_FIXTURE);
+    expect(useStore.getState().renderProgress).toEqual(RENDER_PROGRESS_FIXTURE);
+  });
+
   it('reopens the last project with stage, source, clip, filters, inspector, scroll, playhead, brief, plan, and queue intact', async () => {
     populateStore();
     expect(await saveProject()).toBe(SAVE_PATH);

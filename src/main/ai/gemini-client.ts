@@ -1,3 +1,4 @@
+import { setTimeout as delay } from 'node:timers/promises';
 import { type GenerateContentConfig, type GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { emitUsageFromResponse } from '../ai-usage';
 import { log } from '../logger';
@@ -103,11 +104,11 @@ function isTransientError(err: unknown): boolean {
 }
 
 /** Sleep with ±25% jitter to spread out concurrent retries. */
-function backoff(attemptIndex: number): Promise<void> {
+async function backoff(attemptIndex: number, signal?: AbortSignal): Promise<void> {
   // 0 -> ~2s, 1 -> ~5s, 2 -> ~12s
   const base = [2000, 5000, 12000][attemptIndex] ?? 12000;
   const jitter = base * 0.25 * (Math.random() * 2 - 1);
-  return new Promise((r) => setTimeout(r, Math.max(500, base + jitter)));
+  await delay(Math.max(500, base + jitter), undefined, { signal });
 }
 
 /**
@@ -125,6 +126,7 @@ export async function callGeminiWithRetry(
   call: GeminiCall,
   prompt: string,
   usageSource: string,
+  signal?: AbortSignal,
 ): Promise<string> {
   const chain = [call.model, ...(call.fallbacks ?? [])];
   const config = resolveGeminiConfig(call);
@@ -134,12 +136,14 @@ export async function callGeminiWithRetry(
   for (let m = 0; m < chain.length; m++) {
     const model = chain[m]!;
     for (let attempt = 0; attempt < maxAttemptsPerModel; attempt++) {
+      signal?.throwIfAborted();
       try {
         const result = await ai.models.generateContent({
           model,
           contents: prompt,
-          config,
+          config: signal ? { ...config, abortSignal: signal } : config,
         });
+        signal?.throwIfAborted();
         emitUsageFromResponse(usageSource, model, result);
         if (m > 0 || attempt > 0) {
           log(
@@ -150,6 +154,7 @@ export async function callGeminiWithRetry(
         }
         return (result.text ?? '').trim();
       } catch (err) {
+        signal?.throwIfAborted();
         lastErr = err;
         if (!isTransientError(err)) classifyGeminiError(err);
 
@@ -166,7 +171,7 @@ export async function callGeminiWithRetry(
           if (hasFallback) break; // fall through to next model
           classifyGeminiError(err);
         } else {
-          await backoff(attempt);
+          await backoff(attempt, signal);
         }
       }
     }

@@ -116,7 +116,7 @@ function classify(source: string, raw: string): ErrorClassification {
     };
   }
 
-  if (/no internet|offline|network|fetch failed|econnreset|enotfound/.test(lower)) {
+  if (/no internet|offline|network|fetch failed|econnreset|\benotfound\b/.test(lower)) {
     return {
       headline: 'An internet connection is needed',
       whatHappened: 'BatchClip lost access to an online service during this step.',

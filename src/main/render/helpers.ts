@@ -1,3 +1,8 @@
+import { randomUUID } from 'node:crypto';
+import { rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 // ---------------------------------------------------------------------------
 // Shared render helpers — extracted from render-pipeline.ts
 // ---------------------------------------------------------------------------
@@ -6,6 +11,34 @@
  * Convert Windows backslash paths to forward slash paths for FFmpeg compatibility.
  * FFmpeg on Windows requires forward slashes for paths passed as command-line arguments.
  */
+/** Filters longer than this are passed via a script file (Windows caps a command line at ~32k chars). */
+const INLINE_FILTER_MAX_CHARS = 4000;
+
+export interface ComplexFilterArgs {
+  /** FFmpeg output options that carry the filtergraph. */
+  options: string[];
+  /** Remove the temp script, if one was written. Safe to call repeatedly. */
+  dispose: () => void;
+}
+
+/**
+ * Pass a `-filter_complex` graph inline when short, else through a temp
+ * `-filter_complex_script` file. Graphs that grow with clip count (one chain
+ * per segment/overlay) otherwise overflow the OS command-line limit and the
+ * spawn fails with `ENAMETOOLONG`.
+ */
+export function complexFilterArgs(filter: string): ComplexFilterArgs {
+  if (filter.length <= INLINE_FILTER_MAX_CHARS) {
+    return { options: ['-filter_complex', filter], dispose: () => {} };
+  }
+  const scriptPath = join(tmpdir(), `batchclip-filter-${randomUUID()}.txt`);
+  writeFileSync(scriptPath, filter, 'utf8');
+  return {
+    options: ['-filter_complex_script', toFFmpegPath(scriptPath)],
+    dispose: () => rmSync(scriptPath, { force: true }),
+  };
+}
+
 export function toFFmpegPath(path: string): string {
   if (process.platform === 'win32') {
     return path.replace(/\\/g, '/');

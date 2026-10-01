@@ -281,16 +281,16 @@ export function splitIntoSegments(
 // Deterministic archetype assignment
 //
 // No AI — picks archetypes from a fixed rotation pattern with a no-streak
-// rule. The opening five beats use a hand-tuned sequence; the rest of the
-// clip cycles a body pattern with a 3-in-a-row category guard. Last beat is
-// always talking-head (CTA close).
+// rule. Content-led excludes fullscreen quotes: rotation alone is not evidence
+// of a quotable line. Baseline retains the legacy opening/body patterns.
+// Last beat is always talking-head (CTA close).
 // ---------------------------------------------------------------------------
 
 /**
  * The hand-tuned opening five beats. Walks the viewer in: punch on the hook,
  * give visual context, let the key line breathe, settle in, keep the rhythm.
  */
-const OPENING: Archetype[] = [
+const BASELINE_OPENING: Archetype[] = [
   'tight-punch', // 1. punch in on the hook
   'split-image', // 2. visual context
   'fullscreen-quote', // 3. let a key line breathe
@@ -299,7 +299,7 @@ const OPENING: Archetype[] = [
 ];
 
 /** Body cycle when image-archetypes are available. */
-const BODY_WITH_IMAGES: Archetype[] = [
+const BASELINE_BODY_WITH_IMAGES: Archetype[] = [
   'fullscreen-image',
   'tight-punch',
   'wide-breather',
@@ -311,7 +311,7 @@ const BODY_WITH_IMAGES: Archetype[] = [
 ];
 
 /** Body cycle when no image-archetype source is configured. */
-const BODY_NO_IMAGES: Archetype[] = [
+const BASELINE_BODY_NO_IMAGES: Archetype[] = [
   'fullscreen-quote',
   'tight-punch',
   'wide-breather',
@@ -323,18 +323,18 @@ const BODY_NO_IMAGES: Archetype[] = [
 /**
  * Pick an archetype for the segment at `index`, respecting:
  *   - last index → talking-head (CTA close)
- *   - index 0–4 → OPENING[index] (skip media archetypes when unavailable)
- *   - index 5+ → BODY_*[(index-5) % length] with 3-in-a-row category guard
+ *   - opening beats → opening[index] (skip media archetypes when unavailable)
+ *   - remaining beats → body cycle with 3-in-a-row category guard
  */
 function pickArchetype(
   index: number,
   segmentCount: number,
   hasMediaKey: boolean,
   previousAssignments: Archetype[],
+  opening: Archetype[],
+  body: Archetype[],
 ): Archetype {
   if (index === segmentCount - 1) return 'talking-head';
-
-  const body = hasMediaKey ? BODY_WITH_IMAGES : BODY_NO_IMAGES;
 
   const wouldStreak = (candidate: Archetype): boolean => {
     if (previousAssignments.length < 2) return false;
@@ -344,11 +344,11 @@ function pickArchetype(
     return ARCHETYPE_TO_CATEGORY[prev1] === cat && ARCHETYPE_TO_CATEGORY[prev2] === cat;
   };
 
-  // Opening: walk OPENING starting at index, skipping media-archetypes when
+  // Walk the opening starting at index, skipping media-archetypes when
   // unavailable and skipping anything that would streak the same category.
-  if (index < OPENING.length) {
-    for (let offset = 0; offset < OPENING.length; offset++) {
-      const candidate = OPENING[(index + offset) % OPENING.length];
+  if (index < opening.length) {
+    for (let offset = 0; offset < opening.length; offset++) {
+      const candidate = opening[(index + offset) % opening.length];
       if (!hasMediaKey && IMAGE_ARCHETYPES.has(candidate)) continue;
       if (wouldStreak(candidate)) continue;
       return candidate;
@@ -356,7 +356,7 @@ function pickArchetype(
     // All opening slots streak — fall through to body picker.
   }
 
-  const bodyOffset = Math.max(0, index - OPENING.length);
+  const bodyOffset = Math.max(0, index - opening.length);
   for (let offset = 0; offset < body.length; offset++) {
     const candidate = body[(bodyOffset + offset) % body.length];
     if (!wouldStreak(candidate)) return candidate;
@@ -365,21 +365,40 @@ function pickArchetype(
 }
 
 /**
- * Assign an archetype to every segment using a deterministic rotation.
+ * Assign archetypes to newly generated segments using a deterministic rotation.
+ * Not a migration: callers must not apply this to saved/manual selections.
  *
  * @param segments      Segments produced by splitIntoSegments().
  * @param hasMediaKey   When false, media archetypes (split-image / fullscreen-
  *                      image) drop out of rotation — they would degrade at
  *                      render time without a Pexels b-roll video.
+ * @param policy        Content-led (default) excludes fullscreen quotes rather
+ *                      than filling a quote quota. Baseline preserves legacy rotation.
  */
 export function assignArchetypesDeterministic(
   segments: VideoSegment[],
   hasMediaKey: boolean,
+  policy: 'baseline' | 'content-led' = 'content-led',
 ): VideoSegment[] {
   const assigned: Archetype[] = [];
+  const baselineBody = hasMediaKey ? BASELINE_BODY_WITH_IMAGES : BASELINE_BODY_NO_IMAGES;
+  // Keep the speaker visible in legacy quote slots without disrupting the
+  // speaker/b-roll cadence. Fullscreen quotes need a separate content decision.
+  const opening =
+    policy === 'baseline'
+      ? BASELINE_OPENING
+      : BASELINE_OPENING.map((archetype) =>
+          archetype === 'fullscreen-quote' ? 'talking-head' : archetype,
+        );
+  const body =
+    policy === 'baseline'
+      ? baselineBody
+      : baselineBody.map((archetype) =>
+          archetype === 'fullscreen-quote' ? 'talking-head' : archetype,
+        );
 
   return segments.map((seg, i) => {
-    const archetype = pickArchetype(i, segments.length, hasMediaKey, assigned);
+    const archetype = pickArchetype(i, segments.length, hasMediaKey, assigned, opening, body);
     assigned.push(archetype);
 
     return {

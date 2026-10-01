@@ -1,5 +1,5 @@
 import type { Archetype } from '@shared/types';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { PlannedExplainerScene } from '../ai/explainer-scenes';
 import { deriveExplainerPalette } from '../remotion/compositions/explainer/palette';
 import type { ExplainerLayout, ExplainerScene } from '../remotion/compositions/explainer/types';
@@ -58,6 +58,33 @@ function shape(pieces: ReturnType<typeof spliceExplainerScenes>): string[] {
 }
 
 describe('spliceExplainerScenes', () => {
+  it('diagnoses grouping and every window removed by timeline admission', () => {
+    const observe = vi.fn();
+    const groups = groupPlannedScenes(
+      [planned(14, 18), planned(18, 22, { chained: true })],
+      observe,
+    );
+    expect(observe).toHaveBeenCalledWith({
+      stage: 'group',
+      action: 'accepted',
+      reason: 'shared-stage',
+      index: 0,
+      count: 2,
+    });
+    spliceExplainerScenes(
+      [seg('talking-head', 10, 16), seg('talking-head', 19, 30)],
+      groups,
+      12,
+      observe,
+    );
+    expect(observe).toHaveBeenCalledWith({
+      stage: 'splice',
+      action: 'removed',
+      reason: 'source-gap',
+      index: 0,
+      count: 2,
+    });
+  });
   it('cuts a scene out of the middle of one segment and hard-cuts back', () => {
     const out = spliceExplainerScenes([seg('talking-head', 10, 30)], [group(14, 20, 'pip')], 12);
     expect(shape(out)).toEqual([

@@ -13,7 +13,7 @@ const renderMock = vi.hoisted(() => vi.fn());
 
 vi.mock('../ai/explainer-scenes', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../ai/explainer-scenes')>()),
-  planExplainerScenes: planMock,
+  planExplainerEditPlan: planMock,
 }));
 vi.mock('../remotion/render', () => ({ renderRemotionSegment: renderMock }));
 
@@ -68,7 +68,10 @@ async function run(face: FaceMeasurement | 'throws' | 'absent') {
 
 describe('applyExplainerScenes — floating cards and the face', () => {
   beforeEach(() => {
-    planMock.mockReset().mockResolvedValue({ ok: true, value: [overScene] });
+    planMock.mockReset().mockResolvedValue({
+      ok: true,
+      value: { scenes: [overScene], quotes: [], diagnostics: { events: [], dropped: 0 } },
+    });
     renderMock.mockReset().mockResolvedValue(undefined);
   });
 

@@ -2,20 +2,20 @@ import type { RecentProjectEntry } from '@shared/recent-projects';
 import {
   AlertTriangle,
   ArrowRight,
+  ChevronDown,
   FilePlus2,
   FolderOpen,
   Import,
-  KeyRound,
   Link as LinkIcon,
-  Settings as SettingsIcon,
+  SlidersHorizontal,
   Upload,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { type EntrySource, isYouTubeUrl } from '@/components/entry-source';
 import { NewProjectDialog, type NewProjectDraft } from '@/components/NewProjectDialog';
 import { PalettePicker } from '@/components/PalettePicker';
 import { ProcessingRecipe } from '@/components/ProcessingRecipe';
-import { ProjectContactSheet } from '@/components/ProjectContactSheet';
 import { PythonSetupCard } from '@/components/PythonSetupCard';
 import { RecentProjectLibrary } from '@/components/RecentProjectLibrary';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -23,37 +23,16 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useLongformPipeline, usePipeline } from '@/hooks';
 import { resolveGeminiKey } from '@/lib/gemini-key';
 import { cn } from '@/lib/utils';
 import { createNewProject, loadProject, loadProjectFromPath } from '@/services';
 import { getCreatorProfiles } from '@/services/creator-profiles';
+import { isActiveProcessingStage } from '@/services/job-service';
 import type { SourceVideo } from '@/store';
 import { useStore } from '@/store';
 
 const VIDEO_EXTENSIONS = ['mp4', 'mov', 'avi', 'mkv', 'webm', 'mts', 'm4v'] as const;
-
-function isUrl(value: string): boolean {
-  return /^https?:\/\//i.test(value.trim());
-}
-
-function isYouTubeUrl(value: string): boolean {
-  const trimmed = value.trim();
-  if (/youtu\.be\/[A-Za-z0-9_-]{11}/i.test(trimmed)) return true;
-  try {
-    const host = new URL(trimmed).hostname.replace(/^www\./i, '');
-    return host === 'youtube.com' || host === 'm.youtube.com' || host === 'youtu.be';
-  } catch {
-    return false;
-  }
-}
 
 function isVideoFilename(name: string): boolean {
   const extension = name.split('.').pop()?.toLowerCase();
@@ -100,7 +79,6 @@ export function DropScreen(): React.JSX.Element {
     pythonStatus === 'installing' ||
     pythonStatus === 'cancelling' ||
     pythonStatus === 'error';
-  const isSetupBusy = pythonStatus === 'installing' || pythonStatus === 'cancelling';
 
   const [url, setUrl] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -112,15 +90,40 @@ export function DropScreen(): React.JSX.Element {
   const [keyMissing, setKeyMissing] = useState(false);
   const [newProjectOpen, setNewProjectOpen] = useState(false);
   const [busyProjectPath, setBusyProjectPath] = useState<string | null>(null);
-  const [queuedSource, setQueuedSource] = useState<{
-    source: SourceVideo;
-    outputMode: 'short' | 'longform';
-  } | null>(null);
+  const [queuedSource, setQueuedSource] = useState<EntrySource | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
+  const [entryVersion, setEntryVersion] = useState(0);
+  const [importVersion, setImportVersion] = useState(0);
+  const starting = useRef(false);
   const dragDepth = useRef(0);
 
-  const ensureScoringKey = useCallback(async (): Promise<boolean> => {
+  const canStartEntry = useCallback((): boolean => {
     const state = useStore.getState();
-    if (state.settings.outputMode === 'short' && state.processingConfig.promoMode) {
+    if (
+      isActiveProcessingStage(state.pipeline.stage) ||
+      state.isRendering ||
+      state.singleRenderStatus === 'rendering' ||
+      state.processingCancellation.status === 'cancelling' ||
+      state.renderCancellation.status === 'cancelling'
+    ) {
+      setIngestError('Finish or cancel active work before importing or opening a project.');
+      return false;
+    }
+    return true;
+  }, []);
+
+  const canReplaceProject = useCallback((): boolean => {
+    if (!canStartEntry()) return false;
+    const state = useStore.getState();
+    return (
+      !state.isDirty ||
+      window.confirm(`Discard unsaved changes to ${state.currentProject.displayName}?`)
+    );
+  }, [canStartEntry]);
+
+  const ensureScoringKey = useCallback(async (mode: 'short' | 'longform'): Promise<boolean> => {
+    const state = useStore.getState();
+    if (mode === 'short' && state.processingConfig.promoMode) {
       setKeyMissing(false);
       return true;
     }
@@ -166,126 +169,30 @@ export function DropScreen(): React.JSX.Element {
     void refreshRecents();
   }, [refreshRecents]);
 
-  const processOrQueueSource = useCallback(
-    (source: SourceVideo): void => {
-      const state = useStore.getState();
-      const selectedMode = state.settings.outputMode;
-      if (state.pythonStatus !== 'ready') {
-        setQueuedSource({ source, outputMode: selectedMode });
-        return;
-      }
-      if (selectedMode === 'longform') void processLongform(source);
-      else void processVideo(source);
+  const queueImport = useCallback(
+    (source: EntrySource): void => {
+      if (starting.current || busyProjectPath || !canStartEntry()) return;
+      setQueuedSource(source);
+      setIngestError(null);
+      setKeyMissing(false);
+      setImportOpen(true);
     },
-    [processLongform, processVideo],
-  );
-
-  useEffect(() => {
-    if (!queuedSource || pythonStatus !== 'ready') return;
-    setQueuedSource(null);
-    if (queuedSource.outputMode === 'longform') void processLongform(queuedSource.source);
-    else void processVideo(queuedSource.source);
-  }, [processLongform, processVideo, pythonStatus, queuedSource]);
-
-  const startFromFilePath = useCallback(
-    async (filePath: string): Promise<void> => {
-      if (isStarting) return;
-      if (!(await ensureScoringKey())) return;
-      setIsStarting(true);
-      try {
-        const [metadataResult, thumbnailResult] = await Promise.allSettled([
-          window.api.getMetadata(filePath),
-          window.api.getThumbnail(filePath, 1),
-        ]);
-        if (metadataResult.status === 'rejected') throw metadataResult.reason;
-        const metadata = metadataResult.value;
-        const source: SourceVideo = {
-          id: makeId(),
-          path: filePath,
-          name: basename(filePath),
-          duration: metadata.duration,
-          width: metadata.width,
-          height: metadata.height,
-          ...(thumbnailResult.status === 'fulfilled' ? { thumbnail: thumbnailResult.value } : {}),
-          origin: 'file',
-          mediaStatus: 'online',
-        };
-        if (useStore.getState().currentProject.displayName === 'Untitled Project') {
-          setProjectDisplayName(filenameStem(filePath));
-        }
-        addSource(source);
-        setActiveSource(source.id);
-        processOrQueueSource(source);
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        const structured = addError({
-          source: 'pipeline',
-          error,
-          message: `Failed to ingest ${filePath}: ${message}`,
-          failedStage: 'source-ingest',
-        });
-        toast.error(structured.headline);
-        setIngestError(`${basename(filePath)}: ${structured.whatHappened}`);
-        setIsStarting(false);
-      }
-    },
-    [
-      addError,
-      addSource,
-      ensureScoringKey,
-      isStarting,
-      processOrQueueSource,
-      setActiveSource,
-      setProjectDisplayName,
-    ],
-  );
-
-  const startFromUrl = useCallback(
-    async (sourceUrl: string): Promise<void> => {
-      if (isStarting) return;
-      if (!(await ensureScoringKey())) return;
-      setIsStarting(true);
-      const source: SourceVideo = {
-        id: makeId(),
-        path: '',
-        name: sourceUrl,
-        duration: 0,
-        width: 0,
-        height: 0,
-        origin: 'youtube',
-        youtubeUrl: sourceUrl,
-        mediaStatus: 'online',
-      };
-      if (useStore.getState().currentProject.displayName === 'Untitled Project') {
-        setProjectDisplayName('YouTube project');
-      }
-      addSource(source);
-      setActiveSource(source.id);
-      processOrQueueSource(source);
-    },
-    [
-      addSource,
-      ensureScoringKey,
-      isStarting,
-      processOrQueueSource,
-      setActiveSource,
-      setProjectDisplayName,
-    ],
+    [busyProjectPath, canStartEntry],
   );
 
   const handleUrlSubmit = useCallback((): void => {
-    if (isSetupBusy || isStarting) return;
+    if (isStarting) return;
     const trimmed = url.trim();
     if (!trimmed) return;
-    if (!isUrl(trimmed) || !isYouTubeUrl(trimmed)) {
+    if (!isYouTubeUrl(trimmed)) {
       const message = 'Paste a valid YouTube URL.';
       toast.error(message);
       setIngestError(message);
       return;
     }
     setIngestError(null);
-    void startFromUrl(trimmed);
-  }, [isSetupBusy, isStarting, startFromUrl, url]);
+    queueImport({ kind: 'url', value: trimmed });
+  }, [isStarting, queueImport, url]);
 
   const chooseVideoPath = useCallback(async (): Promise<string | null> => {
     try {
@@ -306,30 +213,41 @@ export function DropScreen(): React.JSX.Element {
   }, [addError]);
 
   const handleBrowse = useCallback(async (): Promise<void> => {
+    if (starting.current || busyProjectPath) return;
     const path = await chooseVideoPath();
     if (!path) return;
-    setIngestError(null);
-    void startFromFilePath(path);
-  }, [chooseVideoPath, startFromFilePath]);
+    queueImport({ kind: 'file', value: path });
+  }, [busyProjectPath, chooseVideoPath, queueImport]);
 
   const handleDrop = useCallback(
     (event: React.DragEvent<HTMLElement>): void => {
       event.preventDefault();
       dragDepth.current = 0;
       setIsDragOver(false);
+      if (starting.current || busyProjectPath) return;
       const file = Array.from(event.dataTransfer.files ?? [])[0];
       if (!file) return;
       const path = window.api.getPathForFile(file);
 
+      if (!path) {
+        setIngestError("Couldn't resolve the dropped file path.");
+        return;
+      }
       if (file.name.toLowerCase().endsWith('.batchclip')) {
-        void loadProjectFromPath(path).then((opened) => {
-          if (opened) {
-            toast.success('Project loaded');
-            void refreshRecents();
-          } else {
-            setIngestError(`Couldn't open ${file.name}`);
-          }
-        });
+        if (!canReplaceProject()) return;
+        setBusyProjectPath(path);
+        void loadProjectFromPath(path)
+          .then((opened) => {
+            if (opened) {
+              toast.success('Project loaded');
+              setQueuedSource(null);
+              setEntryVersion((version) => version + 1);
+              void refreshRecents();
+            } else {
+              setIngestError(`Couldn't open ${file.name}`);
+            }
+          })
+          .finally(() => setBusyProjectPath(null));
         return;
       }
       if (!isVideoFilename(file.name)) {
@@ -338,14 +256,9 @@ export function DropScreen(): React.JSX.Element {
         setIngestError(message);
         return;
       }
-      if (!path) {
-        setIngestError("Couldn't resolve the dropped file path.");
-        return;
-      }
-      setIngestError(null);
-      void startFromFilePath(path);
+      queueImport({ kind: 'file', value: path });
     },
-    [refreshRecents, startFromFilePath],
+    [busyProjectPath, canReplaceProject, refreshRecents, queueImport],
   );
 
   const handleDragEnter = useCallback((event: React.DragEvent<HTMLElement>): void => {
@@ -365,28 +278,45 @@ export function DropScreen(): React.JSX.Element {
     if (dragDepth.current === 0) setIsDragOver(false);
   }, []);
 
-  const handleOpenRecent = useCallback(async (entry: RecentProjectEntry): Promise<void> => {
-    setBusyProjectPath(entry.path);
+  const handleOpenRecent = useCallback(
+    async (entry: RecentProjectEntry): Promise<void> => {
+      if (starting.current || busyProjectPath || !canReplaceProject()) return;
+      setBusyProjectPath(entry.path);
+      try {
+        const opened = await loadProjectFromPath(entry.path);
+        if (opened) {
+          toast.success(`Opened ${entry.name}`);
+          setIngestError(null);
+          setQueuedSource(null);
+          setEntryVersion((version) => version + 1);
+        } else {
+          setIngestError(
+            `Couldn't open ${entry.name}. The project may have moved or been damaged.`,
+          );
+        }
+      } finally {
+        setBusyProjectPath(null);
+      }
+    },
+    [busyProjectPath, canReplaceProject],
+  );
+
+  const handleOpenProjectFile = useCallback(async (): Promise<void> => {
+    if (starting.current || busyProjectPath || !canReplaceProject()) return;
+    setBusyProjectPath('open-project');
     try {
-      const opened = await loadProjectFromPath(entry.path);
+      const opened = await loadProject();
       if (opened) {
-        toast.success(`Opened ${entry.name}`);
+        toast.success('Project loaded');
         setIngestError(null);
-      } else {
-        setIngestError(`Couldn't open ${entry.name}. The project may have moved or been damaged.`);
+        setQueuedSource(null);
+        setEntryVersion((version) => version + 1);
+        void refreshRecents();
       }
     } finally {
       setBusyProjectPath(null);
     }
-  }, []);
-
-  const handleOpenProjectFile = useCallback(async (): Promise<void> => {
-    const opened = await loadProject();
-    if (opened) {
-      toast.success('Project loaded');
-      void refreshRecents();
-    }
-  }, [refreshRecents]);
+  }, [busyProjectPath, canReplaceProject, refreshRecents]);
 
   const runProjectAction = useCallback(
     async (
@@ -394,6 +324,7 @@ export function DropScreen(): React.JSX.Element {
       action: () => Promise<void>,
       success: string,
     ): Promise<void> => {
+      if (starting.current || busyProjectPath) return;
       setBusyProjectPath(entry.path);
       try {
         await action();
@@ -407,41 +338,115 @@ export function DropScreen(): React.JSX.Element {
         setBusyProjectPath(null);
       }
     },
-    [refreshRecents],
+    [busyProjectPath, refreshRecents],
   );
 
-  const handleCreateProject = useCallback(
-    (draft: NewProjectDraft): void => {
+  const confirmEntry = useCallback(
+    async (draft: NewProjectDraft, intent: 'new' | 'add'): Promise<void> => {
+      if (starting.current || busyProjectPath || !canStartEntry()) return;
       if (draft.source.kind === 'url' && !isYouTubeUrl(draft.source.value)) {
-        setIngestError('Paste a valid YouTube URL.');
-        setNewProjectOpen(false);
+        setIngestError('Paste a valid YouTube video URL.');
         return;
       }
-      createNewProject();
-      setProjectDisplayName(draft.name);
-      setOutputMode(draft.outputMode);
-      if (draft.profileId) {
-        const profile = getCreatorProfiles().find((item) => item.id === draft.profileId);
-        if (profile) {
-          setCreatorProfile(profile.id);
-          setProcessingConfig({ targetAudience: profile.audience });
-          setTargetPlatform(profile.targetPlatform);
-          setTemplateLayout(profile.templateLayout);
-          setLongformSkin(profile.longformSkin);
-          setLongformPaletteId(profile.longformPaletteId);
-        }
-      }
-      if (draft.brief) {
-        setCreativeBrief(draft.brief);
-        commitCreativeBrief();
-      }
-      setNewProjectOpen(false);
+      const projectId = useStore.getState().currentProject.id;
+      starting.current = true;
+      setIsStarting(true);
       setIngestError(null);
-      if (draft.source.kind === 'file') void startFromFilePath(draft.source.value);
-      else void startFromUrl(draft.source.value);
+      try {
+        if (useStore.getState().pythonStatus !== 'ready') return;
+        if (!(await ensureScoringKey(draft.outputMode))) return;
+        const source: SourceVideo = {
+          id: makeId(),
+          path: draft.source.kind === 'file' ? draft.source.value : '',
+          name: draft.source.kind === 'file' ? basename(draft.source.value) : draft.source.value,
+          duration: 0,
+          width: 0,
+          height: 0,
+          origin: draft.source.kind === 'file' ? 'file' : 'youtube',
+          ...(draft.source.kind === 'url' ? { youtubeUrl: draft.source.value } : {}),
+          mediaStatus: 'online',
+        };
+        if (draft.source.kind === 'file') {
+          const [metadata, thumbnail] = await Promise.allSettled([
+            window.api.getMetadata(draft.source.value),
+            window.api.getThumbnail(draft.source.value, 1),
+          ]);
+          if (metadata.status === 'rejected') throw metadata.reason;
+          Object.assign(source, {
+            duration: metadata.value.duration,
+            width: metadata.value.width,
+            height: metadata.value.height,
+            ...(thumbnail.status === 'fulfilled' ? { thumbnail: thumbnail.value } : {}),
+          });
+        }
+        // A native project command or setup may have changed state while probing.
+        if (projectId !== useStore.getState().currentProject.id) {
+          setIngestError('The active project changed. Review your source before confirming again.');
+          return;
+        }
+        if (useStore.getState().pythonStatus !== 'ready' || !canStartEntry()) return;
+        if (intent === 'new') {
+          if (!canReplaceProject()) return;
+          createNewProject();
+          setProjectDisplayName(draft.name);
+          if (draft.profileId) {
+            const profile = getCreatorProfiles().find((item) => item.id === draft.profileId);
+            if (profile) {
+              setCreatorProfile(profile.id);
+              setProcessingConfig({ targetAudience: profile.audience });
+              setTargetPlatform(profile.targetPlatform);
+              setTemplateLayout(profile.templateLayout);
+              setLongformSkin(profile.longformSkin);
+              setLongformPaletteId(profile.longformPaletteId);
+            }
+          }
+          if (draft.brief) {
+            setCreativeBrief(draft.brief);
+            commitCreativeBrief();
+          }
+        } else if (useStore.getState().currentProject.displayName === 'Untitled Project') {
+          setProjectDisplayName(
+            draft.source.kind === 'file' ? filenameStem(draft.source.value) : 'YouTube project',
+          );
+        }
+        setOutputMode(draft.outputMode);
+        addSource(source);
+        setActiveSource(source.id);
+        setImportOpen(false);
+        setNewProjectOpen(false);
+        setQueuedSource(null);
+        setUrl('');
+        if (intent === 'new') setEntryVersion((version) => version + 1);
+        else setImportVersion((version) => version + 1);
+        if (draft.outputMode === 'longform') await processLongform(source);
+        else await processVideo(source);
+      } catch (error) {
+        const structured = addError({
+          source: 'pipeline',
+          error,
+          message: `Failed to prepare ${draft.source.value}: ${error instanceof Error ? error.message : String(error)}`,
+          failedStage: 'source-ingest',
+        });
+        setIngestError(
+          `${structured.whatHappened} ${error instanceof Error ? error.message : String(error)}`,
+        );
+        toast.error(structured.headline);
+      } finally {
+        starting.current = false;
+        setIsStarting(false);
+      }
     },
     [
+      addError,
+      addSource,
+      busyProjectPath,
+      canReplaceProject,
+      canStartEntry,
       commitCreativeBrief,
+      ensureScoringKey,
+      processLongform,
+      processVideo,
+      setActiveSource,
       setCreativeBrief,
       setCreatorProfile,
       setLongformPaletteId,
@@ -451,8 +456,6 @@ export function DropScreen(): React.JSX.Element {
       setProjectDisplayName,
       setTargetPlatform,
       setTemplateLayout,
-      startFromFilePath,
-      startFromUrl,
     ],
   );
 
@@ -469,48 +472,68 @@ export function DropScreen(): React.JSX.Element {
           <div className="flex flex-wrap gap-2">
             <Button
               id="new-project-button"
-              variant="outline"
+              variant="default"
               size="sm"
-              onClick={() => setNewProjectOpen(true)}
+              disabled={isStarting || busyProjectPath !== null}
+              onClick={() => {
+                setIngestError(null);
+                setKeyMissing(false);
+                setNewProjectOpen(true);
+              }}
             >
               <FilePlus2 className="h-4 w-4" aria-hidden />
               New project
             </Button>
-            <Button variant="outline" size="sm" onClick={() => void handleOpenProjectFile()}>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isStarting || busyProjectPath !== null}
+              onClick={() => void handleOpenProjectFile()}
+            >
               <FolderOpen className="h-4 w-4" aria-hidden />
               Open project
             </Button>
-            <Button variant="outline" size="sm" onClick={() => void handleBrowse()}>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isStarting || busyProjectPath !== null}
+              onClick={() => void handleBrowse()}
+            >
               <Import className="h-4 w-4" aria-hidden />
               Import video
             </Button>
           </div>
         </header>
 
-        <ProjectContactSheet
-          projects={recents}
-          busyPath={busyProjectPath}
-          onOpenProject={(entry) => void handleOpenRecent(entry)}
-        />
-
-        {keyMissing && (
-          <Alert variant="destructive">
-            <KeyRound className="h-4 w-4" />
-            <AlertTitle>Gemini API key required</AlertTitle>
-            <AlertDescription className="break-words">
-              <p className="mb-2">
-                Finding and shaping moments needs a Gemini API key. Add it in Settings, then try
-                your source again.
-              </p>
-              <Button variant="default" size="sm" onClick={() => void handleOpenSettings()}>
-                <SettingsIcon className="h-3.5 w-3.5" aria-hidden />
-                Open Settings
+        {queuedSource && !importOpen && (
+          <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm" role="status">
+              Your import selection is kept. Review it when you’re ready.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                size="sm"
+                disabled={isStarting || busyProjectPath !== null}
+                onClick={() => setImportOpen(true)}
+              >
+                Review import
               </Button>
-            </AlertDescription>
-          </Alert>
+              <Button
+                size="sm"
+                variant="ghost"
+                disabled={isStarting}
+                onClick={() => {
+                  setQueuedSource(null);
+                  setImportVersion((version) => version + 1);
+                }}
+              >
+                Discard selection
+              </Button>
+            </div>
+          </Card>
         )}
 
-        {ingestError && (
+        {ingestError && !importOpen && !newProjectOpen && (
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>That action did not finish</AlertTitle>
@@ -518,136 +541,138 @@ export function DropScreen(): React.JSX.Element {
           </Alert>
         )}
 
-        {showSetupCard ? (
-          <PythonSetupCard queuedSourceName={queuedSource?.source.name ?? null} />
-        ) : (
-          <Card
-            onDragEnter={handleDragEnter}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
+        {showSetupCard && !importOpen && !newProjectOpen && <PythonSetupCard />}
+
+        <Card
+          onDragEnter={handleDragEnter}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className={cn(
+            'grid overflow-hidden border border-border bg-card shadow-none transition-[border-color,background-color,box-shadow,opacity] duration-150 min-[860px]:grid-cols-2',
+            isDragOver && 'border-primary bg-primary/5 shadow-[0_0_0_4px_hsl(var(--primary)/0.08)]',
+            isStarting && 'opacity-65',
+          )}
+        >
+          <button
+            type="button"
+            aria-label="Choose a video file or drop it here"
+            disabled={isStarting}
+            onClick={() => void handleBrowse()}
             className={cn(
-              'bg-card/80 grid overflow-hidden border-2 transition-[border-color,background-color,box-shadow,opacity] duration-150 min-[860px]:grid-cols-[1.15fr_0.85fr]',
-              isDragOver &&
-                'border-primary bg-primary/5 shadow-[0_0_0_4px_hsl(var(--primary)/0.08)]',
-              isStarting && 'opacity-65',
+              'group flex min-h-32 items-center gap-4 border-b border-dashed p-4 text-left min-[860px]:border-r min-[860px]:border-b-0 sm:p-5',
+              'transition-[background-color,color] duration-150 hover:bg-muted/60',
+              'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset focus-visible:outline-none',
             )}
           >
-            <button
-              type="button"
-              aria-label="Drop a video file or paste a URL"
-              disabled={isStarting}
-              onClick={() => void handleBrowse()}
+            <Upload
               className={cn(
-                'group flex min-h-48 items-center gap-5 border-b border-dashed p-5 text-left min-[860px]:border-r min-[860px]:border-b-0 sm:p-6',
-                'transition-[background-color,color] duration-150 hover:bg-muted/60',
-                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset focus-visible:outline-none',
+                'h-8 w-8 shrink-0 transition-colors duration-150',
+                isDragOver ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground',
               )}
-            >
-              <Upload
-                className={cn(
-                  'h-8 w-8 shrink-0 transition-colors duration-150',
-                  isDragOver ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground',
-                )}
-                strokeWidth={1.6}
-                aria-hidden
-              />
-              <span className="min-w-0">
-                <span className="block text-base font-semibold">Drop video</span>
-                <span className="text-muted-foreground mt-1 block text-sm">
-                  Or choose a local file to start this project.
-                </span>
-                <span className="text-muted-foreground mt-3 block text-xs">
-                  MP4, MOV, MKV, WEBM, MTS, and M4V
-                </span>
+              strokeWidth={1.6}
+              aria-hidden
+            />
+            <span className="min-w-0">
+              <span className="block text-base font-semibold">Add footage</span>
+              <span className="text-muted-foreground mt-1 block text-sm">
+                Drop a video here or choose a file.
               </span>
-            </button>
+              <span className="text-muted-foreground mt-2 block text-xs">
+                MP4, MOV, AVI, MKV, WEBM, MTS, and M4V
+              </span>
+            </span>
+          </button>
 
-            <div className="flex min-w-0 flex-col justify-center gap-4 p-5 sm:p-6">
-              <div className="grid gap-2">
-                <Label htmlFor="lobby-youtube-url">YouTube URL</Label>
-                <div className="flex gap-2">
-                  <div className="relative min-w-0 flex-1">
-                    <LinkIcon
-                      className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
-                      aria-hidden
-                    />
-                    <Input
-                      id="lobby-youtube-url"
-                      type="url"
-                      value={url}
-                      onChange={(event) => {
-                        setUrl(event.target.value);
-                        setIngestError(null);
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter') {
-                          event.preventDefault();
-                          handleUrlSubmit();
-                        }
-                      }}
-                      placeholder="Paste a YouTube link"
-                      autoComplete="off"
-                      spellCheck={false}
-                      disabled={isStarting}
-                      className="pl-9"
-                      aria-label="Video URL or file path"
-                    />
-                  </div>
-                  <Button
-                    size="icon"
-                    className="h-10 w-10 shrink-0"
-                    disabled={!url.trim() || isStarting}
-                    onClick={handleUrlSubmit}
-                    aria-label="Import YouTube URL"
-                  >
-                    <ArrowRight className="h-4 w-4" aria-hidden />
-                  </Button>
+          <div className="flex min-w-0 flex-col justify-center gap-2 p-4 sm:p-5">
+            <div className="grid gap-2">
+              <Label htmlFor="lobby-youtube-url">YouTube URL</Label>
+              <div className="flex gap-2">
+                <div className="relative min-w-0 flex-1">
+                  <LinkIcon
+                    className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
+                    aria-hidden
+                  />
+                  <Input
+                    id="lobby-youtube-url"
+                    type="url"
+                    value={url}
+                    onChange={(event) => {
+                      setUrl(event.target.value);
+                      setIngestError(null);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
+                        handleUrlSubmit();
+                      }
+                    }}
+                    placeholder="Paste a YouTube link"
+                    autoComplete="off"
+                    spellCheck={false}
+                    disabled={isStarting}
+                    className="pl-9"
+                  />
                 </div>
-                <p className="text-muted-foreground text-xs">
-                  A clear alternative to local footage. Downloads begin after connection checks.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm font-medium">Output mode</p>
-                  <p className="text-muted-foreground text-xs">
-                    {outputMode === 'longform' ? 'One 16:9 edit' : 'Multiple 9:16 clips'}
-                  </p>
-                </div>
-                <Select
-                  value={outputMode}
-                  onValueChange={(value) => setOutputMode(value as 'short' | 'longform')}
-                  disabled={isStarting}
+                <Button
+                  size="icon"
+                  className="h-10 w-10 shrink-0"
+                  disabled={!url.trim() || isStarting}
+                  onClick={handleUrlSubmit}
+                  aria-label="Import YouTube URL"
                 >
-                  <SelectTrigger className="w-full sm:w-48" aria-label="Output mode">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="short">Short clips (9:16)</SelectItem>
-                    <SelectItem value="longform">Long-form (16:9)</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </Button>
               </div>
+              <p className="text-muted-foreground text-xs">
+                Adds to this project. Choose the outcome before processing starts.
+              </p>
             </div>
-          </Card>
+          </div>
+        </Card>
+
+        {!showSetupCard && (
+          <details className="group/recipe rounded-lg border border-border bg-card">
+            <summary className="flex min-h-12 cursor-pointer list-none flex-wrap items-center justify-between gap-2 rounded-lg px-4 py-3 text-sm outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
+              <span className="flex items-center gap-2 font-medium">
+                <SlidersHorizontal className="h-4 w-4 text-muted-foreground" aria-hidden />
+                {outputMode === 'longform' ? 'Explanation style' : 'Clip recipe'}
+              </span>
+              <span className="flex items-center gap-3 text-xs text-muted-foreground">
+                {outputMode === 'longform' ? 'Long-form · 16:9' : 'Short clips · 9:16'}
+                <ChevronDown className="h-4 w-4 group-open/recipe:rotate-180" aria-hidden />
+              </span>
+            </summary>
+            <div className="border-t border-border p-3">
+              {outputMode === 'short' ? (
+                <ProcessingRecipe disabled={isStarting} />
+              ) : (
+                <PalettePicker disabled={isStarting} />
+              )}
+            </div>
+          </details>
         )}
-
-        {!showSetupCard && outputMode === 'short' && <ProcessingRecipe disabled={isStarting} />}
-
-        {!showSetupCard && outputMode === 'longform' && <PalettePicker disabled={isStarting} />}
 
         <RecentProjectLibrary
           projects={recents}
           loading={recentsLoading}
           error={recentsError}
-          busyPath={busyProjectPath}
+          busyPath={isStarting ? 'source-import' : busyProjectPath}
           onRetry={() => void refreshRecents()}
           onOpen={(entry) => void handleOpenRecent(entry)}
-          onNewProject={() => setNewProjectOpen(true)}
+          onNewProject={() => {
+            setIngestError(null);
+            setKeyMissing(false);
+            setNewProjectOpen(true);
+          }}
           onOpenProjectFile={() => void handleOpenProjectFile()}
-          onReveal={(entry) => void window.api.showItemInFolder(entry.path)}
+          onReveal={(entry) =>
+            void window.api.showItemInFolder(entry.path).catch((error: unknown) => {
+              setIngestError(
+                `Couldn’t reveal ${entry.name}: ${error instanceof Error ? error.message : String(error)}`,
+              );
+            })
+          }
           onPin={(entry) =>
             void runProjectAction(
               entry,
@@ -661,7 +686,8 @@ export function DropScreen(): React.JSX.Element {
             void runProjectAction(
               entry,
               async () => {
-                await window.api.renameRecentProject(entry.path, name);
+                const renamed = await window.api.renameRecentProject(entry.path, name);
+                if (!renamed) throw new Error('The project could not be renamed.');
               },
               `Renamed to ${name}`,
             )
@@ -670,7 +696,8 @@ export function DropScreen(): React.JSX.Element {
             void runProjectAction(
               entry,
               async () => {
-                await window.api.duplicateRecentProject(entry.path);
+                const duplicated = await window.api.duplicateRecentProject(entry.path);
+                if (!duplicated) throw new Error('The project could not be duplicated.');
               },
               'Project duplicated',
             )
@@ -697,11 +724,28 @@ export function DropScreen(): React.JSX.Element {
       </div>
 
       <NewProjectDialog
+        key={`new-${entryVersion}`}
         open={newProjectOpen}
         busy={isStarting}
+        error={ingestError}
+        keyMissing={keyMissing}
+        onOpenSettings={() => void handleOpenSettings()}
         onOpenChange={setNewProjectOpen}
         onChooseFile={chooseVideoPath}
-        onCreate={handleCreateProject}
+        onCreate={(draft) => void confirmEntry(draft, 'new')}
+      />
+      <NewProjectDialog
+        key={`add-${entryVersion}-${importVersion}`}
+        intent="add"
+        initialSource={queuedSource}
+        open={importOpen}
+        busy={isStarting}
+        error={ingestError}
+        keyMissing={keyMissing}
+        onOpenSettings={() => void handleOpenSettings()}
+        onOpenChange={setImportOpen}
+        onChooseFile={chooseVideoPath}
+        onCreate={(draft) => void confirmEntry(draft, 'add')}
       />
     </div>
   );

@@ -64,6 +64,8 @@ scripts/verify-blocks/*.bundle.cjs
 .ezcoder/uploads/
 .ezcoder/*-harness.html
 .ezcoder/vite.*.config.mjs
+.ezcoder/ui-scene-proof-*/
+.ezcoder/longform-process-sampler.ps1
 Screenshot*.png
 
 # E2E smoke validation artifacts (regenerable via scripts/e2e-smoke/run.sh)

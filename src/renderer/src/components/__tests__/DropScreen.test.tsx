@@ -15,6 +15,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { createNewProject, loadProjectFromPath } from '@/services';
 import { useStore } from '@/store';
 import { installApiStub, resetStore } from './test-utils';
 
@@ -65,11 +66,19 @@ vi.mock('sonner', () => ({
 beforeEach(() => {
   resetStore();
   installApiStub();
-  processVideoMock.mockClear();
+  vi.clearAllMocks();
+  useStore.setState((state) => ({
+    settings: { ...state.settings, outputMode: 'short', geminiApiKey: '' },
+    processingConfig: { ...state.processingConfig, promoMode: false },
+  }));
+  vi.mocked(createNewProject).mockImplementation(() => useStore.getState().reset());
+  vi.mocked(loadProjectFromPath).mockResolvedValue(false);
 });
 
-afterEach(() => {
+afterEach(async () => {
+  await act(async () => {});
   cleanup();
+  vi.restoreAllMocks();
 });
 
 // ---------------------------------------------------------------------------
@@ -112,13 +121,17 @@ describe('DropScreen', () => {
     render(<DropScreen />);
 
     const dropZone = screen.getByRole('button', {
-      name: /drop a video file or paste a url/i,
+      name: /choose a video file or drop it here/i,
     });
 
     const file = makeVideoFile('intro.mp4');
     const dataTransfer = makeDataTransfer([file]);
 
     fireEvent.drop(dropZone, { dataTransfer });
+    expect(processVideoMock).not.toHaveBeenCalled();
+    expect(window.api.getMetadata).not.toHaveBeenCalled();
+    expect(useStore.getState().sources).toHaveLength(0);
+    fireEvent.click(screen.getByRole('button', { name: /add source and process/i }));
 
     await waitFor(() => {
       expect(processVideoMock).toHaveBeenCalledTimes(1);
@@ -144,11 +157,14 @@ describe('DropScreen', () => {
     const { DropScreen } = await import('@/components/screens/DropScreen');
     render(<DropScreen />);
 
-    const input = screen.getByLabelText(/video url or file path/i);
+    const input = screen.getByLabelText(/^youtube url$/i);
     const url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
     fireEvent.change(input, { target: { value: url } });
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    expect(processVideoMock).not.toHaveBeenCalled();
+    expect(window.api.downloadYouTube).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /add source and process/i }));
 
     await waitFor(() => {
       expect(processVideoMock).toHaveBeenCalledTimes(1);
@@ -164,7 +180,7 @@ describe('DropScreen', () => {
     expect(state.activeSourceId).toBe(state.sources.at(0)?.id);
   });
 
-  it('queues a source chosen before setup and continues after setup succeeds', async () => {
+  it('keeps a source through setup and cancellation without automatically processing', async () => {
     useStore.setState((state) => ({
       settings: { ...state.settings, geminiApiKey: 'test-key' },
       pythonStatus: 'checking',
@@ -173,14 +189,15 @@ describe('DropScreen', () => {
     render(<DropScreen />);
 
     const dropZone = screen.getByRole('button', {
-      name: /drop a video file or paste a url/i,
+      name: /choose a video file or drop it here/i,
     });
     fireEvent.drop(dropZone, {
       dataTransfer: makeDataTransfer([makeVideoFile('queued-interview.mp4')]),
     });
 
-    await waitFor(() => expect(useStore.getState().sources).toHaveLength(1));
+    expect(useStore.getState().sources).toHaveLength(0);
     expect(processVideoMock).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: /add source and process/i })).toBeDisabled();
 
     act(() => {
       useStore.setState({
@@ -196,12 +213,14 @@ describe('DropScreen', () => {
         },
       });
     });
-    expect(await screen.findByText('Your video is queued')).toBeInTheDocument();
-    expect(
-      screen.getByText(/queued-interview\.mp4 will continue automatically/),
-    ).toBeInTheDocument();
-
+    expect(screen.getByText(/Processing will not start automatically/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /^cancel$/i }));
     act(() => useStore.setState({ pythonStatus: 'ready' }));
+    expect(processVideoMock).not.toHaveBeenCalled();
+    expect(window.api.getMetadata).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /review import/i }));
+    expect(screen.getByText('/virtual/queued-interview.mp4')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /add source and process/i }));
     await waitFor(() => expect(processVideoMock).toHaveBeenCalledTimes(1));
   });
 
@@ -212,13 +231,25 @@ describe('DropScreen', () => {
     render(<DropScreen />);
 
     const dropZone = screen.getByRole('button', {
-      name: /drop a video file or paste a url/i,
+      name: /choose a video file or drop it here/i,
     });
     fireEvent.drop(dropZone, { dataTransfer: makeDataTransfer([makeVideoFile('intro.mp4')]) });
+    fireEvent.click(screen.getByRole('button', { name: /add source and process/i }));
 
     expect(await screen.findByText(/gemini api key required/i)).toBeInTheDocument();
     expect(processVideoMock).not.toHaveBeenCalled();
     expect(useStore.getState().sources).toHaveLength(0);
+    fireEvent.click(screen.getByRole('button', { name: /open settings/i }));
+    expect(window.api.openSettingsWindow).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole('button', { name: /^cancel$/i }));
+    act(() =>
+      useStore.setState((state) => ({ settings: { ...state.settings, geminiApiKey: 'new-key' } })),
+    );
+    expect(processVideoMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /review import/i }));
+    expect(screen.getByText('/virtual/intro.mp4')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /add source and process/i }));
+    await waitFor(() => expect(processVideoMock).toHaveBeenCalledTimes(1));
   });
 
   it('allows a keyless local Promo Mode recording to start', async () => {
@@ -230,11 +261,13 @@ describe('DropScreen', () => {
     render(<DropScreen />);
 
     const dropZone = screen.getByRole('button', {
-      name: /drop a video file or paste a url/i,
+      name: /choose a video file or drop it here/i,
     });
     fireEvent.drop(dropZone, {
       dataTransfer: makeDataTransfer([makeVideoFile('scripted-promo.mp4')]),
     });
+    expect(processVideoMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /add source and process/i }));
 
     await waitFor(() => expect(processVideoMock).toHaveBeenCalledTimes(1));
     expect(screen.queryByText(/gemini api key required/i)).not.toBeInTheDocument();
@@ -260,9 +293,219 @@ describe('DropScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: /create project/i }));
 
     await waitFor(() => expect(processVideoMock).toHaveBeenCalledTimes(1));
+    expect(createNewProject).toHaveBeenCalledTimes(1);
     expect(useStore.getState().currentProject.displayName).toBe('Launch selects');
     expect(useStore.getState().sources[0]?.name).toBe('creator-interview.mp4');
     expect(useStore.getState().creativeBrief.audience).toBe('Independent creators');
+  });
+
+  it('browses locally without resetting the current project', async () => {
+    useStore.setState((state) => ({ settings: { ...state.settings, geminiApiKey: 'test-key' } }));
+    const existing = {
+      id: 'existing',
+      path: '/old.mp4',
+      name: 'old.mp4',
+      duration: 60,
+      width: 1920,
+      height: 1080,
+      origin: 'file' as const,
+    };
+    useStore.getState().addSource(existing);
+    useStore.getState().setProjectDisplayName('Keep this project');
+    const projectId = useStore.getState().currentProject.id;
+    installApiStub({ openFiles: vi.fn(async () => ['/virtual/new.mp4']) });
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    fireEvent.click(screen.getByRole('button', { name: /^import video$/i }));
+    expect(await screen.findByText('/virtual/new.mp4')).toBeInTheDocument();
+    expect(screen.getByText(/Existing sources and work are kept/)).toBeInTheDocument();
+    expect(window.api.getMetadata).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /add source and process/i }));
+    await waitFor(() => expect(processVideoMock).toHaveBeenCalledTimes(1));
+    expect(createNewProject).not.toHaveBeenCalled();
+    expect(useStore.getState().currentProject.id).toBe(projectId);
+    expect(useStore.getState().sources).toHaveLength(2);
+    expect(useStore.getState().sources[0]).toEqual(existing);
+  });
+
+  it('returns keyboard focus after cancelling and retains the selected file', async () => {
+    installApiStub({ openFiles: vi.fn(async () => ['/virtual/kept.mp4']) });
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    const importButton = screen.getByRole('button', { name: /^import video$/i });
+    importButton.focus();
+    fireEvent.click(importButton);
+    await screen.findByText('/virtual/kept.mp4');
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    await waitFor(() => expect(importButton).toHaveFocus());
+    expect(processVideoMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /review import/i }));
+    expect(screen.getByText('/virtual/kept.mp4')).toBeInTheDocument();
+  });
+
+  it('keeps a new-project draft after a declined replacement and resets only on approval', async () => {
+    useStore.setState((state) => ({
+      settings: { ...state.settings, geminiApiKey: 'test-key' },
+      isDirty: true,
+    }));
+    const originalId = useStore.getState().currentProject.id;
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    installApiStub({ openFiles: vi.fn(async () => ['/virtual/new.mp4']) });
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    fireEvent.click(screen.getAllByRole('button', { name: /^new project$/i })[0]);
+    fireEvent.click(screen.getByRole('button', { name: /choose video/i }));
+    await screen.findByText('/virtual/new.mp4');
+    fireEvent.click(screen.getByRole('button', { name: /create project and process/i }));
+    await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+    expect(createNewProject).not.toHaveBeenCalled();
+    expect(useStore.getState().currentProject.id).toBe(originalId);
+    expect(processVideoMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /^cancel$/i }));
+    fireEvent.click(screen.getAllByRole('button', { name: /^new project$/i })[0]);
+    expect(screen.getByText('/virtual/new.mp4')).toBeInTheDocument();
+    confirm.mockReturnValue(true);
+    fireEvent.click(screen.getByRole('button', { name: /create project and process/i }));
+    await waitFor(() => expect(processVideoMock).toHaveBeenCalledTimes(1));
+    expect(createNewProject).toHaveBeenCalledTimes(1);
+    expect(useStore.getState().currentProject.id).not.toBe(originalId);
+  });
+
+  it('keeps the current project when metadata fails and allows retrying the selected source', async () => {
+    useStore.setState((state) => ({ settings: { ...state.settings, geminiApiKey: 'test-key' } }));
+    const getMetadata = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('Unreadable source'))
+      .mockResolvedValue({ duration: 60, width: 1920, height: 1080 });
+    installApiStub({ getMetadata, openFiles: vi.fn(async () => ['/virtual/new.mp4']) });
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    fireEvent.click(screen.getAllByRole('button', { name: /^new project$/i })[0]);
+    fireEvent.click(screen.getByRole('button', { name: /choose video/i }));
+    await screen.findByText('/virtual/new.mp4');
+    fireEvent.click(screen.getByRole('button', { name: /create project and process/i }));
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/Unreadable source/));
+    expect(createNewProject).not.toHaveBeenCalled();
+    expect(processVideoMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /create project and process/i }));
+    await waitFor(() => expect(processVideoMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('uses the remembered long-form outcome without discarding the existing brief', async () => {
+    useStore.setState((state) => ({
+      settings: { ...state.settings, geminiApiKey: 'test-key', outputMode: 'longform' },
+    }));
+    useStore.getState().setCreativeBrief({ notes: 'Keep these instructions' });
+    const brief = useStore.getState().creativeBrief;
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    fireEvent.drop(screen.getByRole('button', { name: /choose a video file or drop/i }), {
+      dataTransfer: makeDataTransfer([makeVideoFile()]),
+    });
+    expect(screen.getByText(/not used for initial scene planning/)).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /output mode/i })).toHaveTextContent('Long-form');
+    expect(processLongformMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /add source and process/i }));
+    await waitFor(() => expect(processLongformMock).toHaveBeenCalledTimes(1));
+    expect(processVideoMock).not.toHaveBeenCalled();
+    expect(useStore.getState().creativeBrief).toEqual(brief);
+  });
+
+  it.each([
+    'https://evil.example/youtu.be/dQw4w9WgXcQ',
+    'file:///video.mp4',
+    'not a url',
+  ])('rejects invalid URL %s without generating', async (value) => {
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    await screen.findByText('No saved projects yet');
+    fireEvent.change(screen.getByLabelText(/^youtube url$/i), { target: { value } });
+    fireEvent.click(screen.getByRole('button', { name: /import youtube url/i }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent('Paste a valid YouTube URL');
+    expect(processVideoMock).not.toHaveBeenCalled();
+  });
+
+  it('ignores a cancelled file chooser and rejects unsupported drops', async () => {
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    fireEvent.click(screen.getByRole('button', { name: /^import video$/i }));
+    await waitFor(() => expect(window.api.openFiles).toHaveBeenCalledTimes(1));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    fireEvent.drop(screen.getByRole('button', { name: /choose a video file or drop/i }), {
+      dataTransfer: makeDataTransfer([makeVideoFile('notes.txt')]),
+    });
+    expect(screen.getByRole('alert')).toHaveTextContent('Unsupported file type');
+    expect(processVideoMock).not.toHaveBeenCalled();
+  });
+
+  it('does not replace a project while work is active', async () => {
+    useStore.setState((state) => ({ pipeline: { ...state.pipeline, stage: 'transcribing' } }));
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    await screen.findByText('No saved projects yet');
+    fireEvent.drop(screen.getByRole('button', { name: /choose a video file or drop/i }), {
+      dataTransfer: makeDataTransfer([makeVideoFile('saved.batchclip')]),
+    });
+    expect(screen.getByRole('alert')).toHaveTextContent(/Finish or cancel active work/);
+    expect(loadProjectFromPath).not.toHaveBeenCalled();
+    expect(createNewProject).not.toHaveBeenCalled();
+  });
+
+  it('preserves a new URL project through a missing key without resetting until reconfirmed', async () => {
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    fireEvent.click(screen.getAllByRole('button', { name: /^new project$/i })[0]);
+    fireEvent.change(screen.getByLabelText('Project name'), { target: { value: 'URL project' } });
+    fireEvent.change(within(screen.getByRole('dialog')).getByLabelText('YouTube URL'), {
+      target: { value: 'https://youtube.com/v/dQw4w9WgXcQ' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /create project and process/i }));
+    await screen.findByText('Gemini API key required');
+    expect(createNewProject).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /^cancel$/i }));
+    act(() =>
+      useStore.setState((state) => ({ settings: { ...state.settings, geminiApiKey: 'new-key' } })),
+    );
+    expect(processVideoMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getAllByRole('button', { name: /^new project$/i })[0]);
+    expect(screen.getByLabelText('Project name')).toHaveValue('URL project');
+    expect(within(screen.getByRole('dialog')).getByLabelText('YouTube URL')).toHaveValue(
+      'https://youtube.com/v/dQw4w9WgXcQ',
+    );
+    fireEvent.click(screen.getByRole('button', { name: /create project and process/i }));
+    await waitFor(() => expect(processVideoMock).toHaveBeenCalledTimes(1));
+    expect(createNewProject).toHaveBeenCalledTimes(1);
+    expect(useStore.getState().sources[0]?.youtubeUrl).toBe('https://youtube.com/v/dQw4w9WgXcQ');
+  });
+
+  it.each([
+    ['ready', true, 'Open to relink media'],
+    ['error', false, 'Open to recover'],
+    ['done', false, 'Review exports'],
+  ])('opens saved %s projects through the existing restoration service', async (stage, missingMedia, action) => {
+    installApiStub({
+      getRecentProjects: vi.fn(async () => [
+        {
+          path: '/saved.batchclip',
+          name: 'Saved cut',
+          stage,
+          missingMedia,
+          lastOpened: Date.now(),
+          clipCount: 2,
+          selectedCount: 1,
+          sourceCount: 1,
+        },
+      ]),
+    });
+    vi.mocked(loadProjectFromPath).mockResolvedValue(true);
+    const { DropScreen } = await import('@/components/screens/DropScreen');
+    render(<DropScreen />);
+    await screen.findByText('Saved cut');
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(`Saved cut.*${action}`) }));
+    await waitFor(() => expect(loadProjectFromPath).toHaveBeenCalledWith('/saved.batchclip'));
+    expect(processVideoMock).not.toHaveBeenCalled();
+    expect(processLongformMock).not.toHaveBeenCalled();
   });
 
   it('renders recent projects when present', async () => {
@@ -292,6 +535,12 @@ describe('DropScreen', () => {
     expect(await screen.findByText('Beta')).toBeInTheDocument();
     expect(screen.getByText(/4 clips/)).toBeInTheDocument();
     expect(screen.getByText(/12 clips/)).toBeInTheDocument();
+    expect(screen.getAllByText('Alpha')).toHaveLength(1);
+    expect(screen.getByText(/does not restart automatically/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Alpha.*Open saved progress/i }));
+    await waitFor(() =>
+      expect(loadProjectFromPath).toHaveBeenCalledWith('/projects/alpha.batchclip'),
+    );
 
     fireEvent.change(screen.getByRole('searchbox', { name: /search recent projects/i }), {
       target: { value: 'Alpha' },

@@ -13,6 +13,7 @@
 import { TransitionSeries } from '@remotion/transitions';
 import React from 'react';
 import { AbsoluteFill, useVideoConfig } from 'remotion';
+import { longformClipPath } from './longform-stage-layout';
 import { useStageEnterExit } from './motion';
 import { SceneBody } from './SceneBody';
 import { SceneFrame } from './SceneFrame';
@@ -63,15 +64,18 @@ export const ExplainerSequence: React.FC<ExplainerSequenceProps> = (props) => {
       layout: props.layout,
       aspect: props.aspect,
       safe: props.safeBox,
+      presentation: props.presentation,
     }),
-    [props.palette, props.layout, props.aspect, props.safeBox],
+    [props.palette, props.layout, props.aspect, props.safeBox, props.presentation],
   );
-  const floating = props.layout === 'over';
+  const landscape = props.aspect === '16:9' ? props.presentation : undefined;
+  const floating = !!landscape || props.layout === 'over';
   return (
     <ExplainerProvider value={ctx}>
       <AbsoluteFill
         style={{
           backgroundColor: floating ? 'transparent' : props.palette.bgOuter,
+          clipPath: landscape ? longformClipPath(landscape) : undefined,
           fontFamily: "'Inter', system-ui, sans-serif",
         }}
       >

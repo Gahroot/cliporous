@@ -13,8 +13,11 @@ Stdout (JSON lines):
 
 import argparse
 import json
+import importlib
+import importlib.util
 import os
 import re
+import shutil
 import sys
 from urllib.parse import urlparse, parse_qs
 
@@ -74,6 +77,65 @@ def get_video_id(url: str):
 
 def is_youtube_url(url: str) -> bool:
     return get_video_id(url) is not None
+
+
+# ---------------------------------------------------------------------------
+# YouTube JS challenge support
+# ---------------------------------------------------------------------------
+
+def find_js_runtimes() -> dict:
+    """Locate JavaScript runtimes yt-dlp can use to solve YouTube's signature
+    and `n` challenges. Without one, YouTube only yields ~360p formats.
+
+    Order: Deno from the `deno` PyPI package (bundled with the app venv), Deno
+    on PATH, then Node on PATH.
+    """
+    runtimes: dict = {}
+
+    deno_path = None
+    try:
+        deno_module = importlib.import_module("deno")
+        deno_path = deno_module.find_deno_bin()
+    except Exception:
+        deno_path = None
+    deno_path = deno_path or shutil.which("deno")
+    if deno_path and os.path.isfile(deno_path):
+        runtimes["deno"] = {"path": deno_path}
+
+    node_path = shutil.which("node")
+    if node_path:
+        runtimes["node"] = {"path": node_path}
+
+    return runtimes
+
+
+# Player clients that serve full-quality (up to 4K) streams without a PO token.
+# The old `android` client is limited to ~360p, and the default `tv` client
+# answers 403 on the high-res media URLs. Verified: this list downloads 4K AV1.
+PREFERRED_PLAYER_CLIENTS = [
+    "web_safari", "web_embedded", "android_vr", "-tv", "-tv_downgraded",
+]
+
+
+def youtube_challenge_opts() -> dict:
+    """yt-dlp options that let it solve YouTube's JS challenges and pick
+    clients that return high-quality formats.
+
+    The solver script comes from the `yt-dlp-ejs` package; if that isn't
+    installed, fall back to letting yt-dlp fetch it from GitHub.
+    """
+    opts: dict = {}
+    opts["extractor_args"] = {"youtube": {"player_client": PREFERRED_PLAYER_CLIENTS}}
+    runtimes = find_js_runtimes()
+    if runtimes:
+        opts["js_runtimes"] = runtimes
+    else:
+        eprint("[download] WARNING: no JavaScript runtime (deno/node) found; "
+               "YouTube formats will be limited to low quality")
+
+    if importlib.util.find_spec("yt_dlp_ejs") is None:
+        opts["remote_components"] = ["ejs:github"]
+    return opts
 
 
 # ---------------------------------------------------------------------------
@@ -142,20 +204,7 @@ def main() -> None:
         "no_warnings": True,
         "skip_download": True,
         "socket_timeout": 30,
-        "nocheckcertificate": True,
-        "http_headers": {
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/131.0.0.0 Safari/537.36"
-            ),
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Connection": "keep-alive",
-        },
-        "extractor_args": {
-            "youtube": {"player_client": ["android", "web"]}
-        },
+        **youtube_challenge_opts(),
     }
 
     try:
@@ -209,24 +258,12 @@ def main() -> None:
         "socket_timeout": 30,
         "retries": 5,
         "fragment_retries": 5,
-        "http_chunk_size": 10 * 1024 * 1024,
         "quiet": True,
         "no_warnings": False,
-        "nocheckcertificate": True,
-        "http_headers": {
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/131.0.0.0 Safari/537.36"
-            ),
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
-            "Connection": "keep-alive",
-        },
-        "extractor_args": {
-            "youtube": {"player_client": ["android", "web"]}
-        },
+        # No custom http_headers / http_chunk_size: yt-dlp sets per-client
+        # headers itself, and overriding the User-Agent or forcing chunked
+        # ranges makes YouTube answer 403 on the media URLs.
+        **youtube_challenge_opts(),
         # NOTE: no FFmpegVideoConvertor postprocessor here — leaving it on
         # forces a lossy H.264 transcode of VP9/AV1 streams during merge.
         # The merge_output_format above handles container muxing without
@@ -234,9 +271,18 @@ def main() -> None:
         "progress_hooks": [make_progress_hook()],
     }
 
+    downloaded_info: dict = {}
     try:
-        with yt_dlp.YoutubeDL(download_opts) as ydl:
-            ydl.download([args.url])
+        try:
+            with yt_dlp.YoutubeDL(download_opts) as ydl:
+                downloaded_info = ydl.extract_info(args.url, download=True) or {}
+        except Exception as first_err:
+            # Fall back to yt-dlp's default clients in case the preferred set
+            # stops working (YouTube changes these often).
+            eprint(f"[download] Preferred clients failed ({first_err}); retrying with defaults")
+            download_opts.pop("extractor_args", None)
+            with yt_dlp.YoutubeDL(download_opts) as ydl:
+                downloaded_info = ydl.extract_info(args.url, download=True) or {}
     except Exception as e:
         emit({"type": "error", "message": f"Download failed: {e}"})
         sys.exit(1)
@@ -255,20 +301,17 @@ def main() -> None:
     # Log what we actually got — resolution + codec + bitrate — so we can
     # see in the session log whether YouTube served us a degraded stream.
     try:
-        probe_opts = {"quiet": True, "no_warnings": True, "skip_download": True}
-        with yt_dlp.YoutubeDL(probe_opts) as probe_ydl:
-            probe = probe_ydl.extract_info(downloaded_path, download=False)
-            width = probe.get("width")
-            height = probe.get("height")
-            vcodec = probe.get("vcodec")
-            vbr = probe.get("vbr") or probe.get("tbr")
-            size_mb = os.path.getsize(downloaded_path) / (1024 * 1024)
-            eprint(
-                f"[download] Got: {width}x{height} {vcodec} "
-                f"vbr={vbr}kbps size={size_mb:.1f}MB"
-            )
+        width = downloaded_info.get("width")
+        height = downloaded_info.get("height")
+        vcodec = downloaded_info.get("vcodec")
+        vbr = downloaded_info.get("vbr") or downloaded_info.get("tbr")
+        size_mb = os.path.getsize(downloaded_path) / (1024 * 1024)
+        eprint(
+            f"[download] Got: {width}x{height} {vcodec} "
+            f"vbr={vbr}kbps size={size_mb:.1f}MB"
+        )
     except Exception as probe_err:
-        eprint(f"[download] Could not probe downloaded file: {probe_err}")
+        eprint(f"[download] Could not read downloaded file info: {probe_err}")
 
     emit({"type": "done", "path": downloaded_path, "title": video_title, "duration": video_duration})
     eprint(f"[download] Done. Saved to: {downloaded_path}")

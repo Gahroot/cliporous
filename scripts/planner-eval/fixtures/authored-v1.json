@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "id": "authored-v1",
+  "description": "Eight authored synthetic controls with synthetic word timing, not recordings or evidence of live quality.",
+  "clips": [
+    {
+      "id": "three-processes", "provenance": "synthetic", "sourceGroup": "process-source", "topicGroup": "process", "split": "discovery", "bounds": {"start": 0, "end": 24}, "hookLeadSec": 2,
+      "words": [
+        {"text":"First", "start":3,"end":3.8}, {"text":"sort", "start":4,"end":4.8}, {"text":"the", "start":5,"end":5.8}, {"text":"requests.", "start":6,"end":6.8},
+        {"text":"Then", "start":9,"end":9.8}, {"text":"route", "start":10,"end":10.8}, {"text":"urgent", "start":11,"end":11.8}, {"text":"requests", "start":12,"end":12.8}, {"text":"to", "start":13,"end":13.8}, {"text":"support.", "start":14,"end":14.8},
+        {"text":"Finally", "start":17,"end":17.8}, {"text":"check", "start":18,"end":18.8}, {"text":"each", "start":19,"end":19.8}, {"text":"answer", "start":20,"end":20.8}, {"text":"before", "start":21,"end":21.8}, {"text":"delivery.", "start":22,"end":22.8}
+      ],
+      "expectations": {"animation":"required","quote":"forbidden","takeaway":"allowed","requiredKinds":[],"forbiddenKinds":[],"minConsecutiveScenes":3,"notes":"Three related explanations can remain together above the speaker without alternating layouts. No invented mechanisms or numerical claims."}
+    },
+    {
+      "id":"ordinary-speech","provenance":"synthetic","sourceGroup":"ordinary-source","topicGroup":"ordinary","split":"discovery","bounds":{"start":0,"end":16},"hookLeadSec":2,
+      "words":[{"text":"Today","start":0,"end":0.7},{"text":"we","start":1,"end":1.7},{"text":"met","start":2,"end":2.7},{"text":"at","start":3,"end":3.7},{"text":"the","start":4,"end":4.7},{"text":"office.","start":5,"end":5.7},{"text":"After","start":7,"end":7.7},{"text":"lunch","start":8,"end":8.7},{"text":"we","start":9,"end":9.7},{"text":"walked","start":10,"end":10.7},{"text":"back","start":11,"end":11.7},{"text":"and","start":12,"end":12.7},{"text":"finished","start":13,"end":13.7},{"text":"talking.","start":14,"end":14.7}],
+      "expectations":{"animation":"optional","quote":"forbidden","takeaway":"forbidden","requiredKinds":[],"forbiddenKinds":[],"notes":"Ordinary narration earns no full-screen quote, including uppercase words or caption emphasis."}
+    },
+    {
+      "id":"grounded-takeaway","provenance":"synthetic","sourceGroup":"takeaway-source","topicGroup":"testing","split":"discovery","bounds":{"start":0,"end":18},"hookLeadSec":2,
+      "words":[{"text":"We","start":0,"end":0.6},{"text":"kept","start":1,"end":1.6},{"text":"adding","start":2,"end":2.6},{"text":"features","start":3,"end":3.6},{"text":"without","start":4,"end":4.6},{"text":"asking","start":5,"end":5.6},{"text":"customers.","start":6,"end":6.6},{"text":"The","start":8,"end":8.6},{"text":"lesson","start":9,"end":9.6},{"text":"is","start":10,"end":10.6},{"text":"simple:","start":11,"end":11.6},{"text":"test","start":12,"end":12.6},{"text":"the","start":12.8,"end":13.2},{"text":"need","start":13.4,"end":14},{"text":"before","start":14.2,"end":14.8},{"text":"building.","start":15,"end":15.8}],
+      "expectations":{"animation":"optional","quote":"allowed","takeaway":"required","requiredKinds":[],"forbiddenKinds":[],"notes":"Recognize the central takeaway. An optional quote must exactly bind test the need before building.; zero quotes is valid if the takeaway is clear otherwise."}
+    },
+    {
+      "id":"no-animation","provenance":"synthetic","sourceGroup":"silence-source","topicGroup":"personal-pause","split":"discovery","bounds":{"start":0,"end":15},"hookLeadSec":2,
+      "words":[{"text":"I","start":0,"end":0.6},{"text":"do","start":1,"end":1.6},{"text":"not","start":2,"end":2.6},{"text":"have","start":3,"end":3.6},{"text":"an","start":4,"end":4.6},{"text":"answer.","start":5,"end":5.6},{"text":"Let","start":7,"end":7.6},{"text":"me","start":8,"end":8.6},{"text":"sit","start":9,"end":9.6},{"text":"with","start":10,"end":10.6},{"text":"that","start":11,"end":11.6},{"text":"for","start":12,"end":12.6},{"text":"now.","start":13,"end":13.6}],
+      "expectations":{"animation":"none","quote":"forbidden","takeaway":"forbidden","requiredKinds":[],"forbiddenKinds":[],"notes":"An intentionally empty animation and quote plan is correct. Do not invent an explanation or emotional conclusion."}
+    },
+    {
+      "id":"specialized-agent-plan","provenance":"synthetic","sourceGroup":"agent-source","topicGroup":"agent-control","split":"discovery","bounds":{"start":0,"end":30},"hookLeadSec":2,
+      "words":[{"text":"The","start":3,"end":3.7},{"text":"agent","start":4,"end":4.7},{"text":"plans","start":5,"end":5.7},{"text":"three","start":6,"end":6.7},{"text":"tasks.","start":7,"end":7.7},{"text":"It","start":9,"end":9.7},{"text":"searches","start":10,"end":10.7},{"text":"then","start":11,"end":11.7},{"text":"drafts","start":12,"end":12.7},{"text":"a","start":13,"end":13.7},{"text":"reply.","start":14,"end":14.7},{"text":"Before","start":17,"end":17.7},{"text":"sending","start":18,"end":18.7},{"text":"it","start":19,"end":19.7},{"text":"checks","start":20,"end":20.7},{"text":"the","start":21,"end":21.7},{"text":"evidence.","start":22,"end":22.7},{"text":"If","start":24,"end":24.7},{"text":"unsupported","start":25,"end":25.7},{"text":"it","start":26,"end":26.7},{"text":"replans.","start":27,"end":27.7}],
+      "expectations":{"animation":"required","quote":"forbidden","takeaway":"allowed","requiredKinds":["agent-plan"],"forbiddenKinds":[],"notes":"Expose the specialized agent-plan candidate with source-grounded plan, action, check and replan beats; generic AI chip alone misses the explanation."}
+    },
+    {
+      "id":"business-model-control","provenance":"synthetic","sourceGroup":"business-source","topicGroup":"business-model","split":"discovery","bounds":{"start":0,"end":18},"hookLeadSec":2,
+      "words":[{"text":"Our","start":0,"end":0.6},{"text":"business","start":1,"end":1.6},{"text":"model","start":2,"end":2.6},{"text":"changed.","start":3,"end":3.6},{"text":"Instead","start":5,"end":5.6},{"text":"of","start":6,"end":6.6},{"text":"selling","start":7,"end":7.6},{"text":"equipment","start":8,"end":8.6},{"text":"once,","start":9,"end":9.6},{"text":"we","start":11,"end":11.6},{"text":"now","start":12,"end":12.6},{"text":"rent","start":13,"end":13.6},{"text":"it","start":14,"end":14.6},{"text":"monthly.","start":15,"end":15.6}],
+      "expectations":{"animation":"required","quote":"allowed","takeaway":"allowed","requiredKinds":[],"forbiddenKinds":["model-training"],"notes":"Business model is not machine learning. Explain sale versus rental without inventing profit, prices or winners."}
+    },
+    {
+      "id":"holdout-evidence","provenance":"synthetic","sourceGroup":"evidence-source","topicGroup":"conflicting-reports","split":"holdout","bounds":{"start":0,"end":26},"hookLeadSec":2,
+      "words":[{"text":"Two","start":3,"end":3.7},{"text":"reports","start":4,"end":4.7},{"text":"disagree.","start":5,"end":5.7},{"text":"One","start":8,"end":8.7},{"text":"says","start":9,"end":9.7},{"text":"demand","start":10,"end":10.7},{"text":"rose.","start":11,"end":11.7},{"text":"The","start":14,"end":14.7},{"text":"other","start":15,"end":15.7},{"text":"says","start":16,"end":16.7},{"text":"it","start":17,"end":17.7},{"text":"fell.","start":18,"end":18.7},{"text":"Without","start":21,"end":21.7},{"text":"more","start":22,"end":22.7},{"text":"evidence","start":23,"end":23.7},{"text":"we","start":24,"end":24.3},{"text":"cannot","start":24.4,"end":24.7},{"text":"decide.","start":24.8,"end":25.5}],
+      "expectations":{"animation":"required","quote":"allowed","takeaway":"allowed","requiredKinds":[],"forbiddenKinds":[],"notes":"Keep the conflict unresolved. Never invent a winning report, confidence score or quantity."}
+    },
+    {
+      "id":"holdout-quiet","provenance":"synthetic","sourceGroup":"quiet-source","topicGroup":"weather-observation","split":"holdout","bounds":{"start":0,"end":14},"hookLeadSec":2,
+      "words":[{"text":"The","start":0,"end":0.6},{"text":"rain","start":1,"end":1.6},{"text":"started","start":2,"end":2.6},{"text":"this","start":3,"end":3.6},{"text":"morning.","start":4,"end":4.6},{"text":"I","start":6,"end":6.6},{"text":"watched","start":7,"end":7.6},{"text":"it","start":8,"end":8.6},{"text":"through","start":9,"end":9.6},{"text":"the","start":10,"end":10.6},{"text":"window.","start":11,"end":11.6}],
+      "expectations":{"animation":"none","quote":"forbidden","takeaway":"forbidden","requiredKinds":[],"forbiddenKinds":[],"notes":"Keep the speaker and ordinary captions; absence of an explanatory idea is not a novelty opportunity."}
+    }
+  ]
+}

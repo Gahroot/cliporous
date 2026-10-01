@@ -17,6 +17,15 @@ describe('structured error contract', () => {
     expect(error.technicalDetails).toContain('ffmpeg exited');
   });
 
+  it('does not mistake a Python ModuleNotFoundError for being offline', () => {
+    const error = createStructuredError({
+      source: 'pipeline',
+      message: "ModuleNotFoundError: No module named 'face_model'",
+    });
+
+    expect(error.headline).not.toBe('An internet connection is needed');
+  });
+
   it('redacts credentials and personal home paths from diagnostics', () => {
     const error = createStructuredError({
       source: 'Gemini',

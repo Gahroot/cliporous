@@ -23,6 +23,7 @@
     "test:watch": "vitest --config vitest.config.main.ts",
     "test:main": "vitest run --config vitest.config.main.ts",
     "test:renderer": "vitest run --config vitest.config.ts",
+    "eval:planner": "node scripts/planner-eval/run.mjs",
     "typecheck": "tsc -b --noEmit",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",

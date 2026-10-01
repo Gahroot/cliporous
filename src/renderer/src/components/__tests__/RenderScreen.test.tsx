@@ -12,11 +12,14 @@
  */
 
 import type { StructuredError } from '@shared/errors';
-import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import type { LongformRenderReconciliation } from '@shared/types';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { toast } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useStore } from '@/store';
 import type { ClipCandidate, SourceVideo } from '@/store/types';
+import { deferred, makeScenePlan, SCENE_WORDS } from './longform-scene-fixture';
 import { installApiStub, resetStore } from './test-utils';
 
 // ---------------------------------------------------------------------------
@@ -113,6 +116,7 @@ function installRenderApi(): void {
       return () => {};
     }),
     showItemInFolder: vi.fn(async () => undefined),
+    openPath: vi.fn(async () => ''),
   });
 }
 
@@ -122,6 +126,7 @@ function installRenderApi(): void {
 
 beforeEach(() => {
   resetStore();
+  vi.clearAllMocks();
   installRenderApi();
 
   const store = useStore.getState();
@@ -132,7 +137,8 @@ beforeEach(() => {
   store.setOutputDirectory('/output');
 });
 
-afterEach(() => {
+afterEach(async () => {
+  await act(async () => {});
   cleanup();
   for (const k of Object.keys(callbacks) as (keyof RenderEventCallbacks)[]) {
     delete callbacks[k];
@@ -278,8 +284,8 @@ describe('RenderScreen', () => {
     });
     expect(openBtn).toBeEnabled();
 
-    // Three "Done" badges are also visible — one per clip.
-    expect(screen.getAllByText('Done')).toHaveLength(CLIPS.length);
+    // Encoded-file success is distinct from the explanation outcome.
+    expect(screen.getAllByText('File ready')).toHaveLength(CLIPS.length);
   });
 
   it('reveals a finished clip in the OS file manager and shows the output path', async () => {
@@ -375,6 +381,43 @@ describe('RenderScreen', () => {
     expect(useStore.getState().isRendering).toBe(true);
   });
 
+  it('keeps the cancellation deadline through progress updates and allows retry on timeout', async () => {
+    useStore.getState().setIsRendering(true);
+    useStore.getState().setRenderProgress([{ clipId: 'c1', status: 'rendering', percent: 10 }]);
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+    vi.useFakeTimers();
+    try {
+      await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Cancel now' })));
+      act(() => {
+        callbacks.onProgress?.({ clipId: 'c1', percent: 40 });
+      });
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(25_000);
+      });
+      expect(useStore.getState().isRendering).toBe(true);
+      expect(useStore.getState().renderCancellation.status).toBe('failed');
+      expect(screen.getByRole('button', { name: 'Retry cancel' })).toBeEnabled();
+      expect(screen.getByRole('button', { name: 'Retry cancellation' })).toBeEnabled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('does not replace confirmed cancellation with a late rejected request', async () => {
+    const request = deferred<void>();
+    vi.mocked(window.api.cancelRender).mockReturnValue(request.promise);
+    useStore.getState().setIsRendering(true);
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel now' }));
+    act(() => callbacks.onCancelled?.({ completed: 0, failed: 0, total: 3 }));
+    await act(async () => request.reject(new Error('Late request rejection')));
+    expect(useStore.getState().isRendering).toBe(false);
+    expect(useStore.getState().renderCancellation).toEqual({ status: 'idle', error: null });
+    expect(screen.queryByRole('button', { name: 'Retry cancel' })).not.toBeInTheDocument();
+  });
+
   it('row hosts a progress bar while rendering and after completion', async () => {
     const { RenderScreen } = await import('@/components/screens/RenderScreen');
     const { container } = render(<RenderScreen />);
@@ -391,7 +434,289 @@ describe('RenderScreen', () => {
     expect(bars.length).toBeGreaterThanOrEqual(1);
 
     // Find c1's row by its hook text and confirm it has its own bar.
-    const row = screen.getByText('First clip').closest('div')!;
-    expect(within(row.parentElement as HTMLElement).getByRole('progressbar')).toBeInTheDocument();
+    const row = screen.getByText('First clip').closest('div')?.parentElement;
+    if (!row) throw new Error('Missing clip row');
+    expect(within(row).getByRole('progressbar')).toBeInTheDocument();
+  });
+});
+
+function seedLongformExport(status: 'failed' | 'omitted' | 'incomplete' = 'failed') {
+  const state = useStore.getState();
+  state.setClips(SOURCE.id, []);
+  useStore.setState((draft) => {
+    const source = draft.sources[0];
+    if (!source) throw new Error('Missing fixture source');
+    source.duration = 150;
+    draft.transcriptions[SOURCE.id] = {
+      text: 'Source',
+      formattedForAI: '',
+      segments: [],
+      words: SCENE_WORDS,
+    };
+  });
+  const plan = makeScenePlan();
+  const [first, second] = plan.scenes;
+  if (!first || !second) throw new Error('Expected two fixture scenes');
+  if (status === 'omitted') second.omitted = true;
+  state.setLongformPlan(SOURCE.id, { plan, skin: 'editorial', paletteId: 'brand' });
+  state.acceptLongformPlan(SOURCE.id, 'editorial', 'brand');
+  const zero = { planned: 0, eligible: 0, rendered: 0, dropped: 0 };
+  const reconciliation: LongformRenderReconciliation = {
+    renderedAt: 100,
+    outputPath: '/output/full.mp4',
+    phrases: zero,
+    blocks: zero,
+    cards: zero,
+    scenes: { planned: 2, eligible: 2, rendered: 1, dropped: status === 'incomplete' ? 0 : 1 },
+    sceneResults: [
+      {
+        id: first.id,
+        kind: first.kind,
+        startTime: first.startTime,
+        endTime: first.endTime,
+        status: 'rendered',
+      },
+      ...(status === 'incomplete'
+        ? []
+        : [
+            {
+              id: second.id,
+              kind: second.kind,
+              startTime: second.startTime,
+              endTime: second.endTime,
+              status,
+              reason:
+                status === 'failed'
+                  ? 'Source footage retained after the visual failed.'
+                  : 'Omitted by creator.',
+            },
+          ]),
+    ],
+    fallbacks: [],
+  };
+  state.setLongformReconciliation(SOURCE.id, reconciliation);
+  state.setRenderProgress([
+    {
+      clipId: SOURCE.id,
+      sourceId: SOURCE.id,
+      kind: 'longform',
+      label: 'Full video',
+      status: 'done',
+      percent: 100,
+      outputPath: reconciliation.outputPath,
+      checkpoints: ['output-verified'],
+    },
+  ]);
+  state.setPipeline({ stage: 'done', message: '', percent: 100 });
+  return { plan, targetId: second.id, reconciliation };
+}
+
+describe('RenderScreen export outcomes and recovery', () => {
+  it.each([
+    'failed',
+    'omitted',
+    'incomplete',
+  ] as const)('opens the exact %s scene from a focusable button without changing approval, outputs or evidence', async (status) => {
+    const { targetId } = seedLongformExport(status);
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    const view = render(<RenderScreen />);
+    const button = screen.getByRole('button', { name: /Review Statement at 1:40/ });
+    expect(button).toBeEnabled();
+    await waitFor(() => expect(window.api.checkMediaPaths).toHaveBeenCalled());
+    const before = useStore.getState();
+    expect(before.longformPlans[SOURCE.id]?.status).toBe('accepted');
+    expect(before.longformPlans[SOURCE.id]?.approvedVersionId).toBeTruthy();
+    expect(screen.getAllByText('Completed with changes')).toHaveLength(2);
+    expect(screen.getByText(/The video file is usable/)).toBeInTheDocument();
+    button.focus();
+    expect(button).toHaveFocus();
+    fireEvent.click(button);
+    const after = useStore.getState();
+    expect(after.longformReviewFocus).toEqual({ sourceId: SOURCE.id, sceneId: targetId });
+    expect(after.pipeline.stage).toBe('ready');
+    expect(after.longformPlans).toEqual(before.longformPlans);
+    expect(after.renderProgress).toEqual(before.renderProgress);
+    expect(after.renderErrors).toEqual(before.renderErrors);
+    expect(window.api.startBatchRender).not.toHaveBeenCalled();
+    // Returning to Export must retain both the output links and its saved reconciliation.
+    view.unmount();
+    render(<RenderScreen />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open video' }));
+    expect(window.api.openPath).toHaveBeenCalledWith('/output/full.mp4');
+    fireEvent.click(screen.getByRole('button', { name: 'Show file' }));
+    expect(window.api.showItemInFolder).toHaveBeenCalledWith('/output/full.mp4');
+    expect(screen.getAllByText('Completed with changes')).toHaveLength(2);
+  });
+
+  it('retains progress and saved proof when using the general Review plan action', async () => {
+    const { targetId } = seedLongformExport();
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+    await waitFor(() => expect(window.api.checkMediaPaths).toHaveBeenCalled());
+    const before = useStore.getState();
+    const review = screen.getAllByRole('button', { name: 'Review plan' })[0];
+    if (!review) throw new Error('Missing Review plan button');
+    fireEvent.click(review);
+    expect(useStore.getState().longformReviewFocus?.sceneId).toBe(targetId);
+    expect(useStore.getState().renderProgress).toEqual(before.renderProgress);
+    expect(useStore.getState().longformPlans).toEqual(before.longformPlans);
+  });
+
+  it.each([
+    'stale-scene',
+    'foreign-scene',
+    'missing-source',
+    'mixed-route',
+  ] as const)('disables unavailable review targets: %s', async (problem) => {
+    seedLongformExport();
+    useStore.setState((state) => {
+      if (problem === 'missing-source') state.sources = [];
+      if (problem === 'mixed-route') state.clips[SOURCE.id] = CLIPS;
+      if (problem === 'stale-scene' || problem === 'foreign-scene') {
+        const result = state.longformPlans[SOURCE.id]?.reconciliation?.sceneResults?.[1];
+        if (!result) throw new Error('Missing fixture scene result');
+        result.id = 'foreign-target';
+      }
+      if (problem === 'foreign-scene') {
+        state.sources.push({ ...SOURCE, id: 'other' });
+        const plan = makeScenePlan();
+        const scene = plan.scenes[1];
+        if (!scene) throw new Error('Missing fixture scene');
+        scene.id = 'foreign-target';
+        state.longformPlans.other = { plan, skin: 'editorial', paletteId: 'brand' };
+      }
+    });
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+    const buttons = screen.getAllByRole('button', { name: /Review Statement at 1:40/ });
+    const button = buttons.find((candidate) => candidate.hasAttribute('disabled'));
+    if (!button) throw new Error('Unavailable review target was not disabled');
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute(
+      'title',
+      'This scene or its source is no longer available for review.',
+    );
+    fireEvent.click(button);
+    expect(useStore.getState().longformReviewFocus).toBeNull();
+    expect(useStore.getState().pipeline.stage).toBe('done');
+    expect(useStore.getState().renderProgress[0]?.outputPath).toBe('/output/full.mp4');
+  });
+
+  it.each([
+    'rendering',
+    'processing',
+    'single',
+    'cancelling',
+  ] as const)('disables scene review during %s work', async (work) => {
+    seedLongformExport();
+    useStore.setState((state) => {
+      if (work === 'rendering') state.isRendering = true;
+      if (work === 'processing') state.pipeline.stage = 'transcribing';
+      if (work === 'single') state.singleRenderStatus = 'rendering';
+      if (work === 'cancelling') state.renderCancellation.status = 'cancelling';
+    });
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+    const button = screen.getByRole('button', { name: /Review Statement at 1:40/ });
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    expect(useStore.getState().longformReviewFocus).toBeNull();
+    expect(useStore.getState().renderProgress[0]?.outputPath).toBe('/output/full.mp4');
+  });
+
+  it('unlocks review only after cancellation settles and preserves the previous export', async () => {
+    const { targetId } = seedLongformExport();
+    useStore.getState().setIsRendering(true);
+    useStore.getState().setPipeline({ stage: 'rendering', message: '', percent: 0 });
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+    await waitFor(() => expect(window.api.checkMediaPaths).toHaveBeenCalled());
+    const before = useStore.getState();
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel now' }));
+    expect(screen.getByRole('button', { name: /Review Statement at 1:40/ })).toBeDisabled();
+    act(() => callbacks.onCancelled?.({ completed: 0, failed: 0, total: 1 }));
+    const review = screen.getByRole('button', { name: /Review Statement at 1:40/ });
+    expect(review).toBeEnabled();
+    fireEvent.click(review);
+    expect(useStore.getState().longformReviewFocus).toEqual({
+      sourceId: SOURCE.id,
+      sceneId: targetId,
+    });
+    expect(useStore.getState().longformPlans).toEqual(before.longformPlans);
+    expect(useStore.getState().renderProgress).toEqual(before.renderProgress);
+    expect(useStore.getState().renderCancellation.status).toBe('idle');
+  });
+
+  it('reports a refused real-store navigation if work starts between paint and activation', async () => {
+    seedLongformExport();
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+    const button = screen.getByRole('button', { name: /Review Statement at 1:40/ });
+    act(() => {
+      useStore.setState({ singleRenderStatus: 'rendering' });
+      fireEvent.click(button);
+    });
+    expect(useStore.getState().longformReviewFocus).toBeNull();
+    expect(toast.error).toHaveBeenCalledWith(expect.stringContaining('work is still running'));
+    expect(useStore.getState().longformPlans[SOURCE.id]?.status).toBe('accepted');
+    expect(useStore.getState().renderProgress[0]?.outputPath).toBe('/output/full.mp4');
+  });
+
+  it('separates ready files, completed-with-changes files, and encoding failures in a mixed batch', async () => {
+    useStore.getState().setRenderProgress([
+      {
+        clipId: 'c1',
+        sourceId: SOURCE.id,
+        status: 'done',
+        percent: 100,
+        outputPath: '/output/c1.mp4',
+      },
+      {
+        clipId: 'c2',
+        sourceId: SOURCE.id,
+        status: 'done',
+        percent: 100,
+        outputPath: '/output/c2.mp4',
+        fallbacks: [
+          {
+            id: 'f',
+            reason: 'No visual asset',
+            message: 'Source footage used',
+            actionable: true,
+            timestamp: 1,
+          },
+        ],
+      },
+      { clipId: 'c3', sourceId: SOURCE.id, status: 'error', percent: 0 },
+    ]);
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+    expect(screen.getByRole('status')).toHaveTextContent(
+      '2 files ready · 1 with changes · 1 failed',
+    );
+    expect(screen.getByText('File ready')).toBeInTheDocument();
+    expect(screen.getByText('Completed with changes')).toBeInTheDocument();
+    expect(screen.getByText('Error')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /reveal in finder/i })).toHaveLength(2);
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeEnabled();
+  });
+
+  it('preserves completed short-form outputs when navigating back to clips', async () => {
+    useStore.getState().setRenderProgress([
+      {
+        clipId: 'c1',
+        status: 'done',
+        percent: 100,
+        outputPath: '/output/c1.mp4',
+        checkpoints: ['output-verified'],
+      },
+    ]);
+    const { RenderScreen } = await import('@/components/screens/RenderScreen');
+    render(<RenderScreen />);
+    await waitFor(() => expect(window.api.checkMediaPaths).toHaveBeenCalled());
+    const before = useStore.getState().renderProgress;
+    fireEvent.click(screen.getByRole('button', { name: 'Back to Clips' }));
+    expect(useStore.getState().renderProgress).toEqual(before);
+    expect(useStore.getState().pipeline.stage).toBe('ready');
   });
 });

@@ -13,6 +13,9 @@
  * time under any other key, and never name a non-time number `…At`.
  */
 
+import type { LongformPresentation } from '../../../../shared/longform-scenes';
+import type { AiDiagramScene } from './ai-systems/types';
+import type { CashTimingScene } from './business-systems/types';
 import type { CognitionScene } from './cognition/types';
 import type { AdaptiveScene } from './concepts/adaptive/types';
 import type { BusinessOperationsScene } from './concepts/business-operations/types';
@@ -20,12 +23,14 @@ import type { BusinessPopulationsScene } from './concepts/business-populations/t
 import type { InferenceScene } from './concepts/inference/types';
 import type { InformationScene } from './concepts/information/types';
 import type { PerspectiveScene } from './concepts/perspective/types';
+import type { DetroitPlaceScene } from './detroit/types';
 import type {
   LabelTreatment,
   NumberPresentation,
   SemanticTextTreatment,
   StampFinish,
 } from './editorial/types';
+import type { FinanceScene } from './finance/types';
 import type {
   ExplodedViewScene,
   RelayScene,
@@ -336,6 +341,17 @@ export const CONCEPT_SCENE_KINDS = [
   'modular-machine',
 ] as const;
 
+/** Complete 2D/hybrid explanations share full-window and no-automatic-extras protection. */
+export const HYBRID_SCENE_KINDS = [
+  'detroit-place',
+  'fund-flow',
+  'ownership-change',
+  'portfolio-exposure',
+  'cash-timing',
+  'token-attention',
+  'inference-tradeoff',
+] as const;
+
 /** Authored stories need complete setup/action/outcome windows and own their emphasis. */
 export const CAUSAL_SCENE_KINDS = [
   'bottleneck',
@@ -368,6 +384,7 @@ export const CAUSAL_SCENE_KINDS = [
   'model-evaluation',
   'evidence-conflict',
   ...CONCEPT_SCENE_KINDS,
+  ...HYBRID_SCENE_KINDS,
 ] as const;
 
 export function isCausalSceneKind(kind: string): boolean {
@@ -1007,7 +1024,11 @@ export type ExplainerSceneBody =
   | BusinessOperationsScene
   | BusinessPopulationsScene
   | PerspectiveScene
-  | AdaptiveScene;
+  | AdaptiveScene
+  | DetroitPlaceScene
+  | FinanceScene
+  | CashTimingScene
+  | AiDiagramScene;
 
 // ---------------------------------------------------------------------------
 // Cross-kind extras: continuation beats + emphasis reactions
@@ -1085,6 +1106,8 @@ export type SceneTransitionKind = 'slide' | 'fade' | 'grow';
  */
 export interface ExplainerSequenceProps {
   scenes: SequenceScene[];
+  /** Explicit scene-first landscape staging; absent preserves every legacy/portrait layout. */
+  presentation?: LongformPresentation;
   /** transitions[i] joins scenes[i] → scenes[i+1]. */
   transitions: { kind: SceneTransitionKind; durationInFrames: number }[];
   layout: ExplainerLayout;
@@ -1108,6 +1131,8 @@ export interface ExplainerSequenceProps {
 /** Legacy single-scene props (kept for the `ExplainerScene` composition). */
 export interface ExplainerSceneProps {
   scene: ExplainerScene;
+  /** Only applied with aspect 16:9. */
+  presentation?: LongformPresentation;
   accentColor: string;
   palette?: ExplainerPalette;
   layout?: ExplainerLayout;

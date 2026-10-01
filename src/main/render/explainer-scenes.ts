@@ -13,16 +13,23 @@
  * rendered beat are returned in SOURCE time for the post-concat SFX mix.
  */
 
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import type { PlannerGenerator } from '../ai/explainer/planner-generation';
+import type { PlannerProfileId } from '../ai/explainer/planner-profiles';
+import type { PlanningObserver } from '../ai/explainer/planning-diagnostics';
+import { type QuoteWindow, selectQuoteWindows } from '../ai/explainer/quote-selection';
+import { summarizeUsage, type UsageChoice, type UsageRecord } from '../ai/explainer/recent-usage';
 import {
   type PlanBounds,
   type PlannedExplainerScene,
+  type PlannerEditPlan,
   type PlannerWord,
-  planExplainerScenes,
+  planExplainerEditPlan,
   toSceneRelative,
 } from '../ai/explainer-scenes';
+import type { CaptionLayoutWindow } from '../captions';
 import { log } from '../logger';
 import {
   EXPLAINER_FPS,
@@ -73,7 +80,10 @@ export interface SplicedPiece {
 }
 
 /** Merge chained planned scenes into groups. Pure. */
-export function groupPlannedScenes(planned: readonly PlannedExplainerScene[]): SceneGroup[] {
+export function groupPlannedScenes(
+  planned: readonly PlannedExplainerScene[],
+  observe?: PlanningObserver,
+): SceneGroup[] {
   const groups: SceneGroup[] = [];
   for (const p of planned) {
     const prev = groups[groups.length - 1];
@@ -89,6 +99,15 @@ export function groupPlannedScenes(planned: readonly PlannedExplainerScene[]): S
       groups.push({ startTime: p.startTime, endTime: p.endTime, layout: p.layout, scenes: [p] });
     }
   }
+  groups.forEach((group, index) => {
+    observe?.({
+      stage: 'group',
+      action: 'accepted',
+      reason: 'shared-stage',
+      index,
+      count: group.scenes.length,
+    });
+  });
   return groups;
 }
 
@@ -106,18 +125,23 @@ function snapEdge(t: number, boundaries: number[], floor: number): number {
 }
 
 /** True when the segments overlapping [start, end) form one contiguous run. */
-function coversContiguously(segments: ResolvedSegment[], start: number, end: number): boolean {
+function coversContiguously(
+  segments: readonly ResolvedSegment[],
+  start: number,
+  end: number,
+  epsilon = CONTIGUOUS_EPS,
+): boolean {
   const overlapping = segments.filter((s) => s.endTime > start && s.startTime < end);
   const first = overlapping[0];
   const last = overlapping[overlapping.length - 1];
   if (!first || !last) return false;
-  if (first.startTime > start + CONTIGUOUS_EPS || last.endTime < end - CONTIGUOUS_EPS) {
+  if (first.startTime > start + epsilon || last.endTime < end - epsilon) {
     return false;
   }
   for (let i = 1; i < overlapping.length; i++) {
     const prev = overlapping[i - 1];
     const cur = overlapping[i];
-    if (!prev || !cur || Math.abs(cur.startTime - prev.endTime) > CONTIGUOUS_EPS) return false;
+    if (!prev || !cur || Math.abs(cur.startTime - prev.endTime) > epsilon) return false;
   }
   return true;
 }
@@ -131,13 +155,14 @@ function coversContiguously(segments: ResolvedSegment[], start: number, end: num
  * Speaker pieces that resume after a scene hard-cut back in.
  */
 export function spliceExplainerScenes(
-  segments: ResolvedSegment[],
+  segments: readonly ResolvedSegment[],
   groups: readonly SceneGroup[],
   minStart: number,
+  observe?: PlanningObserver,
 ): SplicedPiece[] {
   const boundaries = segments.flatMap((s) => [s.startTime, s.endTime]);
   const windows: SceneGroup[] = [];
-  for (const g of groups) {
+  for (const [index, g] of groups.entries()) {
     // Do not trim causal setup/contact/settling to remove a small speaker sliver.
     // Outward snaps preserve every word-locked beat and the final readable hold.
     const causal = g.scenes.some((planned) => isCausalSceneKind(planned.scene.kind));
@@ -146,10 +171,35 @@ export function spliceExplainerScenes(
     const startTime = snapEdge(g.startTime, startBoundaries, minStart);
     const endTime = snapEdge(g.endTime, endBoundaries, startTime + MIN_SCENE_SEC);
     const prev = windows[windows.length - 1];
-    if (endTime - startTime < MIN_SCENE_SEC) continue;
-    if (startTime < minStart - CONTIGUOUS_EPS) continue;
-    if (prev && startTime < prev.endTime) continue;
-    if (!coversContiguously(segments, startTime, endTime)) continue;
+    const reason =
+      endTime - startTime < MIN_SCENE_SEC
+        ? 'too-short'
+        : startTime < minStart - CONTIGUOUS_EPS
+          ? 'protected-opening'
+          : prev && startTime < prev.endTime
+            ? 'overlap'
+            : !coversContiguously(segments, startTime, endTime)
+              ? 'source-gap'
+              : undefined;
+    if (reason) {
+      observe?.({ stage: 'splice', action: 'removed', reason, index, count: g.scenes.length });
+      continue;
+    }
+    if (startTime !== g.startTime || endTime !== g.endTime)
+      observe?.({
+        stage: 'splice',
+        action: 'repaired',
+        reason: 'boundary-snap',
+        index,
+        count: g.scenes.length,
+      });
+    observe?.({
+      stage: 'splice',
+      action: 'accepted',
+      reason: 'timeline-admitted',
+      index,
+      count: g.scenes.length,
+    });
     windows.push({ ...g, startTime, endTime });
   }
   if (windows.length === 0) return segments.map((segment) => ({ segment }));
@@ -197,15 +247,117 @@ export function spliceExplainerScenes(
     }
     if (cursor < seg.endTime - CONTIGUOUS_EPS) {
       out.push({
-        segment: {
-          ...seg,
-          startTime: cursor,
-          ...(resumed ? { transitionIn: 'hard-cut' as const } : {}),
-        },
+        segment:
+          cursor === seg.startTime && !resumed
+            ? seg
+            : {
+                ...seg,
+                startTime: cursor,
+                ...(resumed ? { transitionIn: 'hard-cut' as const } : {}),
+              },
       });
     }
   }
   return out;
+}
+
+/** Identity of the exact final-timeline parser input; independent of files and property order. */
+export function plannerInputFingerprint(words: readonly PlannerWord[], bounds: PlanBounds): string {
+  return createHash('sha256')
+    .update(
+      JSON.stringify({
+        words: words.map(({ text, start, end }) => ({ text, start, end })),
+        bounds: { minStart: bounds.minStart, maxEnd: bounds.maxEnd },
+      }),
+    )
+    .digest('hex');
+}
+
+/** Admit an already parsed plan without changing source segments or saved scene objects. */
+export function prepareExplainerTimeline(
+  segments: readonly ResolvedSegment[],
+  plan: PlannerEditPlan,
+  bounds: PlanBounds,
+  observe?: PlanningObserver,
+): {
+  pieces: SplicedPiece[];
+  segments: ResolvedSegment[];
+  captionWindows: CaptionLayoutWindow[];
+  quotes: QuoteWindow[];
+  choices: UsageChoice[];
+} {
+  let pieces = spliceExplainerScenes(
+    segments,
+    groupPlannedScenes(plan.scenes, observe),
+    bounds.minStart,
+    observe,
+  );
+  const quotes: QuoteWindow[] = [];
+  for (const [index, quote] of plan.quotes.entries()) {
+    const { startTime: start, endTime: end } = quote;
+    const overlapping = pieces.filter(({ segment: s }) => s.startTime < end && s.endTime > start);
+    const reason =
+      !Number.isFinite(start) || !Number.isFinite(end) || end <= start
+        ? 'quote-invalid-window'
+        : start < bounds.minStart || end > bounds.maxEnd
+          ? 'quote-outside-window'
+          : !coversContiguously(segments, start, end, 0)
+            ? 'source-gap'
+            : overlapping.some((p) => p.group)
+              ? 'quote-animation-overlap'
+              : overlapping.some(
+                    ({ segment: s }) =>
+                      !['talking-head', 'tight-punch', 'wide-breather'].includes(s.archetype) ||
+                      s.explainerLayout !== undefined ||
+                      s.videoPath !== undefined ||
+                      s.imagePath !== undefined,
+                  )
+                ? 'quote-explicit-layout'
+                : undefined;
+    if (reason) {
+      observe?.({ stage: 'quote', action: 'rejected', reason, index });
+      continue;
+    }
+    pieces = pieces.flatMap((piece): SplicedPiece[] => {
+      const s = piece.segment;
+      if (s.endTime <= start || s.startTime >= end) return [piece];
+      const out: SplicedPiece[] = [];
+      if (s.startTime < start) out.push({ segment: { ...s, endTime: start } });
+      out.push({
+        segment: {
+          ...s,
+          startTime: Math.max(start, s.startTime),
+          endTime: Math.min(end, s.endTime),
+          archetype: 'fullscreen-quote',
+          zoom: { style: 'none', intensity: 1 },
+          transitionIn: 'hard-cut',
+        },
+      });
+      if (s.endTime > end)
+        out.push({ segment: { ...s, startTime: end, transitionIn: 'hard-cut' } });
+      return out;
+    });
+    quotes.push(quote);
+    observe?.({ stage: 'quote', action: 'accepted', reason: 'timeline-admitted', index });
+  }
+  const clipStart = segments[0]?.startTime ?? 0;
+  return {
+    pieces,
+    segments: pieces.map((p) => p.segment),
+    quotes,
+    captionWindows: pieces.flatMap(({ segment: s }) =>
+      s.explainerLayout
+        ? [
+            {
+              startTime: s.startTime - clipStart,
+              endTime: s.endTime - clipStart,
+              layout: s.explainerLayout,
+            },
+          ]
+        : [],
+    ),
+    choices: summarizeUsage(pieces.flatMap((p) => p.group?.scenes ?? [])),
+  };
 }
 
 /** Clamp every beat time into [0, max]. */
@@ -290,6 +442,16 @@ export function buildGroupRenderPlan(
 }
 
 export interface ApplyExplainerOptions {
+  onDiagnostic?: PlanningObserver;
+  /** Must come from the real planner/parser using exactly `words` and `bounds`. */
+  precomputedPlan?: PlannerEditPlan;
+  precomputedWordsHash?: string;
+  noAi?: boolean;
+  profile?: PlannerProfileId;
+  generator?: PlannerGenerator;
+  signal?: AbortSignal;
+  recentUse?: readonly UsageRecord[];
+  onPlanned?: (choices: UsageChoice[]) => void;
   apiKey: string;
   segments: ResolvedSegment[];
   words: PlannerWord[];
@@ -354,11 +516,12 @@ export interface ApplyExplainerResult {
   cues: SceneCue[];
   rendered: number;
   failed: number;
+  renderedChoices: UsageChoice[];
 }
 
 /**
- * Plan, splice and render explainer scenes for one segmented clip. Never
- * throws: every failure falls back to the speaker for that window.
+ * Plan, splice and render explainer scenes for one segmented clip. Invalid saved
+ * input throws before generation; planning/render failures fall back to the speaker.
  */
 export async function applyExplainerScenes(
   opts: ApplyExplainerOptions,
@@ -369,38 +532,93 @@ export async function applyExplainerScenes(
     cues: [],
     rendered: 0,
     failed: 0,
+    renderedChoices: [],
   };
-  const clipStart = opts.segments[0]?.startTime ?? opts.bounds.minStart;
-  const words = opts.words.filter(
-    (w) => w.start >= clipStart - CONTIGUOUS_EPS && w.end <= opts.bounds.maxEnd + CONTIGUOUS_EPS,
-  );
-
-  opts.onProgress?.('Planning animated scenes…', 0);
-  const plan = await planExplainerScenes(opts.apiKey, words, opts.bounds, {
-    aspect: '9:16',
-    ...(opts.emphasisTimes ? { emphasisTimes: opts.emphasisTimes } : {}),
-  });
-  if (!plan.ok) {
-    log('warn', 'explainer', `planning failed, keeping original segments: ${plan.error}`);
-    return unchanged;
+  if (
+    (opts.noAi || opts.precomputedPlan !== undefined) &&
+    (!opts.precomputedPlan ||
+      opts.precomputedWordsHash !== plannerInputFingerprint(opts.words, opts.bounds))
+  ) {
+    opts.onDiagnostic?.({
+      stage: 'validation',
+      action: 'rejected',
+      reason: 'precomputed-fingerprint-mismatch',
+    });
+    throw new Error('A valid precomputed plan with an exact words/bounds fingerprint is required');
   }
-  if (plan.value.length === 0) return unchanged;
-
-  const pieces = spliceExplainerScenes(
-    opts.segments,
-    groupPlannedScenes(plan.value),
-    opts.bounds.minStart,
+  const cancelled = (): boolean => !!(opts.signal?.aborted || opts.isCancelled?.());
+  let plan = opts.precomputedPlan;
+  if (!plan) {
+    if (cancelled()) {
+      opts.onDiagnostic?.({ stage: 'render', action: 'fallback', reason: 'cancelled' });
+      return unchanged;
+    }
+    if (!opts.apiKey && !opts.generator) {
+      opts.onPlanned?.([]);
+      return unchanged;
+    }
+    opts.onProgress?.('Planning animated scenes…', 0);
+    const result = await planExplainerEditPlan(opts.apiKey, opts.words, opts.bounds, {
+      aspect: '9:16',
+      onDiagnostic: opts.onDiagnostic,
+      emphasisTimes: opts.emphasisTimes,
+      profile: opts.profile,
+      generator: opts.generator,
+      signal: opts.signal,
+      recentUse: opts.recentUse,
+    });
+    if (!result.ok) {
+      opts.onDiagnostic?.({
+        stage: 'render',
+        action: 'fallback',
+        reason: cancelled() ? 'cancelled' : 'planning-failed',
+      });
+      log('warn', 'explainer', `planning failed, keeping original segments: ${result.error}`);
+      return unchanged;
+    }
+    plan = result.value;
+  }
+  // Re-authorize optional text against the EXACT parser input, never synthetic quote words.
+  const quotes = selectQuoteWindows(
+    {
+      quotes: plan.quotes.map(({ startWord, endWord, text, reason }) => ({
+        startWord,
+        endWord,
+        text,
+        reason,
+      })),
+    },
+    opts.words,
+    opts.bounds,
+    plan.scenes,
+    opts.onDiagnostic,
   );
+  const timeline = prepareExplainerTimeline(
+    opts.segments,
+    { ...plan, quotes },
+    opts.bounds,
+    opts.onDiagnostic,
+  );
+  opts.onPlanned?.(timeline.choices);
+  const pieces = timeline.pieces;
   const scenePieces = pieces.filter((p) => p.group);
-  if (scenePieces.length === 0) return unchanged;
+  if (scenePieces.length === 0) return { ...unchanged, segments: timeline.segments };
 
   // Floating cards must not cover the speaker's face: move them into free
   // space, or use the split-screen layout when there is none.
-  const placements = await placeOverPieces(pieces, opts);
+  const placements = cancelled()
+    ? new Map<SplicedPiece, OverPlacement>()
+    : await placeOverPieces(pieces, opts);
   for (const [piece, placement] of placements) {
     const group = piece.group;
     if (!group) continue;
     if (placement.layout === 'stack') {
+      opts.onDiagnostic?.({
+        stage: 'splice',
+        action: 'repaired',
+        reason: 'face-safe-stack',
+        count: group.scenes.length,
+      });
       piece.group = { ...group, layout: 'stack' };
       piece.segment = { ...piece.segment, explainerLayout: 'stack' };
     }
@@ -417,7 +635,7 @@ export async function applyExplainerScenes(
     );
   }
 
-  const { renderRemotionSegment } = await import('../remotion/render');
+  const successful: PlannedExplainerScene[] = [];
   const tempFiles: string[] = [];
   const cues: SceneCue[] = [];
   let rendered = 0;
@@ -426,13 +644,19 @@ export async function applyExplainerScenes(
   for (const piece of pieces) {
     const group = piece.group;
     if (!group) continue;
-    if (opts.isCancelled?.()) {
+    if (cancelled()) {
+      failed++;
+      opts.onDiagnostic?.({
+        stage: 'render',
+        action: 'fallback',
+        reason: 'cancelled',
+        count: group.scenes.length,
+      });
       piece.segment = { ...piece.segment, archetype: 'talking-head', explainerLayout: undefined };
       continue;
     }
     const placement = placements.get(piece);
     const safeBox = placement?.layout === 'over' ? placement.safe : undefined;
-    const plan = buildGroupRenderPlan(group, piece.segment, opts.palette, '9:16', safeBox);
     const canvas = stageCanvasFor(group.layout, '9:16');
     const ext = canvas.transparent ? 'mov' : 'mp4';
     const outputPath = join(tmpdir(), `batchcontent-explainer-${randomUUID()}.${ext}`);
@@ -442,6 +666,10 @@ export async function applyExplainerScenes(
     const message = `Animating scene ${base + 1}/${scenePieces.length} (${label})…`;
     opts.onProgress?.(message, base / scenePieces.length);
     try {
+      const plan = buildGroupRenderPlan(group, piece.segment, opts.palette, '9:16', safeBox);
+      const { renderRemotionSegment } = await import('../remotion/render');
+      if (cancelled()) throw new Error('Cancelled');
+      tempFiles.push(outputPath);
       await renderRemotionSegment({
         compositionId: 'ExplainerSequence',
         inputProps: plan.props as unknown as Record<string, unknown>,
@@ -453,10 +681,17 @@ export async function applyExplainerScenes(
         outputPath,
         onProgress: (p) => opts.onProgress?.(message, (base + p) / scenePieces.length),
       });
-      tempFiles.push(outputPath);
+      if (cancelled()) throw new Error('Cancelled');
       piece.segment = { ...piece.segment, videoPath: outputPath };
       cues.push(...plan.cues);
+      successful.push(...group.scenes);
       rendered++;
+      opts.onDiagnostic?.({
+        stage: 'render',
+        action: 'rendered',
+        reason: 'render-complete',
+        count: group.scenes.length,
+      });
       log(
         'info',
         'explainer',
@@ -465,6 +700,12 @@ export async function applyExplainerScenes(
       );
     } catch (err) {
       failed++;
+      opts.onDiagnostic?.({
+        stage: 'render',
+        action: 'fallback',
+        reason: cancelled() ? 'cancelled' : 'render-failed',
+        count: group.scenes.length,
+      });
       piece.segment = { ...piece.segment, archetype: 'talking-head', explainerLayout: undefined };
       log(
         'warn',
@@ -482,5 +723,6 @@ export async function applyExplainerScenes(
     cues: cues.sort((a, b) => a.at - b.at),
     rendered,
     failed,
+    renderedChoices: summarizeUsage(successful),
   };
 }

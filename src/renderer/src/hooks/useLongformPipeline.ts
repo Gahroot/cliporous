@@ -1,4 +1,4 @@
-import type { LongformEditPlan } from '@shared/types';
+import { isSceneFirstLongformPlan } from '@shared/longform-scenes';
 import { useCallback, useRef } from 'react';
 import { toast } from 'sonner';
 import { MISSING_GEMINI_KEY_MESSAGE, resolveGeminiKey } from '../lib/gemini-key';
@@ -31,21 +31,41 @@ export function useLongformPipeline(): {
   const markStageCompleted = useStore((s) => s.markStageCompleted);
 
   const cancelledRef = useRef(false);
+  const requestIdRef = useRef<string | null>(null);
 
   const cancelLongform = useCallback(async (): Promise<void> => {
-    await cancelActiveProcessingAndWait();
+    cancelledRef.current = true;
+    try {
+      await window.api.cancelLongformEditPlan?.(requestIdRef.current ?? undefined);
+    } finally {
+      await cancelActiveProcessingAndWait();
+    }
   }, []);
 
   const processLongform = useCallback(
     async (source: SourceVideo): Promise<void> => {
       cancelledRef.current = false;
+      const requestId = crypto.randomUUID();
+      requestIdRef.current = requestId;
       startProcessingJob(source);
+      const processingJobId = useStore.getState().currentProcessingJobId;
+      const isCurrent = (): boolean =>
+        !cancelledRef.current &&
+        requestIdRef.current === requestId &&
+        useStore.getState().currentProcessingJobId === processingJobId &&
+        useStore.getState().sources.some((candidate) => candidate.id === source.id);
       const finishTrackedRun = trackActiveProcessingRun(() => {
         cancelledRef.current = true;
+        void window.api.cancelLongformEditPlan?.(requestId).catch(() => {
+          addError({
+            source: 'pipeline',
+            message: 'Could not confirm cancellation of long-form planning.',
+          });
+        });
       });
 
       const check = (): void => {
-        if (cancelledRef.current) throw new Error('Processing cancelled');
+        if (!isCurrent()) throw new Error('Processing cancelled');
       };
 
       try {
@@ -71,6 +91,7 @@ export function useLongformPipeline(): {
         setPipeline({ stage: 'downloading', message: 'Preparing source…', percent: 0 });
         let sourcePath = source.path;
         let duration = source.duration;
+        let resolvedName = source.name;
         if (source.origin === 'youtube' && source.youtubeUrl && !sourcePath) {
           const unsub = window.api.onYouTubeProgress(({ percent }) => {
             setPipeline({
@@ -85,20 +106,43 @@ export function useLongformPipeline(): {
             if (typeof result.duration === 'number' && result.duration > 0) {
               duration = result.duration;
             }
+            if (result.title?.trim()) resolvedName = result.title.trim();
           } finally {
             unsub();
           }
         }
         check();
         markStageCompleted('downloading');
-        if (!duration || duration <= 0) {
-          try {
-            const meta = await window.api.getMetadata(sourcePath);
-            if (meta?.duration > 0) duration = meta.duration;
-          } catch {
-            /* duration backfilled from transcript below */
+
+        // Probe the resolved file for real dimensions (and duration if the
+        // downloader didn't report one). Non-fatal: duration is backfilled from
+        // the transcript below if the probe fails.
+        let width = source.width;
+        let height = source.height;
+        try {
+          const meta = await window.api.getMetadata(sourcePath);
+          if (meta?.width > 0 && meta?.height > 0) {
+            width = meta.width;
+            height = meta.height;
           }
+          if (meta?.duration > 0) duration = meta.duration;
+        } catch {
+          /* duration backfilled from transcript below */
         }
+
+        check();
+        // Write the resolved file back to the store. Without this a YouTube
+        // source keeps path '' / duration 0 / 0×0, so the review screen shows
+        // 0:00 and the render service later receives an empty source path.
+        // (updateSource re-reads state; `source` is a frozen snapshot.)
+        useStore.getState().updateSource(source.id, {
+          path: sourcePath,
+          name: resolvedName,
+          duration,
+          width,
+          height,
+        });
+        useStore.getState().setCachedSourcePath(sourcePath);
 
         // ── Step 2: Transcribe ──────────────────────────────────────────
         setPipeline({ stage: 'transcribing', message: 'Extracting audio…', percent: 5 });
@@ -134,6 +178,7 @@ export function useLongformPipeline(): {
         check();
 
         const formattedForAI = await window.api.formatTranscriptForAI(transcription);
+        check();
         setTranscription(source.id, {
           text: transcription.text,
           words: transcription.words,
@@ -145,24 +190,30 @@ export function useLongformPipeline(): {
         if (!duration || duration <= 0) {
           const lastWord = transcription.words[transcription.words.length - 1];
           duration = lastWord?.end ?? 0;
+          if (duration > 0) useStore.getState().updateSource(source.id, { duration });
         }
 
         // ── Step 3: AI long-form edit plan ──────────────────────────────
         setPipeline({ stage: 'ai-editing', message: 'Designing the edit…', percent: 30 });
-        const unsubE = window.api.onLongformEditProgress(({ window: w, total }) => {
-          const p = total > 0 ? Math.round(30 + (w / total) * 30) : 30;
-          setPipeline({
-            stage: 'ai-editing',
-            message: `Designing the edit… (window ${w}/${total})`,
-            percent: p,
-          });
-        });
+        const unsubE = window.api.onLongformEditProgress(
+          ({ window: w, total, requestId: progressId }) => {
+            if (!isCurrent() || (progressId && progressId !== requestId)) return;
+            const p = total > 0 ? Math.round(30 + (w / total) * 30) : 30;
+            setPipeline({
+              stage: 'ai-editing',
+              message: `Planning explanations… (section ${w}/${total})`,
+              percent: p,
+            });
+          },
+        );
         let plan: Awaited<ReturnType<typeof window.api.generateLongformEditPlan>>;
         try {
           plan = await window.api.generateLongformEditPlan(
             geminiApiKey,
             transcription.words,
             duration,
+            undefined,
+            { requestId, mode: 'scene-first' },
           );
         } finally {
           unsubE();
@@ -176,22 +227,28 @@ export function useLongformPipeline(): {
         const longformPaletteId =
           state.settings.longformPaletteId ?? LONGFORM_RENDER_DEFAULTS.longformPaletteId;
         setLongformPlan(source.id, {
-          // The IPC boundary types the result as the preload's loose mirror of
-          // LongformEditPlan; the runtime payload is the full canonical shape
-          // generated by the main process, so bridge it to the shared type.
-          plan: plan as unknown as LongformEditPlan,
+          plan,
           skin: longformSkin,
           paletteId: longformPaletteId,
         });
         markStageCompleted('ai-editing');
-        if (plan.blocks.length === 0 && plan.phrases.length === 0) {
+        if (isSceneFirstLongformPlan(plan)) {
+          const failed = plan.sections.filter((section) => section.status === 'failed').length;
+          if (failed > 0)
+            toast.warning(
+              `${plan.scenes.length} explanations planned. ${failed} sections need retry.`,
+            );
+          else if (plan.scenes.length === 0)
+            toast.message(
+              'No supported explanation moments found. This plan keeps the speaker on screen.',
+            );
+          else toast.message(`${plan.scenes.length} explanations ready for review.`);
+        } else if (plan.blocks.length === 0 && plan.phrases.length === 0) {
           // Degenerate plan: Gemini found no structured moments. The render
           // below still proceeds (a plain speaker cut), but make that explicit
           // and distinct from a normal plan so the user doesn't think the
           // feature silently failed.
-          // `cards` exists on the canonical plan but not the preload's loose
-          // IPC mirror, so read it through the same bridge cast used above.
-          const cardCount = (plan as unknown as LongformEditPlan).cards?.length ?? 0;
+          const cardCount = plan.cards?.length ?? 0;
           const cardNote = cardCount > 0 ? ` (${cardCount} card${cardCount === 1 ? '' : 's'})` : '';
           toast.warning(`AI found no structured moments. The plan uses speaker video${cardNote}`);
         } else {
@@ -209,7 +266,7 @@ export function useLongformPipeline(): {
           percent: 100,
         });
       } catch (err) {
-        if (cancelledRef.current) return;
+        if (!isCurrent()) return;
         const message = err instanceof Error ? err.message : String(err);
         setPipeline({ stage: 'error', message, percent: 0 });
         const structured = addError({
@@ -219,6 +276,7 @@ export function useLongformPipeline(): {
         });
         toast.error(structured.headline);
       } finally {
+        if (requestIdRef.current === requestId) requestIdRef.current = null;
         finishTrackedRun();
       }
     },

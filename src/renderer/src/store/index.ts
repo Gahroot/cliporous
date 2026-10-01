@@ -1,7 +1,7 @@
 import { createTokenUsageAggregate, estimateTokenUsageCost } from '@shared/ai-usage';
 import type { StructuredError } from '@shared/errors';
 import { enableMapSet } from 'immer';
-import { create } from 'zustand';
+import { create, type Mutate, type StoreApi, type UseBoundStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 // Enable Immer's MapSet plugin so Set/Map values work in the store
@@ -53,227 +53,233 @@ function objectValueChanged(current: unknown, previous: unknown): boolean {
 // Store
 // ---------------------------------------------------------------------------
 
-export const useStore = create<AppState>()(
-  immer((...a) => {
-    const [set, get] = a;
-    return {
-      // --- Slices ---
-      ...createClipsSlice(...a),
-      ...createStitchedClipsSlice(...a),
-      ...createLongformSlice(...a),
-      ...createSettingsSlice(...a),
-      ...createPipelineSlice(...a),
-      ...createProjectSlice(...a),
-      ...createHistorySlice(...a),
-      ...createErrorsSlice(...a),
-      ...createWorkspaceSlice(...a),
+// Keep recursive scene JSON behind Zustand's public type instead of exposing Immer internals.
+export const useStore: UseBoundStore<Mutate<StoreApi<AppState>, [['zustand/immer', never]]>> =
+  create<AppState>()(
+    immer((...a) => {
+      const [set, get] = a;
+      return {
+        // --- Slices ---
+        ...createClipsSlice(...a),
+        ...createStitchedClipsSlice(...a),
+        ...createLongformSlice(...a),
+        ...createSettingsSlice(...a),
+        ...createPipelineSlice(...a),
+        ...createProjectSlice(...a),
+        ...createHistorySlice(...a),
+        ...createErrorsSlice(...a),
+        ...createWorkspaceSlice(...a),
 
-      // --- Sources ---
-      sources: [],
-      activeSourceId: null,
-      transcriptions: {},
+        // --- Sources ---
+        sources: [],
+        activeSourceId: null,
+        transcriptions: {},
 
-      addSource: (source: SourceVideo) =>
-        set((state) => {
-          if (
-            state.sources.length === 0 &&
-            state.currentProject.filePath === null &&
-            state.currentProject.displayName === 'Untitled Project'
-          ) {
-            state.currentProject.displayName = source.name.startsWith('http')
-              ? 'YouTube Project'
-              : source.name.replace(/\.[^.]+$/, '') || 'Untitled Project';
-          }
-          state.sources.push(source);
-        }),
+        addSource: (source: SourceVideo) =>
+          set((state) => {
+            if (
+              state.sources.length === 0 &&
+              state.currentProject.filePath === null &&
+              state.currentProject.displayName === 'Untitled Project'
+            ) {
+              state.currentProject.displayName = source.name.startsWith('http')
+                ? 'YouTube Project'
+                : source.name.replace(/\.[^.]+$/, '') || 'Untitled Project';
+            }
+            state.sources.push(source);
+          }),
 
-      updateSource: (id: string, updates: Partial<SourceVideo>) =>
-        set((state) => {
-          const idx = state.sources.findIndex((s) => s.id === id);
-          const source = state.sources[idx];
-          if (!source) return;
-          state.sources[idx] = { ...source, ...updates, id: source.id };
-        }),
+        updateSource: (id: string, updates: Partial<SourceVideo>) =>
+          set((state) => {
+            const idx = state.sources.findIndex((s) => s.id === id);
+            const source = state.sources[idx];
+            if (!source) return;
+            state.sources[idx] = { ...source, ...updates, id: source.id };
+          }),
 
-      removeSource: (id: string) =>
-        set((state) => {
-          // Remove every source-owned artifact, including workspace pointers and
-          // historical render rows that would otherwise survive as stale queue data.
-          const regularClipIds = (state.clips[id] ?? []).map((clip) => clip.id);
-          const stitchedClipIds = (state.stitchedClips[id] ?? []).map((clip) => clip.id);
-          const ownedIds = new Set([...regularClipIds, ...stitchedClipIds, id]);
-          const undoStacks = { ...state._clipUndoStacks };
-          const redoStacks = { ...state._clipRedoStacks };
-          for (const clipId of regularClipIds) {
-            delete undoStacks[clipId];
-            delete redoStacks[clipId];
-          }
-          if (state._lastEditedSourceId === id) {
-            state._lastEditedClipId = null;
-            state._lastEditedSourceId = null;
-          }
+        removeSource: (id: string) =>
+          set((state) => {
+            // Remove every source-owned artifact, including workspace pointers and
+            // historical render rows that would otherwise survive as stale queue data.
+            const regularClipIds = (state.clips[id] ?? []).map((clip) => clip.id);
+            const stitchedClipIds = (state.stitchedClips[id] ?? []).map((clip) => clip.id);
+            const ownedIds = new Set([...regularClipIds, ...stitchedClipIds, id]);
+            const undoStacks = { ...state._clipUndoStacks };
+            const redoStacks = { ...state._clipRedoStacks };
+            for (const clipId of regularClipIds) {
+              delete undoStacks[clipId];
+              delete redoStacks[clipId];
+            }
+            if (state._lastEditedSourceId === id) {
+              state._lastEditedClipId = null;
+              state._lastEditedSourceId = null;
+            }
 
-          state.sources = state.sources.filter((source) => source.id !== id);
-          delete state.transcriptions[id];
-          delete state.clips[id];
-          delete state.stitchedClips[id];
-          delete state.longformPlans[id];
-          state.renderProgress = state.renderProgress.filter(
-            (entry) => !ownedIds.has(entry.clipId),
-          );
-          for (const ownedId of ownedIds) {
-            delete state.renderErrors[ownedId];
-            delete state.clipRenderTimes[ownedId];
-            delete state.workspace.previewPlayheadByClip[ownedId];
-          }
-          if (state.activeSourceId === id) {
-            const nextSource = state.sources[0] ?? null;
-            state.activeSourceId = nextSource?.id ?? null;
-            state.workspace.activeSourceId = nextSource?.id ?? null;
-          }
-          if (state.workspace.selectedClipId && ownedIds.has(state.workspace.selectedClipId)) {
-            state.workspace.selectedClipId = null;
-          }
-          state._clipUndoStacks = undoStacks;
-          state._clipRedoStacks = redoStacks;
-        }),
+            state.sources = state.sources.filter((source) => source.id !== id);
+            delete state.transcriptions[id];
+            delete state.clips[id];
+            delete state.stitchedClips[id];
+            delete state.longformPlans[id];
+            if (state.longformReviewFocus?.sourceId === id) state.longformReviewFocus = null;
+            state.renderProgress = state.renderProgress.filter(
+              (entry) => !ownedIds.has(entry.clipId),
+            );
+            for (const ownedId of ownedIds) {
+              delete state.renderErrors[ownedId];
+              delete state.clipRenderTimes[ownedId];
+              delete state.workspace.previewPlayheadByClip[ownedId];
+            }
+            if (state.activeSourceId === id) {
+              const nextSource = state.sources[0] ?? null;
+              state.activeSourceId = nextSource?.id ?? null;
+              state.workspace.activeSourceId = nextSource?.id ?? null;
+            }
+            if (state.workspace.selectedClipId && ownedIds.has(state.workspace.selectedClipId)) {
+              state.workspace.selectedClipId = null;
+            }
+            state._clipUndoStacks = undoStacks;
+            state._clipRedoStacks = redoStacks;
+          }),
 
-      setActiveSource: (id: string | null) =>
-        set((state) => {
-          state.activeSourceId = id;
-          state.workspace.activeSourceId = id;
-        }),
+        setActiveSource: (id: string | null) =>
+          set((state) => {
+            state.activeSourceId = id;
+            state.workspace.activeSourceId = id;
+          }),
 
-      setTranscription: (sourceId: string, data: TranscriptionData) =>
-        set((state) => {
-          state.transcriptions[sourceId] = data;
-        }),
+        setTranscription: (sourceId: string, data: TranscriptionData) =>
+          set((state) => {
+            state.transcriptions[sourceId] = data;
+          }),
 
-      getActiveSource: () => {
-        const { sources, activeSourceId } = get();
-        return sources.find((s) => s.id === activeSourceId) ?? null;
-      },
+        getActiveSource: () => {
+          const { sources, activeSourceId } = get();
+          return sources.find((s) => s.id === activeSourceId) ?? null;
+        },
 
-      getActiveTranscription: () => {
-        const { transcriptions, activeSourceId } = get();
-        if (!activeSourceId) return null;
-        return transcriptions[activeSourceId] ?? null;
-      },
+        getActiveTranscription: () => {
+          const { transcriptions, activeSourceId } = get();
+          if (!activeSourceId) return null;
+          return transcriptions[activeSourceId] ?? null;
+        },
 
-      // --- Render ---
-      renderProgress: [],
-      isRendering: false,
-      renderCancellation: { status: 'idle', error: null },
-      activeEncoder: null,
-      renderStartedAt: null,
-      renderCompletedAt: null,
-      clipRenderTimes: {},
-      renderErrors: {},
-      singleRenderClipId: null,
-      singleRenderProgress: 0,
-      singleRenderStatus: 'idle' as const,
-      singleRenderOutputPath: null,
-      singleRenderError: null,
+        // --- Render ---
+        renderProgress: [],
+        isRendering: false,
+        renderCancellation: { status: 'idle', error: null },
+        activeEncoder: null,
+        renderStartedAt: null,
+        renderCompletedAt: null,
+        clipRenderTimes: {},
+        renderErrors: {},
+        singleRenderClipId: null,
+        singleRenderProgress: 0,
+        singleRenderStatus: 'idle' as const,
+        singleRenderOutputPath: null,
+        singleRenderError: null,
 
-      setRenderProgress: (progress: RenderProgress[]) => set({ renderProgress: progress }),
+        setRenderProgress: (progress: RenderProgress[]) => set({ renderProgress: progress }),
 
-      setIsRendering: (rendering: boolean) => {
-        const now = Date.now();
-        if (rendering) {
-          set({
-            isRendering: true,
-            renderStartedAt: now,
-            renderCompletedAt: null,
-            clipRenderTimes: {},
-          });
-        } else {
-          set({ isRendering: false, renderCompletedAt: now });
-        }
-      },
-
-      setRenderCancellation: (renderCancellation) => set({ renderCancellation }),
-
-      setRenderError: (clipId: string, error: StructuredError) =>
-        set((state) => {
-          state.renderErrors[clipId] = error;
-        }),
-
-      clearRenderErrors: () => set({ renderErrors: {} }),
-
-      setSingleRenderState: (patch) =>
-        set((state) => {
-          if (patch.clipId !== undefined) state.singleRenderClipId = patch.clipId;
-          if (patch.progress !== undefined) state.singleRenderProgress = patch.progress;
-          if (patch.status !== undefined) state.singleRenderStatus = patch.status;
-          if (patch.outputPath !== undefined) state.singleRenderOutputPath = patch.outputPath;
-          if (patch.error !== undefined) state.singleRenderError = patch.error;
-        }),
-
-      // --- Network ---
-      isOnline: navigator.onLine,
-      setIsOnline: (online: boolean) => set({ isOnline: online }),
-
-      // --- Per-snapshot recovery acknowledgement ---
-      acknowledgedRecoverySnapshotId: localStorage.getItem(RECOVERY_ACK_KEY),
-      acknowledgeRecoverySnapshot: (snapshotId: string) => {
-        localStorage.setItem(RECOVERY_ACK_KEY, snapshotId);
-        set({ acknowledgedRecoverySnapshotId: snapshotId });
-      },
-
-      // --- AI Token Usage ---
-      aiUsage: {
-        totalPromptTokens: 0,
-        totalCompletionTokens: 0,
-        totalCalls: 0,
-        callHistory: [],
-        byModel: {},
-        bySource: {},
-        sessionStarted: Date.now(),
-      },
-
-      trackTokenUsage: (event) =>
-        set((state) => {
-          const cost = estimateTokenUsageCost(event).estimatedCostUsd;
-          const applyToAggregate = (aggregateKey: string, target: 'byModel' | 'bySource'): void => {
-            const aggregate = state.aiUsage[target][aggregateKey] ?? createTokenUsageAggregate();
-            aggregate.promptTokens += event.promptTokens;
-            aggregate.completionTokens += event.completionTokens;
-            aggregate.calls += 1;
-            if (cost === null) aggregate.unpricedCalls += 1;
-            else aggregate.estimatedCostUsd += cost;
-            state.aiUsage[target][aggregateKey] = aggregate;
-          };
-
-          state.aiUsage.totalPromptTokens += event.promptTokens;
-          state.aiUsage.totalCompletionTokens += event.completionTokens;
-          state.aiUsage.totalCalls += 1;
-          applyToAggregate(event.model, 'byModel');
-          applyToAggregate(event.source, 'bySource');
-          if (state.aiUsage.callHistory.length >= MAX_AI_USAGE_HISTORY) {
-            state.aiUsage.callHistory = [
-              ...state.aiUsage.callHistory.slice(-(MAX_AI_USAGE_HISTORY - 1)),
-              event,
-            ];
+        setIsRendering: (rendering: boolean) => {
+          const now = Date.now();
+          if (rendering) {
+            set({
+              isRendering: true,
+              renderStartedAt: now,
+              renderCompletedAt: null,
+              clipRenderTimes: {},
+            });
           } else {
-            state.aiUsage.callHistory.push(event);
+            set({ isRendering: false, renderCompletedAt: now });
           }
-        }),
+        },
 
-      resetAiUsage: () =>
-        set({
-          aiUsage: {
-            totalPromptTokens: 0,
-            totalCompletionTokens: 0,
-            totalCalls: 0,
-            callHistory: [],
-            byModel: {},
-            bySource: {},
-            sessionStarted: Date.now(),
-          },
-        }),
-    };
-  }),
-);
+        setRenderCancellation: (renderCancellation) => set({ renderCancellation }),
+
+        setRenderError: (clipId: string, error: StructuredError) =>
+          set((state) => {
+            state.renderErrors[clipId] = error;
+          }),
+
+        clearRenderErrors: () => set({ renderErrors: {} }),
+
+        setSingleRenderState: (patch) =>
+          set((state) => {
+            if (patch.clipId !== undefined) state.singleRenderClipId = patch.clipId;
+            if (patch.progress !== undefined) state.singleRenderProgress = patch.progress;
+            if (patch.status !== undefined) state.singleRenderStatus = patch.status;
+            if (patch.outputPath !== undefined) state.singleRenderOutputPath = patch.outputPath;
+            if (patch.error !== undefined) state.singleRenderError = patch.error;
+          }),
+
+        // --- Network ---
+        isOnline: navigator.onLine,
+        setIsOnline: (online: boolean) => set({ isOnline: online }),
+
+        // --- Per-snapshot recovery acknowledgement ---
+        acknowledgedRecoverySnapshotId: localStorage.getItem(RECOVERY_ACK_KEY),
+        acknowledgeRecoverySnapshot: (snapshotId: string) => {
+          localStorage.setItem(RECOVERY_ACK_KEY, snapshotId);
+          set({ acknowledgedRecoverySnapshotId: snapshotId });
+        },
+
+        // --- AI Token Usage ---
+        aiUsage: {
+          totalPromptTokens: 0,
+          totalCompletionTokens: 0,
+          totalCalls: 0,
+          callHistory: [],
+          byModel: {},
+          bySource: {},
+          sessionStarted: Date.now(),
+        },
+
+        trackTokenUsage: (event) =>
+          set((state) => {
+            const cost = estimateTokenUsageCost(event).estimatedCostUsd;
+            const applyToAggregate = (
+              aggregateKey: string,
+              target: 'byModel' | 'bySource',
+            ): void => {
+              const aggregate = state.aiUsage[target][aggregateKey] ?? createTokenUsageAggregate();
+              aggregate.promptTokens += event.promptTokens;
+              aggregate.completionTokens += event.completionTokens;
+              aggregate.calls += 1;
+              if (cost === null) aggregate.unpricedCalls += 1;
+              else aggregate.estimatedCostUsd += cost;
+              state.aiUsage[target][aggregateKey] = aggregate;
+            };
+
+            state.aiUsage.totalPromptTokens += event.promptTokens;
+            state.aiUsage.totalCompletionTokens += event.completionTokens;
+            state.aiUsage.totalCalls += 1;
+            applyToAggregate(event.model, 'byModel');
+            applyToAggregate(event.source, 'bySource');
+            if (state.aiUsage.callHistory.length >= MAX_AI_USAGE_HISTORY) {
+              state.aiUsage.callHistory = [
+                ...state.aiUsage.callHistory.slice(-(MAX_AI_USAGE_HISTORY - 1)),
+                event,
+              ];
+            } else {
+              state.aiUsage.callHistory.push(event);
+            }
+          }),
+
+        resetAiUsage: () =>
+          set({
+            aiUsage: {
+              totalPromptTokens: 0,
+              totalCompletionTokens: 0,
+              totalCalls: 0,
+              callHistory: [],
+              byModel: {},
+              bySource: {},
+              sessionStarted: Date.now(),
+            },
+          }),
+      };
+    }),
+  );
 
 // ---------------------------------------------------------------------------
 // Auto-persist settings & processing config on change

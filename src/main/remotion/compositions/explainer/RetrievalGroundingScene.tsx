@@ -2,7 +2,7 @@ import type React from 'react';
 import { Clay } from './hero-kit';
 import { MechanismStage } from './mechanisms/MechanismStage';
 import { mixHex } from './palette';
-import { useSceneTime, useStage } from './stage';
+import { useSceneTime, useStage, useWideStage, WideStageText } from './stage';
 import { ClayPart, StopSeal } from './technology/clay';
 import { TechText } from './technology/primitives';
 import {
@@ -262,6 +262,7 @@ function LibraryLabels({
   camera: CameraSpec;
 }): React.ReactElement {
   const S = useStage();
+  const wide = useWideStage();
   const library = projectToStage(camera, G.libraryLabel);
   const answer = projectToStage(camera, G.answerLabel);
   const [qx] = retrievalQuestionPosition(pose);
@@ -270,7 +271,7 @@ function LibraryLabels({
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: S.font, pointerEvents: 'none' }}>
       {scene.condition && (
-        <TechText x={528} y={710} width={480} size={26} align="left">
+        <TechText slot="condition" x={528} y={710} width={480} size={26} align="left">
           {scene.condition}
         </TechText>
       )}
@@ -321,27 +322,48 @@ function LibraryLabels({
       >
         Question: {scene.subject}
       </TechText>
-      <div
-        style={{
-          position: 'absolute',
-          left: 72,
-          top: 818,
-          width: 936,
-          paddingTop: 12,
-          borderTop: `2px solid ${S.text}`,
-          color: S.text,
-          opacity: pose.outcomeOpacity,
-        }}
-      >
-        <div style={{ fontSize: 34, fontWeight: 650, lineHeight: 1.15 }}>
-          {scene.condition ? `Possible: ${scene.outcome}` : scene.outcome}
+      {wide ? (
+        <>
+          <WideStageText
+            slot="outcome"
+            text={scene.condition ? `Possible: ${scene.outcome}` : scene.outcome}
+            size={34}
+            opacity={pose.outcomeOpacity}
+          />
+          <WideStageText
+            slot="evidence"
+            text={
+              scene.preset === 'no-evidence'
+                ? 'Answer left empty.'
+                : 'References show origin, not correctness.'
+            }
+            size={26}
+            opacity={pose.outcomeOpacity}
+          />
+        </>
+      ) : (
+        <div
+          style={{
+            position: 'absolute',
+            left: 72,
+            top: 818,
+            width: 936,
+            paddingTop: 12,
+            borderTop: `2px solid ${S.text}`,
+            color: S.text,
+            opacity: pose.outcomeOpacity,
+          }}
+        >
+          <div style={{ fontSize: 34, fontWeight: 650, lineHeight: 1.15 }}>
+            {scene.condition ? `Possible: ${scene.outcome}` : scene.outcome}
+          </div>
+          <div style={{ marginTop: 10, fontSize: 26, lineHeight: 1.15 }}>
+            {scene.preset === 'no-evidence'
+              ? 'Answer left empty.'
+              : 'References show origin, not correctness.'}
+          </div>
         </div>
-        <div style={{ marginTop: 10, fontSize: 26, lineHeight: 1.15 }}>
-          {scene.preset === 'no-evidence'
-            ? 'Answer left empty.'
-            : 'References show origin, not correctness.'}
-        </div>
-      </div>
+      )}
     </div>
   );
 }

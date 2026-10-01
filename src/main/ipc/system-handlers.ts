@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, statfs, writeFileSync } from 'node:fs';
 import { readdir, stat, unlink } from 'node:fs/promises';
 import { cpus, freemem, homedir, tmpdir, totalmem } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { redactCredentialText } from '@shared/credential-safety';
 import { Ch } from '@shared/ipc-channels';
 import type { NativeJobProgress, NativeNotificationOptions } from '@shared/jobs';
@@ -13,6 +13,16 @@ import { buildRendererFontManifest } from '../font-registry';
 import { wrapHandler } from '../ipc-error-handler';
 import { getLogDir, getLogPath, getLogSize, log } from '../logger';
 import { getDefaultOutputDirectory, resolveOutputDirectory } from '../render/output-dir';
+
+function nearestExistingDirectory(dirPath: string): string {
+  let current = dirPath;
+  while (!existsSync(current)) {
+    const parent = dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  return current;
+}
 
 let autoCleanupOnExit = false;
 let powerSaveBlockerId: number | null = null;
@@ -138,8 +148,11 @@ export function registerSystemHandlers(): void {
   ipcMain.handle(
     Ch.Invoke.SYSTEM_GET_DISK_SPACE,
     wrapHandler(Ch.Invoke.SYSTEM_GET_DISK_SPACE, (_event, dirPath: string) => {
+      // The export folder may not exist yet (it is created at render time), so
+      // measure the nearest existing parent: same drive, same free space.
+      const measuredPath = nearestExistingDirectory(dirPath);
       return new Promise<{ free: number; total: number }>((resolve, reject) => {
-        statfs(dirPath, (err, stats) => {
+        statfs(measuredPath, (err, stats) => {
           if (err) {
             reject(err);
             return;

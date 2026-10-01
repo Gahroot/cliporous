@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "provenance": "Authored responses for offline pipeline regression ONLY; not AI generations or quality comparisons.",
+  "clips": {
+    "three-processes": {
+      "outline": {"ideas":[{"startWord":0,"endWord":4,"goal":"Sort requests","kinds":["statement"]},{"startWord":5,"endWord":10,"goal":"Route urgent requests to support","kinds":["flow"]},{"startWord":11,"endWord":15,"goal":"Check each answer before delivery","kinds":["checklist"]}]},
+      "draft": {"scenes":[
+        {"kind":"statement","startWord":0,"endWord":4,"layout":"stack","words":[{"text":"Sort","word":1},{"text":"requests","word":3}]},
+        {"kind":"flow","startWord":5,"endWord":10,"layout":"stack","continues":true,"transition":"fade","inputLabel":"Requests","inputText":"Urgent","engineLabel":"Route","outputLabel":"Support","outputText":"Support","inputWord":6,"outputWord":9},
+        {"kind":"checklist","startWord":11,"endWord":15,"layout":"stack","continues":true,"transition":"fade","items":[{"label":"Check each answer","icon":"Check","word":11},{"label":"Before delivery","icon":"Check","word":15}]}
+      ],"quotes":[]},
+      "review": "use-draft"
+    },
+    "ordinary-speech": {"outline":{"ideas":[]},"draft":{"scenes":[],"quotes":[]},"review":{"scenes":[],"quotes":[]}},
+    "no-animation": {"outline":{"ideas":[]},"draft":{"scenes":[],"quotes":[]},"review":{"scenes":[],"quotes":[]}},
+    "grounded-takeaway": {"outline":{"ideas":[]},"draft":{"scenes":[],"quotes":[{"startWord":11,"endWord":15,"text":"test the need before building.","reason":"takeaway"}]},"review":"use-draft"}
+  }
+}

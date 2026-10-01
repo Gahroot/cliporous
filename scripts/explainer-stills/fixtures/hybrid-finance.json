@@ -1,0 +1,7786 @@
+[
+  {
+    "name": "fund-capital-deployment-diagram",
+    "sourceText": "Fund flows follow Atlas Fund during this round in an illustrative example. Ada contributes 60 USD to Atlas Fund. Bo contributes 40 USD to Atlas Fund. Atlas Fund deploys 70 USD to Shop. Atlas Fund deploys 30 USD to Maker. The stated transfers retain their direction and identity during this round. Capital reaches investments. Money follows the stated paths.",
+    "sourceWords": [
+      {
+        "text": "Fund",
+        "start": 0.25,
+        "end": 0.4
+      },
+      {
+        "text": "flows",
+        "start": 0.4,
+        "end": 0.55
+      },
+      {
+        "text": "follow",
+        "start": 0.55,
+        "end": 0.7
+      },
+      {
+        "text": "Atlas",
+        "start": 0.7,
+        "end": 0.85
+      },
+      {
+        "text": "Fund",
+        "start": 0.85,
+        "end": 1
+      },
+      {
+        "text": "during",
+        "start": 1,
+        "end": 1.15
+      },
+      {
+        "text": "this",
+        "start": 1.15,
+        "end": 1.3
+      },
+      {
+        "text": "round",
+        "start": 1.3,
+        "end": 1.45
+      },
+      {
+        "text": "in",
+        "start": 1.45,
+        "end": 1.5999999999999999
+      },
+      {
+        "text": "an",
+        "start": 1.5999999999999999,
+        "end": 1.75
+      },
+      {
+        "text": "illustrative",
+        "start": 1.75,
+        "end": 1.9000000000000001
+      },
+      {
+        "text": "example.",
+        "start": 1.9000000000000001,
+        "end": 2.05
+      },
+      {
+        "text": "Ada",
+        "start": 2.15,
+        "end": 2.2785714285714285
+      },
+      {
+        "text": "contributes",
+        "start": 2.2785714285714285,
+        "end": 2.407142857142857
+      },
+      {
+        "text": "60",
+        "start": 2.407142857142857,
+        "end": 2.5357142857142856
+      },
+      {
+        "text": "USD",
+        "start": 2.5357142857142856,
+        "end": 2.664285714285714
+      },
+      {
+        "text": "to",
+        "start": 2.664285714285714,
+        "end": 2.7928571428571427
+      },
+      {
+        "text": "Atlas",
+        "start": 2.7928571428571427,
+        "end": 2.9214285714285713
+      },
+      {
+        "text": "Fund.",
+        "start": 2.9214285714285713,
+        "end": 3.05
+      },
+      {
+        "text": "Bo",
+        "start": 3.05,
+        "end": 3.178571428571429
+      },
+      {
+        "text": "contributes",
+        "start": 3.178571428571429,
+        "end": 3.307142857142857
+      },
+      {
+        "text": "40",
+        "start": 3.307142857142857,
+        "end": 3.435714285714286
+      },
+      {
+        "text": "USD",
+        "start": 3.435714285714286,
+        "end": 3.564285714285714
+      },
+      {
+        "text": "to",
+        "start": 3.564285714285714,
+        "end": 3.692857142857143
+      },
+      {
+        "text": "Atlas",
+        "start": 3.692857142857143,
+        "end": 3.821428571428571
+      },
+      {
+        "text": "Fund.",
+        "start": 3.821428571428571,
+        "end": 3.95
+      },
+      {
+        "text": "Atlas",
+        "start": 4.05,
+        "end": 4.178571428571429
+      },
+      {
+        "text": "Fund",
+        "start": 4.178571428571429,
+        "end": 4.307142857142857
+      },
+      {
+        "text": "deploys",
+        "start": 4.307142857142857,
+        "end": 4.435714285714286
+      },
+      {
+        "text": "70",
+        "start": 4.435714285714286,
+        "end": 4.564285714285714
+      },
+      {
+        "text": "USD",
+        "start": 4.564285714285714,
+        "end": 4.692857142857143
+      },
+      {
+        "text": "to",
+        "start": 4.692857142857143,
+        "end": 4.821428571428571
+      },
+      {
+        "text": "Shop.",
+        "start": 4.821428571428571,
+        "end": 4.95
+      },
+      {
+        "text": "Atlas",
+        "start": 4.95,
+        "end": 5.078571428571428
+      },
+      {
+        "text": "Fund",
+        "start": 5.078571428571428,
+        "end": 5.207142857142857
+      },
+      {
+        "text": "deploys",
+        "start": 5.207142857142857,
+        "end": 5.335714285714285
+      },
+      {
+        "text": "30",
+        "start": 5.335714285714285,
+        "end": 5.464285714285714
+      },
+      {
+        "text": "USD",
+        "start": 5.464285714285714,
+        "end": 5.5928571428571425
+      },
+      {
+        "text": "to",
+        "start": 5.5928571428571425,
+        "end": 5.7214285714285715
+      },
+      {
+        "text": "Maker.",
+        "start": 5.7214285714285715,
+        "end": 5.85
+      },
+      {
+        "text": "The",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "stated",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "transfers",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "retain",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "their",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "direction",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "and",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "identity",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "during",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "this",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "round.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Capital",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "reaches",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "investments.",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "Money",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "follows",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "the",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "stated",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "paths.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "fund-flow",
+      "preset": "capital-deployment",
+      "visualMode": "diagram",
+      "label": "Fund flows",
+      "subject": "Atlas Fund",
+      "evidence": "illustrative",
+      "outcome": "Capital reaches investments",
+      "period": "this round",
+      "account": {
+        "id": "fund",
+        "label": "Atlas Fund"
+      },
+      "sources": [
+        {
+          "id": "first",
+          "label": "Ada"
+        },
+        {
+          "id": "second",
+          "label": "Bo"
+        }
+      ],
+      "targets": [
+        {
+          "id": "target-a",
+          "label": "Shop"
+        },
+        {
+          "id": "target-b",
+          "label": "Maker"
+        }
+      ],
+      "contributions": [
+        {
+          "from": "first",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 6000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "second",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 4000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "deployments": [
+        {
+          "from": "fund",
+          "to": "target-a",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 7000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "fund",
+          "to": "target-b",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 3000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "setupWord": 0,
+      "actionWord": 12,
+      "responseWord": 26,
+      "checkWord": 40,
+      "resolveWord": 51,
+      "startWord": 0,
+      "endWord": 58,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "fund-flow",
+      "preset": "capital-deployment",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "Fund flows",
+      "subject": "Atlas Fund",
+      "outcome": "Capital reaches investments",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "account": {
+        "id": "fund",
+        "label": "Atlas Fund"
+      },
+      "sources": [
+        {
+          "id": "first",
+          "label": "Ada"
+        },
+        {
+          "id": "second",
+          "label": "Bo"
+        }
+      ],
+      "targets": [
+        {
+          "id": "target-a",
+          "label": "Shop"
+        },
+        {
+          "id": "target-b",
+          "label": "Maker"
+        }
+      ],
+      "contributions": [
+        {
+          "from": "first",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 6000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "second",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 4000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "deployments": [
+        {
+          "from": "fund",
+          "to": "target-a",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 7000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "fund",
+          "to": "target-b",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 3000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "retained": null,
+      "period": "this round"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "fund-flow",
+      "capital-deployment",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "fund-proceeds-distribution-diagram",
+    "sourceText": "Fund flows follow Atlas Fund during this round in an illustrative example. Shop pays 60 USD to Atlas Fund. Maker pays 40 USD to Atlas Fund. Atlas Fund distributes 70 USD to Ada. Atlas Fund distributes 30 USD to Bo. The stated transfers retain their direction and identity during this round. Proceeds reach investors. Money follows the stated paths.",
+    "sourceWords": [
+      {
+        "text": "Fund",
+        "start": 0.25,
+        "end": 0.4
+      },
+      {
+        "text": "flows",
+        "start": 0.4,
+        "end": 0.55
+      },
+      {
+        "text": "follow",
+        "start": 0.55,
+        "end": 0.7
+      },
+      {
+        "text": "Atlas",
+        "start": 0.7,
+        "end": 0.85
+      },
+      {
+        "text": "Fund",
+        "start": 0.85,
+        "end": 1
+      },
+      {
+        "text": "during",
+        "start": 1,
+        "end": 1.15
+      },
+      {
+        "text": "this",
+        "start": 1.15,
+        "end": 1.3
+      },
+      {
+        "text": "round",
+        "start": 1.3,
+        "end": 1.45
+      },
+      {
+        "text": "in",
+        "start": 1.45,
+        "end": 1.5999999999999999
+      },
+      {
+        "text": "an",
+        "start": 1.5999999999999999,
+        "end": 1.75
+      },
+      {
+        "text": "illustrative",
+        "start": 1.75,
+        "end": 1.9000000000000001
+      },
+      {
+        "text": "example.",
+        "start": 1.9000000000000001,
+        "end": 2.05
+      },
+      {
+        "text": "Shop",
+        "start": 2.15,
+        "end": 2.2785714285714285
+      },
+      {
+        "text": "pays",
+        "start": 2.2785714285714285,
+        "end": 2.407142857142857
+      },
+      {
+        "text": "60",
+        "start": 2.407142857142857,
+        "end": 2.5357142857142856
+      },
+      {
+        "text": "USD",
+        "start": 2.5357142857142856,
+        "end": 2.664285714285714
+      },
+      {
+        "text": "to",
+        "start": 2.664285714285714,
+        "end": 2.7928571428571427
+      },
+      {
+        "text": "Atlas",
+        "start": 2.7928571428571427,
+        "end": 2.9214285714285713
+      },
+      {
+        "text": "Fund.",
+        "start": 2.9214285714285713,
+        "end": 3.05
+      },
+      {
+        "text": "Maker",
+        "start": 3.05,
+        "end": 3.178571428571429
+      },
+      {
+        "text": "pays",
+        "start": 3.178571428571429,
+        "end": 3.307142857142857
+      },
+      {
+        "text": "40",
+        "start": 3.307142857142857,
+        "end": 3.435714285714286
+      },
+      {
+        "text": "USD",
+        "start": 3.435714285714286,
+        "end": 3.564285714285714
+      },
+      {
+        "text": "to",
+        "start": 3.564285714285714,
+        "end": 3.692857142857143
+      },
+      {
+        "text": "Atlas",
+        "start": 3.692857142857143,
+        "end": 3.821428571428571
+      },
+      {
+        "text": "Fund.",
+        "start": 3.821428571428571,
+        "end": 3.95
+      },
+      {
+        "text": "Atlas",
+        "start": 4.05,
+        "end": 4.178571428571429
+      },
+      {
+        "text": "Fund",
+        "start": 4.178571428571429,
+        "end": 4.307142857142857
+      },
+      {
+        "text": "distributes",
+        "start": 4.307142857142857,
+        "end": 4.435714285714286
+      },
+      {
+        "text": "70",
+        "start": 4.435714285714286,
+        "end": 4.564285714285714
+      },
+      {
+        "text": "USD",
+        "start": 4.564285714285714,
+        "end": 4.692857142857143
+      },
+      {
+        "text": "to",
+        "start": 4.692857142857143,
+        "end": 4.821428571428571
+      },
+      {
+        "text": "Ada.",
+        "start": 4.821428571428571,
+        "end": 4.95
+      },
+      {
+        "text": "Atlas",
+        "start": 4.95,
+        "end": 5.078571428571428
+      },
+      {
+        "text": "Fund",
+        "start": 5.078571428571428,
+        "end": 5.207142857142857
+      },
+      {
+        "text": "distributes",
+        "start": 5.207142857142857,
+        "end": 5.335714285714285
+      },
+      {
+        "text": "30",
+        "start": 5.335714285714285,
+        "end": 5.464285714285714
+      },
+      {
+        "text": "USD",
+        "start": 5.464285714285714,
+        "end": 5.5928571428571425
+      },
+      {
+        "text": "to",
+        "start": 5.5928571428571425,
+        "end": 5.7214285714285715
+      },
+      {
+        "text": "Bo.",
+        "start": 5.7214285714285715,
+        "end": 5.85
+      },
+      {
+        "text": "The",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "stated",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "transfers",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "retain",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "their",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "direction",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "and",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "identity",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "during",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "this",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "round.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Proceeds",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "reach",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "investors.",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "Money",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "follows",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "the",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "stated",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "paths.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "fund-flow",
+      "preset": "proceeds-distribution",
+      "visualMode": "diagram",
+      "label": "Fund flows",
+      "subject": "Atlas Fund",
+      "evidence": "illustrative",
+      "outcome": "Proceeds reach investors",
+      "period": "this round",
+      "account": {
+        "id": "fund",
+        "label": "Atlas Fund"
+      },
+      "sources": [
+        {
+          "id": "first",
+          "label": "Shop"
+        },
+        {
+          "id": "second",
+          "label": "Maker"
+        }
+      ],
+      "targets": [
+        {
+          "id": "target-a",
+          "label": "Ada"
+        },
+        {
+          "id": "target-b",
+          "label": "Bo"
+        }
+      ],
+      "contributions": [
+        {
+          "from": "first",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 6000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "second",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 4000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "deployments": [
+        {
+          "from": "fund",
+          "to": "target-a",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 7000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "fund",
+          "to": "target-b",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 3000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "setupWord": 0,
+      "actionWord": 12,
+      "responseWord": 26,
+      "checkWord": 40,
+      "resolveWord": 51,
+      "startWord": 0,
+      "endWord": 58,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "fund-flow",
+      "preset": "proceeds-distribution",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "Fund flows",
+      "subject": "Atlas Fund",
+      "outcome": "Proceeds reach investors",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "account": {
+        "id": "fund",
+        "label": "Atlas Fund"
+      },
+      "sources": [
+        {
+          "id": "first",
+          "label": "Shop"
+        },
+        {
+          "id": "second",
+          "label": "Maker"
+        }
+      ],
+      "targets": [
+        {
+          "id": "target-a",
+          "label": "Ada"
+        },
+        {
+          "id": "target-b",
+          "label": "Bo"
+        }
+      ],
+      "contributions": [
+        {
+          "from": "first",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 6000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "second",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 4000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "deployments": [
+        {
+          "from": "fund",
+          "to": "target-a",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 7000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "fund",
+          "to": "target-b",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 3000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "retained": null,
+      "period": "this round"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "fund-flow",
+      "proceeds-distribution",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "ownership-share-issue-diagram",
+    "sourceText": "An illustrative dilution example follows ExampleCo. Ada owns 40 of 100 shares in ExampleCo. Ada owns 40 percent of ExampleCo. ExampleCo issues 100 new shares. Ada keeps 40 of 200 shares in ExampleCo. Ada now owns 20 percent of ExampleCo. Value is not stated. Share count stays the same. Percentage and value are different.",
+    "sourceWords": [
+      {
+        "text": "An",
+        "start": 0.25,
+        "end": 0.33999999999999997
+      },
+      {
+        "text": "illustrative",
+        "start": 0.33999999999999997,
+        "end": 0.43
+      },
+      {
+        "text": "dilution",
+        "start": 0.43,
+        "end": 0.52
+      },
+      {
+        "text": "example",
+        "start": 0.52,
+        "end": 0.61
+      },
+      {
+        "text": "follows",
+        "start": 0.61,
+        "end": 0.7
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 0.7,
+        "end": 0.79
+      },
+      {
+        "text": "Ada",
+        "start": 0.79,
+        "end": 0.88
+      },
+      {
+        "text": "owns",
+        "start": 0.88,
+        "end": 0.97
+      },
+      {
+        "text": "40",
+        "start": 0.97,
+        "end": 1.06
+      },
+      {
+        "text": "of",
+        "start": 1.06,
+        "end": 1.15
+      },
+      {
+        "text": "100",
+        "start": 1.15,
+        "end": 1.24
+      },
+      {
+        "text": "shares",
+        "start": 1.24,
+        "end": 1.33
+      },
+      {
+        "text": "in",
+        "start": 1.33,
+        "end": 1.4200000000000002
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 1.4200000000000002,
+        "end": 1.51
+      },
+      {
+        "text": "Ada",
+        "start": 1.51,
+        "end": 1.6
+      },
+      {
+        "text": "owns",
+        "start": 1.6,
+        "end": 1.69
+      },
+      {
+        "text": "40",
+        "start": 1.69,
+        "end": 1.78
+      },
+      {
+        "text": "percent",
+        "start": 1.78,
+        "end": 1.8699999999999999
+      },
+      {
+        "text": "of",
+        "start": 1.8699999999999999,
+        "end": 1.9600000000000002
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 1.9600000000000002,
+        "end": 2.05
+      },
+      {
+        "text": "ExampleCo",
+        "start": 2.15,
+        "end": 2.51
+      },
+      {
+        "text": "issues",
+        "start": 2.51,
+        "end": 2.87
+      },
+      {
+        "text": "100",
+        "start": 2.87,
+        "end": 3.23
+      },
+      {
+        "text": "new",
+        "start": 3.23,
+        "end": 3.59
+      },
+      {
+        "text": "shares.",
+        "start": 3.59,
+        "end": 3.95
+      },
+      {
+        "text": "Ada",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "keeps",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "40",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "of",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "200",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "shares",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "in",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "Ada",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "now",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "owns",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "20",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "percent",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "of",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "Value",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "is",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "not",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "stated.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Share",
+        "start": 7.85,
+        "end": 8.03
+      },
+      {
+        "text": "count",
+        "start": 8.03,
+        "end": 8.209999999999999
+      },
+      {
+        "text": "stays",
+        "start": 8.209999999999999,
+        "end": 8.39
+      },
+      {
+        "text": "the",
+        "start": 8.39,
+        "end": 8.57
+      },
+      {
+        "text": "same.",
+        "start": 8.57,
+        "end": 8.75
+      },
+      {
+        "text": "Percentage",
+        "start": 8.75,
+        "end": 8.93
+      },
+      {
+        "text": "and",
+        "start": 8.93,
+        "end": 9.11
+      },
+      {
+        "text": "value",
+        "start": 9.11,
+        "end": 9.29
+      },
+      {
+        "text": "are",
+        "start": 9.29,
+        "end": 9.469999999999999
+      },
+      {
+        "text": "different.",
+        "start": 9.469999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "ownership-change",
+      "preset": "share-issue",
+      "visualMode": "diagram",
+      "label": "dilution",
+      "subject": "ExampleCo",
+      "outcome": "Share count stays the same",
+      "evidence": "illustrative",
+      "holder": {
+        "id": "ada",
+        "label": "Ada"
+      },
+      "company": {
+        "id": "co",
+        "label": "ExampleCo"
+      },
+      "shares": 40,
+      "beforeTotal": 100,
+      "issued": 100,
+      "afterTotal": 200,
+      "beforePercent": 40,
+      "afterPercent": 20,
+      "valuation": {
+        "state": "unknown"
+      },
+      "setupWord": 0,
+      "actionWord": 20,
+      "responseWord": 25,
+      "checkWord": 33,
+      "resolveWord": 44,
+      "startWord": 0,
+      "endWord": 53,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "ownership-change",
+      "preset": "share-issue",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "dilution",
+      "subject": "ExampleCo",
+      "outcome": "Share count stays the same",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "holder": {
+        "id": "ada",
+        "label": "Ada"
+      },
+      "company": {
+        "id": "co",
+        "label": "ExampleCo"
+      },
+      "shares": 40,
+      "beforeTotal": 100,
+      "issued": 100,
+      "afterTotal": 200,
+      "beforePercent": 40,
+      "afterPercent": 20,
+      "valuation": {
+        "state": "unknown"
+      }
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "ownership-change",
+      "share-issue",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "ownership-stake-value-separation-diagram",
+    "sourceText": "An illustrative dilution example follows ExampleCo. Ada owns 40 of 100 shares in ExampleCo. Ada owns 40 percent of ExampleCo. ExampleCo issues 100 new shares. Ada keeps 40 of 200 shares in ExampleCo. Ada now owns 20 percent of ExampleCo. Value is not stated. Share count stays the same. Percentage and value are different.",
+    "sourceWords": [
+      {
+        "text": "An",
+        "start": 0.25,
+        "end": 0.33999999999999997
+      },
+      {
+        "text": "illustrative",
+        "start": 0.33999999999999997,
+        "end": 0.43
+      },
+      {
+        "text": "dilution",
+        "start": 0.43,
+        "end": 0.52
+      },
+      {
+        "text": "example",
+        "start": 0.52,
+        "end": 0.61
+      },
+      {
+        "text": "follows",
+        "start": 0.61,
+        "end": 0.7
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 0.7,
+        "end": 0.79
+      },
+      {
+        "text": "Ada",
+        "start": 0.79,
+        "end": 0.88
+      },
+      {
+        "text": "owns",
+        "start": 0.88,
+        "end": 0.97
+      },
+      {
+        "text": "40",
+        "start": 0.97,
+        "end": 1.06
+      },
+      {
+        "text": "of",
+        "start": 1.06,
+        "end": 1.15
+      },
+      {
+        "text": "100",
+        "start": 1.15,
+        "end": 1.24
+      },
+      {
+        "text": "shares",
+        "start": 1.24,
+        "end": 1.33
+      },
+      {
+        "text": "in",
+        "start": 1.33,
+        "end": 1.4200000000000002
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 1.4200000000000002,
+        "end": 1.51
+      },
+      {
+        "text": "Ada",
+        "start": 1.51,
+        "end": 1.6
+      },
+      {
+        "text": "owns",
+        "start": 1.6,
+        "end": 1.69
+      },
+      {
+        "text": "40",
+        "start": 1.69,
+        "end": 1.78
+      },
+      {
+        "text": "percent",
+        "start": 1.78,
+        "end": 1.8699999999999999
+      },
+      {
+        "text": "of",
+        "start": 1.8699999999999999,
+        "end": 1.9600000000000002
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 1.9600000000000002,
+        "end": 2.05
+      },
+      {
+        "text": "ExampleCo",
+        "start": 2.15,
+        "end": 2.51
+      },
+      {
+        "text": "issues",
+        "start": 2.51,
+        "end": 2.87
+      },
+      {
+        "text": "100",
+        "start": 2.87,
+        "end": 3.23
+      },
+      {
+        "text": "new",
+        "start": 3.23,
+        "end": 3.59
+      },
+      {
+        "text": "shares.",
+        "start": 3.59,
+        "end": 3.95
+      },
+      {
+        "text": "Ada",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "keeps",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "40",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "of",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "200",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "shares",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "in",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "Ada",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "now",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "owns",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "20",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "percent",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "of",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "Value",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "is",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "not",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "stated.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Share",
+        "start": 7.85,
+        "end": 8.03
+      },
+      {
+        "text": "count",
+        "start": 8.03,
+        "end": 8.209999999999999
+      },
+      {
+        "text": "stays",
+        "start": 8.209999999999999,
+        "end": 8.39
+      },
+      {
+        "text": "the",
+        "start": 8.39,
+        "end": 8.57
+      },
+      {
+        "text": "same.",
+        "start": 8.57,
+        "end": 8.75
+      },
+      {
+        "text": "Percentage",
+        "start": 8.75,
+        "end": 8.93
+      },
+      {
+        "text": "and",
+        "start": 8.93,
+        "end": 9.11
+      },
+      {
+        "text": "value",
+        "start": 9.11,
+        "end": 9.29
+      },
+      {
+        "text": "are",
+        "start": 9.29,
+        "end": 9.469999999999999
+      },
+      {
+        "text": "different.",
+        "start": 9.469999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "ownership-change",
+      "preset": "stake-value-separation",
+      "visualMode": "diagram",
+      "label": "dilution",
+      "subject": "ExampleCo",
+      "outcome": "Share count stays the same",
+      "evidence": "illustrative",
+      "holder": {
+        "id": "ada",
+        "label": "Ada"
+      },
+      "company": {
+        "id": "co",
+        "label": "ExampleCo"
+      },
+      "shares": 40,
+      "beforeTotal": 100,
+      "issued": 100,
+      "afterTotal": 200,
+      "beforePercent": 40,
+      "afterPercent": 20,
+      "valuation": {
+        "state": "unknown"
+      },
+      "setupWord": 0,
+      "actionWord": 20,
+      "responseWord": 25,
+      "checkWord": 33,
+      "resolveWord": 44,
+      "startWord": 0,
+      "endWord": 53,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "ownership-change",
+      "preset": "stake-value-separation",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "dilution",
+      "subject": "ExampleCo",
+      "outcome": "Share count stays the same",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "holder": {
+        "id": "ada",
+        "label": "Ada"
+      },
+      "company": {
+        "id": "co",
+        "label": "ExampleCo"
+      },
+      "shares": 40,
+      "beforeTotal": 100,
+      "issued": 100,
+      "afterTotal": 200,
+      "beforePercent": 40,
+      "afterPercent": 20,
+      "valuation": {
+        "state": "unknown"
+      }
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "ownership-change",
+      "stake-value-separation",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "portfolio-shared-holdings-diagram",
+    "sourceText": "An illustrative portfolio exposure example follows Fund A and Fund B. Fund A holds ExampleCo. Fund B owns ExampleCo. ExampleCo is shared by both funds in this example. Other exposure is not stated and the fund names remain distinct. Shared exposure remains visible despite the different fund names.",
+    "sourceWords": [
+      {
+        "text": "An",
+        "start": 0.25,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "illustrative",
+        "start": 0.41363636363636364,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "portfolio",
+        "start": 0.5772727272727273,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "exposure",
+        "start": 0.740909090909091,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "example",
+        "start": 0.9045454545454545,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "follows",
+        "start": 1.0681818181818183,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "Fund",
+        "start": 1.231818181818182,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "A",
+        "start": 1.3954545454545455,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "and",
+        "start": 1.559090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "Fund",
+        "start": 1.7227272727272727,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "B.",
+        "start": 1.8863636363636365,
+        "end": 2.05
+      },
+      {
+        "text": "Fund",
+        "start": 2.15,
+        "end": 2.375
+      },
+      {
+        "text": "A",
+        "start": 2.375,
+        "end": 2.6
+      },
+      {
+        "text": "holds",
+        "start": 2.6,
+        "end": 2.825
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 2.825,
+        "end": 3.05
+      },
+      {
+        "text": "Fund",
+        "start": 3.05,
+        "end": 3.275
+      },
+      {
+        "text": "B",
+        "start": 3.275,
+        "end": 3.5
+      },
+      {
+        "text": "owns",
+        "start": 3.5,
+        "end": 3.7249999999999996
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 3.7249999999999996,
+        "end": 3.95
+      },
+      {
+        "text": "ExampleCo",
+        "start": 4.05,
+        "end": 4.25
+      },
+      {
+        "text": "is",
+        "start": 4.25,
+        "end": 4.45
+      },
+      {
+        "text": "shared",
+        "start": 4.45,
+        "end": 4.65
+      },
+      {
+        "text": "by",
+        "start": 4.65,
+        "end": 4.85
+      },
+      {
+        "text": "both",
+        "start": 4.85,
+        "end": 5.05
+      },
+      {
+        "text": "funds",
+        "start": 5.05,
+        "end": 5.25
+      },
+      {
+        "text": "in",
+        "start": 5.25,
+        "end": 5.449999999999999
+      },
+      {
+        "text": "this",
+        "start": 5.449999999999999,
+        "end": 5.65
+      },
+      {
+        "text": "example.",
+        "start": 5.65,
+        "end": 5.85
+      },
+      {
+        "text": "Other",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "exposure",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "is",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "not",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "stated",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "and",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "the",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "fund",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "names",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "remain",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "distinct.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Shared",
+        "start": 7.85,
+        "end": 8.049999999999999
+      },
+      {
+        "text": "exposure",
+        "start": 8.049999999999999,
+        "end": 8.25
+      },
+      {
+        "text": "remains",
+        "start": 8.25,
+        "end": 8.45
+      },
+      {
+        "text": "visible",
+        "start": 8.45,
+        "end": 8.65
+      },
+      {
+        "text": "despite",
+        "start": 8.65,
+        "end": 8.85
+      },
+      {
+        "text": "the",
+        "start": 8.85,
+        "end": 9.05
+      },
+      {
+        "text": "different",
+        "start": 9.05,
+        "end": 9.25
+      },
+      {
+        "text": "fund",
+        "start": 9.25,
+        "end": 9.45
+      },
+      {
+        "text": "names.",
+        "start": 9.45,
+        "end": 9.649999999999999
+      }
+    ],
+    "plannerInput": {
+      "kind": "portfolio-exposure",
+      "preset": "shared-holdings",
+      "visualMode": "diagram",
+      "label": "portfolio exposure",
+      "subject": "Fund A",
+      "outcome": "Shared exposure",
+      "evidence": "illustrative",
+      "funds": [
+        {
+          "id": "fund-a",
+          "label": "Fund A"
+        },
+        {
+          "id": "fund-b",
+          "label": "Fund B"
+        }
+      ],
+      "exposure": {
+        "id": "exposure",
+        "label": "ExampleCo"
+      },
+      "holdings": [
+        {
+          "fundId": "fund-a",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        },
+        {
+          "fundId": "fund-b",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        }
+      ],
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 19,
+      "checkWord": 28,
+      "resolveWord": 39,
+      "startWord": 0,
+      "endWord": 47,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "portfolio-exposure",
+      "preset": "shared-holdings",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "portfolio exposure",
+      "subject": "Fund A",
+      "outcome": "Shared exposure",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "funds": [
+        {
+          "id": "fund-a",
+          "label": "Fund A"
+        },
+        {
+          "id": "fund-b",
+          "label": "Fund B"
+        }
+      ],
+      "exposure": {
+        "id": "exposure",
+        "label": "ExampleCo"
+      },
+      "holdings": [
+        {
+          "fundId": "fund-a",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        },
+        {
+          "fundId": "fund-b",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "portfolio-exposure",
+      "shared-holdings",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "portfolio-shared-driver-diagram",
+    "sourceText": "An illustrative portfolio exposure example follows Fund A and Fund B. Fund A is exposed to interest rates. Fund B depends on interest rates. interest rates is shared by both funds in this example. Other exposure is not stated and the fund names remain distinct. Shared exposure remains visible despite the different fund names.",
+    "sourceWords": [
+      {
+        "text": "An",
+        "start": 0.25,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "illustrative",
+        "start": 0.41363636363636364,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "portfolio",
+        "start": 0.5772727272727273,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "exposure",
+        "start": 0.740909090909091,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "example",
+        "start": 0.9045454545454545,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "follows",
+        "start": 1.0681818181818183,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "Fund",
+        "start": 1.231818181818182,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "A",
+        "start": 1.3954545454545455,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "and",
+        "start": 1.559090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "Fund",
+        "start": 1.7227272727272727,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "B.",
+        "start": 1.8863636363636365,
+        "end": 2.05
+      },
+      {
+        "text": "Fund",
+        "start": 2.15,
+        "end": 2.2884615384615383
+      },
+      {
+        "text": "A",
+        "start": 2.2884615384615383,
+        "end": 2.4269230769230767
+      },
+      {
+        "text": "is",
+        "start": 2.4269230769230767,
+        "end": 2.565384615384615
+      },
+      {
+        "text": "exposed",
+        "start": 2.565384615384615,
+        "end": 2.703846153846154
+      },
+      {
+        "text": "to",
+        "start": 2.703846153846154,
+        "end": 2.842307692307692
+      },
+      {
+        "text": "interest",
+        "start": 2.842307692307692,
+        "end": 2.980769230769231
+      },
+      {
+        "text": "rates.",
+        "start": 2.980769230769231,
+        "end": 3.1192307692307693
+      },
+      {
+        "text": "Fund",
+        "start": 3.1192307692307693,
+        "end": 3.2576923076923077
+      },
+      {
+        "text": "B",
+        "start": 3.2576923076923077,
+        "end": 3.396153846153846
+      },
+      {
+        "text": "depends",
+        "start": 3.396153846153846,
+        "end": 3.5346153846153845
+      },
+      {
+        "text": "on",
+        "start": 3.5346153846153845,
+        "end": 3.6730769230769234
+      },
+      {
+        "text": "interest",
+        "start": 3.6730769230769234,
+        "end": 3.8115384615384613
+      },
+      {
+        "text": "rates.",
+        "start": 3.8115384615384613,
+        "end": 3.95
+      },
+      {
+        "text": "interest",
+        "start": 4.05,
+        "end": 4.2299999999999995
+      },
+      {
+        "text": "rates",
+        "start": 4.2299999999999995,
+        "end": 4.41
+      },
+      {
+        "text": "is",
+        "start": 4.41,
+        "end": 4.59
+      },
+      {
+        "text": "shared",
+        "start": 4.59,
+        "end": 4.77
+      },
+      {
+        "text": "by",
+        "start": 4.77,
+        "end": 4.95
+      },
+      {
+        "text": "both",
+        "start": 4.95,
+        "end": 5.13
+      },
+      {
+        "text": "funds",
+        "start": 5.13,
+        "end": 5.31
+      },
+      {
+        "text": "in",
+        "start": 5.31,
+        "end": 5.49
+      },
+      {
+        "text": "this",
+        "start": 5.49,
+        "end": 5.67
+      },
+      {
+        "text": "example.",
+        "start": 5.67,
+        "end": 5.85
+      },
+      {
+        "text": "Other",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "exposure",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "is",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "not",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "stated",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "and",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "the",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "fund",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "names",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "remain",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "distinct.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Shared",
+        "start": 7.85,
+        "end": 8.049999999999999
+      },
+      {
+        "text": "exposure",
+        "start": 8.049999999999999,
+        "end": 8.25
+      },
+      {
+        "text": "remains",
+        "start": 8.25,
+        "end": 8.45
+      },
+      {
+        "text": "visible",
+        "start": 8.45,
+        "end": 8.65
+      },
+      {
+        "text": "despite",
+        "start": 8.65,
+        "end": 8.85
+      },
+      {
+        "text": "the",
+        "start": 8.85,
+        "end": 9.05
+      },
+      {
+        "text": "different",
+        "start": 9.05,
+        "end": 9.25
+      },
+      {
+        "text": "fund",
+        "start": 9.25,
+        "end": 9.45
+      },
+      {
+        "text": "names.",
+        "start": 9.45,
+        "end": 9.649999999999999
+      }
+    ],
+    "plannerInput": {
+      "kind": "portfolio-exposure",
+      "preset": "shared-driver",
+      "visualMode": "diagram",
+      "label": "portfolio exposure",
+      "subject": "Fund A",
+      "outcome": "Shared exposure",
+      "evidence": "illustrative",
+      "funds": [
+        {
+          "id": "fund-a",
+          "label": "Fund A"
+        },
+        {
+          "id": "fund-b",
+          "label": "Fund B"
+        }
+      ],
+      "exposure": {
+        "id": "exposure",
+        "label": "interest rates"
+      },
+      "holdings": [],
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 24,
+      "checkWord": 34,
+      "resolveWord": 45,
+      "startWord": 0,
+      "endWord": 53,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "portfolio-exposure",
+      "preset": "shared-driver",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "portfolio exposure",
+      "subject": "Fund A",
+      "outcome": "Shared exposure",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "funds": [
+        {
+          "id": "fund-a",
+          "label": "Fund A"
+        },
+        {
+          "id": "fund-b",
+          "label": "Fund B"
+        }
+      ],
+      "exposure": {
+        "id": "exposure",
+        "label": "interest rates"
+      },
+      "holdings": []
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "portfolio-exposure",
+      "shared-driver",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "fund-capital-deployment-hybrid",
+    "sourceText": "Fund flows follow Atlas Fund during this round in an illustrative example. Ada contributes 60 USD to Atlas Fund. Bo contributes 40 USD to Atlas Fund. Atlas Fund deploys 70 USD to Shop. Atlas Fund deploys 30 USD to Maker. The stated transfers retain their direction and identity during this round. Capital reaches investments. Money follows the stated paths.",
+    "sourceWords": [
+      {
+        "text": "Fund",
+        "start": 0.25,
+        "end": 0.4
+      },
+      {
+        "text": "flows",
+        "start": 0.4,
+        "end": 0.55
+      },
+      {
+        "text": "follow",
+        "start": 0.55,
+        "end": 0.7
+      },
+      {
+        "text": "Atlas",
+        "start": 0.7,
+        "end": 0.85
+      },
+      {
+        "text": "Fund",
+        "start": 0.85,
+        "end": 1
+      },
+      {
+        "text": "during",
+        "start": 1,
+        "end": 1.15
+      },
+      {
+        "text": "this",
+        "start": 1.15,
+        "end": 1.3
+      },
+      {
+        "text": "round",
+        "start": 1.3,
+        "end": 1.45
+      },
+      {
+        "text": "in",
+        "start": 1.45,
+        "end": 1.5999999999999999
+      },
+      {
+        "text": "an",
+        "start": 1.5999999999999999,
+        "end": 1.75
+      },
+      {
+        "text": "illustrative",
+        "start": 1.75,
+        "end": 1.9000000000000001
+      },
+      {
+        "text": "example.",
+        "start": 1.9000000000000001,
+        "end": 2.05
+      },
+      {
+        "text": "Ada",
+        "start": 2.15,
+        "end": 2.2785714285714285
+      },
+      {
+        "text": "contributes",
+        "start": 2.2785714285714285,
+        "end": 2.407142857142857
+      },
+      {
+        "text": "60",
+        "start": 2.407142857142857,
+        "end": 2.5357142857142856
+      },
+      {
+        "text": "USD",
+        "start": 2.5357142857142856,
+        "end": 2.664285714285714
+      },
+      {
+        "text": "to",
+        "start": 2.664285714285714,
+        "end": 2.7928571428571427
+      },
+      {
+        "text": "Atlas",
+        "start": 2.7928571428571427,
+        "end": 2.9214285714285713
+      },
+      {
+        "text": "Fund.",
+        "start": 2.9214285714285713,
+        "end": 3.05
+      },
+      {
+        "text": "Bo",
+        "start": 3.05,
+        "end": 3.178571428571429
+      },
+      {
+        "text": "contributes",
+        "start": 3.178571428571429,
+        "end": 3.307142857142857
+      },
+      {
+        "text": "40",
+        "start": 3.307142857142857,
+        "end": 3.435714285714286
+      },
+      {
+        "text": "USD",
+        "start": 3.435714285714286,
+        "end": 3.564285714285714
+      },
+      {
+        "text": "to",
+        "start": 3.564285714285714,
+        "end": 3.692857142857143
+      },
+      {
+        "text": "Atlas",
+        "start": 3.692857142857143,
+        "end": 3.821428571428571
+      },
+      {
+        "text": "Fund.",
+        "start": 3.821428571428571,
+        "end": 3.95
+      },
+      {
+        "text": "Atlas",
+        "start": 4.05,
+        "end": 4.178571428571429
+      },
+      {
+        "text": "Fund",
+        "start": 4.178571428571429,
+        "end": 4.307142857142857
+      },
+      {
+        "text": "deploys",
+        "start": 4.307142857142857,
+        "end": 4.435714285714286
+      },
+      {
+        "text": "70",
+        "start": 4.435714285714286,
+        "end": 4.564285714285714
+      },
+      {
+        "text": "USD",
+        "start": 4.564285714285714,
+        "end": 4.692857142857143
+      },
+      {
+        "text": "to",
+        "start": 4.692857142857143,
+        "end": 4.821428571428571
+      },
+      {
+        "text": "Shop.",
+        "start": 4.821428571428571,
+        "end": 4.95
+      },
+      {
+        "text": "Atlas",
+        "start": 4.95,
+        "end": 5.078571428571428
+      },
+      {
+        "text": "Fund",
+        "start": 5.078571428571428,
+        "end": 5.207142857142857
+      },
+      {
+        "text": "deploys",
+        "start": 5.207142857142857,
+        "end": 5.335714285714285
+      },
+      {
+        "text": "30",
+        "start": 5.335714285714285,
+        "end": 5.464285714285714
+      },
+      {
+        "text": "USD",
+        "start": 5.464285714285714,
+        "end": 5.5928571428571425
+      },
+      {
+        "text": "to",
+        "start": 5.5928571428571425,
+        "end": 5.7214285714285715
+      },
+      {
+        "text": "Maker.",
+        "start": 5.7214285714285715,
+        "end": 5.85
+      },
+      {
+        "text": "The",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "stated",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "transfers",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "retain",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "their",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "direction",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "and",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "identity",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "during",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "this",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "round.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Capital",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "reaches",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "investments.",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "Money",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "follows",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "the",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "stated",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "paths.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "fund-flow",
+      "preset": "capital-deployment",
+      "visualMode": "hybrid",
+      "label": "Fund flows",
+      "subject": "Atlas Fund",
+      "evidence": "illustrative",
+      "outcome": "Capital reaches investments",
+      "period": "this round",
+      "account": {
+        "id": "fund",
+        "label": "Atlas Fund"
+      },
+      "sources": [
+        {
+          "id": "first",
+          "label": "Ada"
+        },
+        {
+          "id": "second",
+          "label": "Bo"
+        }
+      ],
+      "targets": [
+        {
+          "id": "target-a",
+          "label": "Shop"
+        },
+        {
+          "id": "target-b",
+          "label": "Maker"
+        }
+      ],
+      "contributions": [
+        {
+          "from": "first",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 6000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "second",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 4000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "deployments": [
+        {
+          "from": "fund",
+          "to": "target-a",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 7000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "fund",
+          "to": "target-b",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 3000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "setupWord": 0,
+      "actionWord": 12,
+      "responseWord": 26,
+      "checkWord": 40,
+      "resolveWord": 51,
+      "startWord": 0,
+      "endWord": 58,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "fund-flow",
+      "preset": "capital-deployment",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "Fund flows",
+      "subject": "Atlas Fund",
+      "outcome": "Capital reaches investments",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "account": {
+        "id": "fund",
+        "label": "Atlas Fund"
+      },
+      "sources": [
+        {
+          "id": "first",
+          "label": "Ada"
+        },
+        {
+          "id": "second",
+          "label": "Bo"
+        }
+      ],
+      "targets": [
+        {
+          "id": "target-a",
+          "label": "Shop"
+        },
+        {
+          "id": "target-b",
+          "label": "Maker"
+        }
+      ],
+      "contributions": [
+        {
+          "from": "first",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 6000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "second",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 4000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "deployments": [
+        {
+          "from": "fund",
+          "to": "target-a",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 7000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "fund",
+          "to": "target-b",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 3000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "retained": null,
+      "period": "this round"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "fund-flow",
+      "capital-deployment",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "fund-proceeds-distribution-hybrid",
+    "sourceText": "Fund flows follow Atlas Fund during this round in an illustrative example. Shop pays 60 USD to Atlas Fund. Maker pays 40 USD to Atlas Fund. Atlas Fund distributes 70 USD to Ada. Atlas Fund distributes 30 USD to Bo. The stated transfers retain their direction and identity during this round. Proceeds reach investors. Money follows the stated paths.",
+    "sourceWords": [
+      {
+        "text": "Fund",
+        "start": 0.25,
+        "end": 0.4
+      },
+      {
+        "text": "flows",
+        "start": 0.4,
+        "end": 0.55
+      },
+      {
+        "text": "follow",
+        "start": 0.55,
+        "end": 0.7
+      },
+      {
+        "text": "Atlas",
+        "start": 0.7,
+        "end": 0.85
+      },
+      {
+        "text": "Fund",
+        "start": 0.85,
+        "end": 1
+      },
+      {
+        "text": "during",
+        "start": 1,
+        "end": 1.15
+      },
+      {
+        "text": "this",
+        "start": 1.15,
+        "end": 1.3
+      },
+      {
+        "text": "round",
+        "start": 1.3,
+        "end": 1.45
+      },
+      {
+        "text": "in",
+        "start": 1.45,
+        "end": 1.5999999999999999
+      },
+      {
+        "text": "an",
+        "start": 1.5999999999999999,
+        "end": 1.75
+      },
+      {
+        "text": "illustrative",
+        "start": 1.75,
+        "end": 1.9000000000000001
+      },
+      {
+        "text": "example.",
+        "start": 1.9000000000000001,
+        "end": 2.05
+      },
+      {
+        "text": "Shop",
+        "start": 2.15,
+        "end": 2.2785714285714285
+      },
+      {
+        "text": "pays",
+        "start": 2.2785714285714285,
+        "end": 2.407142857142857
+      },
+      {
+        "text": "60",
+        "start": 2.407142857142857,
+        "end": 2.5357142857142856
+      },
+      {
+        "text": "USD",
+        "start": 2.5357142857142856,
+        "end": 2.664285714285714
+      },
+      {
+        "text": "to",
+        "start": 2.664285714285714,
+        "end": 2.7928571428571427
+      },
+      {
+        "text": "Atlas",
+        "start": 2.7928571428571427,
+        "end": 2.9214285714285713
+      },
+      {
+        "text": "Fund.",
+        "start": 2.9214285714285713,
+        "end": 3.05
+      },
+      {
+        "text": "Maker",
+        "start": 3.05,
+        "end": 3.178571428571429
+      },
+      {
+        "text": "pays",
+        "start": 3.178571428571429,
+        "end": 3.307142857142857
+      },
+      {
+        "text": "40",
+        "start": 3.307142857142857,
+        "end": 3.435714285714286
+      },
+      {
+        "text": "USD",
+        "start": 3.435714285714286,
+        "end": 3.564285714285714
+      },
+      {
+        "text": "to",
+        "start": 3.564285714285714,
+        "end": 3.692857142857143
+      },
+      {
+        "text": "Atlas",
+        "start": 3.692857142857143,
+        "end": 3.821428571428571
+      },
+      {
+        "text": "Fund.",
+        "start": 3.821428571428571,
+        "end": 3.95
+      },
+      {
+        "text": "Atlas",
+        "start": 4.05,
+        "end": 4.178571428571429
+      },
+      {
+        "text": "Fund",
+        "start": 4.178571428571429,
+        "end": 4.307142857142857
+      },
+      {
+        "text": "distributes",
+        "start": 4.307142857142857,
+        "end": 4.435714285714286
+      },
+      {
+        "text": "70",
+        "start": 4.435714285714286,
+        "end": 4.564285714285714
+      },
+      {
+        "text": "USD",
+        "start": 4.564285714285714,
+        "end": 4.692857142857143
+      },
+      {
+        "text": "to",
+        "start": 4.692857142857143,
+        "end": 4.821428571428571
+      },
+      {
+        "text": "Ada.",
+        "start": 4.821428571428571,
+        "end": 4.95
+      },
+      {
+        "text": "Atlas",
+        "start": 4.95,
+        "end": 5.078571428571428
+      },
+      {
+        "text": "Fund",
+        "start": 5.078571428571428,
+        "end": 5.207142857142857
+      },
+      {
+        "text": "distributes",
+        "start": 5.207142857142857,
+        "end": 5.335714285714285
+      },
+      {
+        "text": "30",
+        "start": 5.335714285714285,
+        "end": 5.464285714285714
+      },
+      {
+        "text": "USD",
+        "start": 5.464285714285714,
+        "end": 5.5928571428571425
+      },
+      {
+        "text": "to",
+        "start": 5.5928571428571425,
+        "end": 5.7214285714285715
+      },
+      {
+        "text": "Bo.",
+        "start": 5.7214285714285715,
+        "end": 5.85
+      },
+      {
+        "text": "The",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "stated",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "transfers",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "retain",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "their",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "direction",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "and",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "identity",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "during",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "this",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "round.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Proceeds",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "reach",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "investors.",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "Money",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "follows",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "the",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "stated",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "paths.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "fund-flow",
+      "preset": "proceeds-distribution",
+      "visualMode": "hybrid",
+      "label": "Fund flows",
+      "subject": "Atlas Fund",
+      "evidence": "illustrative",
+      "outcome": "Proceeds reach investors",
+      "period": "this round",
+      "account": {
+        "id": "fund",
+        "label": "Atlas Fund"
+      },
+      "sources": [
+        {
+          "id": "first",
+          "label": "Shop"
+        },
+        {
+          "id": "second",
+          "label": "Maker"
+        }
+      ],
+      "targets": [
+        {
+          "id": "target-a",
+          "label": "Ada"
+        },
+        {
+          "id": "target-b",
+          "label": "Bo"
+        }
+      ],
+      "contributions": [
+        {
+          "from": "first",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 6000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "second",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 4000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "deployments": [
+        {
+          "from": "fund",
+          "to": "target-a",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 7000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "fund",
+          "to": "target-b",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 3000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "setupWord": 0,
+      "actionWord": 12,
+      "responseWord": 26,
+      "checkWord": 40,
+      "resolveWord": 51,
+      "startWord": 0,
+      "endWord": 58,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "fund-flow",
+      "preset": "proceeds-distribution",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "Fund flows",
+      "subject": "Atlas Fund",
+      "outcome": "Proceeds reach investors",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "account": {
+        "id": "fund",
+        "label": "Atlas Fund"
+      },
+      "sources": [
+        {
+          "id": "first",
+          "label": "Shop"
+        },
+        {
+          "id": "second",
+          "label": "Maker"
+        }
+      ],
+      "targets": [
+        {
+          "id": "target-a",
+          "label": "Ada"
+        },
+        {
+          "id": "target-b",
+          "label": "Bo"
+        }
+      ],
+      "contributions": [
+        {
+          "from": "first",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 6000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "second",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 4000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "deployments": [
+        {
+          "from": "fund",
+          "to": "target-a",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 7000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "fund",
+          "to": "target-b",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 3000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "retained": null,
+      "period": "this round"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "fund-flow",
+      "proceeds-distribution",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "ownership-share-issue-hybrid",
+    "sourceText": "An illustrative dilution example follows ExampleCo. Ada owns 40 of 100 shares in ExampleCo. Ada owns 40 percent of ExampleCo. ExampleCo issues 100 new shares. Ada keeps 40 of 200 shares in ExampleCo. Ada now owns 20 percent of ExampleCo. Value is not stated. Share count stays the same. Percentage and value are different.",
+    "sourceWords": [
+      {
+        "text": "An",
+        "start": 0.25,
+        "end": 0.33999999999999997
+      },
+      {
+        "text": "illustrative",
+        "start": 0.33999999999999997,
+        "end": 0.43
+      },
+      {
+        "text": "dilution",
+        "start": 0.43,
+        "end": 0.52
+      },
+      {
+        "text": "example",
+        "start": 0.52,
+        "end": 0.61
+      },
+      {
+        "text": "follows",
+        "start": 0.61,
+        "end": 0.7
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 0.7,
+        "end": 0.79
+      },
+      {
+        "text": "Ada",
+        "start": 0.79,
+        "end": 0.88
+      },
+      {
+        "text": "owns",
+        "start": 0.88,
+        "end": 0.97
+      },
+      {
+        "text": "40",
+        "start": 0.97,
+        "end": 1.06
+      },
+      {
+        "text": "of",
+        "start": 1.06,
+        "end": 1.15
+      },
+      {
+        "text": "100",
+        "start": 1.15,
+        "end": 1.24
+      },
+      {
+        "text": "shares",
+        "start": 1.24,
+        "end": 1.33
+      },
+      {
+        "text": "in",
+        "start": 1.33,
+        "end": 1.4200000000000002
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 1.4200000000000002,
+        "end": 1.51
+      },
+      {
+        "text": "Ada",
+        "start": 1.51,
+        "end": 1.6
+      },
+      {
+        "text": "owns",
+        "start": 1.6,
+        "end": 1.69
+      },
+      {
+        "text": "40",
+        "start": 1.69,
+        "end": 1.78
+      },
+      {
+        "text": "percent",
+        "start": 1.78,
+        "end": 1.8699999999999999
+      },
+      {
+        "text": "of",
+        "start": 1.8699999999999999,
+        "end": 1.9600000000000002
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 1.9600000000000002,
+        "end": 2.05
+      },
+      {
+        "text": "ExampleCo",
+        "start": 2.15,
+        "end": 2.51
+      },
+      {
+        "text": "issues",
+        "start": 2.51,
+        "end": 2.87
+      },
+      {
+        "text": "100",
+        "start": 2.87,
+        "end": 3.23
+      },
+      {
+        "text": "new",
+        "start": 3.23,
+        "end": 3.59
+      },
+      {
+        "text": "shares.",
+        "start": 3.59,
+        "end": 3.95
+      },
+      {
+        "text": "Ada",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "keeps",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "40",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "of",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "200",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "shares",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "in",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "Ada",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "now",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "owns",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "20",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "percent",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "of",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "Value",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "is",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "not",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "stated.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Share",
+        "start": 7.85,
+        "end": 8.03
+      },
+      {
+        "text": "count",
+        "start": 8.03,
+        "end": 8.209999999999999
+      },
+      {
+        "text": "stays",
+        "start": 8.209999999999999,
+        "end": 8.39
+      },
+      {
+        "text": "the",
+        "start": 8.39,
+        "end": 8.57
+      },
+      {
+        "text": "same.",
+        "start": 8.57,
+        "end": 8.75
+      },
+      {
+        "text": "Percentage",
+        "start": 8.75,
+        "end": 8.93
+      },
+      {
+        "text": "and",
+        "start": 8.93,
+        "end": 9.11
+      },
+      {
+        "text": "value",
+        "start": 9.11,
+        "end": 9.29
+      },
+      {
+        "text": "are",
+        "start": 9.29,
+        "end": 9.469999999999999
+      },
+      {
+        "text": "different.",
+        "start": 9.469999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "ownership-change",
+      "preset": "share-issue",
+      "visualMode": "hybrid",
+      "label": "dilution",
+      "subject": "ExampleCo",
+      "outcome": "Share count stays the same",
+      "evidence": "illustrative",
+      "holder": {
+        "id": "ada",
+        "label": "Ada"
+      },
+      "company": {
+        "id": "co",
+        "label": "ExampleCo"
+      },
+      "shares": 40,
+      "beforeTotal": 100,
+      "issued": 100,
+      "afterTotal": 200,
+      "beforePercent": 40,
+      "afterPercent": 20,
+      "valuation": {
+        "state": "unknown"
+      },
+      "setupWord": 0,
+      "actionWord": 20,
+      "responseWord": 25,
+      "checkWord": 33,
+      "resolveWord": 44,
+      "startWord": 0,
+      "endWord": 53,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "ownership-change",
+      "preset": "share-issue",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "dilution",
+      "subject": "ExampleCo",
+      "outcome": "Share count stays the same",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "holder": {
+        "id": "ada",
+        "label": "Ada"
+      },
+      "company": {
+        "id": "co",
+        "label": "ExampleCo"
+      },
+      "shares": 40,
+      "beforeTotal": 100,
+      "issued": 100,
+      "afterTotal": 200,
+      "beforePercent": 40,
+      "afterPercent": 20,
+      "valuation": {
+        "state": "unknown"
+      }
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "ownership-change",
+      "share-issue",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "ownership-stake-value-separation-hybrid",
+    "sourceText": "An illustrative dilution example follows ExampleCo. Ada owns 40 of 100 shares in ExampleCo. Ada owns 40 percent of ExampleCo. ExampleCo issues 100 new shares. Ada keeps 40 of 200 shares in ExampleCo. Ada now owns 20 percent of ExampleCo. Value is not stated. Share count stays the same. Percentage and value are different.",
+    "sourceWords": [
+      {
+        "text": "An",
+        "start": 0.25,
+        "end": 0.33999999999999997
+      },
+      {
+        "text": "illustrative",
+        "start": 0.33999999999999997,
+        "end": 0.43
+      },
+      {
+        "text": "dilution",
+        "start": 0.43,
+        "end": 0.52
+      },
+      {
+        "text": "example",
+        "start": 0.52,
+        "end": 0.61
+      },
+      {
+        "text": "follows",
+        "start": 0.61,
+        "end": 0.7
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 0.7,
+        "end": 0.79
+      },
+      {
+        "text": "Ada",
+        "start": 0.79,
+        "end": 0.88
+      },
+      {
+        "text": "owns",
+        "start": 0.88,
+        "end": 0.97
+      },
+      {
+        "text": "40",
+        "start": 0.97,
+        "end": 1.06
+      },
+      {
+        "text": "of",
+        "start": 1.06,
+        "end": 1.15
+      },
+      {
+        "text": "100",
+        "start": 1.15,
+        "end": 1.24
+      },
+      {
+        "text": "shares",
+        "start": 1.24,
+        "end": 1.33
+      },
+      {
+        "text": "in",
+        "start": 1.33,
+        "end": 1.4200000000000002
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 1.4200000000000002,
+        "end": 1.51
+      },
+      {
+        "text": "Ada",
+        "start": 1.51,
+        "end": 1.6
+      },
+      {
+        "text": "owns",
+        "start": 1.6,
+        "end": 1.69
+      },
+      {
+        "text": "40",
+        "start": 1.69,
+        "end": 1.78
+      },
+      {
+        "text": "percent",
+        "start": 1.78,
+        "end": 1.8699999999999999
+      },
+      {
+        "text": "of",
+        "start": 1.8699999999999999,
+        "end": 1.9600000000000002
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 1.9600000000000002,
+        "end": 2.05
+      },
+      {
+        "text": "ExampleCo",
+        "start": 2.15,
+        "end": 2.51
+      },
+      {
+        "text": "issues",
+        "start": 2.51,
+        "end": 2.87
+      },
+      {
+        "text": "100",
+        "start": 2.87,
+        "end": 3.23
+      },
+      {
+        "text": "new",
+        "start": 3.23,
+        "end": 3.59
+      },
+      {
+        "text": "shares.",
+        "start": 3.59,
+        "end": 3.95
+      },
+      {
+        "text": "Ada",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "keeps",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "40",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "of",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "200",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "shares",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "in",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "Ada",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "now",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "owns",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "20",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "percent",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "of",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "Value",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "is",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "not",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "stated.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Share",
+        "start": 7.85,
+        "end": 8.03
+      },
+      {
+        "text": "count",
+        "start": 8.03,
+        "end": 8.209999999999999
+      },
+      {
+        "text": "stays",
+        "start": 8.209999999999999,
+        "end": 8.39
+      },
+      {
+        "text": "the",
+        "start": 8.39,
+        "end": 8.57
+      },
+      {
+        "text": "same.",
+        "start": 8.57,
+        "end": 8.75
+      },
+      {
+        "text": "Percentage",
+        "start": 8.75,
+        "end": 8.93
+      },
+      {
+        "text": "and",
+        "start": 8.93,
+        "end": 9.11
+      },
+      {
+        "text": "value",
+        "start": 9.11,
+        "end": 9.29
+      },
+      {
+        "text": "are",
+        "start": 9.29,
+        "end": 9.469999999999999
+      },
+      {
+        "text": "different.",
+        "start": 9.469999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "ownership-change",
+      "preset": "stake-value-separation",
+      "visualMode": "hybrid",
+      "label": "dilution",
+      "subject": "ExampleCo",
+      "outcome": "Share count stays the same",
+      "evidence": "illustrative",
+      "holder": {
+        "id": "ada",
+        "label": "Ada"
+      },
+      "company": {
+        "id": "co",
+        "label": "ExampleCo"
+      },
+      "shares": 40,
+      "beforeTotal": 100,
+      "issued": 100,
+      "afterTotal": 200,
+      "beforePercent": 40,
+      "afterPercent": 20,
+      "valuation": {
+        "state": "unknown"
+      },
+      "setupWord": 0,
+      "actionWord": 20,
+      "responseWord": 25,
+      "checkWord": 33,
+      "resolveWord": 44,
+      "startWord": 0,
+      "endWord": 53,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "ownership-change",
+      "preset": "stake-value-separation",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "dilution",
+      "subject": "ExampleCo",
+      "outcome": "Share count stays the same",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "holder": {
+        "id": "ada",
+        "label": "Ada"
+      },
+      "company": {
+        "id": "co",
+        "label": "ExampleCo"
+      },
+      "shares": 40,
+      "beforeTotal": 100,
+      "issued": 100,
+      "afterTotal": 200,
+      "beforePercent": 40,
+      "afterPercent": 20,
+      "valuation": {
+        "state": "unknown"
+      }
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "ownership-change",
+      "stake-value-separation",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "portfolio-shared-holdings-hybrid",
+    "sourceText": "An illustrative portfolio exposure example follows Fund A and Fund B. Fund A holds ExampleCo. Fund B owns ExampleCo. ExampleCo is shared by both funds in this example. Other exposure is not stated and the fund names remain distinct. Shared exposure remains visible despite the different fund names.",
+    "sourceWords": [
+      {
+        "text": "An",
+        "start": 0.25,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "illustrative",
+        "start": 0.41363636363636364,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "portfolio",
+        "start": 0.5772727272727273,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "exposure",
+        "start": 0.740909090909091,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "example",
+        "start": 0.9045454545454545,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "follows",
+        "start": 1.0681818181818183,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "Fund",
+        "start": 1.231818181818182,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "A",
+        "start": 1.3954545454545455,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "and",
+        "start": 1.559090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "Fund",
+        "start": 1.7227272727272727,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "B.",
+        "start": 1.8863636363636365,
+        "end": 2.05
+      },
+      {
+        "text": "Fund",
+        "start": 2.15,
+        "end": 2.375
+      },
+      {
+        "text": "A",
+        "start": 2.375,
+        "end": 2.6
+      },
+      {
+        "text": "holds",
+        "start": 2.6,
+        "end": 2.825
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 2.825,
+        "end": 3.05
+      },
+      {
+        "text": "Fund",
+        "start": 3.05,
+        "end": 3.275
+      },
+      {
+        "text": "B",
+        "start": 3.275,
+        "end": 3.5
+      },
+      {
+        "text": "owns",
+        "start": 3.5,
+        "end": 3.7249999999999996
+      },
+      {
+        "text": "ExampleCo.",
+        "start": 3.7249999999999996,
+        "end": 3.95
+      },
+      {
+        "text": "ExampleCo",
+        "start": 4.05,
+        "end": 4.25
+      },
+      {
+        "text": "is",
+        "start": 4.25,
+        "end": 4.45
+      },
+      {
+        "text": "shared",
+        "start": 4.45,
+        "end": 4.65
+      },
+      {
+        "text": "by",
+        "start": 4.65,
+        "end": 4.85
+      },
+      {
+        "text": "both",
+        "start": 4.85,
+        "end": 5.05
+      },
+      {
+        "text": "funds",
+        "start": 5.05,
+        "end": 5.25
+      },
+      {
+        "text": "in",
+        "start": 5.25,
+        "end": 5.449999999999999
+      },
+      {
+        "text": "this",
+        "start": 5.449999999999999,
+        "end": 5.65
+      },
+      {
+        "text": "example.",
+        "start": 5.65,
+        "end": 5.85
+      },
+      {
+        "text": "Other",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "exposure",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "is",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "not",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "stated",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "and",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "the",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "fund",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "names",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "remain",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "distinct.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Shared",
+        "start": 7.85,
+        "end": 8.049999999999999
+      },
+      {
+        "text": "exposure",
+        "start": 8.049999999999999,
+        "end": 8.25
+      },
+      {
+        "text": "remains",
+        "start": 8.25,
+        "end": 8.45
+      },
+      {
+        "text": "visible",
+        "start": 8.45,
+        "end": 8.65
+      },
+      {
+        "text": "despite",
+        "start": 8.65,
+        "end": 8.85
+      },
+      {
+        "text": "the",
+        "start": 8.85,
+        "end": 9.05
+      },
+      {
+        "text": "different",
+        "start": 9.05,
+        "end": 9.25
+      },
+      {
+        "text": "fund",
+        "start": 9.25,
+        "end": 9.45
+      },
+      {
+        "text": "names.",
+        "start": 9.45,
+        "end": 9.649999999999999
+      }
+    ],
+    "plannerInput": {
+      "kind": "portfolio-exposure",
+      "preset": "shared-holdings",
+      "visualMode": "hybrid",
+      "label": "portfolio exposure",
+      "subject": "Fund A",
+      "outcome": "Shared exposure",
+      "evidence": "illustrative",
+      "funds": [
+        {
+          "id": "fund-a",
+          "label": "Fund A"
+        },
+        {
+          "id": "fund-b",
+          "label": "Fund B"
+        }
+      ],
+      "exposure": {
+        "id": "exposure",
+        "label": "ExampleCo"
+      },
+      "holdings": [
+        {
+          "fundId": "fund-a",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        },
+        {
+          "fundId": "fund-b",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        }
+      ],
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 19,
+      "checkWord": 28,
+      "resolveWord": 39,
+      "startWord": 0,
+      "endWord": 47,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "portfolio-exposure",
+      "preset": "shared-holdings",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "portfolio exposure",
+      "subject": "Fund A",
+      "outcome": "Shared exposure",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "funds": [
+        {
+          "id": "fund-a",
+          "label": "Fund A"
+        },
+        {
+          "id": "fund-b",
+          "label": "Fund B"
+        }
+      ],
+      "exposure": {
+        "id": "exposure",
+        "label": "ExampleCo"
+      },
+      "holdings": [
+        {
+          "fundId": "fund-a",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        },
+        {
+          "fundId": "fund-b",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        }
+      ]
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "portfolio-exposure",
+      "shared-holdings",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "portfolio-shared-driver-hybrid",
+    "sourceText": "An illustrative portfolio exposure example follows Fund A and Fund B. Fund A is exposed to interest rates. Fund B depends on interest rates. interest rates is shared by both funds in this example. Other exposure is not stated and the fund names remain distinct. Shared exposure remains visible despite the different fund names.",
+    "sourceWords": [
+      {
+        "text": "An",
+        "start": 0.25,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "illustrative",
+        "start": 0.41363636363636364,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "portfolio",
+        "start": 0.5772727272727273,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "exposure",
+        "start": 0.740909090909091,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "example",
+        "start": 0.9045454545454545,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "follows",
+        "start": 1.0681818181818183,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "Fund",
+        "start": 1.231818181818182,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "A",
+        "start": 1.3954545454545455,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "and",
+        "start": 1.559090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "Fund",
+        "start": 1.7227272727272727,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "B.",
+        "start": 1.8863636363636365,
+        "end": 2.05
+      },
+      {
+        "text": "Fund",
+        "start": 2.15,
+        "end": 2.2884615384615383
+      },
+      {
+        "text": "A",
+        "start": 2.2884615384615383,
+        "end": 2.4269230769230767
+      },
+      {
+        "text": "is",
+        "start": 2.4269230769230767,
+        "end": 2.565384615384615
+      },
+      {
+        "text": "exposed",
+        "start": 2.565384615384615,
+        "end": 2.703846153846154
+      },
+      {
+        "text": "to",
+        "start": 2.703846153846154,
+        "end": 2.842307692307692
+      },
+      {
+        "text": "interest",
+        "start": 2.842307692307692,
+        "end": 2.980769230769231
+      },
+      {
+        "text": "rates.",
+        "start": 2.980769230769231,
+        "end": 3.1192307692307693
+      },
+      {
+        "text": "Fund",
+        "start": 3.1192307692307693,
+        "end": 3.2576923076923077
+      },
+      {
+        "text": "B",
+        "start": 3.2576923076923077,
+        "end": 3.396153846153846
+      },
+      {
+        "text": "depends",
+        "start": 3.396153846153846,
+        "end": 3.5346153846153845
+      },
+      {
+        "text": "on",
+        "start": 3.5346153846153845,
+        "end": 3.6730769230769234
+      },
+      {
+        "text": "interest",
+        "start": 3.6730769230769234,
+        "end": 3.8115384615384613
+      },
+      {
+        "text": "rates.",
+        "start": 3.8115384615384613,
+        "end": 3.95
+      },
+      {
+        "text": "interest",
+        "start": 4.05,
+        "end": 4.2299999999999995
+      },
+      {
+        "text": "rates",
+        "start": 4.2299999999999995,
+        "end": 4.41
+      },
+      {
+        "text": "is",
+        "start": 4.41,
+        "end": 4.59
+      },
+      {
+        "text": "shared",
+        "start": 4.59,
+        "end": 4.77
+      },
+      {
+        "text": "by",
+        "start": 4.77,
+        "end": 4.95
+      },
+      {
+        "text": "both",
+        "start": 4.95,
+        "end": 5.13
+      },
+      {
+        "text": "funds",
+        "start": 5.13,
+        "end": 5.31
+      },
+      {
+        "text": "in",
+        "start": 5.31,
+        "end": 5.49
+      },
+      {
+        "text": "this",
+        "start": 5.49,
+        "end": 5.67
+      },
+      {
+        "text": "example.",
+        "start": 5.67,
+        "end": 5.85
+      },
+      {
+        "text": "Other",
+        "start": 5.949999999999999,
+        "end": 6.113636363636363
+      },
+      {
+        "text": "exposure",
+        "start": 6.113636363636363,
+        "end": 6.2772727272727264
+      },
+      {
+        "text": "is",
+        "start": 6.2772727272727264,
+        "end": 6.4409090909090905
+      },
+      {
+        "text": "not",
+        "start": 6.4409090909090905,
+        "end": 6.604545454545454
+      },
+      {
+        "text": "stated",
+        "start": 6.604545454545454,
+        "end": 6.768181818181818
+      },
+      {
+        "text": "and",
+        "start": 6.768181818181818,
+        "end": 6.931818181818182
+      },
+      {
+        "text": "the",
+        "start": 6.931818181818182,
+        "end": 7.095454545454545
+      },
+      {
+        "text": "fund",
+        "start": 7.095454545454545,
+        "end": 7.259090909090908
+      },
+      {
+        "text": "names",
+        "start": 7.259090909090908,
+        "end": 7.422727272727272
+      },
+      {
+        "text": "remain",
+        "start": 7.422727272727272,
+        "end": 7.586363636363636
+      },
+      {
+        "text": "distinct.",
+        "start": 7.586363636363636,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Shared",
+        "start": 7.85,
+        "end": 8.049999999999999
+      },
+      {
+        "text": "exposure",
+        "start": 8.049999999999999,
+        "end": 8.25
+      },
+      {
+        "text": "remains",
+        "start": 8.25,
+        "end": 8.45
+      },
+      {
+        "text": "visible",
+        "start": 8.45,
+        "end": 8.65
+      },
+      {
+        "text": "despite",
+        "start": 8.65,
+        "end": 8.85
+      },
+      {
+        "text": "the",
+        "start": 8.85,
+        "end": 9.05
+      },
+      {
+        "text": "different",
+        "start": 9.05,
+        "end": 9.25
+      },
+      {
+        "text": "fund",
+        "start": 9.25,
+        "end": 9.45
+      },
+      {
+        "text": "names.",
+        "start": 9.45,
+        "end": 9.649999999999999
+      }
+    ],
+    "plannerInput": {
+      "kind": "portfolio-exposure",
+      "preset": "shared-driver",
+      "visualMode": "hybrid",
+      "label": "portfolio exposure",
+      "subject": "Fund A",
+      "outcome": "Shared exposure",
+      "evidence": "illustrative",
+      "funds": [
+        {
+          "id": "fund-a",
+          "label": "Fund A"
+        },
+        {
+          "id": "fund-b",
+          "label": "Fund B"
+        }
+      ],
+      "exposure": {
+        "id": "exposure",
+        "label": "interest rates"
+      },
+      "holdings": [],
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 24,
+      "checkWord": 34,
+      "resolveWord": 45,
+      "startWord": 0,
+      "endWord": 53,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "portfolio-exposure",
+      "preset": "shared-driver",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "portfolio exposure",
+      "subject": "Fund A",
+      "outcome": "Shared exposure",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "funds": [
+        {
+          "id": "fund-a",
+          "label": "Fund A"
+        },
+        {
+          "id": "fund-b",
+          "label": "Fund B"
+        }
+      ],
+      "exposure": {
+        "id": "exposure",
+        "label": "interest rates"
+      },
+      "holdings": []
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "portfolio-exposure",
+      "shared-driver",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  }
+]

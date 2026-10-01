@@ -14,9 +14,17 @@ import type React from 'react';
 import { StampTreatment } from './editorial/StampTreatments';
 import type { StampFinish } from './editorial/types';
 import { isCausalHeroProp } from './hero-catalog';
+import { centeredLongformBox, longformStaging, modelSpaceTransform } from './longform-stage-layout';
 import { Burst, floatTransform, reactionTransform, useFloat, useReaction } from './motion';
 import { motionProgress, settleOffset } from './motion-tokens';
-import { ExplainerProvider, ramp, useLayout, useSceneTime, useStage } from './stage';
+import {
+  ExplainerProvider,
+  ramp,
+  useExplainerContext,
+  useLayout,
+  useSceneTime,
+  useStage,
+} from './stage';
 import {
   EXPLAINER_GLASS_RADIUS,
   EXPLAINER_STAGE_HEIGHT,
@@ -94,6 +102,7 @@ export const SceneFrame: React.FC<{ scene: ExplainerScene; children: React.React
   children,
 }) => {
   const layout = useLayout();
+  const { presentation } = useExplainerContext();
   const { t } = useSceneTime();
   // Saved scenes may predate planner budgets; functional scenes remain free of global extras.
   const functional =
@@ -108,16 +117,21 @@ export const SceneFrame: React.FC<{ scene: ExplainerScene; children: React.React
     : scene.overlayStamp?.finish
       ? { overlayStamp: scene.overlayStamp }
       : scene;
-  const { safe, floating } = layout;
-  const scale = Math.min(safe.width / EXPLAINER_STAGE_WIDTH, safe.height / EXPLAINER_STAGE_HEIGHT);
+  const { floating, longform } = layout;
+  const nativeStage = !!longform && longformStaging(scene.kind) === 'native';
+  const safe = longform && presentation ? centeredLongformBox(presentation) : layout.safe;
+  const model = nativeStage && longform ? modelSpaceTransform(longform.model) : undefined;
+  const scale =
+    model?.scale ??
+    Math.min(safe.width / EXPLAINER_STAGE_WIDTH, safe.height / EXPLAINER_STAGE_HEIGHT);
   const w = EXPLAINER_STAGE_WIDTH * scale;
   const h = EXPLAINER_STAGE_HEIGHT * scale;
-  const left = safe.x + (safe.width - w) / 2;
-  const top = safe.y + (safe.height - h) / 2;
+  const left = model?.x ?? safe.x + (safe.width - w) / 2;
+  const top = model?.y ?? safe.y + (safe.height - h) / 2;
   const dim = extras.dimAt === undefined || scene.kind === 'stack' ? 0 : ramp(t, extras.dimAt, 0.5);
 
   return (
-    <ExplainerProvider value={{ extras }}>
+    <ExplainerProvider value={{ extras, nativeStage }}>
       <SceneReactionLayer>
         {floating && (
           <div style={{ position: 'absolute', left, top, width: w, height: h }}>

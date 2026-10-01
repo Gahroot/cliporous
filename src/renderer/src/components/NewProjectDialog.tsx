@@ -1,5 +1,7 @@
 import { FileVideo, FolderOpen } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { type EntrySource, isYouTubeUrl } from '@/components/entry-source';
+import { PythonSetupCard } from '@/components/PythonSetupCard';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,11 +21,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCreatorProfiles } from '@/services/creator-profiles';
+import { useStore } from '@/store';
 
 export interface NewProjectDraft {
   name: string;
   outputMode: 'short' | 'longform';
-  source: { kind: 'file' | 'url'; value: string };
+  source: EntrySource;
   profileId?: string;
   brief?: {
     audience: string;
@@ -35,6 +38,11 @@ export interface NewProjectDraft {
 interface NewProjectDialogProps {
   open: boolean;
   busy: boolean;
+  intent?: 'new' | 'add';
+  initialSource?: EntrySource | null;
+  error?: string | null;
+  keyMissing?: boolean;
+  onOpenSettings?: () => void;
   onOpenChange: (open: boolean) => void;
   onChooseFile: () => Promise<string | null>;
   onCreate: (draft: NewProjectDraft) => void;
@@ -48,11 +56,21 @@ function filenameStem(filePath: string): string {
 export function NewProjectDialog({
   open,
   busy,
+  intent = 'new',
+  initialSource,
+  error: actionError,
+  keyMissing = false,
+  onOpenSettings,
   onOpenChange,
   onChooseFile,
   onCreate,
 }: NewProjectDialogProps): React.JSX.Element {
   const profiles = useCreatorProfiles();
+  const rememberedMode = useStore((state) => state.settings.outputMode);
+  const projectName = useStore((state) => state.currentProject.displayName);
+  const pythonStatus = useStore((state) => state.pythonStatus);
+  const initialized = useRef(false);
+  const returnFocusTo = useRef<HTMLElement | null>(null);
   const [name, setName] = useState('');
   const [outputMode, setOutputMode] = useState<'short' | 'longform'>('short');
   const [filePath, setFilePath] = useState('');
@@ -64,17 +82,17 @@ export function NewProjectDialog({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!open) return;
-    setName('');
-    setOutputMode('short');
-    setFilePath('');
-    setUrl('');
-    setProfileId('none');
-    setAudience('');
-    setGoal('');
-    setCallToAction('');
+    if (!open || initialized.current) return;
+    initialized.current = true;
+    setOutputMode(rememberedMode);
+  }, [open, rememberedMode]);
+
+  useEffect(() => {
+    if (!initialSource) return;
+    setFilePath(initialSource.kind === 'file' ? initialSource.value : '');
+    setUrl(initialSource.kind === 'url' ? initialSource.value : '');
     setError(null);
-  }, [open]);
+  }, [initialSource]);
 
   const chooseFile = async (): Promise<void> => {
     const selectedPath = await onChooseFile();
@@ -88,7 +106,8 @@ export function NewProjectDialog({
   const create = (): void => {
     const trimmedName = name.trim();
     const trimmedUrl = url.trim();
-    if (!trimmedName) {
+    if (busy || pythonStatus !== 'ready') return;
+    if (intent === 'new' && !trimmedName) {
       setError('Enter a project name.');
       return;
     }
@@ -96,8 +115,12 @@ export function NewProjectDialog({
       setError('Choose a video or paste a YouTube URL.');
       return;
     }
+    if (!filePath && !isYouTubeUrl(trimmedUrl)) {
+      setError('Paste a valid YouTube video URL.');
+      return;
+    }
     onCreate({
-      name: trimmedName,
+      name: intent === 'new' ? trimmedName : projectName,
       outputMode,
       source: filePath ? { kind: 'file', value: filePath } : { kind: 'url', value: trimmedUrl },
       ...(profileId !== 'none' ? { profileId } : {}),
@@ -113,7 +136,10 @@ export function NewProjectDialog({
     });
   };
 
-  const canCreate = name.trim().length > 0 && (filePath.length > 0 || url.trim().length > 0);
+  const canCreate =
+    (intent === 'add' || name.trim().length > 0) &&
+    (filePath.length > 0 || url.trim().length > 0) &&
+    pythonStatus === 'ready';
 
   return (
     <Dialog
@@ -122,30 +148,45 @@ export function NewProjectDialog({
         if (!busy) onOpenChange(nextOpen);
       }}
     >
-      <DialogContent className="max-h-[calc(100vh-2rem)] overflow-y-auto sm:max-w-xl">
+      <DialogContent
+        className="max-h-[calc(100vh-2rem)] overflow-y-auto sm:max-w-xl"
+        onOpenAutoFocus={() => {
+          returnFocusTo.current =
+            document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        }}
+        onCloseAutoFocus={(event) => {
+          if (returnFocusTo.current?.isConnected) {
+            event.preventDefault();
+            returnFocusTo.current.focus();
+          }
+        }}
+      >
         <DialogHeader>
-          <DialogTitle>New project</DialogTitle>
-          <DialogDescription>
-            Name the cut, choose its source, and pick the delivery shape. You can refine the brief
-            after import.
+          <DialogTitle>{intent === 'new' ? 'New project' : 'Confirm import'}</DialogTitle>
+          <DialogDescription className="break-words">
+            {intent === 'new'
+              ? 'Create a separate project. Current work is replaced only when you confirm below.'
+              : `Add footage to “${projectName}”. Existing sources and work are kept.`}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-5 py-2">
-          <div className="grid gap-2">
-            <Label htmlFor="new-project-name">Project name</Label>
-            <Input
-              id="new-project-name"
-              value={name}
-              onChange={(event) => {
-                setName(event.target.value);
-                setError(null);
-              }}
-              placeholder="Creator launch interview"
-              autoFocus
-              disabled={busy}
-            />
-          </div>
+          {intent === 'new' && (
+            <div className="grid gap-2">
+              <Label htmlFor="new-project-name">Project name</Label>
+              <Input
+                id="new-project-name"
+                value={name}
+                onChange={(event) => {
+                  setName(event.target.value);
+                  setError(null);
+                }}
+                placeholder="Creator launch interview"
+                autoFocus
+                disabled={busy}
+              />
+            </div>
+          )}
 
           <fieldset className="grid gap-2">
             <legend className="mb-2 text-sm font-medium">Source</legend>
@@ -161,8 +202,11 @@ export function NewProjectDialog({
                 <span className="block text-sm font-medium">
                   {filePath ? 'Change video' : 'Choose video'}
                 </span>
-                <span className="text-muted-foreground block truncate text-xs" title={filePath}>
-                  {filePath || 'MP4, MOV, MKV, WEBM, MTS, or M4V'}
+                <span
+                  className="text-muted-foreground block break-all whitespace-normal text-xs"
+                  title={filePath}
+                >
+                  {filePath || 'MP4, MOV, AVI, MKV, WEBM, MTS, or M4V'}
                 </span>
               </span>
             </Button>
@@ -214,75 +258,120 @@ export function NewProjectDialog({
             </Select>
             <p className="text-muted-foreground text-xs">
               {outputMode === 'short'
-                ? 'Find and style multiple vertical moments for social.'
-                : 'Build one landscape edit with section and phrase treatments.'}
+                ? 'Find vertical moments to review before exporting. 1080 × 1920 · 30 fps.'
+                : 'Build a source-ordered scene-first draft to review before exporting. 1920 × 1080 · 30 fps.'}
             </p>
+            <p className="text-muted-foreground text-xs">
+              This mode is remembered after confirmation. No export starts here.
+            </p>
+            {outputMode === 'longform' && (
+              <p className="rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+                Creative Brief is not used for initial scene planning. The transcript guides the
+                draft; use scene feedback during review to request revisions.{' '}
+                {intent === 'new'
+                  ? 'Brief text entered here is kept in the new project.'
+                  : 'Existing project brief text is kept.'}
+              </p>
+            )}
           </div>
 
-          <details className="border-border rounded-lg border px-3 py-2.5">
-            <summary className="cursor-pointer text-sm font-medium focus-visible:outline-none">
-              Add Creative Brief or Creator Profile (optional)
-            </summary>
-            <div className="grid gap-4 pt-4">
-              {profiles.length > 0 && (
-                <div className="grid gap-2">
-                  <Label htmlFor="new-project-profile">Creator Profile</Label>
-                  <Select value={profileId} onValueChange={setProfileId} disabled={busy}>
-                    <SelectTrigger id="new-project-profile">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">No reusable profile</SelectItem>
-                      {profiles.map((profile) => (
-                        <SelectItem key={profile.id} value={profile.id}>
-                          {profile.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    Applies reusable audience, tone, platform, safe-zone, and long-form defaults.
-                  </p>
-                </div>
-              )}
-              <div className="grid gap-2">
-                <Label htmlFor="new-project-audience">Audience</Label>
-                <Input
-                  id="new-project-audience"
-                  value={audience}
-                  onChange={(event) => setAudience(event.target.value)}
-                  placeholder="Independent founders"
-                  disabled={busy}
-                />
+          {intent === 'new' && (outputMode === 'short' || profiles.length > 0) && (
+            <details className="border-border rounded-lg border px-3 py-2.5">
+              <summary className="cursor-pointer rounded-sm text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                {outputMode === 'short'
+                  ? 'Add Creative Brief or Creator Profile (optional)'
+                  : 'Creator Profile (optional)'}
+              </summary>
+              <div className="grid gap-4 pt-4">
+                {profiles.length > 0 && (
+                  <div className="grid gap-2">
+                    <Label htmlFor="new-project-profile">Creator Profile</Label>
+                    <Select value={profileId} onValueChange={setProfileId} disabled={busy}>
+                      <SelectTrigger id="new-project-profile">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">No reusable profile</SelectItem>
+                        {profiles.map((profile) => (
+                          <SelectItem key={profile.id} value={profile.id}>
+                            {profile.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Applies audience, platform, layout, skin and palette settings. These also
+                      update remembered defaults.
+                    </p>
+                  </div>
+                )}
+                {outputMode === 'short' && (
+                  <>
+                    <div className="grid gap-2">
+                      <Label htmlFor="new-project-audience">Audience</Label>
+                      <Input
+                        id="new-project-audience"
+                        value={audience}
+                        onChange={(event) => setAudience(event.target.value)}
+                        placeholder="Independent founders"
+                        disabled={busy}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="new-project-goal">Goal</Label>
+                      <Input
+                        id="new-project-goal"
+                        value={goal}
+                        onChange={(event) => setGoal(event.target.value)}
+                        placeholder="Build trust before launch"
+                        disabled={busy}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="new-project-cta">Call to action</Label>
+                      <Input
+                        id="new-project-cta"
+                        value={callToAction}
+                        onChange={(event) => setCallToAction(event.target.value)}
+                        placeholder="Join the launch list"
+                        disabled={busy}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="new-project-goal">Goal</Label>
-                <Input
-                  id="new-project-goal"
-                  value={goal}
-                  onChange={(event) => setGoal(event.target.value)}
-                  placeholder="Build trust before launch"
-                  disabled={busy}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="new-project-cta">Call to action</Label>
-                <Input
-                  id="new-project-cta"
-                  value={callToAction}
-                  onChange={(event) => setCallToAction(event.target.value)}
-                  placeholder="Join the launch list"
-                  disabled={busy}
-                />
-              </div>
-            </div>
-          </details>
+            </details>
+          )}
 
-          {error && (
-            <p className="text-destructive text-sm" role="alert">
-              {error}
+          {pythonStatus !== 'ready' && (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground" role="status">
+                Your source selection is kept. Prepare local tools, then confirm below. Processing
+                will not start automatically.
+              </p>
+              <PythonSetupCard context="settings" />
+            </div>
+          )}
+          {keyMissing && (
+            <div className="space-y-2 rounded-md border border-destructive/40 p-3" role="alert">
+              <p className="text-sm font-medium">Gemini API key required</p>
+              <p className="text-xs text-muted-foreground">
+                Add a key in Settings, then confirm again. Your source selection is kept.
+              </p>
+              <Button type="button" variant="outline" size="sm" onClick={onOpenSettings}>
+                Open Settings
+              </Button>
+            </div>
+          )}
+          {(error || actionError) && (
+            <p className="text-destructive break-words text-sm" role="alert">
+              {error || actionError}
             </p>
           )}
+          <p className="text-xs text-muted-foreground">
+            Cancel keeps this selection for this lobby visit. No download or AI processing begins
+            before confirmation.
+          </p>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
@@ -290,7 +379,11 @@ export function NewProjectDialog({
             Cancel
           </Button>
           <Button type="button" disabled={busy || !canCreate} onClick={create}>
-            {busy ? 'Creating project…' : 'Create project'}
+            {busy
+              ? 'Preparing source…'
+              : intent === 'new'
+                ? 'Create project and process'
+                : 'Add source and process'}
           </Button>
         </DialogFooter>
       </DialogContent>

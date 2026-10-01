@@ -15,6 +15,16 @@ import { getPaletteById } from '@shared/palettes';
 import type { VideoSegment } from '@shared/types';
 import type { BrowserWindow } from 'electron';
 import { writeDescriptionFile } from '../ai/description-generator';
+import type { PlannerGenerator } from '../ai/explainer/planner-generation';
+import type { PlannerProfileId } from '../ai/explainer/planner-profiles';
+import type { PlanningObserver } from '../ai/explainer/planning-diagnostics';
+import {
+  clipIdentity,
+  createPlanningReservations,
+  type UsageChoice,
+  type UsageRecord,
+} from '../ai/explainer/recent-usage';
+import type { PlannerEditPlan } from '../ai/explainer-scenes';
 import { fetchSegmentVideos } from '../ai/segment-videos';
 import type { OutputAspectRatio } from '../aspect-ratios';
 import { OUTPUT_FPS, OUTPUT_HEIGHT, OUTPUT_WIDTH } from '../aspect-ratios';
@@ -29,6 +39,7 @@ import type { ManifestJobMeta } from '../export-manifest';
 import type { FfmpegCommand } from '../ffmpeg';
 import { getEncoder, getVideoMetadata, isHardwareEncoder } from '../ffmpeg';
 import { remapTimeAfterFillers } from '../filler-cuts';
+import type { PlannerUsageStore } from '../planner-usage-store';
 import { deriveExplainerPalette } from '../remotion/compositions/explainer/palette';
 import type { SceneCue } from '../remotion/compositions/explainer/types';
 import { analyzeEmphasisHeuristic, type EmphasizedWord } from '../word-emphasis';
@@ -62,6 +73,7 @@ import type { ResolvedSegment, SegmentRenderConfig } from './segment-render';
 import { renderSegmentedClip } from './segment-render';
 import { assembleStitchedVideo } from './stitched-render';
 import type { RenderBatchOptions, RenderClipJob, RenderStitchedClipJob } from './types';
+import { resolveWritableOutputPath } from './writable-output-path';
 
 // ---------------------------------------------------------------------------
 // Cancellation state
@@ -69,10 +81,13 @@ import type { RenderBatchOptions, RenderClipJob, RenderStitchedClipJob } from '.
 
 let cancelRequested = false;
 let stopAfterCurrentRequested = false;
+let batchAbortController = new AbortController();
 const cancelledJobIds = new Set<string>();
 
 /** Reset cancellation before IPC preparation starts for a new batch. */
 export function beginRenderBatch(): void {
+  batchAbortController.abort();
+  batchAbortController = new AbortController();
   cancelRequested = false;
   stopAfterCurrentRequested = false;
   cancelledJobIds.clear();
@@ -98,6 +113,7 @@ export function cancelQueuedRenderJob(clipId: string): void {
  */
 export function cancelRender(): void {
   cancelRequested = true;
+  batchAbortController.abort();
   const failures: string[] = [];
   for (const cmd of activeCommands) {
     try {
@@ -232,11 +248,54 @@ export type BatchDoneHandler = (
   info: BatchDoneInfo,
 ) => undefined | BatchDoneResult | Promise<undefined | BatchDoneResult>;
 
+export interface RenderedLayoutWindow {
+  archetype: ResolvedSegment['archetype'];
+  layout?: ResolvedSegment['explainerLayout'];
+  startTime: number;
+  endTime: number;
+}
+
+export interface RenderExecutionOptions {
+  signal?: AbortSignal;
+  plannerUsage?: PlannerUsageStore;
+  profile?: PlannerProfileId;
+  generator?: PlannerGenerator;
+  plans?: ReadonlyMap<string, { plan: PlannerEditPlan; wordsHash: string }>;
+  noAi?: boolean;
+  onDiagnostic?: PlanningObserver;
+  onRendered?: (clipId: string, choices: UsageChoice[], timeline: RenderedLayoutWindow[]) => void;
+}
+
 export async function startBatchRender(
   options: RenderBatchOptions,
   window: BrowserWindow,
   onBatchDone?: BatchDoneHandler,
+  execution: RenderExecutionOptions = {},
 ): Promise<void> {
+  execution.signal?.throwIfAborted();
+  const isCancelled = (): boolean => cancelRequested || execution.signal?.aborted === true;
+  if (execution.noAi) {
+    if (
+      execution.generator ||
+      options.outputProfile === 'longform' ||
+      options.jobs.some(
+        (job) => !job.segmentedSegments?.length || !execution.plans?.get(job.clipId)?.plan,
+      )
+    )
+      throw new Error(
+        'No-AI previews require a saved plan for every segmented vertical job and no generator',
+      );
+    options = structuredClone(options);
+    const stripKeys = (value: object): void => {
+      for (const [key, child] of Object.entries(value)) {
+        if (/api[_-]?key|(?:access|auth)[_-]?token|secret/i.test(key))
+          delete (value as Record<string, unknown>)[key];
+        else if (child && typeof child === 'object') stripKeys(child);
+      }
+    };
+    stripKeys(options);
+    if (options.broll) options.broll.enabled = false;
+  }
   // Cancellation is reset by the IPC handler before its preparation passes.
   // Keeping the flag here prevents a cancel received during preparation from
   // being erased immediately before encoding starts.
@@ -246,7 +305,10 @@ export async function startBatchRender(
   // 1920×1080 orchestrator and return. The 9:16 path below is untouched when
   // outputProfile is undefined/'vertical'.
   if (options.outputProfile === 'longform') {
-    await renderLongformVideo(options, window);
+    const signal = execution.signal
+      ? AbortSignal.any([batchAbortController.signal, execution.signal])
+      : batchAbortController.signal;
+    await renderLongformVideo(options, window, signal);
     return;
   }
 
@@ -356,22 +418,75 @@ export async function startBatchRender(
     }
   >();
 
+  // Capture identity/order before stitched assembly or filler removal rewrites jobs.
+  let history: UsageRecord[] = [];
+  let startOrder = 0;
+  try {
+    history = (await execution.plannerUsage?.load()) ?? [];
+    startOrder = execution.plannerUsage?.reserveOrders(jobs.length) ?? 0;
+  } catch (error) {
+    console.warn('[Pipeline] Planner history unavailable:', error);
+  }
+  const identities = jobs.map((job, index) => ({
+    key: String(index),
+    clipHash: clipIdentity(job.sourceVideoPath, job.startTime, job.endTime),
+  }));
+  const reservations = createPlanningReservations(identities, history, startOrder);
+  const canPlan = (job: RenderClipJob): boolean =>
+    !!job.segmentedSegments?.length &&
+    (!!execution.plans?.get(job.clipId) ||
+      (options.explainerScenesEnabled !== false &&
+        !!(options.geminiApiKey?.trim() || execution.generator) &&
+        !!job.wordTimestamps?.length));
+  jobs.forEach((job, index) => {
+    if (!canPlan(job) || cancelledJobIds.has(job.clipId)) reservations.release(String(index));
+  });
+  const recordRendered = async (
+    job: RenderClipJob,
+    index: number,
+    choices: UsageChoice[],
+    timeline: RenderedLayoutWindow[],
+  ): Promise<void> => {
+    if (isCancelled()) return;
+    try {
+      execution.onRendered?.(job.clipId, structuredClone(choices), structuredClone(timeline));
+    } catch (error) {
+      console.warn('[Pipeline] Render observer failed:', error);
+    }
+    try {
+      await execution.plannerUsage?.commit(
+        {
+          clipHash: identities[index].clipHash,
+          order: startOrder + index,
+          choices,
+        },
+        execution.signal,
+      );
+    } catch (error) {
+      console.warn('[Pipeline] Planner history write failed:', error);
+    }
+  };
+
   // ── Per-clip job processor ────────────────────────────────────────────────
 
   const processJob = async (job: RenderClipJob, i: number): Promise<void> => {
-    if (cancelRequested) return;
+    if (isCancelled()) {
+      reservations.release(String(i));
+      return;
+    }
     if (cancelledJobIds.has(job.clipId)) {
+      reservations.release(String(i));
       cancelled++;
       window.webContents.send(Ch.Send.RENDER_CLIP_CANCELLED, { clipId: job.clipId });
       return;
     }
-    const outputPath = buildOutputPath(
-      outputDirectory,
-      job,
-      i,
-      outputFormat,
-      options.filenameTemplate,
-      { score: job.manifestMeta?.score ?? 0, quality: options.renderQuality?.preset ?? 'normal' },
+    // A previous render of this clip may still be open in a player (locked on
+    // Windows) - fall back to a ` (n)` sibling rather than failing the clip.
+    const outputPath = resolveWritableOutputPath(
+      buildOutputPath(outputDirectory, job, i, outputFormat, options.filenameTemplate, {
+        score: job.manifestMeta?.score ?? 0,
+        quality: options.renderQuality?.preset ?? 'normal',
+      }),
     );
 
     // Safety: ensure output directory exists right before rendering
@@ -398,6 +513,8 @@ export async function startBatchRender(
     const clipStartTime = Date.now();
     let capturedCommand: string | undefined;
     const allTempFiles: string[] = [];
+    let renderedChoices: UsageChoice[] = [];
+    let renderedTimeline: RenderedLayoutWindow[] = [];
 
     try {
       // ── Stitched clip assembly pre-pass ──────────────────────────────────
@@ -448,7 +565,7 @@ export async function startBatchRender(
           assemblyJob,
           assembledPath,
           (percent) => {
-            if (!cancelRequested) {
+            if (!isCancelled()) {
               // Assembly runs in the prepare phase — report under the same
               // prepare channel the feature pipeline will use shortly.
               window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
@@ -519,7 +636,7 @@ export async function startBatchRender(
             percent: 2,
           });
           const fillerResult = await runFillerRemoval(job, options, (message, percent) => {
-            if (!cancelRequested) {
+            if (!isCancelled()) {
               window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
                 clipId: job.clipId,
                 message,
@@ -680,27 +797,44 @@ export async function startBatchRender(
         // bottom). Scenes start after the speaker opening and the hook title,
         // replace whatever layout their window had, and fall back to the
         // speaker on any failure.
+        if (isCancelled()) return;
         const explainerKey = options.geminiApiKey?.trim();
+        const savedPlan = execution.plans?.get(job.clipId);
         let sceneCues: SceneCue[] = [];
         const firstSeg = resolvedSegments[0];
         const lastSeg = resolvedSegments[resolvedSegments.length - 1];
         if (
-          options.explainerScenesEnabled !== false &&
-          explainerKey &&
           firstSeg &&
           lastSeg &&
-          job.wordTimestamps &&
-          job.wordTimestamps.length > 0
+          (savedPlan ||
+            (options.explainerScenesEnabled !== false &&
+              (explainerKey || execution.generator) &&
+              job.wordTimestamps?.length))
         ) {
           const hookLead =
             options.hookTitleOverlay?.enabled && job.hookTitleText
               ? (options.hookTitleOverlay.displayDuration ?? 2.5)
               : 0;
           const clipAccent = job.clipOverrides?.accentColor;
+          const recentUse = await reservations.acquire(String(i), execution.signal);
+          let reserved = false;
           const explainer = await applyExplainerScenes({
-            apiKey: explainerKey,
+            apiKey: explainerKey ?? '',
+            precomputedPlan: savedPlan?.plan,
+            precomputedWordsHash: savedPlan?.wordsHash,
+            noAi: execution.noAi,
+            profile: execution.profile,
+            generator: execution.generator,
+            signal: execution.signal,
+            recentUse,
+            onDiagnostic: execution.onDiagnostic,
+            onPlanned: (choices) => {
+              if (reserved || isCancelled()) return;
+              reservations.reserve(String(i), choices);
+              reserved = true;
+            },
             segments: resolvedSegments,
-            words: job.wordTimestamps,
+            words: job.wordTimestamps ?? [],
             bounds: {
               minStart: firstSeg.startTime + Math.max(MIN_FACE_LEAD_SECONDS, hookLead),
               maxEnd: lastSeg.endTime,
@@ -711,7 +845,7 @@ export async function startBatchRender(
               accent: clipAccent ?? selectedPalette.accent,
               ...(selectedPalette.accent2 ? { accent2: selectedPalette.accent2 } : {}),
             }),
-            emphasisTimes: explainerEmphasisTimes(job.wordEmphasis, job.wordTimestamps),
+            emphasisTimes: explainerEmphasisTimes(job.wordEmphasis, job.wordTimestamps ?? []),
             measureFaces: (windows) => measureFaceBands(job.sourceVideoPath, windows),
             framing: {
               sourceWidth: segMeta.width,
@@ -719,9 +853,9 @@ export async function startBatchRender(
               width: effectiveResolution.width,
               height: effectiveResolution.height,
             },
-            isCancelled: () => cancelRequested,
+            isCancelled,
             onProgress: (message, fraction) => {
-              if (!cancelRequested) {
+              if (!isCancelled()) {
                 window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
                   clipId: job.clipId,
                   message,
@@ -733,7 +867,11 @@ export async function startBatchRender(
           allTempFiles.push(...explainer.tempFiles);
           resolvedSegments = explainer.segments;
           sceneCues = explainer.cues;
+          renderedChoices = explainer.renderedChoices;
         }
+        // Release skipped/empty/failed planning; a reserved proposal remains in this batch.
+        reservations.release(String(i));
+        if (isCancelled()) return;
 
         // ── Quote-card graphics ─────────────────────────────────────────────────────
         // Fullscreen-quote cards keep their sand backdrop and one-word-at-a-time
@@ -746,6 +884,7 @@ export async function startBatchRender(
           resolvedSegments.some((s) => s.archetype === 'fullscreen-quote')
         ) {
           const quotes = await applyQuoteGraphics({
+            onDiagnostic: execution.onDiagnostic,
             segments: resolvedSegments,
             words: job.wordTimestamps,
             colors: {
@@ -755,9 +894,9 @@ export async function startBatchRender(
               accent: job.clipOverrides?.accentColor ?? selectedPalette.accent,
               ...(selectedPalette.accent2 ? { accent2: selectedPalette.accent2 } : {}),
             },
-            isCancelled: () => cancelRequested,
+            isCancelled,
             onProgress: (message, fraction) => {
-              if (!cancelRequested) {
+              if (!isCancelled()) {
                 window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
                   clipId: job.clipId,
                   message,
@@ -785,6 +924,11 @@ export async function startBatchRender(
             cumulative += segDuration;
           }
         }
+
+        renderedTimeline = archetypeWindows.map((window, index) => ({
+          ...window,
+          layout: resolvedSegments[index].explainerLayout,
+        }));
 
         // Rehook config for the segmented path — feature pipeline doesn't run
         // here, so wire it directly from batch options.
@@ -833,7 +977,21 @@ export async function startBatchRender(
           templateLayout: options.templateLayout,
           qualityParams,
           onFallback: (info) => {
-            if (!cancelRequested) {
+            const layoutWindow = renderedTimeline[info.segmentIndex];
+            if (layoutWindow) {
+              if (layoutWindow.layout) {
+                // Conservative history: never count an animation when its composite fell back.
+                renderedChoices = [];
+                execution.onDiagnostic?.({
+                  stage: 'render',
+                  action: 'removed',
+                  reason: 'composite-fallback-history-omitted',
+                });
+              }
+              layoutWindow.archetype = 'talking-head';
+              layoutWindow.layout = undefined;
+            }
+            if (!isCancelled()) {
               window.webContents.send(Ch.Send.SEGMENT_FALLBACK, {
                 clipId: job.clipId,
                 segmentIndex: info.segmentIndex,
@@ -844,12 +1002,16 @@ export async function startBatchRender(
           },
         };
 
+        if (isCancelled()) return;
         await renderSegmentedClip(segConfig, outputPath, (percent) => {
-          if (!cancelRequested) {
+          if (!isCancelled()) {
             window.webContents.send(Ch.Send.RENDER_CLIP_PROGRESS, { clipId: job.clipId, percent });
           }
         });
 
+        if (isCancelled()) return;
+        await recordRendered(job, i, renderedChoices, renderedTimeline);
+        if (isCancelled()) return;
         manifestResults.set(job.clipId, outputPath);
         manifestRenderTimes.set(job.clipId, Date.now() - clipStartTime);
         completed++;
@@ -886,7 +1048,7 @@ export async function startBatchRender(
       const featureCount = features.length;
       for (let fi = 0; fi < featureCount; fi++) {
         const feature = features[fi];
-        if (cancelRequested) return;
+        if (isCancelled()) return;
         if (feature.prepare) {
           window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
             clipId: job.clipId,
@@ -921,7 +1083,7 @@ export async function startBatchRender(
         }
       }
 
-      if (cancelRequested) return;
+      if (isCancelled()) return;
 
       // After filler removal, the job's sourceVideoPath may have changed.
       // Re-fetch metadata if the source path is no longer in the cache.
@@ -1039,7 +1201,7 @@ export async function startBatchRender(
         outputPath,
         videoFilter,
         (percent) => {
-          if (!cancelRequested) {
+          if (!isCancelled()) {
             window.webContents.send(Ch.Send.RENDER_CLIP_PROGRESS, { clipId: job.clipId, percent });
           }
         },
@@ -1061,7 +1223,7 @@ export async function startBatchRender(
         complexSteps,
       );
 
-      if (cancelRequested) return;
+      if (isCancelled()) return;
 
       // ── Phase 5: Post-process — call feature.postProcess() ─────────────
       const postContext: PostProcessContext = {
@@ -1070,7 +1232,7 @@ export async function startBatchRender(
       };
 
       for (const feature of features) {
-        if (cancelRequested) return;
+        if (isCancelled()) return;
         if (feature.postProcess) {
           try {
             await feature.postProcess(job, outputPath, postContext);
@@ -1106,6 +1268,9 @@ export async function startBatchRender(
         }
       }
 
+      if (isCancelled()) return;
+      await recordRendered(job, i, renderedChoices, renderedTimeline);
+      if (isCancelled()) return;
       manifestResults.set(job.clipId, outputPath);
       manifestRenderTimes.set(job.clipId, Date.now() - clipStartTime);
       completed++;
@@ -1118,7 +1283,7 @@ export async function startBatchRender(
         // Ignore cleanup errors
       }
 
-      if (cancelRequested) return;
+      if (isCancelled()) return;
 
       // Restore batch options even on failure so the next clip isn't affected
       restoreBatchOptions(job, options);
@@ -1136,6 +1301,7 @@ export async function startBatchRender(
         ffmpegCommand: capturedCommand,
       });
     } finally {
+      reservations.release(String(i));
       // Clean up temp files from all features
       for (const tempFile of allTempFiles) {
         try {
@@ -1148,42 +1314,60 @@ export async function startBatchRender(
   };
 
   // ── Concurrent render pool ──────────────────────────────────────────────
-  if (effectiveConcurrency <= 1) {
-    // Sequential path (no overhead)
-    for (let i = 0; i < jobs.length; i++) {
-      if (cancelRequested) {
-        window.webContents.send(Ch.Send.RENDER_CANCELLED, { completed, failed, cancelled, total });
-        return;
-      }
-      const job = jobs[i];
-      if (!job) continue;
-      await processJob(job, i);
-      if (stopAfterCurrentRequested && i < jobs.length - 1) {
-        window.webContents.send(Ch.Send.RENDER_CANCELLED, { completed, failed, cancelled, total });
-        return;
-      }
-    }
-  } else {
-    // Parallel path: each worker finishes its current encode before honoring stop-after-current.
-    let nextJobIndex = 0;
-
-    const worker = async (): Promise<void> => {
-      while (true) {
-        if (cancelRequested || stopAfterCurrentRequested) return;
-        const i = nextJobIndex++;
-        if (i >= jobs.length) return;
+  try {
+    if (effectiveConcurrency <= 1) {
+      // Sequential path (no overhead)
+      for (let i = 0; i < jobs.length; i++) {
+        if (isCancelled()) {
+          window.webContents.send(Ch.Send.RENDER_CANCELLED, {
+            completed,
+            failed,
+            cancelled,
+            total,
+          });
+          return;
+        }
         const job = jobs[i];
-        if (!job) return;
+        if (!job) continue;
         await processJob(job, i);
+        if (stopAfterCurrentRequested && i < jobs.length - 1) {
+          window.webContents.send(Ch.Send.RENDER_CANCELLED, {
+            completed,
+            failed,
+            cancelled,
+            total,
+          });
+          return;
+        }
       }
-    };
+    } else {
+      // Parallel path: each worker finishes its current encode before honoring stop-after-current.
+      let nextJobIndex = 0;
 
-    await Promise.all(Array.from({ length: effectiveConcurrency }, worker));
+      const worker = async (): Promise<void> => {
+        while (true) {
+          if (isCancelled() || stopAfterCurrentRequested) return;
+          const i = nextJobIndex++;
+          if (i >= jobs.length) return;
+          const job = jobs[i];
+          if (!job) return;
+          await processJob(job, i);
+        }
+      };
 
-    if (cancelRequested || (stopAfterCurrentRequested && nextJobIndex < jobs.length)) {
-      window.webContents.send(Ch.Send.RENDER_CANCELLED, { completed, failed, cancelled, total });
-      return;
+      await Promise.all(Array.from({ length: effectiveConcurrency }, worker));
+
+      if (isCancelled() || (stopAfterCurrentRequested && nextJobIndex < jobs.length)) {
+        window.webContents.send(Ch.Send.RENDER_CANCELLED, { completed, failed, cancelled, total });
+        return;
+      }
     }
+  } finally {
+    for (const { key } of identities) reservations.release(key);
+  }
+  if (isCancelled()) {
+    window.webContents.send(Ch.Send.RENDER_CANCELLED, { completed, failed, cancelled, total });
+    return;
   }
 
   // ── Generate export manifest ────────────────────────────────────────────

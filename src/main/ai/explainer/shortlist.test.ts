@@ -1,16 +1,53 @@
 import { readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   TECHNOLOGY_KINDS,
   TECHNOLOGY_PRESETS,
 } from '../../remotion/compositions/explainer/technology/types';
 import type { PlannerWord } from './kind-spec';
 import { ALL_KIND_SPECS } from './kinds';
-import { buildShortlist, SHORTLIST_LIMITS } from './shortlist';
+import type { PlanningIdea } from './planning-outline';
+import {
+  buildIdeaShortlist,
+  buildShortlist,
+  SHORTLIST_LIMITS,
+  scoreKind,
+  shortlistText,
+} from './shortlist';
 
 function toWords(text: string): PlannerWord[] {
   return text.split(/\s+/).map((w, i) => ({ text: w, start: i * 0.4, end: i * 0.4 + 0.35 }));
 }
+
+describe('Detroit and hybrid targeted selection', () => {
+  it.each([
+    ['detroit-place', 'The Renaissance Center defines this Detroit skyline.'],
+    ['fund-flow', 'The fund deploys contributed capital to two businesses.'],
+    ['ownership-change', 'New shares dilute the existing percentage ownership.'],
+    ['portfolio-exposure', 'Two funds have shared holdings and overlapping exposure.'],
+    ['cash-timing', 'Profit versus cash differs because payment arrives next month.'],
+    ['token-attention', 'Word attention illustrates how It refers to shop.'],
+    ['inference-tradeoff', 'Model cost and latency differ on this benchmark task.'],
+  ])('offers %s without expanding selection budgets', (kind, text) => {
+    const menu = buildShortlist(toWords(text));
+    expect(menu.kinds.map((spec) => spec.kind)).toContain(kind);
+    expect(menu.scores[kind]).toBeGreaterThan(0);
+    expect(menu.kinds.length).toBeLessThanOrEqual(16);
+    expect(menu.heroProps.length).toBeLessThanOrEqual(10);
+  });
+  it.each([
+    [
+      'detroit-place',
+      'A fox ran by the train station near central park during the Renaissance lecture.',
+    ],
+    ['fund-flow', 'We allocate two hours to testing.'],
+    ['portfolio-exposure', 'Different names look interesting.'],
+    ['token-attention', 'Choose the next token probability from the distribution.'],
+    ['inference-tradeoff', 'An agent selects a tool to retrieve context.'],
+  ])('does not score the unrelated %s story', (kind, text) => {
+    expect(buildShortlist(toWords(text)).scores[kind] ?? 0).toBe(0);
+  });
+});
 
 describe('technology domain selection without broader menus', () => {
   const fixtures = TECHNOLOGY_KINDS.flatMap(
@@ -578,6 +615,109 @@ describe('buildShortlist eval set', () => {
     const s = buildShortlist(toWords(text));
     expect(s.kinds.map((k) => k.kind)).toContain(kind);
     if (prop) expect(s.heroProps).toContain(prop);
+  });
+});
+
+describe('buildIdeaShortlist', () => {
+  const semanticKinds = ['agent-team', 'house-options', 'customer-cohort'] as const;
+
+  it.each(
+    semanticKinds,
+  )('exposes selected specialized %s beyond generic AI/business wording', (kind) => {
+    const words = toWords('AI is changing business today.');
+    expect(buildShortlist(words).kinds.map((spec) => spec.kind)).not.toContain(kind);
+    const ideas: PlanningIdea[] = [
+      { startWord: 0, endWord: words.length - 1, goal: 'Explain this relationship', kinds: [kind] },
+    ];
+    const shortlist = buildIdeaShortlist(words, ideas, () => 1000);
+    expect(shortlist.kinds).toContain(ALL_KIND_SPECS.find((spec) => spec.kind === kind));
+  });
+
+  it('returns an empty menu for an empty outline instead of backfilling novelty', () => {
+    expect(buildIdeaShortlist(toWords('AI business house'), [])).toEqual({
+      kinds: [],
+      heroProps: [],
+      scores: {},
+    });
+  });
+
+  it('supplements only from each idea window, not unrelated transcript or recency rewards', () => {
+    const words = toWords('AI changed everything. A house roof blueprint construction.');
+    const idea: PlanningIdea = {
+      startWord: 0,
+      endWord: 2,
+      goal: 'Explain AI',
+      kinds: ['agent-team'],
+    };
+    const penalty = vi.fn(({ kind, prop }: { kind: string; prop?: string }) =>
+      kind === 'house-build' || prop === 'telescope' ? -1000 : 1000,
+    );
+    const shortlist = buildIdeaShortlist(words, [idea], penalty);
+    const text = shortlistText(words.slice(0, 3));
+    expect(shortlist.heroProps).toContain('chip');
+    expect(shortlist.heroProps).not.toContain('telescope');
+    expect(penalty.mock.calls.some(([choice]) => choice.prop === 'telescope')).toBe(false);
+    expect(shortlist.kinds.map((spec) => spec.kind)).not.toContain('house-build');
+    for (const spec of shortlist.kinds) {
+      if (spec.kind !== 'agent-team') expect(scoreKind(spec, text)).toBeGreaterThan(0);
+    }
+    expect(penalty.mock.calls.some(([choice]) => choice.kind === 'house-build')).toBe(false);
+  });
+
+  it('does not backfill quiet source windows or use goals as keyword evidence', () => {
+    const words = toWords('hello there friends everyone');
+    const ideas: PlanningIdea[] = [
+      { startWord: 0, endWord: 0, goal: 'AI and a house blueprint', kinds: ['statement'] },
+      { startWord: 3, endWord: 3, goal: 'Pressure gauge', kinds: ['statement'] },
+    ];
+    expect(buildIdeaShortlist(words, ideas).kinds.map((spec) => spec.kind)).toEqual(['statement']);
+  });
+
+  it('bounds full schema exposure and uses lexical ties while preserving all selected kinds', async () => {
+    const words = toWords(CASES.map((entry) => entry.text).join(' '));
+    const text = shortlistText(words);
+    const selected = ALL_KIND_SPECS.slice(-18).map((spec) => spec.kind);
+    const ideas: PlanningIdea[] = Array.from({ length: 6 }, (_, i) => ({
+      startWord: Math.floor((i * words.length) / 6),
+      endWord: Math.floor(((i + 1) * words.length) / 6) - 1,
+      goal: 'Explain this source idea',
+      kinds: selected.slice(i * 3, i * 3 + 3),
+    }));
+    // Equal trigger scores deliberately put the cutoff on lexical order, not registry order.
+    const originalTriggers = ALL_KIND_SPECS.map((spec) => spec.triggers);
+    for (const spec of ALL_KIND_SPECS) spec.triggers = [/./];
+    try {
+      const shortlist = buildIdeaShortlist(words, ideas, () => 1000);
+      const offered = shortlist.kinds.map((spec) => spec.kind);
+      expect(offered).toHaveLength(24);
+      expect(shortlist.heroProps.length).toBeLessThanOrEqual(10);
+      for (const kind of selected) expect(offered).toContain(kind);
+      const supplements = ALL_KIND_SPECS.map((spec) => spec.kind)
+        .filter((kind) => !selected.includes(kind))
+        .sort()
+        .slice(0, 6);
+      expect(offered.filter((kind) => !selected.includes(kind)).sort()).toEqual(supplements);
+      expect(buildIdeaShortlist(words, ideas, () => 1000)).toEqual(shortlist);
+      const recent = buildIdeaShortlist(words, ideas, ({ kind }) =>
+        kind === supplements[0] ? 1000 : 0,
+      );
+      expect(recent.kinds.map((spec) => spec.kind)).not.toContain(supplements[0]);
+      for (const kind of selected) expect(recent.kinds.map((spec) => spec.kind)).toContain(kind);
+      expect(recent.kinds).toHaveLength(24);
+      const { buildExplainerPrompt } = await import('../explainer-scenes');
+      const prompt = buildExplainerPrompt(
+        words,
+        { minStart: 0, maxEnd: words.at(-1)?.end ?? 0 },
+        '9:16',
+        shortlist,
+      );
+      expect(prompt.match(/ {4}JSON: /g)).toHaveLength(24);
+      for (const spec of shortlist.kinds) expect(scoreKind(spec, text)).toBeGreaterThan(0);
+    } finally {
+      ALL_KIND_SPECS.forEach((spec, index) => {
+        spec.triggers = originalTriggers[index];
+      });
+    }
   });
 });
 

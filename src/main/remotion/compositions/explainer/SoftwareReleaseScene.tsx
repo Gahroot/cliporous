@@ -289,7 +289,7 @@ function WorkbenchLabels({
   return (
     <>
       {scene.condition && (
-        <TechText x={72} y={212} width={936} size={28} align="center">
+        <TechText slot="condition" x={72} y={212} width={936} size={28} align="center">
           {scene.condition}
         </TechText>
       )}

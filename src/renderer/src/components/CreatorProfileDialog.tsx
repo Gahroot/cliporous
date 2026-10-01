@@ -307,8 +307,8 @@ export function CreatorProfileDialog({
             Creator Profile and Brand Kit
           </DialogTitle>
           <DialogDescription>
-            Reusable creator defaults stay on this device. Project overrides save only with the open
-            cut.
+            Brand Kit edits update reusable profiles on this device. Project overrides do not edit
+            the profile.
           </DialogDescription>
         </DialogHeader>
 
@@ -390,7 +390,7 @@ export function CreatorProfileDialog({
                             onChange={(event) => updateSelected({ name: event.target.value }, [])}
                           />
                           <p className="mt-1.5 text-xs text-muted-foreground" role="status">
-                            Changes save automatically on this device.
+                            Profile edits save automatically for reuse across projects.
                           </p>
                         </div>
                         <Button
@@ -630,8 +630,9 @@ export function CreatorProfileDialog({
                         <div className="flex items-start gap-2 rounded-md border border-border bg-muted/35 p-3 text-xs text-muted-foreground">
                           <LockKeyhole className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                           <p>
-                            Vertical exports keep the single PRESTYJ style, three caption modes, and
-                            fixed violet accent. Profile defaults do not change those locked rules.
+                            Vertical exports stay 1080 × 1920 at 30 fps with the PRESTYJ style. The
+                            selected palette supplies the accent; all four caption modes remain
+                            available.
                           </p>
                         </div>
                       </section>
@@ -648,8 +649,8 @@ export function CreatorProfileDialog({
                     <div>
                       <h3 className="font-semibold">Profile for this project</h3>
                       <p className="text-xs text-muted-foreground">
-                        The selected profile is reusable. Overrides below stay only in this
-                        .batchclip project.
+                        Applying a profile updates this project and the app's remembered starting
+                        choices. It does not regenerate existing clips or scenes.
                       </p>
                     </div>
                     {Object.keys(projectProfile.overrides).length > 0 && (
@@ -684,7 +685,7 @@ export function CreatorProfileDialog({
                       Select a profile to inspect project defaults.
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      You can still use the per-project Creative Brief without one.
+                      Short-form projects can use a Creative Brief without a profile.
                     </p>
                   </div>
                 ) : (
@@ -692,8 +693,8 @@ export function CreatorProfileDialog({
                     <div>
                       <h3 className="font-semibold">Clear project overrides</h3>
                       <p className="text-xs text-muted-foreground">
-                        Each override is labeled. Use profile default removes only that project
-                        value.
+                        Overrides leave the reusable profile unchanged. Audience, platform, layout,
+                        style and palette also update remembered starting choices.
                       </p>
                     </div>
                     {(['audience', 'tone', 'callToAction'] as const).map((key) => {

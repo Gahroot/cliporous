@@ -1,0 +1,2083 @@
+[
+  {
+    "name": "stress-detroit-place",
+    "durationSec": 10,
+    "scene": {
+      "kind": "detroit-place",
+      "preset": "landmark-focus",
+      "visualMode": "diagram",
+      "evidence": "source-stated",
+      "label": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "subject": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "outcome": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "landmarks": [
+        "renaissance-center"
+      ],
+      "condition": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "layout-only-unvalidated-maximum-text",
+      "detroit-place"
+    ],
+    "samples": [
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "stress-fund-flow",
+    "durationSec": 10,
+    "scene": {
+      "kind": "fund-flow",
+      "preset": "capital-deployment",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "subject": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "outcome": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "account": {
+        "id": "fund",
+        "label": "Atlas Fund"
+      },
+      "sources": [
+        {
+          "id": "first",
+          "label": "Ada"
+        },
+        {
+          "id": "second",
+          "label": "Bo"
+        }
+      ],
+      "targets": [
+        {
+          "id": "target-a",
+          "label": "Shop"
+        },
+        {
+          "id": "target-b",
+          "label": "Maker"
+        }
+      ],
+      "contributions": [
+        {
+          "from": "first",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 6000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "second",
+          "to": "fund",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 4000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "deployments": [
+        {
+          "from": "fund",
+          "to": "target-a",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 7000,
+              "currency": "USD"
+            }
+          }
+        },
+        {
+          "from": "fund",
+          "to": "target-b",
+          "amount": {
+            "state": "measured",
+            "money": {
+              "minorUnits": 3000,
+              "currency": "USD"
+            }
+          }
+        }
+      ],
+      "retained": null,
+      "period": "this round",
+      "condition": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "layout-only-unvalidated-maximum-text",
+      "fund-flow"
+    ],
+    "samples": [
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "stress-ownership-change",
+    "durationSec": 10,
+    "scene": {
+      "kind": "ownership-change",
+      "preset": "share-issue",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "subject": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "outcome": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "holder": {
+        "id": "ada",
+        "label": "Ada"
+      },
+      "company": {
+        "id": "co",
+        "label": "ExampleCo"
+      },
+      "shares": 40,
+      "beforeTotal": 100,
+      "issued": 100,
+      "afterTotal": 200,
+      "beforePercent": 40,
+      "afterPercent": 20,
+      "valuation": {
+        "state": "unknown"
+      },
+      "condition": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "layout-only-unvalidated-maximum-text",
+      "ownership-change"
+    ],
+    "samples": [
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "stress-portfolio-exposure",
+    "durationSec": 10,
+    "scene": {
+      "kind": "portfolio-exposure",
+      "preset": "shared-holdings",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "subject": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "outcome": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "funds": [
+        {
+          "id": "fund-a",
+          "label": "Fund A"
+        },
+        {
+          "id": "fund-b",
+          "label": "Fund B"
+        }
+      ],
+      "exposure": {
+        "id": "exposure",
+        "label": "ExampleCo"
+      },
+      "holdings": [
+        {
+          "fundId": "fund-a",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        },
+        {
+          "fundId": "fund-b",
+          "holding": {
+            "id": "exposure",
+            "label": "ExampleCo"
+          }
+        }
+      ],
+      "condition": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "layout-only-unvalidated-maximum-text",
+      "portfolio-exposure"
+    ],
+    "samples": [
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "stress-cash-timing",
+    "durationSec": 10,
+    "scene": {
+      "kind": "cash-timing",
+      "preset": "receivable-gap",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "subject": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "outcome": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "business": {
+        "id": "shop",
+        "label": "Shop"
+      },
+      "customer": {
+        "id": "customer",
+        "label": "Customer"
+      },
+      "sales": {
+        "minorUnits": 10000,
+        "currency": "USD"
+      },
+      "totalCosts": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "cashPaid": {
+        "minorUnits": 7000,
+        "currency": "USD"
+      },
+      "profitMinor": 3000,
+      "paidWhen": "today",
+      "receivedWhen": "next month",
+      "condition": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "layout-only-unvalidated-maximum-text",
+      "cash-timing"
+    ],
+    "samples": [
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "stress-token-attention",
+    "durationSec": 10,
+    "scene": {
+      "kind": "token-attention",
+      "preset": "reference-link",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "subject": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "outcome": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "sentence": "Maya opened her shop. It sells bread.",
+      "tokens": [
+        {
+          "id": "token-0",
+          "text": "Maya"
+        },
+        {
+          "id": "token-1",
+          "text": "opened"
+        },
+        {
+          "id": "token-2",
+          "text": "her"
+        },
+        {
+          "id": "token-3",
+          "text": "shop."
+        },
+        {
+          "id": "token-4",
+          "text": "It"
+        },
+        {
+          "id": "token-5",
+          "text": "sells"
+        },
+        {
+          "id": "token-6",
+          "text": "bread."
+        }
+      ],
+      "targetIndex": 4,
+      "contextIndex": 3,
+      "condition": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "layout-only-unvalidated-maximum-text",
+      "token-attention"
+    ],
+    "samples": [
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "stress-inference-tradeoff",
+    "durationSec": 10,
+    "scene": {
+      "kind": "inference-tradeoff",
+      "preset": "measured-comparison",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "subject": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "outcome": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "models": [
+        {
+          "id": "a",
+          "label": "Model A"
+        },
+        {
+          "id": "b",
+          "label": "Model B"
+        }
+      ],
+      "task": "sorting",
+      "basis": "one test",
+      "metrics": [
+        {
+          "kind": "cost",
+          "unit": "USD/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 2,
+                "unit": "USD/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 1,
+                "unit": "USD/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "latency",
+          "unit": "ms/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 100,
+                "unit": "ms/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 200,
+                "unit": "ms/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "score",
+          "unit": "score/100",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 90,
+                "unit": "score/100"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 80,
+                "unit": "score/100"
+              }
+            }
+          ]
+        }
+      ],
+      "constraint": null,
+      "condition": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "layout-only-unvalidated-maximum-text",
+      "inference-tradeoff"
+    ],
+    "samples": [
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  }
+]

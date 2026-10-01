@@ -17,7 +17,7 @@ type TimedItem = PhraseEmphasis | BlockPlacement | DelosCardPlacement;
 export const MAX_LONGFORM_BLOCK_SECONDS = 8;
 
 interface Candidate {
-  type: LongformPlanItemType;
+  type: Exclude<LongformPlanItemType, 'scene'>;
   item: TimedItem;
 }
 
@@ -59,6 +59,8 @@ function clampBlockDuration(item: BlockPlacement): BlockPlacement {
  * retained because those layers render in separate, non-obscuring screen regions.
  */
 export function resolveLongformPlanOverlaps(plan: LongformEditPlan): LongformEditPlan {
+  // Scene-first windows are approved stories; the legacy priority/clamping policy must not alter them.
+  if (plan.mode === 'scene-first') return plan;
   const candidates: Candidate[] = [
     ...(plan.blocks ?? []).map((item) => ({
       type: 'block' as const,
@@ -67,7 +69,7 @@ export function resolveLongformPlanOverlaps(plan: LongformEditPlan): LongformEdi
     ...(plan.phrases ?? []).map((item) => ({ type: 'phrase' as const, item })),
     ...(plan.cards ?? []).map((item) => ({ type: 'card' as const, item })),
   ];
-  const layerPriority: Record<LongformPlanItemType, number> = {
+  const layerPriority: Record<Candidate['type'], number> = {
     block: 0,
     phrase: 1,
     card: 2,
@@ -114,6 +116,7 @@ export function removeLongformPlanRangeConflicts(
   except?: LongformPlanItemRef,
   preferredType: LongformPlanItemType | undefined = except?.type,
 ): LongformEditPlan {
+  if (plan.mode === 'scene-first') return plan;
   const keep = (type: LongformPlanItemType, item: TimedItem, index: number): boolean =>
     (except?.type === type && except.index === index) ||
     !longformRangesOverlap(item, range) ||

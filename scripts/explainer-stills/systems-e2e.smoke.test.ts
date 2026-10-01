@@ -19,6 +19,8 @@ import {
   CONCEPT_SCENE_KINDS,
   collectSceneTimes,
   type ExplainerAspect,
+  type ExplainerLayout,
+  HYBRID_SCENE_KINDS,
   mapSceneTimes,
   stageCanvasFor,
 } from '../../src/main/remotion/compositions/explainer/types';
@@ -40,6 +42,7 @@ import {
   parseConceptFixture,
 } from './concept-e2e.fixture';
 import { bundleDigest, digest, openLocalBrowser } from './harness-runtime.mjs';
+import { hybridChainFixture, hybridFixtures, parseHybridFixture } from './hybrid-e2e.fixture';
 import {
   bounds,
   fps,
@@ -283,7 +286,11 @@ function technologyPlanningProof() {
 }
 
 /** Both production render-plan paths, including inward-snap and source-gap rejection. */
-function conceptPathProof(planned: PlannedExplainerScene[], words: PlannerWord[]) {
+function conceptPathProof(
+  planned: PlannedExplainerScene[],
+  words: PlannerWord[],
+  expectedLayout: ExplainerLayout = 'stack',
+) {
   const groups = groupPlannedScenes(planned);
   expect(groups).toHaveLength(1);
   const original = groups[0];
@@ -309,7 +316,7 @@ function conceptPathProof(planned: PlannedExplainerScene[], words: PlannerWord[]
     startTime: original.startTime,
     endTime: original.endTime,
     archetype: 'split-image',
-    explainerLayout: 'stack',
+    explainerLayout: expectedLayout,
   });
   const group = piece.group;
   const window = { startTime: piece.segment.startTime, endTime: piece.segment.endTime };
@@ -452,6 +459,44 @@ function conceptPlanningProof() {
     representative: { ...chain, ...representative, parser: 'parseExplainerPlan', sourceOffset: 30 },
   });
   return { portrait: representative, landscape: representative };
+}
+
+function hybridPlanningProof() {
+  const fixtures = hybridFixtures();
+  const examples = fixtures.map((fixture) => {
+    const planned = parseHybridFixture(fixture);
+    return {
+      name: fixture.name,
+      inputHash: digest(fixture),
+      ...conceptPathProof([planned], fixture.sourceWords),
+    };
+  });
+  const chain = hybridChainFixture(fixtures);
+  const parsed = parsePlanWithDiagnostics(chain.raw, chain.words, chain.bounds);
+  expect(parsed.rejected).toEqual([]);
+  expect(parsed.accepted).toHaveLength(7);
+  const covered = parsed.accepted.reduce((n, scene) => n + scene.endTime - scene.startTime, 0);
+  expect(covered / chain.bounds.maxEnd).toBeLessThanOrEqual(0.55);
+  const groups = groupPlannedScenes(parsed.accepted);
+  expect(groups).toHaveLength(6);
+  const scenarios = Object.fromEntries(
+    groups.map((group, i) => {
+      const localWords = chain.words.filter(
+        (word) => word.start >= group.startTime && word.end <= group.endTime,
+      );
+      const proof = conceptPathProof(group.scenes, localWords, group.layout);
+      return [`hybrid-${i}`, { portrait: proof, landscape: proof }];
+    }),
+  );
+  json(join(outputDir, 'hybrid-planning.json'), {
+    examples,
+    chain,
+    planned: parsed.accepted,
+    covered,
+    coverage: covered / chain.bounds.maxEnd,
+    groups,
+  });
+  return { scenarios, chain, groups };
 }
 
 async function childLifecycleProof() {
@@ -600,6 +645,8 @@ it.skipIf(mode === 'composite')('local systems pipeline smoke', async () => {
     if (process.env.SYSTEMS_E2E_TECHNOLOGY === '1')
       scenarios.technology = technologyPlanningProof();
     if (process.env.SYSTEMS_E2E_CONCEPTS === '1') scenarios.concepts = conceptPlanningProof();
+    const hybrid = process.env.SYSTEMS_E2E_HYBRID === '1' ? hybridPlanningProof() : null;
+    if (hybrid) Object.assign(scenarios, hybrid.scenarios);
     if (Object.keys(scenarios).length === 0)
       scenarios.systems = { portrait: fixture, landscape: fixture };
     const describe = (value: { portrait: typeof fixture; landscape: typeof fixture }) =>
@@ -615,6 +662,17 @@ it.skipIf(mode === 'composite')('local systems pipeline smoke', async () => {
         ? describe(entries[0][1])
         : Object.fromEntries(entries.map(([name, value]) => [name, describe(value)]));
     if (scenarios.concepts) report.concepts = { presets: 42, kinds: 18, chainedScenes: 3 };
+    if (hybrid)
+      report.hybrid = {
+        presets: 15,
+        modes: 2,
+        landmarks: 7,
+        sourceFixtures: 42,
+        chapters: 7,
+        groups: 6,
+        sourceDuration: 130,
+        spirit: 'rights-blocked',
+      };
     report.childLifecycle = await childLifecycleProof();
     if (mode === 'render')
       for (const [name, value] of entries)
@@ -624,6 +682,7 @@ it.skipIf(mode === 'composite')('local systems pipeline smoke', async () => {
           save,
           entries.length === 1 ? outputDir : join(outputDir, name),
         );
+    if (mode === 'render' && hybrid) report.hybridExports = await assembleHybridExports(hybrid);
     report.status = 'passed';
   } catch (error) {
     report.status = 'failed';
@@ -634,6 +693,150 @@ it.skipIf(mode === 'composite')('local systems pipeline smoke', async () => {
     save();
   }
 });
+
+async function assembleHybridExports(
+  proof: ReturnType<typeof hybridPlanningProof>,
+): Promise<unknown[]> {
+  const results: unknown[] = [];
+  for (const aspect of ['9:16', '16:9'] as const) {
+    const portrait = aspect === '9:16',
+      leaf = portrait ? 'portrait' : 'landscape';
+    const width = portrait ? 1080 : 1920,
+      height = portrait ? 1920 : 1080;
+    const source = join(outputDir, 'hybrid-1', leaf, 'synthetic-speaker.mp4');
+    const dir = join(outputDir, `hybrid-complete-${leaf}`);
+    mkdirSync(dir, { recursive: true });
+    const segments: { path: string; start: number; end: number; speakerOnly: boolean }[] = [];
+    const addGap = async (start: number, end: number): Promise<void> => {
+      if (end - start < 1 / fps) return;
+      const duration = end - start;
+      const layout = buildArchetypeLayout('talking-head', {
+        width,
+        height,
+        segmentDuration: duration,
+        fps,
+        sourceWidth: 1920,
+        sourceHeight: 1080,
+      });
+      const gapWords = proof.chain.words
+        .filter((word) => word.start >= start && word.end <= end)
+        .map((word) => ({ ...word, start: word.start - start, end: word.end - start }));
+      const ass = buildCaptionASSDocument(
+        gapWords,
+        { captionMode: 'editorial', fontSize: 0.045, wordsPerLine: 4 },
+        { frameWidth: width, frameHeight: height },
+      );
+      const assPath = join(dir, `gap-${segments.length}.ass`);
+      writeFileSync(assPath, ass);
+      const file = join(dir, `gap-${segments.length}.mp4`);
+      await ff([
+        '-i',
+        source,
+        '-filter_complex_threads',
+        '2',
+        '-filter_complex',
+        `${layout.filterComplex};[outv]${buildASSFilter(assPath, join(ROOT, 'resources/fonts'))}[captioned]`,
+        '-map',
+        '[captioned]',
+        '-map',
+        '0:a',
+        '-t',
+        String(duration),
+        ...encode,
+        '-c:a',
+        'aac',
+        '-ar',
+        '48000',
+        '-ac',
+        '2',
+        file,
+      ]);
+      segments.push({ path: file, start, end, speakerOnly: true });
+    };
+    let cursor = proof.chain.bounds.minStart;
+    for (const [i, group] of proof.groups.entries()) {
+      await addGap(cursor, group.startTime);
+      segments.push({
+        path: join(outputDir, `hybrid-${i}`, leaf, 'final.mp4'),
+        start: group.startTime,
+        end: group.endTime,
+        speakerOnly: false,
+      });
+      cursor = group.endTime;
+    }
+    await addGap(cursor, proof.chain.bounds.maxEnd);
+    const manifest = join(dir, 'concat.txt');
+    writeFileSync(
+      manifest,
+      segments
+        .map((segment) => {
+          if (/[\r\n]/.test(segment.path)) throw new Error('Unsafe concat path');
+          const file = segment.path.replaceAll('\\', '/').replaceAll("'", "'\\''");
+          return `file '${file}'\nduration ${segment.end - segment.start}`;
+        })
+        .join('\n'),
+    );
+    const output = join(dir, 'hybrid-production-proof.mp4');
+    await ff([
+      '-f',
+      'concat',
+      '-safe',
+      '0',
+      '-i',
+      manifest,
+      '-t',
+      String(proof.chain.bounds.maxEnd),
+      '-r',
+      String(fps),
+      ...encode,
+      '-c:a',
+      'aac',
+      '-ar',
+      '48000',
+      '-ac',
+      '2',
+      output,
+    ]);
+    const metadata = await probe(output);
+    expect(metadata.streams.find((s) => s.codec_type === 'video')).toMatchObject({
+      width,
+      height,
+      codec_name: 'h264',
+      avg_frame_rate: '30/1',
+    });
+    expect(Math.abs(Number(metadata.format.duration) - proof.chain.bounds.maxEnd)).toBeLessThan(
+      0.1,
+    );
+    await ff(['-v', 'error', '-xerror', '-i', output, '-f', 'null', '-']);
+    const gaps = segments.filter((segment) => segment.speakerOnly);
+    expect(gaps.length).toBeGreaterThan(1);
+    for (const [i, gap] of gaps.entries())
+      await ff([
+        '-ss',
+        String((gap.start + gap.end) / 2),
+        '-i',
+        output,
+        '-frames:v',
+        '1',
+        join(dir, `speaker-gap-${i}.png`),
+      ]);
+    const evidence = {
+      aspect,
+      output,
+      sha256: digest(readFileSync(output)),
+      metadata,
+      segments,
+      fullDecodeVerified: true,
+      captionSource: 'real editorial builder in each group and speaker-only gap',
+      sfxSource: 'existing production scene-sfx mixer in each group',
+      limitations:
+        'Local synthetic test pattern and authored timed transcript, not natural narration or lip sync.',
+    };
+    json(join(dir, 'evidence.json'), evidence);
+    results.push(evidence);
+  }
+  return results;
+}
 
 async function renderProof(
   fixtures: {
@@ -651,6 +854,7 @@ async function renderProof(
     serveUrl,
     process.env.SYSTEMS_E2E_TECHNOLOGY === '1',
     process.env.SYSTEMS_E2E_CONCEPTS === '1',
+    process.env.SYSTEMS_E2E_HYBRID === '1',
   );
   report.bundle = bundle;
   const opened = await openLocalBrowser();
@@ -715,6 +919,10 @@ async function renderAspect(
   const concepts = fixture.planned.every((p) =>
     CONCEPT_SCENE_KINDS.some((kind) => kind === p.scene.kind),
   );
+  const hybrid = fixture.planned.every((p) =>
+    HYBRID_SCENE_KINDS.some((kind) => kind === p.scene.kind),
+  );
+  const authored = concepts || hybrid;
   const dir = join(artifactRoot, portrait ? 'portrait' : 'landscape');
   mkdirSync(dir, { recursive: true });
   const group = portrait ? fixture.group : fixture.landscape;
@@ -807,7 +1015,7 @@ async function renderAspect(
   if (!portrait) {
     expect(stageVideo?.pix_fmt).toMatch(/^yuva/);
     expect(stageVideo?.codec_name).toBe('prores');
-    const times = concepts
+    const times = authored
       ? fixture.planned.map(({ scene }) => {
           if (!('checkAt' in scene)) throw new Error('Concept scene missing comparison beat');
           return scene.checkAt - fixture.window.startTime;
@@ -827,7 +1035,7 @@ async function renderAspect(
       expect(visible).toBeGreaterThan(1000);
       measurements.push({ at, transparentPixels: transparent, visiblePixels: visible });
     }
-    alpha = concepts ? measurements : measurements[0];
+    alpha = authored ? measurements : measurements[0];
   }
   const source = join(dir, 'synthetic-speaker.mp4');
   const face = syntheticFace;
@@ -873,7 +1081,7 @@ async function renderAspect(
       mediaPath: overlay,
       sourceWidth: 1920,
       sourceHeight: 1080,
-      explainerLayout: 'stack',
+      explainerLayout: group.layout,
     });
     expect(layout.inputCount).toBe(2);
     await ff([
@@ -982,7 +1190,7 @@ async function renderAspect(
     final: last.endTime - fixture.window.startTime - 0.4,
     ...(seam === null ? {} : { 'seam-before': seam - 1 / fps, 'seam-after': seam + 1 / fps }),
   };
-  if (concepts) {
+  if (authored) {
     // Decode the entire final export, not just probe its container or inspect a lucky first scene.
     await ff(['-v', 'error', '-xerror', '-i', final, '-f', 'null', '-']);
     for (const [i, planned] of fixture.planned.entries()) {
@@ -1024,6 +1232,9 @@ async function renderAspect(
     alpha,
     ...(concepts
       ? { fullDecodeVerified: true, conceptChain: fixture.planned.map((p) => p.scene.kind) }
+      : {}),
+    ...(hybrid
+      ? { fullDecodeVerified: true, hybridChain: fixture.planned.map((p) => p.scene.kind) }
       : {}),
     captionPixels,
     quietRms,

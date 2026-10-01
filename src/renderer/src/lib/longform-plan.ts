@@ -5,6 +5,16 @@ import {
   removeLongformPlanRangeConflicts,
   resolveLongformPlanOverlaps,
 } from '@shared/longform-plan-timing';
+import {
+  isLongformPresentation,
+  isSceneFirstLongformPlan,
+  isSceneFirstPlanEnvelope,
+  type LongformPresentation,
+  type LongformScenePlacement,
+  longformSourceFingerprint,
+  sceneFirstPlanProblem,
+  scheduleLongformScenes,
+} from '@shared/longform-scenes';
 import type {
   BlockPlacement,
   DelosCardPlacement,
@@ -14,19 +24,23 @@ import type {
   WordTimestamp,
 } from '@shared/types';
 
+/** Scene mutations use persisted IDs, never array positions. */
 export interface LongformPlanItemRef {
   type: LongformPlanItemType;
-  index: number;
+  index?: number;
+  id?: string;
 }
 
 export interface LongformPlanItemView extends LongformPlanItemRef {
   key: string;
+  index: number;
   startTime: number;
   endTime: number;
   title: string;
   detail: string;
   kind: string;
   sourceText: string;
+  scene?: LongformScenePlacement;
 }
 
 export interface LongformPlanSection {
@@ -37,13 +51,17 @@ export interface LongformPlanSection {
   endTime: number;
   items: LongformPlanItemView[];
   sourceText: string;
+  status?: 'planned' | 'empty' | 'failed';
+  diagnostics?: string[];
 }
 
 export interface LongformPlanItemUpdate {
-  title: string;
+  title?: string;
   detail?: string;
-  startTime: number;
-  endTime: number;
+  startTime?: number;
+  endTime?: number;
+  presentation?: LongformPresentation;
+  omitted?: boolean;
 }
 
 export interface LongformPlanDiff {
@@ -51,13 +69,16 @@ export interface LongformPlanDiff {
   removed: number;
   unchanged: number;
   timingChanges: number;
+  contentChanges: number;
 }
 
-export interface PreservedLongformItem {
-  key: string;
-  type: LongformPlanItemType;
-  item: PhraseEmphasis | BlockPlacement | DelosCardPlacement;
-}
+export type PreservedLongformItem =
+  | { key: string; type: 'scene'; item: LongformScenePlacement }
+  | {
+      key: string;
+      type: 'phrase' | 'block' | 'card';
+      item: PhraseEmphasis | BlockPlacement | DelosCardPlacement;
+    };
 
 const SECTION_TARGET_SECONDS = 90;
 const SECTION_BREAK_SECONDS = 42;
@@ -98,8 +119,9 @@ function transcriptExcerpt(
 
 export function longformItemKey(
   type: LongformPlanItemType,
-  item: PhraseEmphasis | BlockPlacement | DelosCardPlacement,
+  item: PhraseEmphasis | BlockPlacement | DelosCardPlacement | LongformScenePlacement,
 ): string {
+  if (type === 'scene' && 'id' in item) return item.id;
   const text =
     type === 'phrase'
       ? (item as PhraseEmphasis).text
@@ -109,10 +131,40 @@ export function longformItemKey(
   return `${type}:${item.startTime.toFixed(2)}:${item.endTime.toFixed(2)}:${text.slice(0, 80)}`;
 }
 
+export function isScenePlanForReview(plan: LongformEditPlan): boolean {
+  return (
+    (plan.schemaVersion !== undefined && plan.schemaVersion !== 1) ||
+    (plan.mode !== undefined && plan.mode !== 'legacy')
+  );
+}
+
 export function buildLongformPlanItems(
   plan: LongformEditPlan,
   words: readonly WordTimestamp[],
 ): LongformPlanItemView[] {
+  if (isScenePlanForReview(plan)) {
+    if (!isSceneFirstPlanEnvelope(plan)) return [];
+    return plan.scenes
+      .map(
+        (scene, index): LongformPlanItemView => ({
+          type: 'scene',
+          id: scene.id,
+          index,
+          key: scene.id,
+          startTime: scene.startTime,
+          endTime: scene.endTime,
+          title: scene.label || humanizeLongformKind(scene.kind),
+          detail: scene.purpose,
+          kind: humanizeLongformKind(scene.kind),
+          sourceText: words
+            .slice(scene.startWord, scene.endWord + 1)
+            .map((word) => word.text)
+            .join(' '),
+          scene,
+        }),
+      )
+      .sort((left, right) => left.startTime - right.startTime || left.key.localeCompare(right.key));
+  }
   const phrases = plan.phrases.map<LongformPlanItemView>((item, index) => ({
     type: 'phrase',
     index,
@@ -165,6 +217,33 @@ export function buildLongformSections(
   duration: number,
 ): LongformPlanSection[] {
   const items = buildLongformPlanItems(plan, words);
+  if (isScenePlanForReview(plan)) {
+    if (!isSceneFirstPlanEnvelope(plan)) return [];
+    const sections: LongformPlanSection[] = plan.sections.map((section, index) => ({
+      ...section,
+      index,
+      title: `Section ${index + 1}`,
+      sourceText: words
+        .slice(section.startWord, section.endWord + 1)
+        .map((word) => word.text)
+        .join(' '),
+      items: items.filter((item) => item.scene?.sectionId === section.id),
+    }));
+    const unassigned = items.filter(
+      (item) => !plan.sections.some((section) => section.id === item.scene?.sectionId),
+    );
+    if (unassigned.length > 0)
+      sections.push({
+        id: 'unassigned-scenes',
+        index: sections.length,
+        title: 'Scenes without a section',
+        startTime: unassigned[0]?.startTime ?? 0,
+        endTime: Math.max(...unassigned.map((item) => item.endTime)),
+        sourceText: '',
+        items: unassigned,
+      });
+    return sections;
+  }
   if (items.length === 0) {
     return [
       {
@@ -221,9 +300,39 @@ export function buildLongformSections(
   });
 }
 
+export function longformSceneReviewProblem(
+  plan: LongformEditPlan,
+  words: readonly WordTimestamp[],
+  duration: number,
+): string | null {
+  if (!isScenePlanForReview(plan)) return null;
+  const problem = sceneFirstPlanProblem(plan);
+  if (problem) return problem;
+  if (!isSceneFirstLongformPlan(plan)) return 'Unsupported scene plan. Regenerate a new draft.';
+  if (words.length === 0)
+    return 'Transcript unavailable. Restore the source transcript before previewing or approving scenes.';
+  if (plan.sourceFingerprint !== longformSourceFingerprint(words, duration)) {
+    return 'This scene plan is stale: the source duration or transcript changed. Regenerate against the current source; saved versions are kept.';
+  }
+  return null;
+}
+
+export function longformSceneScheduleIssues(plan: LongformEditPlan): Map<string, string> {
+  return new Map(
+    isSceneFirstPlanEnvelope(plan)
+      ? scheduleLongformScenes(plan.scenes, plan.sourceDuration).rejected.map((issue) => [
+          issue.id,
+          issue.reason,
+        ])
+      : [],
+  );
+}
+
 export function estimateLongformRenderSeconds(plan: LongformEditPlan, duration: number): number {
-  const visualComplexity =
-    plan.blocks.length * 12 + plan.phrases.length * 3 + (plan.cards?.length ?? 0) * 4;
+  if (isScenePlanForReview(plan) && !isSceneFirstPlanEnvelope(plan)) return 0;
+  const visualComplexity = isSceneFirstLongformPlan(plan)
+    ? plan.scenes.filter((scene) => !scene.omitted).length * 18
+    : plan.blocks.length * 12 + plan.phrases.length * 3 + (plan.cards?.length ?? 0) * 4;
   return Math.max(30, Math.round(duration * 1.25 + visualComplexity));
 }
 
@@ -236,6 +345,26 @@ export function updateLongformPlanItem(
   ref: LongformPlanItemRef,
   update: LongformPlanItemUpdate,
 ): LongformEditPlan {
+  if (isScenePlanForReview(plan) && !isSceneFirstPlanEnvelope(plan)) return plan;
+  if (isSceneFirstLongformPlan(plan)) {
+    if (ref.type !== 'scene' || !plan.scenes.some((scene) => scene.id === ref.id)) return plan;
+    const next = clonePlan(plan);
+    if (!isSceneFirstLongformPlan(next)) return plan;
+    const scene = next.scenes.find((candidate) => candidate.id === ref.id);
+    if (!scene) return plan;
+    // Source-indexed specs and their complete authored windows are immutable here.
+    if (isLongformPresentation(update.presentation)) scene.presentation = update.presentation;
+    if (update.omitted !== undefined) scene.omitted = update.omitted;
+    return next;
+  }
+  if (
+    ref.type === 'scene' ||
+    ref.index === undefined ||
+    update.title === undefined ||
+    update.startTime === undefined ||
+    update.endTime === undefined
+  )
+    return plan;
   const next = clonePlan(plan);
   const startTime = Math.max(0, update.startTime);
   const requestedEndTime = Math.max(startTime + 0.2, update.endTime);
@@ -269,13 +398,17 @@ export function updateLongformPlanItem(
     }
   }
   next.generatedAt = Date.now();
-  return editedItem ? removeLongformPlanRangeConflicts(next, editedItem, ref) : next;
+  return editedItem
+    ? removeLongformPlanRangeConflicts(next, editedItem, { type: ref.type, index: ref.index })
+    : next;
 }
 
 export function removeLongformPlanItem(
   plan: LongformEditPlan,
   ref: LongformPlanItemRef,
 ): LongformEditPlan {
+  if (ref.type === 'scene') return updateLongformPlanItem(plan, ref, { omitted: true });
+  if (isScenePlanForReview(plan) || ref.index === undefined) return plan;
   const next = clonePlan(plan);
   if (ref.type === 'phrase') next.phrases.splice(ref.index, 1);
   else if (ref.type === 'block') next.blocks.splice(ref.index, 1);
@@ -295,13 +428,29 @@ export function mergePreservedLongformItems(
   generated: LongformEditPlan,
   preservedItems: readonly PreservedLongformItem[],
 ): LongformEditPlan {
+  if (isScenePlanForReview(generated) && !isSceneFirstPlanEnvelope(generated)) return generated;
+  if (isSceneFirstLongformPlan(generated)) {
+    const next = structuredClone(generated);
+    for (const saved of preservedItems) {
+      if (saved.type !== 'scene') continue;
+      const scene = structuredClone(saved.item);
+      const existing = next.scenes.findIndex((candidate) => candidate.id === scene.id);
+      if (existing >= 0) next.scenes[existing] = scene;
+      else next.scenes.push(scene);
+    }
+    next.scenes.sort(
+      (left, right) => left.startTime - right.startTime || left.id.localeCompare(right.id),
+    );
+    return next;
+  }
   let next = resolveLongformPlanOverlaps(clonePlan(generated));
-  const acceptedPreserved: Array<Pick<PreservedLongformItem, 'type' | 'item'>> = [];
+  const acceptedPreserved: Exclude<PreservedLongformItem, { type: 'scene' }>[] = [];
   const chronological = [...preservedItems].sort(
     (left, right) => left.item.startTime - right.item.startTime,
   );
 
   for (const preserved of chronological) {
+    if (preserved.type === 'scene') continue;
     const item = structuredClone(preserved.item);
     if (
       acceptedPreserved.some(
@@ -328,14 +477,16 @@ export function mergePreservedLongformItems(
       next.cards ??= [];
       next.cards.push(item as DelosCardPlacement);
     }
-    acceptedPreserved.push({ type: preserved.type, item });
+    acceptedPreserved.push({ key: preserved.key, type: preserved.type, item });
   }
 
   return resolveLongformPlanOverlaps(next);
 }
 
 function comparableKey(item: LongformPlanItemView): string {
-  return `${item.type}:${item.kind}:${item.title.toLocaleLowerCase()}`;
+  return item.type === 'scene'
+    ? `scene:${item.id}`
+    : `${item.type}:${item.kind}:${item.title.toLocaleLowerCase()}`;
 }
 
 export function compareLongformPlans(
@@ -348,10 +499,19 @@ export function compareLongformPlans(
   const rightMap = new Map(rightItems.map((item) => [comparableKey(item), item]));
   let unchanged = 0;
   let timingChanges = 0;
+  let contentChanges = 0;
   for (const [key, leftItem] of Array.from(leftMap.entries())) {
     const rightItem = rightMap.get(key);
     if (!rightItem) continue;
-    unchanged += 1;
+    if (
+      leftItem.scene &&
+      rightItem.scene &&
+      JSON.stringify(leftItem.scene) !== JSON.stringify(rightItem.scene)
+    ) {
+      contentChanges += 1;
+    } else {
+      unchanged += 1;
+    }
     if (
       Math.abs(leftItem.startTime - rightItem.startTime) > 0.05 ||
       Math.abs(leftItem.endTime - rightItem.endTime) > 0.05
@@ -364,13 +524,30 @@ export function compareLongformPlans(
     removed: Array.from(leftMap.keys()).filter((key) => !rightMap.has(key)).length,
     unchanged,
     timingChanges,
+    contentChanges,
   };
+}
+
+export function snapshotLongformPlanItem(
+  plan: LongformEditPlan,
+  ref: LongformPlanItemRef,
+): PreservedLongformItem | null {
+  const raw = planItemFromRef(plan, ref);
+  if (!raw) return null;
+  if ('sourceSpec' in raw) return { key: raw.id, type: 'scene', item: structuredClone(raw) };
+  if (ref.type === 'scene') return null;
+  return { key: longformItemKey(ref.type, raw), type: ref.type, item: structuredClone(raw) };
 }
 
 export function planItemFromRef(
   plan: LongformEditPlan,
   ref: LongformPlanItemRef,
-): PhraseEmphasis | BlockPlacement | DelosCardPlacement | null {
+): PhraseEmphasis | BlockPlacement | DelosCardPlacement | LongformScenePlacement | null {
+  if (isScenePlanForReview(plan) && !isSceneFirstPlanEnvelope(plan)) return null;
+  if (isSceneFirstLongformPlan(plan)) {
+    return ref.type === 'scene' ? (plan.scenes.find((scene) => scene.id === ref.id) ?? null) : null;
+  }
+  if (ref.type === 'scene' || ref.index === undefined) return null;
   if (ref.type === 'phrase') return plan.phrases[ref.index] ?? null;
   if (ref.type === 'block') return plan.blocks[ref.index] ?? null;
   return plan.cards?.[ref.index] ?? null;

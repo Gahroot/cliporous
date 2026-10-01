@@ -6,6 +6,7 @@ import test from 'node:test';
 import {
   CONCEPT_PACKS,
   currentBundleEvidence,
+  HYBRID_BUNDLE_FILES,
   parseE2EArgs,
   ROOT,
   runBounded,
@@ -22,35 +23,89 @@ test('catalog flags are additive and opt-in, unit never requests renders, unknow
     mode: 'render',
     technology: false,
     concepts: false,
+    hybrid: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--technology', '--unit']), {
     mode: 'unit',
     technology: true,
     concepts: false,
+    hybrid: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--concepts']), {
     mode: 'render',
     technology: false,
     concepts: true,
+    hybrid: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--concepts', '--unit']), {
     mode: 'unit',
     technology: false,
     concepts: true,
+    hybrid: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--technology', '--concepts', '--unit']), {
     mode: 'unit',
     technology: true,
     concepts: true,
+    hybrid: false,
+    help: false,
+  });
+  assert.deepEqual(parseE2EArgs(['--hybrid', '--unit']), {
+    mode: 'unit',
+    technology: false,
+    concepts: false,
+    hybrid: true,
+    help: false,
+  });
+  assert.deepEqual(parseE2EArgs(['--technology', '--concepts', '--hybrid']), {
+    mode: 'render',
+    technology: true,
+    concepts: true,
+    hybrid: true,
     help: false,
   });
   assert.equal(parseE2EArgs(['--concepts', '--help']).help, true);
   assert.throws(() => parseE2EArgs(['--software-raster']), /Only/);
   assert.throws(() => parseE2EArgs(['--unknown']), /Only/);
+});
+
+test('an explicit local snapshot survives replacement of a different live bundle', (t) => {
+  const pinned = temporary(t);
+  const live = temporary(t);
+  const root = 'src/main/remotion/Root.tsx';
+  const content = readFileSync(path.join(ROOT, root), 'utf8');
+  for (const dir of [pinned, live]) {
+    writeFileSync(path.join(dir, 'index.html'), 'pinned-evidence-test');
+    writeFileSync(
+      path.join(dir, 'bundle.js.map'),
+      JSON.stringify({
+        sources: [root],
+        sourcesContent: [content],
+      }),
+    );
+  }
+  const options = parseE2EArgs(['--hybrid', '--bundle', pinned]);
+  assert.equal(options.bundle, pinned);
+  const before = currentBundleEvidence(options.bundle);
+  writeFileSync(
+    path.join(live, 'bundle.js.map'),
+    JSON.stringify({
+      sources: [root],
+      sourcesContent: [`${content}\n// replaced during a render`],
+    }),
+  );
+  assert.throws(() => currentBundleEvidence(live), /Stale production bundle/);
+  assert.equal(currentBundleEvidence(options.bundle).sha256, before.sha256);
+  assert.throws(() => parseE2EArgs(['--bundle']), /bundle/i);
+  assert.throws(() => parseE2EArgs(['--bundle', '--unit']), /bundle/i);
+  assert.throws(() => parseE2EArgs(['--bundle', pinned, '--bundle', pinned]), /bundle/i);
+  assert.throws(() => parseE2EArgs(['--bundle', 'https://example.invalid/bundle']), /local/i);
+  assert.throws(() => parseE2EArgs(['--bundle', '//server/share']), /local/i);
+  assert.throws(() => parseE2EArgs(['--bundle', path.join(pinned, 'missing')]), /index.html/);
 });
 
 test('bundle gate rejects missing maps, absent technology and changed current source contents', (t) => {
@@ -108,6 +163,32 @@ test('concept freshness requires current scenes, models and poses in every pack 
   assert.match(evidence.sha256, /^[a-f0-9]{64}$/);
   assert.deepEqual(Object.keys(evidence.sources).sort(), [...files].sort());
   assert.throws(() => currentBundleEvidence(dir, true, true), /technology.*agent-workflow/);
+});
+
+test('hybrid bundle evidence requires every current representation and shared renderer', (t) => {
+  const dir = temporary(t);
+  writeFileSync(path.join(dir, 'index.html'), 'hybrid-evidence-test');
+  const files = ['src/main/remotion/Root.tsx', ...HYBRID_BUNDLE_FILES];
+  const contents = files.map((file) => readFileSync(path.join(ROOT, file), 'utf8'));
+  const save = (sources, sourcesContent) =>
+    writeFileSync(path.join(dir, 'bundle.js.map'), JSON.stringify({ sources, sourcesContent }));
+  for (let i = 1; i < files.length; i++) {
+    save(
+      files.filter((_, n) => n !== i),
+      contents.filter((_, n) => n !== i),
+    );
+    assert.throws(() => currentBundleEvidence(dir, false, false, true), /evidence missing/);
+    save(
+      files,
+      contents.map((content, n) => (n === i ? `${content}\n// stale` : content)),
+    );
+    assert.throws(() => currentBundleEvidence(dir, false, false, true), /Stale production bundle/);
+  }
+  save(files, contents);
+  assert.equal(
+    Object.keys(currentBundleEvidence(dir, false, false, true).sources).length,
+    files.length,
+  );
 });
 
 test('owned child timeout, failure, cancellation and recovery work on the host platform', async () => {

@@ -51,7 +51,10 @@ import {
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { CompletedOutputCard } from '@/components/CompletedOutputCard';
-import { CutPlanReconciliation } from '@/components/CutPlanReconciliation';
+import {
+  CutPlanReconciliation,
+  hasReconciliationChanges,
+} from '@/components/CutPlanReconciliation';
 import { ErrorPresentation } from '@/components/ErrorPresentation';
 import { ExportPreflight } from '@/components/ExportPreflight';
 import { PalettePicker } from '@/components/PalettePicker';
@@ -68,6 +71,7 @@ import { locateMissingSource } from '@/services/media-relink-service';
 import { startApprovedRender } from '@/services/render-service';
 import { useStore } from '@/store';
 import type { LongformPlanRecord } from '@/store/longform-slice';
+import { PROCESSING_STAGES } from '@/store/selectors';
 import type {
   ClipCandidate,
   RenderProgress,
@@ -90,6 +94,7 @@ interface RowProgress {
   preparationActivities?: RenderProgress['preparationActivities'];
   fallbacks?: RenderProgress['fallbacks'];
   summary?: string;
+  completedWithChanges?: boolean;
 }
 
 interface RowProgressFields {
@@ -99,6 +104,7 @@ interface RowProgressFields {
   preparationActivities?: RenderProgress['preparationActivities'] | undefined;
   fallbacks?: RenderProgress['fallbacks'] | undefined;
   summary?: string | undefined;
+  completedWithChanges?: boolean | undefined;
 }
 
 function toRowProgress(
@@ -115,6 +121,8 @@ function toRowProgress(
   }
   if (fields.fallbacks !== undefined) row.fallbacks = fields.fallbacks;
   if (fields.summary !== undefined) row.summary = fields.summary;
+  if (fields.completedWithChanges !== undefined)
+    row.completedWithChanges = fields.completedWithChanges;
   return row;
 }
 
@@ -124,16 +132,16 @@ function toRowProgress(
 
 /**
  * Summarize a long-form AI edit plan for the render status surface (RF-012).
- * The plan flows straight into the render with no approval step, so this is the
- * only place the user sees what the plan actually contains: the block-kind
- * breakdown, the (otherwise never-surfaced) card count, and the phrase count.
- * `buildTimeline` + speaker-range gating silently drop a chunk of these, so the
- * counts here are the PLANNED totals — the rendered survivors are reported
- * separately via the prepare message from the long-form pipeline.
+ * These are planned totals, not a claim that every explanation rendered.
+ * The saved export check reports which approved visuals reached the file.
  *
  * Example: "5 blocks (2 bar-chart, 2 stat-grid, 1 callout) · 3 cards · 12 phrases".
  */
 function summarizeLongformPlan(plan: LongformEditPlan): string {
+  if (plan.mode === 'scene-first') {
+    const included = plan.scenes.filter((scene) => !scene.omitted).length;
+    return `${included} explanation ${included === 1 ? 'scene' : 'scenes'} · ${plan.scenes.length - included} omitted`;
+  }
   const blocks = plan.blocks ?? [];
   const cards = plan.cards ?? [];
   const phrases = plan.phrases ?? [];
@@ -157,7 +165,20 @@ function summarizeLongformPlan(plan: LongformEditPlan): string {
 // Status Badge — shadcn <Badge> only (no custom UI)
 // ---------------------------------------------------------------------------
 
-function StatusBadge({ status }: { status: RowStatus }): React.JSX.Element {
+function StatusBadge({
+  status,
+  completedWithChanges = false,
+}: {
+  status: RowStatus;
+  completedWithChanges?: boolean | undefined;
+}): React.JSX.Element {
+  if (status === 'done' && completedWithChanges) {
+    return (
+      <Badge variant="outline" className="gap-1 font-normal text-warning">
+        <AlertTriangle className="h-3 w-3" aria-hidden /> Completed with changes
+      </Badge>
+    );
+  }
   switch (status) {
     case 'queued':
       return (
@@ -177,7 +198,7 @@ function StatusBadge({ status }: { status: RowStatus }): React.JSX.Element {
       return (
         <Badge variant="default" className="gap-1 font-normal">
           <Check className="h-3 w-3" />
-          Done
+          File ready
         </Badge>
       );
     case 'error':
@@ -238,7 +259,7 @@ function GenericRow({
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <p
             className={cn(
               'line-clamp-2 text-sm font-medium leading-snug',
@@ -249,7 +270,10 @@ function GenericRow({
             {label}
           </p>
           <div className="flex shrink-0 items-center gap-1">
-            <StatusBadge status={progress.status} />
+            <StatusBadge
+              status={progress.status}
+              completedWithChanges={progress.completedWithChanges}
+            />
             {controls}
           </div>
         </div>
@@ -304,6 +328,11 @@ function GenericRow({
             )}
           </div>
         )}
+        {isDone && progress.completedWithChanges && (
+          <p className="mt-2 text-xs text-warning">
+            Video file ready. Some visuals changed; the output is still usable.
+          </p>
+        )}
         {isDone && progress.summary && (
           <p className="mt-1.5 line-clamp-1 text-xs text-muted-foreground" title={progress.summary}>
             {progress.summary}
@@ -333,7 +362,9 @@ function LongformSetup({
   const phrases = record.plan.phrases.length;
   const blocks = record.plan.blocks.length;
   const cards = record.plan.cards?.length ?? 0;
-  const noVisualBeats = phrases + blocks + cards === 0;
+  const scenes = record.plan.mode === 'scene-first' ? record.plan.scenes : [];
+  const includedScenes = scenes.filter((scene) => !scene.omitted).length;
+  const noVisualBeats = phrases + blocks + cards + includedScenes === 0;
   const sourceChecking = source?.mediaStatus === 'checking';
   const sourceUnavailable = !source || source.mediaStatus === 'offline';
 
@@ -355,7 +386,9 @@ function LongformSetup({
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary">Accepted Cut Plan</Badge>
+              <Badge variant="secondary">
+                {record.status === 'accepted' ? 'Approved plan' : 'Review required'}
+              </Badge>
               <Badge variant="outline">No AI re-analysis</Badge>
             </div>
             <h2
@@ -365,10 +398,18 @@ function LongformSetup({
               {source?.name ?? 'Long-form source unavailable'}
             </h2>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-              Re-render directly from the saved plan. Treatment changes affect the next export only;
-              the accepted editorial timing stays intact.
+              Export one full-length video from the saved plan after approval. Style changes affect
+              the next export only; existing files are kept.
             </p>
             <dl className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs">
+              {record.plan.mode === 'scene-first' && (
+                <div>
+                  <dt className="text-muted-foreground">Explanation scenes</dt>
+                  <dd className="mt-0.5 font-semibold tabular-nums text-foreground">
+                    {includedScenes} included · {scenes.length - includedScenes} omitted
+                  </dd>
+                </div>
+              )}
               <div>
                 <dt className="text-muted-foreground">Phrase overlays</dt>
                 <dd className="mt-0.5 font-semibold tabular-nums text-foreground">{phrases}</dd>
@@ -468,6 +509,15 @@ function LongformSetup({
 export function RenderScreen(): React.JSX.Element {
   // ── Store reads ────────────────────────────────────────────────────────
   const activeSourceId = useStore((state) => state.activeSourceId);
+  const reviewBusy = useStore(
+    (state) =>
+      state.isRendering ||
+      state.singleRenderStatus === 'rendering' ||
+      PROCESSING_STAGES.has(state.pipeline.stage) ||
+      state.pipeline.stage === 'rendering' ||
+      state.processingCancellation.status === 'cancelling' ||
+      state.renderCancellation.status === 'cancelling',
+  );
   const clipsBySource = useStore((state) => state.clips);
   const stitchedBySource = useStore((state) => state.stitchedClips);
   const longformPlans = useStore((state) => state.longformPlans);
@@ -505,6 +555,17 @@ export function RenderScreen(): React.JSX.Element {
   const cancellationWatchdogRef = useRef<number | null>(null);
   const segmentFallbacksRef = useRef<LongformRenderFallback[]>([]);
   const verifiedOutputPathsRef = useRef(new Set<string>());
+
+  // Progress updates replace event subscriptions, but must not cancel the stop deadline.
+  useEffect(
+    () => () => {
+      if (cancellationWatchdogRef.current !== null) {
+        window.clearTimeout(cancellationWatchdogRef.current);
+        cancellationWatchdogRef.current = null;
+      }
+    },
+    [],
+  );
 
   // Active source metadata — drives the long-form row label + poster frame.
   const activeSource = useMemo(
@@ -791,10 +852,25 @@ export function RenderScreen(): React.JSX.Element {
       setIsRendering(false);
       setPipeline({ stage: 'done', message: '', percent: 100 });
       setBatchSummary(data);
-      if (data.failed === 0) {
+      const state = useStore.getState();
+      const withChanges = state.renderProgress.some((item) => {
+        const check = state.getLongformPlan(item.sourceId ?? item.clipId)?.reconciliation;
+        return (
+          item.status === 'done' &&
+          ((item.fallbacks?.length ?? 0) > 0 ||
+            (check && check.outputPath === item.outputPath && hasReconciliationChanges(check)))
+        );
+      });
+      if (data.failed === 0 && withChanges) {
+        toast.message(
+          'Export completed with changes. The video files are usable; review the export check.',
+        );
+      } else if (data.failed === 0 && data.completed > 0) {
         toast.success(
           `Export pack ready: ${data.completed} of ${data.total} ${data.total === 1 ? 'file' : 'files'}`,
         );
+      } else if (data.total === 0) {
+        toast.message('No files exported.');
       } else {
         toast.error(
           `${data.failed} of ${data.total} ${data.total === 1 ? 'export' : 'exports'} failed`,
@@ -810,7 +886,7 @@ export function RenderScreen(): React.JSX.Element {
       setStoppingAfterCurrent(false);
       setRenderCancellation({ status: 'idle', error: null });
       setIsRendering(false);
-      setPipeline({ stage: 'rendering', message: 'Queue stopped with progress kept', percent: 0 });
+      setPipeline({ stage: 'done', message: 'Queue stopped with progress kept', percent: 0 });
       setBatchSummary(data);
       toast.message('Queue stopped. Completed media and remaining jobs are kept.');
     });
@@ -825,10 +901,6 @@ export function RenderScreen(): React.JSX.Element {
       offClipCancelled();
       offBatchDone();
       offCancelled();
-      if (cancellationWatchdogRef.current !== null) {
-        window.clearTimeout(cancellationWatchdogRef.current);
-        cancellationWatchdogRef.current = null;
-      }
     };
   }, [
     setRenderProgress,
@@ -863,20 +935,44 @@ export function RenderScreen(): React.JSX.Element {
     await prepareLongformRender();
   };
 
-  // ── Action: Render long-form again ────────────────────────────
-  // Clears the finished batch so the LongformSetup surface (PalettePicker)
-  // reappears, letting the user change skin/palette before another render.
-  const handleLongformReset = (): void => {
-    setBatchSummary(null);
-    setRenderProgress([]);
-    clearRenderErrors();
-    setPipeline({ stage: 'ready', message: '', percent: 0 });
+  const handleReviewScene = (sceneId: string): void => {
+    if (!activeSourceId || !useStore.getState().focusLongformScene(activeSourceId, sceneId)) {
+      toast.error(
+        'This scene is no longer available, or work is still running. Finish or stop active work before reviewing.',
+      );
+    }
+  };
+
+  // Review is navigation, not a new export: retain completed files and render evidence.
+  const handleReviewPlan = (): void => {
+    const state = useStore.getState();
+    if (reviewBusy) return;
+    const record = activeSourceId ? state.getLongformPlan(activeSourceId) : null;
+    if (!record) return;
+    if (record.plan.mode === 'scene-first' && record.plan.scenes.length > 0) {
+      const firstChanged = record.reconciliation?.sceneResults?.find(
+        (scene) =>
+          scene.status !== 'rendered' &&
+          record.plan.mode === 'scene-first' &&
+          record.plan.scenes.some((planned) => planned.id === scene.id),
+      );
+      const sceneId = firstChanged?.id ?? record.plan.scenes[0]?.id;
+      if (sceneId) handleReviewScene(sceneId);
+      return;
+    }
+    setPipeline({
+      stage: 'ready',
+      message: 'Review the plan. Existing exports are kept.',
+      percent: 100,
+    });
   };
 
   // ── Action: Retry Failed ──────────────────────────────────────────────
   // Re-runs only the clips whose renderProgress status is 'error', so a
   // partial failure doesn't force a full re-encode of the successful clips.
   const handleRetryFailed = async (): Promise<void> => {
+    if (useStore.getState().isRendering || useStore.getState().renderCancellation.status !== 'idle')
+      return;
     const failedIds = useStore
       .getState()
       .renderProgress.filter((r) => r.status === 'error')
@@ -892,6 +988,8 @@ export function RenderScreen(): React.JSX.Element {
   };
 
   const handleRetryOne = async (clipId: string): Promise<void> => {
+    if (useStore.getState().isRendering || useStore.getState().renderCancellation.status !== 'idle')
+      return;
     setBatchSummary(null);
     if (longformPlanRecord && clipId === activeSourceId) {
       await startLongformRender();
@@ -947,8 +1045,10 @@ export function RenderScreen(): React.JSX.Element {
   };
 
   const handleFixFallback = (clipId: string): void => {
+    const state = useStore.getState();
+    if (state.isRendering || state.renderCancellation.status !== 'idle') return;
     if (longformPlanRecord && clipId === activeSourceId) {
-      handleLongformReset();
+      handleReviewPlan();
       return;
     }
     useStore.getState().setWorkspaceSelectedClip(clipId);
@@ -961,6 +1061,8 @@ export function RenderScreen(): React.JSX.Element {
     setRenderCancellation({ status: 'cancelling', error: null });
 
     const markCancellationFailed = (caught: unknown): void => {
+      const state = useStore.getState();
+      if (!state.isRendering || state.renderCancellation.status !== 'cancelling') return;
       const error = createStructuredError({
         source: 'render',
         error: caught,
@@ -978,6 +1080,8 @@ export function RenderScreen(): React.JSX.Element {
 
     try {
       await window.api.cancelRender();
+      const state = useStore.getState();
+      if (!state.isRendering || state.renderCancellation.status !== 'cancelling') return;
       if (cancellationWatchdogRef.current !== null) {
         window.clearTimeout(cancellationWatchdogRef.current);
       }
@@ -1023,9 +1127,6 @@ export function RenderScreen(): React.JSX.Element {
 
   // ── Action: Back to Clips ─────────────────────────────────────────────
   const handleBackToClips = (): void => {
-    setBatchSummary(null);
-    setRenderProgress([]);
-    clearRenderErrors();
     setPipeline({ stage: 'ready', message: '', percent: 0 });
   };
 
@@ -1042,6 +1143,30 @@ export function RenderScreen(): React.JSX.Element {
 
   // ── Render ────────────────────────────────────────────────────────────
   const reconciliation = longformPlanRecord?.reconciliation ?? null;
+  const planScenes =
+    longformPlanRecord?.plan.mode === 'scene-first' ? longformPlanRecord.plan.scenes : [];
+  const reviewRouteAvailable =
+    activeSource !== null &&
+    activeSourceId !== null &&
+    (clipsBySource[activeSourceId]?.length ?? 0) === 0 &&
+    (stitchedBySource[activeSourceId]?.length ?? 0) === 0;
+  const reviewableSceneIds = reviewRouteAvailable ? planScenes.map((scene) => scene.id) : [];
+  const rowHasChanges = (item: RenderProgress): boolean => {
+    const record = longformPlans[item.sourceId ?? item.clipId];
+    const check = record?.reconciliation;
+    return (
+      item.status === 'done' &&
+      ((item.fallbacks?.length ?? 0) > 0 ||
+        !!(
+          check &&
+          check.outputPath === item.outputPath &&
+          hasReconciliationChanges(
+            check,
+            record.plan.mode === 'scene-first' ? record.plan.scenes : [],
+          )
+        ))
+    );
+  };
   const showLongformSetup =
     longformPlanRecord !== null &&
     reconciliation === null &&
@@ -1051,10 +1176,14 @@ export function RenderScreen(): React.JSX.Element {
   const isLongform =
     longformPlanRecord !== null || queueItems.some((item) => item.kind === 'longform');
   const totalCount = showLongformSetup ? 1 : Math.max(queueItems.length, reconciliation ? 1 : 0);
-  const doneCount = Math.max(
-    queueItems.filter((item) => item.status === 'done').length,
-    reconciliation ? 1 : 0,
-  );
+  const doneCount =
+    queueItems.length === 0 && reconciliation
+      ? 1
+      : queueItems.filter((item) => item.status === 'done').length;
+  const changedCount =
+    queueItems.length === 0 && reconciliation
+      ? Number(hasReconciliationChanges(reconciliation, planScenes))
+      : queueItems.filter(rowHasChanges).length;
   const failedCount = queueItems.filter((item) => item.status === 'error').length;
   const queuedCount = queueItems.filter((item) => item.status === 'queued').length;
   const cancelledCount = queueItems.filter((item) => item.status === 'cancelled').length;
@@ -1079,19 +1208,20 @@ export function RenderScreen(): React.JSX.Element {
           <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.16em]">
             Production queue
           </p>
-          <h1 className="text-foreground mt-1 text-2xl font-semibold tracking-tight">Render</h1>
-          <p className="mt-1 text-xs tabular-nums text-muted-foreground">
+          <h1 className="text-foreground mt-1 text-2xl font-semibold tracking-tight">Export</h1>
+          <p role="status" className="mt-1 text-xs tabular-nums text-muted-foreground">
             {totalCount} {itemNoun}
             {totalCount === 1 ? '' : 's'}
             {queuedCount > 0 && ` · ${queuedCount} queued`}
-            {doneCount > 0 && ` · ${doneCount} done`}
+            {doneCount > 0 && ` · ${doneCount} ${doneCount === 1 ? 'file' : 'files'} ready`}
+            {changedCount > 0 && ` · ${changedCount} with changes`}
             {failedCount > 0 && ` · ${failedCount} failed`}
           </p>
           <p
-            className="text-muted-foreground mt-2 max-w-xl truncate text-xs"
+            className="text-muted-foreground mt-2 max-w-xl break-all text-xs"
             title={outputDirectory ?? undefined}
           >
-            Destination: {outputDirectory ?? 'Output folder not set'}
+            Destination: {outputDirectory ?? 'Default export folder (confirmed before export)'}
           </p>
         </div>
         <section
@@ -1102,11 +1232,16 @@ export function RenderScreen(): React.JSX.Element {
             <strong className="text-foreground">{queuedCount}</strong> queued
           </span>
           <span className="rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1.5 text-xs text-primary">
-            <strong>{doneCount}</strong> done
+            <strong>{doneCount}</strong> {doneCount === 1 ? 'file' : 'files'} ready
           </span>
           <span className="rounded-md border border-destructive/30 bg-destructive/10 px-2.5 py-1.5 text-xs text-destructive">
             <strong>{failedCount}</strong> failed
           </span>
+          {changedCount > 0 && (
+            <span className="rounded-md border border-warning/35 bg-warning/10 px-2.5 py-1.5 text-xs text-warning">
+              <strong>{changedCount}</strong> completed with changes
+            </span>
+          )}
           {cancelledCount > 0 && (
             <span className="rounded-md border border-border/70 bg-muted px-2.5 py-1.5 text-xs text-muted-foreground">
               <strong>{cancelledCount}</strong> cancelled
@@ -1170,7 +1305,12 @@ export function RenderScreen(): React.JSX.Element {
               </Button>
             </>
           ) : reconciliation ? (
-            <Button size="sm" variant="outline" onClick={handleLongformReset}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleReviewPlan}
+              disabled={reviewBusy || !reviewRouteAvailable}
+            >
               <RotateCcw />
               Review plan
             </Button>
@@ -1241,7 +1381,19 @@ export function RenderScreen(): React.JSX.Element {
 
       {longformPlanRecord?.reconciliation && (
         <div className="mb-4">
-          <CutPlanReconciliation reconciliation={longformPlanRecord.reconciliation} compact />
+          {isRendering && (
+            <p className="mb-2 text-xs text-muted-foreground">
+              Previous export — a new export is still running.
+            </p>
+          )}
+          <CutPlanReconciliation
+            reconciliation={longformPlanRecord.reconciliation}
+            scenes={planScenes}
+            onReviewScene={handleReviewScene}
+            reviewDisabled={reviewBusy}
+            reviewableSceneIds={reviewableSceneIds}
+            compact
+          />
         </div>
       )}
 
@@ -1370,6 +1522,7 @@ export function RenderScreen(): React.JSX.Element {
                   preparationActivities: item.preparationActivities,
                   fallbacks: item.fallbacks,
                   summary: item.summary,
+                  completedWithChanges: rowHasChanges(item),
                 })}
                 {...(poster ? { poster } : {})}
                 {...(item.kind === 'longform' && longformPlanRecord
@@ -1383,8 +1536,9 @@ export function RenderScreen(): React.JSX.Element {
                         variant="outline"
                         size="sm"
                         onClick={() => handleFixFallback(item.clipId)}
+                        disabled={reviewBusy}
                       >
-                        Fix visual
+                        Review visual
                       </Button>
                       <Button
                         variant="outline"
@@ -1472,9 +1626,14 @@ export function RenderScreen(): React.JSX.Element {
             ) : (
               <span />
             )}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {longformPlanRecord ? (
-                <Button size="sm" variant="outline" onClick={handleLongformReset}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleReviewPlan}
+                  disabled={reviewBusy || !reviewRouteAvailable}
+                >
                   <RotateCcw />
                   Review plan
                 </Button>

@@ -1,6 +1,28 @@
-import { ThinkingLevel } from '@google/genai';
-import { describe, expect, it } from 'vitest';
-import { MODELS, resolveGeminiConfig } from './gemini-client';
+import { GoogleGenAI, ThinkingLevel } from '@google/genai';
+import { describe, expect, it, vi } from 'vitest';
+import { callGeminiWithRetry, MODELS, resolveGeminiConfig } from './gemini-client';
+
+describe('Gemini cancellation compatibility', () => {
+  it('passes the signal and never retries or falls back after cancellation', async () => {
+    const ai = new GoogleGenAI({ apiKey: 'unused-test-key' });
+    const controller = new AbortController();
+    const generate = vi.spyOn(ai.models, 'generateContent').mockImplementation(async () => {
+      controller.abort();
+      throw new Error('503 UNAVAILABLE');
+    });
+    await expect(
+      callGeminiWithRetry(
+        ai,
+        { model: 'primary', fallbacks: ['fallback'] },
+        'fixture',
+        'test',
+        controller.signal,
+      ),
+    ).rejects.toThrow();
+    expect(generate).toHaveBeenCalledTimes(1);
+    expect(generate.mock.calls[0][0].config?.abortSignal).toBe(controller.signal);
+  });
+});
 
 describe('MODELS', () => {
   it('uses Gemini 3.8 Flash as the balanced workhorse with no 2.5 fallbacks', () => {

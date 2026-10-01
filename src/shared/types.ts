@@ -10,6 +10,7 @@
 // ---------------------------------------------------------------------------
 
 import type { Palette } from '@shared/palettes';
+import type { LongformScenePlanFields, LongformSceneRenderResult } from './longform-scenes';
 
 // ---------------------------------------------------------------------------
 // Transcription
@@ -1476,7 +1477,7 @@ export interface DelosCardPlacement {
  * phrase overlays and skinned content blocks are sequenced against absolute
  * source-video timestamps.
  */
-export interface LongformEditPlan {
+export interface LongformEditPlanBase {
   /** Phrase-level emphasis overlays. */
   phrases: PhraseEmphasis[];
   /** Full-frame skinned content-block placements. */
@@ -1492,7 +1493,16 @@ export interface LongformEditPlan {
   generatedAt: number;
 }
 
-export type LongformPlanItemType = 'phrase' | 'block' | 'card';
+export interface LegacyLongformEditPlan extends LongformEditPlanBase {
+  schemaVersion?: 1;
+  mode?: 'legacy';
+}
+
+export interface SceneFirstLongformEditPlan extends LongformEditPlanBase, LongformScenePlanFields {}
+
+export type LongformEditPlan = LegacyLongformEditPlan | SceneFirstLongformEditPlan;
+
+export type LongformPlanItemType = 'phrase' | 'block' | 'card' | 'scene';
 
 export interface LongformRenderCount {
   planned: number;
@@ -1515,6 +1525,8 @@ export interface LongformRenderReconciliation {
   phrases: LongformRenderCount;
   blocks: LongformRenderCount;
   cards: LongformRenderCount;
+  scenes?: LongformRenderCount;
+  sceneResults?: LongformSceneRenderResult[];
   fallbacks: LongformRenderFallback[];
 }
 

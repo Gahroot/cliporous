@@ -19,7 +19,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderedPreviewCacheKey } from '@/hooks/useRenderedPreview';
 import { useStore } from '@/store';
-import type { ClipCandidate, SourceVideo } from '@/store/types';
+import type { ClipCandidate, SourceVideo, StitchedClipCandidate } from '@/store/types';
 import { installApiStub, resetStore } from './test-utils';
 
 // ---------------------------------------------------------------------------
@@ -151,8 +151,7 @@ describe('ClipDetail', () => {
     rerender(<ClipDetail clip={persisted} source={SOURCE} open onOpenChange={() => {}} />);
 
     const dialog = screen.getByRole('dialog');
-    // Sheet header shows "Score N · 25.5s" — match the description text.
-    expect(within(dialog).getByText(/Score 85 · 25\.5s/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/AI score 85 \(advisory\) · 25\.5s/)).toBeInTheDocument();
   });
 
   it('shows a 9:16 framing preview with hook + caption mock over the video', async () => {
@@ -171,7 +170,14 @@ describe('ClipDetail', () => {
     // A representative caption snippet (first words of the transcript) appears.
     expect(within(dialog).getByText('this')).toBeInTheDocument();
     // The truthful live-guide status accompanies the immediate approximation.
-    expect(within(dialog).getByText(/live layout guide shown immediately/i)).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(
+        /Source media · approximate layout guide while the edited preview is prepared\. Not the final export\./,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByLabelText('Source media of Watch this part', { exact: true }),
+    ).toBeInTheDocument();
   });
 
   it('uses the source waveform and keeps trim handles plus Reset to Auto keyboard-accessible', async () => {
@@ -246,6 +252,12 @@ describe('ClipDetail', () => {
     expect(secondConfig.templateLayout).toEqual(updatedLayout);
     expect(renderedPreviewCacheKey(CLIP.id, secondConfig)).not.toBe(firstKey);
     expect(await screen.findByText(/^Rendered preview ready$/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Edited preview · low quality, not the final export/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Edited preview of A bold opening', { exact: true }),
+    ).toBeInTheDocument();
   });
 
   it('frames score rationale as an AI estimate and exposes editorial playback controls', async () => {
@@ -265,7 +277,9 @@ describe('ClipDetail', () => {
     const volume = screen.getByLabelText('Preview volume');
     expect(volume).toBeInTheDocument();
     expect(
-      screen.getByLabelText('Preview of A bold opening', { selector: 'video' }),
+      screen.getByLabelText(/^(Source media|Edited preview) of A bold opening$/, {
+        selector: 'video',
+      }),
     ).toHaveProperty('muted', true);
 
     fireEvent.change(volume, { target: { value: '0.35' } });
@@ -273,6 +287,35 @@ describe('ClipDetail', () => {
       volume: 0.35,
       muted: false,
     });
+  });
+
+  it('labels stitched range playback as source media, not an edited preview or final export', async () => {
+    const stitched: StitchedClipCandidate = {
+      id: 'stitched-label',
+      sourceId: SOURCE.id,
+      sourceRanges: [
+        { startTime: 10, endTime: 15, role: 'hook' },
+        { startTime: 40, endTime: 45, role: 'main-payoff' },
+      ],
+      duration: 10,
+      text: 'A stitched story.',
+      score: 85,
+      hookText: 'Stitched source ranges',
+      reasoning: 'A later payoff.',
+      status: 'pending',
+    };
+    useStore.getState().setStitchedClips(SOURCE.id, [stitched]);
+    const { ClipDetail } = await import('@/components/ClipDetail');
+    render(<ClipDetail clip={stitched} source={SOURCE} open onOpenChange={() => {}} />);
+    expect(
+      screen.getByText(
+        /Source media · plays each range in sequence.*Not an edited preview or final export\./,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Source ranges for Stitched source ranges', { selector: 'video' }),
+    ).toBeInTheDocument();
+    expect(window.api.renderPreview).not.toHaveBeenCalled();
   });
 
   it('offers action feedback that undoes a committed hook edit', async () => {

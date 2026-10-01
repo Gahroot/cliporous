@@ -189,7 +189,7 @@ export function ClipCard({
         'hover:border-primary/45',
         selected && 'border-primary/80',
         checked && 'border-primary ring-2 ring-primary',
-        isApproved && !checked && 'border-primary ring-2 ring-primary',
+        isApproved && !checked && 'border-primary',
         isRejected && 'opacity-50',
       )}
     >
@@ -197,7 +197,7 @@ export function ClipCard({
         type="button"
         data-review-clip-id={clip.id}
         data-density={density}
-        aria-label={`Clip: ${clip.hookText || 'untitled'}, ${displayScore === 'New' ? 'unscored' : `score ${displayScore}`}, source ${formatSourceTime('startTime' in clip ? clip.startTime : (clip.sourceRanges[0]?.startTime ?? 0))}${selectionMode ? (checked ? ', checked for bulk actions' : ', not checked for bulk actions') : selected ? ', selected' : ''}`}
+        aria-label={`Clip: ${clip.hookText || 'untitled'}, ${displayScore === 'New' ? 'unscored' : `AI score ${displayScore} (advisory)`}, source ${formatSourceTime('startTime' in clip ? clip.startTime : (clip.sourceRanges[0]?.startTime ?? 0))}${selectionMode ? (checked ? ', checked for bulk actions' : ', not checked for bulk actions') : selected ? ', in inspector' : ''}`}
         aria-keyshortcuts={selectionMode ? 'Enter Space S' : 'Enter Space A X'}
         aria-pressed={selectionMode ? checked : undefined}
         onClick={handleCardActivate}
@@ -252,7 +252,7 @@ export function ClipCard({
         variant="secondary"
         className="pointer-events-none absolute left-2 top-2 z-20 border border-white/25 bg-black/70 font-mono font-semibold tabular-nums text-white shadow-sm"
       >
-        {displayScore} ·{' '}
+        {displayScore === 'New' ? 'Not scored' : `AI ${displayScore}`} ·{' '}
         {formatSourceTime(
           'startTime' in clip ? clip.startTime : (clip.sourceRanges[0]?.startTime ?? 0),
         )}
@@ -282,7 +282,7 @@ export function ClipCard({
         </Badge>
       ) : selected ? (
         <Badge className="pointer-events-none absolute right-2 top-2 z-20 border border-white/30 bg-primary text-primary-foreground shadow-sm">
-          Selected
+          Inspecting
         </Badge>
       ) : (
         <div className="pointer-events-none absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100">
@@ -297,6 +297,14 @@ export function ClipCard({
           density === 'compact' ? 'gap-1.5 p-2' : 'gap-2 p-3',
         )}
       >
+        {isHovering && isVideoReady && (
+          <p className="text-[10px] text-white/80">Source media · not edited</p>
+        )}
+        {selectionMode && (
+          <p className="text-xs font-medium text-white">
+            {isApproved ? 'Approved' : isRejected ? 'Rejected' : 'Unreviewed'}
+          </p>
+        )}
         {clip.hookText && (
           <p
             className={cn(

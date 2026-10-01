@@ -43,6 +43,10 @@ import os
 import sys
 from typing import Optional
 
+# The embedded Windows Python ships a ._pth file, which stops Python adding the
+# script's folder to sys.path. Add it so sibling modules (face_model) import.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 
 # ---------------------------------------------------------------------------
 # IO helpers

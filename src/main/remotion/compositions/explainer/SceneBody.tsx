@@ -5,9 +5,12 @@
 
 import type React from 'react';
 import { AgentWorkflowScene } from './AgentWorkflowScene';
+import { InferenceTradeoffScene } from './ai-systems/InferenceTradeoffScene';
+import { TokenAttentionScene } from './ai-systems/TokenAttentionScene';
 import { BalanceScene } from './BalanceScene';
 import { BeforeAfterScene } from './BeforeAfterScene';
 import { BottleneckScene } from './BottleneckScene';
+import { CashTimingScene } from './business-systems/CashTimingScene';
 import { ChartScene } from './ChartScene';
 import { ChatScene } from './ChatScene';
 import { ChecklistScene } from './ChecklistScene';
@@ -23,11 +26,15 @@ import { InformationSceneView } from './concepts/information/Scene';
 import { PerspectiveSceneView } from './concepts/perspective/Scene';
 import { DefinitionScene } from './DefinitionScene';
 import { DominoesScene } from './DominoesScene';
+import { DetroitPlaceScene } from './detroit/DetroitPlaceScene';
 import { EquationScene } from './EquationScene';
 import { ExplodedViewScene } from './ExplodedViewScene';
 import { FeedbackControlScene } from './FeedbackControlScene';
 import { FlowScene } from './FlowScene';
 import { FunnelScene } from './FunnelScene';
+import { FundFlowScene } from './finance/FundFlowScene';
+import { OwnershipChangeScene } from './finance/OwnershipChangeScene';
+import { PortfolioExposureScene } from './finance/PortfolioExposureScene';
 import { HeadlineScene } from './HeadlineScene';
 import { HeroScene } from './HeroScene';
 import { IcebergScene } from './IcebergScene';
@@ -70,6 +77,20 @@ import { VersusScene } from './VersusScene';
 
 export const SceneBody: React.FC<{ scene: ExplainerScene }> = ({ scene }) => {
   switch (scene.kind) {
+    case 'detroit-place':
+      return <DetroitPlaceScene scene={scene} />;
+    case 'fund-flow':
+      return <FundFlowScene scene={scene} />;
+    case 'ownership-change':
+      return <OwnershipChangeScene scene={scene} />;
+    case 'portfolio-exposure':
+      return <PortfolioExposureScene scene={scene} />;
+    case 'cash-timing':
+      return <CashTimingScene scene={scene} />;
+    case 'token-attention':
+      return <TokenAttentionScene scene={scene} />;
+    case 'inference-tradeoff':
+      return <InferenceTradeoffScene scene={scene} />;
     case 'system-layers':
     case 'semantic-sort':
     case 'information-transform':

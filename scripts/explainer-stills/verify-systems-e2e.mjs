@@ -23,6 +23,31 @@ export const CONCEPT_PACKS = [
   'perspective',
   'adaptive',
 ];
+export const HYBRID_BUNDLE_FILES = [
+  'diagrams/DiagramStage.tsx',
+  'diagrams/HybridStage.tsx',
+  'diagrams/primitives.tsx',
+  'diagrams/symbols.tsx',
+  'diagrams/layout.ts',
+  'diagrams/motion.ts',
+  'detroit/DetroitPlaceScene.tsx',
+  'detroit/RenaissanceCenter.tsx',
+  'detroit/rencen-geometry.ts',
+  'detroit/MichiganCentral.tsx',
+  'detroit/FoxTheatre.tsx',
+  'detroit/ClassicLandmarks.tsx',
+  'detroit/poses.ts',
+  'detroit/catalog.ts',
+  'finance/FundFlowScene.tsx',
+  'finance/OwnershipChangeScene.tsx',
+  'finance/PortfolioExposureScene.tsx',
+  'finance/poses.ts',
+  'business-systems/CashTimingScene.tsx',
+  'business-systems/poses.ts',
+  'ai-systems/TokenAttentionScene.tsx',
+  'ai-systems/InferenceTradeoffScene.tsx',
+  'ai-systems/poses.ts',
+].map((file) => `src/main/remotion/compositions/explainer/${file}`);
 const require = createRequire(import.meta.url);
 export const VITEST = join(dirname(require.resolve('vitest/package.json')), 'vitest.mjs');
 
@@ -136,18 +161,49 @@ export async function runBounded(executable, args, options = {}) {
 }
 
 export function parseE2EArgs(args) {
-  if (args.some((arg) => !['--unit', '--technology', '--concepts', '--help'].includes(arg)))
-    throw new Error('Only --unit, --technology, --concepts or --help is supported.');
+  let bundle;
+  const flags = [];
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === '--bundle') {
+      const directory = args[++i];
+      if (bundle || !directory || directory.startsWith('--')) {
+        throw new Error('--bundle requires exactly one local directory.');
+      }
+      if (
+        directory.length > 4096 ||
+        directory.includes('\0') ||
+        /^[\\/]{2}/u.test(directory) ||
+        (/^[a-z][a-z\d+.-]*:/iu.test(directory) && !/^[a-z]:[\\/]/iu.test(directory))
+      ) {
+        throw new Error('--bundle must be a local directory, not a URL or network share.');
+      }
+      bundle = localBundle(directory);
+    } else if (['--unit', '--technology', '--concepts', '--hybrid', '--help'].includes(arg)) {
+      flags.push(arg);
+    } else {
+      throw new Error(
+        'Only --unit, --technology, --concepts, --hybrid, --bundle or --help is supported.',
+      );
+    }
+  }
   return {
-    mode: args.includes('--unit') ? 'unit' : 'render',
-    technology: args.includes('--technology'),
-    concepts: args.includes('--concepts'),
-    help: args.includes('--help'),
+    mode: flags.includes('--unit') ? 'unit' : 'render',
+    technology: flags.includes('--technology'),
+    concepts: flags.includes('--concepts'),
+    hybrid: flags.includes('--hybrid'),
+    help: flags.includes('--help'),
+    ...(bundle ? { bundle } : {}),
   };
 }
 
 /** Require current source contents in production source maps, not just a recently touched index.html. */
-export function currentBundleEvidence(directory, technology = false, concepts = false) {
+export function currentBundleEvidence(
+  directory,
+  technology = false,
+  concepts = false,
+  hybrid = false,
+) {
   const bundle = localBundle(directory);
   const sources = new Map();
   for (const file of readdirSync(bundle).filter((name) => name.endsWith('.js.map'))) {
@@ -177,6 +233,7 @@ export function currentBundleEvidence(directory, technology = false, concepts = 
     for (const pack of CONCEPT_PACKS)
       for (const file of ['Scene.tsx', 'poses.ts', 'models.tsx'])
         required.push(`src/main/remotion/compositions/explainer/concepts/${pack}/${file}`);
+  if (hybrid) required.push(...HYBRID_BUNDLE_FILES);
   for (const file of required)
     if (!sources.has(file)) throw new Error(`Current bundle source-map evidence missing: ${file}`);
   return {
@@ -188,13 +245,15 @@ export function currentBundleEvidence(directory, technology = false, concepts = 
 
 async function main() {
   const args = process.argv.slice(2);
-  const { mode, technology, concepts, help } = parseE2EArgs(args);
+  const { mode, technology, concepts, hybrid, help, bundle: pinnedBundle } = parseE2EArgs(args);
   if (help) {
     console.log(
-      'Usage: node scripts/explainer-stills/verify-systems-e2e.mjs [--unit] [--technology] [--concepts]\n' +
+      'Usage: node scripts/explainer-stills/verify-systems-e2e.mjs [--unit] [--technology] [--concepts] [--hybrid] [--bundle DIRECTORY]\n' +
         '  --unit: planning/child-lifecycle checks only; omit for local native media.\n' +
         '  --concepts: all 42 presets plus a mixed AI/business/concept export chain in both aspects.\n' +
-        '  --technology and --concepts may be combined; missing fixtures fail, never skip.',
+        '  --hybrid: all 15 presets / both modes and seven enabled landmarks, plus seven mixed chapters in both production aspects.\n' +
+        '  --bundle: use an immutable local snapshot; current-source and hash checks still apply.\n' +
+        '  Catalog flags may be combined; missing fixtures fail, never skip.',
     );
     return;
   }
@@ -207,6 +266,7 @@ async function main() {
     mode,
     technology,
     concepts,
+    hybrid,
     out,
     startedAt: new Date().toISOString(),
     status: 'running',
@@ -226,8 +286,9 @@ async function main() {
         'Installed ffmpeg-static and ffprobe-installer binaries are required; no installs performed.',
       );
     }
-    const bundle = join(ROOT, 'out/remotion');
-    if (mode === 'render') report.bundle = currentBundleEvidence(bundle, technology, concepts);
+    const bundle = pinnedBundle ?? join(ROOT, 'out/remotion');
+    if (mode === 'render')
+      report.bundle = currentBundleEvidence(bundle, technology, concepts, hybrid);
     await runBounded(process.execPath, [VITEST, 'run', '--config', CONFIG], {
       ownProcessGroup: true,
       timeoutMs: mode === 'unit' ? 120_000 : 3_600_000,
@@ -238,6 +299,7 @@ async function main() {
         SYSTEMS_E2E_MODE: mode,
         SYSTEMS_E2E_TECHNOLOGY: technology ? '1' : '0',
         SYSTEMS_E2E_CONCEPTS: concepts ? '1' : '0',
+        SYSTEMS_E2E_HYBRID: hybrid ? '1' : '0',
         SYSTEMS_E2E_OUT: out,
         SYSTEMS_E2E_OWNER: owner,
         SYSTEMS_E2E_BUNDLE: bundle,

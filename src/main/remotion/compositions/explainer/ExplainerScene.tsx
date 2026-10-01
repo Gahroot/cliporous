@@ -7,6 +7,7 @@
 import type React from 'react';
 import { useMemo } from 'react';
 import { AbsoluteFill } from 'remotion';
+import { longformClipPath } from './longform-stage-layout';
 import { deriveExplainerPalette } from './palette';
 import { SceneBody } from './SceneBody';
 import { SceneFrame } from './SceneFrame';
@@ -19,6 +20,7 @@ export const ExplainerScene: React.FC<ExplainerSceneProps> = ({
   palette,
   layout = 'stack',
   aspect = '9:16',
+  presentation,
 }) => {
   const entrance = useEntrance();
   const ctx = useMemo(
@@ -32,15 +34,18 @@ export const ExplainerScene: React.FC<ExplainerSceneProps> = ({
         }),
       layout,
       aspect,
+      presentation,
     }),
-    [palette, accentColor, layout, aspect],
+    [palette, accentColor, layout, aspect, presentation],
   );
 
+  const landscape = aspect === '16:9' ? presentation : undefined;
   return (
     <ExplainerProvider value={ctx}>
       <AbsoluteFill
         style={{
-          backgroundColor: layout === 'over' ? 'transparent' : ctx.palette.bgOuter,
+          backgroundColor: landscape || layout === 'over' ? 'transparent' : ctx.palette.bgOuter,
+          clipPath: landscape ? longformClipPath(landscape) : undefined,
           fontFamily: UI_FONT,
         }}
       >

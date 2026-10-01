@@ -31,6 +31,7 @@ import {
 } from '../remotion/compositions/explainer/types';
 import { toFFmpegPath } from './helpers';
 import { activeCommands } from './overlay-runner';
+import { mixSceneSfxBed } from './scene-sfx-bed';
 
 // ---------------------------------------------------------------------------
 // Library + tuning
@@ -246,8 +247,9 @@ export type MixSceneSfxResult =
 /**
  * Mix scene cues into `videoPath`, writing `opts.outputPath`.
  *
- * Never throws. Missing SFX files are skipped with a warning. When nothing is
- * placed, ffmpeg is not run and `outputPath` is the untouched `videoPath` —
+ * Never throws. Bounded mixes fail if a planned asset is missing; legacy mixes
+ * skip missing files with a warning. When no valid cues remain, ffmpeg is not
+ * run and `outputPath` is the untouched `videoPath` —
  * the caller keeps the original file. The ffmpeg process is registered with
  * the render pipeline's `activeCommands`, so `cancelRender()` kills it; an
  * aborted `signal` does the same.
@@ -255,7 +257,14 @@ export type MixSceneSfxResult =
 export async function mixSceneSfx(
   videoPath: string,
   cues: SceneCue[],
-  opts: { clipDuration: number; outputPath: string; masterDb?: number; signal?: AbortSignal },
+  opts: {
+    clipDuration: number;
+    outputPath: string;
+    masterDb?: number;
+    signal?: AbortSignal;
+    /** Longform: bounded lossless beds, one AAC mix; requires every planned asset. */
+    bounded?: boolean;
+  },
 ): Promise<MixSceneSfxResult> {
   const started = Date.now();
   const elapsed = (): number => Date.now() - started;
@@ -280,7 +289,13 @@ export async function mixSceneSfx(
       placements.push({ ...p, file: abs });
     }
     if (missing.size > 0) {
-      log('warn', 'SceneSfx', 'Skipping missing scene SFX files', { dir, files: [...missing] });
+      const files = [...missing].sort();
+      if (opts.bounded) {
+        const error = `Missing scene SFX assets: ${files.join(', ')}`;
+        log('warn', 'SceneSfx', 'Scene SFX mix failed', { error, elapsedMs: elapsed() });
+        return { ok: false, error };
+      }
+      log('warn', 'SceneSfx', 'Skipping missing scene SFX files', { dir, files });
     }
 
     if (placements.length === 0) {
@@ -296,14 +311,15 @@ export async function mixSceneSfx(
       return { ok: false, error: 'outputPath must differ from videoPath' };
     }
 
-    const args = buildSfxMixArgs(videoPath, placements, opts.outputPath);
     log('info', 'SceneSfx', 'Mixing scene SFX', {
       cues: cues.length,
       placed: placements.length,
-      inputs: placements.length + 1,
+      inputs: opts.bounded ? 2 : placements.length + 1,
     });
 
-    const error = await runFfmpeg(args, opts.signal);
+    const error = opts.bounded
+      ? await mixSceneSfxBed(videoPath, placements, opts, runFfmpeg)
+      : await runFfmpeg(buildSfxMixArgs(videoPath, placements, opts.outputPath), opts.signal);
     if (error) {
       removeQuietly(opts.outputPath);
       log('warn', 'SceneSfx', 'Scene SFX mix failed', { error, elapsedMs: elapsed() });
@@ -346,12 +362,20 @@ function runFfmpeg(args: string[], signal?: AbortSignal): Promise<string | null>
 
     // The command's error message already carries the stderr tail.
     cmd
-      .on('end', () => finish(null))
+      .on('end', () => finish(aborted ? 'aborted' : null))
       .on('error', (err: Error) => finish(aborted ? 'aborted' : err.message));
 
     activeCommands.add(cmd);
     signal?.addEventListener('abort', onAbort, { once: true });
-    cmd.save(output);
+    // Cover cancellation before subscription; never launch work with an aborted signal.
+    if (signal?.aborted) finish('aborted');
+    else {
+      try {
+        cmd.save(output);
+      } catch (error) {
+        finish(error instanceof Error ? error.message : String(error));
+      }
+    }
   });
 }
 

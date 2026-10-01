@@ -1,8 +1,9 @@
 import { type ChildProcess, execSync, spawn, spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { existsSync, readFileSync } from 'node:fs';
+import { stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { delimiter, dirname, join } from 'node:path';
+import { delimiter, dirname, isAbsolute, join } from 'node:path';
 import { app } from 'electron';
 import { OUTPUT_HEIGHT, OUTPUT_WIDTH } from './aspect-ratios';
 
@@ -22,6 +23,15 @@ function resolveDevFfmpegStatic(): string | null {
   try {
     const p = require('ffmpeg-static') as string | null;
     return p && existsSync(p) ? p : null;
+  } catch {
+    return null;
+  }
+}
+
+function resolveDevFfprobeStatic(): string | null {
+  try {
+    const installer = require('@ffprobe-installer/ffprobe') as { path?: string };
+    return installer.path && existsSync(installer.path) ? installer.path : null;
   } catch {
     return null;
   }
@@ -90,6 +100,17 @@ function resolveBinaryPath(name: string): string | null {
     searchedPaths.push(`npm ffmpeg-static: ${devStatic ?? 'not found'}`);
     if (devStatic) {
       console.log(`[FFmpeg] Found ffmpeg via npm ffmpeg-static: ${devStatic}`);
+      return devStatic;
+    }
+  }
+
+  // Development ffprobe: use the npm @ffprobe-installer build so dev works
+  // without a system FFmpeg install (notably on Windows).
+  if (!app.isPackaged && name === 'ffprobe') {
+    const devStatic = resolveDevFfprobeStatic();
+    searchedPaths.push(`npm @ffprobe-installer: ${devStatic ?? 'not found'}`);
+    if (devStatic) {
+      console.log(`[FFmpeg] Found ffprobe via npm @ffprobe-installer: ${devStatic}`);
       return devStatic;
     }
   }
@@ -807,7 +828,123 @@ interface FfprobeData {
   format: FfprobeFormat;
 }
 
-function ffprobeRaw(filePath: string): Promise<FfprobeData> {
+export interface VideoMetadataOptions {
+  /** Native file/pipe protocols only; authorized UNC/mounted shares may still use OS networking. */
+  localOnly?: boolean;
+  signal?: AbortSignal | undefined;
+}
+
+/** Opt-in guarded probe. Legacy callers below keep their existing behavior. */
+async function ffprobeGuarded(
+  filePath: string,
+  options: VideoMetadataOptions,
+): Promise<FfprobeData> {
+  const { signal, localOnly } = options;
+  signal?.throwIfAborted();
+  if (localOnly) {
+    const normalized = filePath.replace(/\\/g, '/');
+    const drive = /^[a-z]:\//i.test(normalized);
+    if (
+      !isAbsolute(filePath) ||
+      [...filePath].some((character) => character.charCodeAt(0) < 32) ||
+      /^\/\/[?.](?:\/|$)/.test(normalized) ||
+      normalized.slice(drive ? 2 : 0).includes(':') ||
+      /^\/(?:dev|proc|sys)(?:\/|$)/.test(normalized) ||
+      (process.platform === 'win32' &&
+        normalized
+          .split('/')
+          .some((part) => /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(part)))
+    )
+      throw new Error(
+        'Metadata requires an absolute native regular file, not a URL or device path.',
+      );
+    if (!(await stat(filePath)).isFile())
+      throw new Error('Metadata source must be a regular file.');
+  }
+  signal?.throwIfAborted();
+  return new Promise((resolve, reject) => {
+    const bin = resolvedFfprobePath ?? 'ffprobe';
+    const proc = spawn(
+      bin,
+      [
+        '-v',
+        'error',
+        '-print_format',
+        'json',
+        '-show_format',
+        '-show_streams',
+        ...(localOnly ? ['-protocol_whitelist', 'file,pipe'] : []),
+        filePath,
+      ],
+      { env: buildMediaProcessEnv(bin), stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true },
+    );
+    const stdout: Buffer[] = [];
+    const stderr: Buffer[] = [];
+    let stdoutBytes = 0;
+    let stderrBytes = 0;
+    let failure: unknown;
+    let stopped = false;
+    let settled = false;
+    const cleanup = (): void => {
+      clearTimeout(timeout);
+      signal?.removeEventListener('abort', abort);
+    };
+    // A metadata-only child owns no output file to flush. Kill immediately, settle on close.
+    const stop = (error: unknown): void => {
+      if (stopped || settled) return;
+      stopped = true;
+      failure = error;
+      proc.kill('SIGKILL');
+    };
+    const abort = (): void => stop(signal?.reason ?? new Error('Metadata probe cancelled.'));
+    const timeout = setTimeout(
+      () => stop(new Error('Metadata probe timed out after 30 seconds.')),
+      30_000,
+    );
+    proc.stdout.on('data', (chunk: Buffer) => {
+      if (stopped || settled) return;
+      stdoutBytes += chunk.length;
+      if (stdoutBytes > 4 * 1024 * 1024)
+        stop(new Error('Metadata probe stdout output limit exceeded.'));
+      else stdout.push(chunk);
+    });
+    proc.stderr.on('data', (chunk: Buffer) => {
+      if (stopped || settled) return;
+      stderrBytes += chunk.length;
+      if (stderrBytes > 64 * 1024) stop(new Error('Metadata probe stderr output limit exceeded.'));
+      else stderr.push(chunk);
+    });
+    proc.once('error', (error) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(stopped ? failure : error);
+    });
+    proc.once('close', (code) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      if (stopped) {
+        reject(failure);
+        return;
+      }
+      if (code !== 0) {
+        reject(new Error(`ffprobe exited ${code}: ${Buffer.concat(stderr).toString('utf8')}`));
+        return;
+      }
+      try {
+        resolve(JSON.parse(Buffer.concat(stdout).toString('utf8')));
+      } catch (error) {
+        reject(error);
+      }
+    });
+    signal?.addEventListener('abort', abort, { once: true });
+    if (signal?.aborted) abort();
+  });
+}
+
+function ffprobeRaw(filePath: string, options?: VideoMetadataOptions): Promise<FfprobeData> {
+  if (options?.localOnly || options?.signal) return ffprobeGuarded(filePath, options);
   return new Promise((resolve, reject) => {
     const bin = resolvedFfprobePath ?? 'ffprobe';
 
@@ -862,7 +999,10 @@ function ffprobeRaw(filePath: string): Promise<FfprobeData> {
 // Video metadata / helpers
 // ---------------------------------------------------------------------------
 
-export async function getVideoMetadata(filePath: string): Promise<{
+export async function getVideoMetadata(
+  filePath: string,
+  options?: VideoMetadataOptions,
+): Promise<{
   duration: number;
   videoStreamDuration: number;
   width: number;
@@ -871,7 +1011,7 @@ export async function getVideoMetadata(filePath: string): Promise<{
   fps: number;
   audioCodec: string;
 }> {
-  const metadata = await ffprobeRaw(filePath);
+  const metadata = await ffprobeRaw(filePath, options);
   const video = metadata.streams.find((s) => s.codec_type === 'video');
   if (!video) throw new Error('No video stream found');
   const audio = metadata.streams.find((s) => s.codec_type === 'audio');

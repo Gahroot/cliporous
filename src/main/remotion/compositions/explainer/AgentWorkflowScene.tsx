@@ -241,7 +241,7 @@ function DeskLabels({
   return (
     <>
       {scene.condition && (
-        <TechText x={72} y={145} width={936} size={30} align="center">
+        <TechText slot="condition" x={72} y={145} width={936} size={30} align="center">
           {scene.condition}
         </TechText>
       )}
@@ -271,7 +271,7 @@ function DeskLabels({
       >
         {pose.subject}
       </div>
-      <TechText x={72} y={205} width={936} size={30} align="center">
+      <TechText slot="status" x={72} y={205} width={936} size={30} align="center">
         {pose.conditional && pose.phase === 'resolved'
           ? 'Possible outcome'
           : PHASE_COPY[pose.phase]}

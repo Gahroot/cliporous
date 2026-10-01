@@ -30,6 +30,7 @@ import {
   EMPTY_CREATIVE_BRIEF_FIELDS,
 } from '../store/workspace-slice';
 import { getCreatorProfiles } from './creator-profiles';
+import { restoreLongformPlans } from './longform-project-plans';
 
 const LAST_PROJECT_PATH_KEY = 'batchclip-last-project-path';
 
@@ -362,7 +363,11 @@ export function migrateProjectData(input: unknown, filePath?: string | null): Pr
     transcriptions: sanitized.transcriptions ?? {},
     clips: sanitized.clips ?? {},
     stitchedClips: sanitized.stitchedClips ?? {},
-    longformPlans: sanitized.longformPlans ?? {},
+    longformPlans: restoreLongformPlans(
+      sanitized.longformPlans,
+      sources,
+      sanitized.transcriptions ?? {},
+    ),
     settings: projectSettingsFrom(sanitized.settings),
     processingConfig: {
       ...DEFAULT_PROCESSING_CONFIG,
@@ -518,6 +523,7 @@ export function restoreProject(
     clips,
     stitchedClips,
     longformPlans,
+    longformReviewFocus: null,
     creativeBrief: { ...DEFAULT_CREATIVE_BRIEF, ...(project.creativeBrief ?? {}) },
     creatorProfile: {
       ...DEFAULT_PROJECT_CREATOR_PROFILE,

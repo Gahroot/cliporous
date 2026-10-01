@@ -72,6 +72,7 @@ export const createProjectSlice: StateCreator<
       clips: {},
       stitchedClips: {},
       longformPlans: {},
+      longformReviewFocus: null,
       workspace: { ...DEFAULT_PROJECT_WORKSPACE, previewPlayheadByClip: {} },
       creativeBrief: { ...DEFAULT_CREATIVE_BRIEF },
       creatorProfile: { ...DEFAULT_PROJECT_CREATOR_PROFILE, overrides: {} },

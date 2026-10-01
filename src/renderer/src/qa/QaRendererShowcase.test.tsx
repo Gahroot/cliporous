@@ -16,6 +16,29 @@ describe('deterministic renderer state showcase', () => {
     expect(parseQaState('#settings')).toBeNull();
   });
 
+  it.each([
+    'scene-review',
+    'scene-export',
+  ] as const)('seeds a source-grounded, approvable %s fixture', (stateId) => {
+    seedQaState(stateId);
+    const state = useStore.getState();
+    const source = state.sources[0];
+    if (!source) throw new Error('Scene fixture must contain its source.');
+    const record = state.longformPlans[source.id];
+    expect(record?.plan).toMatchObject({ mode: 'scene-first', sourceDuration: 20 });
+    expect(state.transcriptions[source.id]?.words).toHaveLength(20);
+    expect(state.clips[source.id]).toBeUndefined();
+    if (stateId === 'scene-export') {
+      expect(record?.status).toBe('accepted');
+      expect(record?.approvedVersionId).toBeTruthy();
+      expect(record?.reconciliation?.sceneResults).toHaveLength(3);
+      expect(state.renderProgress[0]).toMatchObject({ status: 'done', kind: 'longform' });
+    } else {
+      state.acceptLongformPlan(source.id, 'editorial', 'brand');
+      expect(useStore.getState().longformPlans[source.id]?.status).toBe('accepted');
+    }
+  });
+
   it('seeds identical creator-facing state on repeated runs', () => {
     seedQaState('partial-success');
     const first = {

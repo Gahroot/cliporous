@@ -305,7 +305,7 @@ describe('parseExplainerPlan', () => {
     expect(plan).toEqual([]);
   });
 
-  it('clamps the start to minStart and applies variety rules (no repeat kind, gap)', () => {
+  it('clamps minStart and preserves baseline variety rules (no repeat kind, gap)', () => {
     const plan = parseExplainerPlan(
       {
         scenes: [
@@ -340,6 +340,7 @@ describe('parseExplainerPlan', () => {
       },
       words(),
       BOUNDS,
+      { profile: 'baseline-policy-codex-v1' },
     );
 
     // 2nd stamp is too close AND a repeat kind; 3rd is a repeat of the kept 1st

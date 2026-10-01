@@ -77,7 +77,7 @@ export function ExplanationStage({
       overlay={() => (
         <>
           {scene.condition && (
-            <TechText x={100} y={146} width={880} size={30} align="center">
+            <TechText slot="condition" x={100} y={146} width={880} size={30} align="center">
               {scene.condition}
             </TechText>
           )}
@@ -105,7 +105,14 @@ export function ExplanationStage({
             ))}
           </div>
           {t >= scene.resolveAt && (
-            <TechText x={100} y={EXPLANATION_OUTCOME_TOP} width={880} size={36} align="center">
+            <TechText
+              slot="outcome"
+              x={100}
+              y={EXPLANATION_OUTCOME_TOP}
+              width={880}
+              size={36}
+              align="center"
+            >
               {scene.outcome}
             </TechText>
           )}

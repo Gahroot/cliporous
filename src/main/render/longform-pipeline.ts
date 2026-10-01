@@ -15,6 +15,7 @@ import { tmpdir } from 'node:os';
 import { basename, extname, join } from 'node:path';
 import { Ch } from '@shared/ipc-channels';
 import { resolveLongformPlanOverlaps } from '@shared/longform-plan-timing';
+import { isSceneFirstPlanEnvelope, sceneFirstPlanProblem } from '@shared/longform-scenes';
 import { getPaletteById } from '@shared/palettes';
 import type {
   BlockPlacement,
@@ -50,11 +51,13 @@ import {
   encodeSpeakerSegment,
   type NormalizedConcatSegment,
 } from './longform-encode';
+import { renderSceneFirstLongform } from './longform-scene-render';
 import type { WordTimestamp } from './point-coverage';
 import { resolveQualityParams } from './quality';
 import { classifyRenderError } from './render-error-map';
 import { mixSceneSfx } from './scene-sfx';
 import type { RenderBatchOptions } from './types';
+import { resolveNewOutputPath } from './writable-output-path';
 
 const HORMOZI_STYLE_ID = 'hormozi';
 
@@ -269,6 +272,7 @@ function buildSpeakerZoom(
 export async function renderLongformVideo(
   options: RenderBatchOptions,
   window: BrowserWindow,
+  signal?: AbortSignal,
 ): Promise<void> {
   const { jobs, outputDirectory } = options;
   const job = jobs[0];
@@ -293,6 +297,78 @@ export async function renderLongformVideo(
   const requestedPlan = options.longformEditPlan;
   if (!requestedPlan) {
     sendError('Long-form render requires a longformEditPlan.');
+    return;
+  }
+  // New or unsupported scene data must never be normalized/downgraded into a legacy plan.
+  if (
+    (requestedPlan.mode !== undefined && requestedPlan.mode !== 'legacy') ||
+    (requestedPlan.schemaVersion !== undefined && requestedPlan.schemaVersion !== 1) ||
+    'scenes' in requestedPlan
+  ) {
+    if (!isSceneFirstPlanEnvelope(requestedPlan)) {
+      sendError(sceneFirstPlanProblem(requestedPlan) ?? 'Invalid scene-first plan.');
+      return;
+    }
+    try {
+      signal?.throwIfAborted();
+      const qualityParams = resolveQualityParams(options.renderQuality);
+      const encoder = getEncoder(qualityParams);
+      window.webContents.send(Ch.Send.RENDER_CLIP_START, {
+        clipId: job.clipId,
+        index: 0,
+        total: 1,
+        encoder: encoder.encoder,
+        encoderIsHardware: isHardwareEncoder(encoder.encoder),
+      });
+      const sourceName = basename(job.sourceVideoPath, extname(job.sourceVideoPath));
+      const outputPath = resolveNewOutputPath(join(outputDirectory, `${sourceName}_longform.mp4`));
+      const reconciliation = await renderSceneFirstLongform({
+        plan: requestedPlan,
+        words: job.wordTimestamps ?? [],
+        sourceVideoPath: job.sourceVideoPath,
+        outputPath,
+        palette: deriveExplainerPalette(
+          getPaletteById(options.longformPaletteId, options.customPalettes),
+        ),
+        qualityParams,
+        sceneSfxEnabled: options.sceneSfxEnabled,
+        signal,
+        onProgress: (message, fraction) =>
+          window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
+            clipId: job.clipId,
+            message,
+            percent: Math.round(fraction * 100),
+          }),
+      });
+      signal?.throwIfAborted();
+      const failed =
+        reconciliation.sceneResults?.filter((scene) => scene.status === 'failed').length ?? 0;
+      window.webContents.send(Ch.Send.RENDER_CLIP_PROGRESS, { clipId: job.clipId, percent: 100 });
+      window.webContents.send(Ch.Send.RENDER_CLIP_DONE, {
+        clipId: job.clipId,
+        outputPath,
+        reconciliation,
+        ...(failed
+          ? {
+              summary: `${failed} scene(s) failed; source speaker retained for their exact intervals.`,
+            }
+          : {}),
+      });
+      window.webContents.send(Ch.Send.RENDER_BATCH_DONE, { completed: 1, failed: 0, total: 1 });
+    } catch (error) {
+      if (signal?.aborted) {
+        window.webContents.send(Ch.Send.RENDER_CLIP_CANCELLED, { clipId: job.clipId });
+        window.webContents.send(Ch.Send.RENDER_CANCELLED, {
+          completed: 0,
+          failed: 0,
+          cancelled: 1,
+          total: 1,
+        });
+        return;
+      }
+      const message = error instanceof Error ? error.message : String(error);
+      sendError(`Long-form render failed: ${message}`);
+    }
     return;
   }
   // Older saved projects may predate plan-time collision resolution. Normalize

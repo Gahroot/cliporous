@@ -77,6 +77,14 @@ export function installQaApi(stateId: QaStateId): void {
       },
     },
     getRecentProjects: async () => recentProjects(),
+    openFiles: async () => [QA_SOURCE.path],
+    getMetadata: async () => ({ duration: QA_SOURCE.duration, width: 1920, height: 1080 }),
+    getThumbnail: async () => QA_POSTER,
+    renderLongformScenePreview: async () => {
+      const count = Number(document.documentElement.dataset.qaScenePreviewCalls ?? 0);
+      document.documentElement.dataset.qaScenePreviewCalls = String(count + 1);
+      return new URL('/__qa-media.mp4', window.location.href).href;
+    },
     loadRecovery: async () => (stateId === 'recovery' ? qaRecoveryJson() : null),
     getPythonStatus: async () => ({
       ready: stateId !== 'setup' && stateId !== 'setup-error',

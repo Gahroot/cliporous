@@ -15,7 +15,14 @@
  *                The full-fidelity error log lives in the bottom panel.
  */
 
-import { AlertTriangle, Inbox, MousePointer2, Search, SearchX } from 'lucide-react';
+import {
+  AlertTriangle,
+  Inbox,
+  MousePointer2,
+  Search,
+  SearchX,
+  SlidersHorizontal,
+} from 'lucide-react';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { ClipCard } from '@/components/ClipCard';
@@ -45,6 +52,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -54,6 +70,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { performHistoryCommand } from '@/hooks/useHistoryControls';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { usePipeline } from '@/hooks/usePipeline';
 import {
   adjacentReviewItem,
   buildReviewItems,
@@ -64,7 +81,7 @@ import { setDisplayPreferences, useDisplayPreferences } from '@/services/display
 import { prepareApprovedRender } from '@/services/render-service';
 import { showUndoFeedback } from '@/services/review-feedback';
 import { useStore } from '@/store';
-import { selectActiveClips, selectActiveStitchedClips } from '@/store/selectors';
+import { PROCESSING_STAGES, selectActiveClips, selectActiveStitchedClips } from '@/store/selectors';
 import type { ClipCandidate, ClipRenderSettings, ErrorLogEntry } from '@/store/types';
 
 type GridItem = ReviewClipItem;
@@ -96,6 +113,9 @@ function isReviewTypingTarget(target: EventTarget | null): boolean {
     '[role="listbox"]',
     '[role="menu"]',
     '[role="menuitem"]',
+    '[role="menuitemradio"]',
+    '[role="menuitemcheckbox"]',
+    '[aria-haspopup="menu"]',
     '[role="option"]',
     '[role="slider"]',
   ].join(', ');
@@ -104,7 +124,7 @@ function isReviewTypingTarget(target: EventTarget | null): boolean {
 
 function anotherDialogOwnsFocus(): boolean {
   const dialogs = document.querySelectorAll<HTMLElement>(
-    '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"]',
+    '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"], [role="menu"][data-state="open"], [role="listbox"]',
   );
   return Array.from(dialogs).some((dialog) => !dialog.hasAttribute('data-review-inspector'));
 }
@@ -159,7 +179,15 @@ function ClipGridSkeleton({ density }: { density: keyof typeof GRID_COLS }): Rea
 //                       user to do exactly what they just did.
 // ---------------------------------------------------------------------------
 
-function EmptyState({ processed }: { processed: boolean }): React.JSX.Element {
+function EmptyState({
+  processed,
+  reprocessDisabled,
+  onReprocess,
+}: {
+  processed: boolean;
+  reprocessDisabled: boolean;
+  onReprocess: () => void;
+}): React.JSX.Element {
   return (
     <div className="flex h-full w-full items-center justify-center p-6">
       <Card className="flex w-full max-w-sm flex-col items-center gap-3 px-6 py-10 text-center">
@@ -168,8 +196,19 @@ function EmptyState({ processed }: { processed: boolean }): React.JSX.Element {
             <SearchX className="text-muted-foreground h-10 w-10" strokeWidth={1.5} aria-hidden />
             <p className="text-foreground text-sm font-medium">No clips passed scoring</p>
             <p className="text-muted-foreground text-xs">
-              Nothing cleared the score threshold. Try lowering the minimum score in Settings, or
-              run a longer or different source.
+              Try lowering the minimum score in Settings, then reprocess. Your source and transcript
+              stay here; you can also create a candidate from the transcript.
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button variant="outline" onClick={() => void window.api.openSettingsWindow()}>
+                Open Settings
+              </Button>
+              <Button disabled={reprocessDisabled} onClick={onReprocess}>
+                Reprocess with current settings
+              </Button>
+            </div>
+            <p className="text-muted-foreground text-xs">
+              Reprocessing uses AI and may incur usage costs. Nothing runs until you confirm.
             </p>
           </>
         ) : (
@@ -207,6 +246,18 @@ export function ClipGrid(): React.JSX.Element {
   const batchUpdateReviewItems = useStore((s) => s.batchUpdateReviewItems);
   const addClipCandidate = useStore((s) => s.addClipCandidate);
   const stage = useStore((s) => s.pipeline.stage);
+  const workBusy = useStore(
+    (s) =>
+      PROCESSING_STAGES.has(s.pipeline.stage) ||
+      s.pipeline.stage === 'rendering' ||
+      s.isRendering ||
+      s.processingCancellation.status === 'cancelling' ||
+      s.renderCancellation.status === 'cancelling',
+  );
+  const { processVideo } = usePipeline();
+  const [confirmReprocess, setConfirmReprocess] = useState(false);
+  const [isReprocessing, setIsReprocessing] = useState(false);
+  const actionPendingRef = useRef(false);
   const errorLog = useStore((s) => s.errorLog);
   const openClipId = useStore((s) => s.workspace.selectedClipId);
   const clipFilter = useStore((s) => s.workspace.clipFilter);
@@ -249,13 +300,6 @@ export function ClipGrid(): React.JSX.Element {
     () => clips.filter((clip) => selectedClipIds.has(clip.id)),
     [clips, selectedClipIds],
   );
-  const selectedRejectedCount = useMemo(
-    () =>
-      [...clips, ...stitchedClips].filter(
-        (clip) => selectedClipIds.has(clip.id) && clip.status === 'rejected',
-      ).length,
-    [clips, selectedClipIds, stitchedClips],
-  );
   const visibleIds = useMemo(() => allItems.map((item) => item.clip.id), [allItems]);
   const visibleSelectedCount = visibleIds.filter((clipId) => selectedClipIds.has(clipId)).length;
   const hiddenSelectedCount = Math.max(0, selectedIds.length - visibleSelectedCount);
@@ -275,6 +319,7 @@ export function ClipGrid(): React.JSX.Element {
     clearSelection();
     setSelectionMode(false);
     setCompareOpen(false);
+    setConfirmReprocess(false);
   }, [activeSourceId, clearSelection]);
 
   useEffect(() => {
@@ -514,13 +559,7 @@ export function ClipGrid(): React.JSX.Element {
   );
 
   // Loading: pipeline still working OR ready but clip array hasn't populated.
-  const isLoading =
-    stage === 'scoring' ||
-    stage === 'stitching' ||
-    stage === 'optimizing-loops' ||
-    stage === 'detecting-faces' ||
-    stage === 'ai-editing' ||
-    stage === 'segmenting';
+  const isLoading = PROCESSING_STAGES.has(stage);
 
   // A run finished (source present + pipeline settled on a completed stage) but
   // produced zero clips — e.g. nothing cleared the score threshold. Distinct
@@ -538,13 +577,43 @@ export function ClipGrid(): React.JSX.Element {
   const [isStartingRender, setIsStartingRender] = useState(false);
   const [confirmRenderAll, setConfirmRenderAll] = useState(false);
   const [confirmKeyboardRender, setConfirmKeyboardRender] = useState(false);
+  const unreviewedCount = totalCount - approvedCount - rejectedCount;
+  const exportDisabled =
+    workBusy || isStartingRender || isReprocessing || sourceUnavailable || !source;
+  const reprocessDisabled =
+    exportDisabled || !runCompletedEmpty || totalCount > 0 || !transcription || !source?.path;
+  const keyboardItems =
+    selectedIds.length > 0
+      ? [...clips, ...stitchedClips].filter((clip) => selectedClipIds.has(clip.id))
+      : selectedItem
+        ? [selectedItem.clip]
+        : [...clips, ...stitchedClips].filter((clip) => clip.status === 'approved');
+  const keyboardScope = selectedIds.length > 0 || selectedItem ? 'selected' : 'approved';
+  const keyboardUnreviewed = keyboardItems.filter((clip) => clip.status === 'pending').length;
+  const keyboardRejected = keyboardItems.filter((clip) => clip.status === 'rejected').length;
+
+  const handleReprocess = async (): Promise<void> => {
+    if (actionPendingRef.current || reprocessDisabled || !source) return;
+    actionPendingRef.current = true;
+    setConfirmReprocess(false);
+    setIsReprocessing(true);
+    try {
+      // Resume from scoring: keep the saved source and transcript; never reset the project.
+      await processVideo(source, 'scoring');
+    } finally {
+      actionPendingRef.current = false;
+      setIsReprocessing(false);
+    }
+  };
 
   const handleRenderApproved = async (): Promise<void> => {
-    if (isStartingRender || approvedCount === 0) return;
+    if (actionPendingRef.current || exportDisabled || approvedCount === 0) return;
+    actionPendingRef.current = true;
     setIsStartingRender(true);
     try {
       await prepareApprovedRender();
     } finally {
+      actionPendingRef.current = false;
       setIsStartingRender(false);
     }
   };
@@ -552,13 +621,15 @@ export function ClipGrid(): React.JSX.Element {
   // Explicit ids define this one render batch. Review decisions remain untouched,
   // including pending and rejected clips.
   const runRenderAll = async (): Promise<void> => {
-    if (isStartingRender || totalCount === 0 || !activeSourceId) return;
+    if (actionPendingRef.current || exportDisabled || totalCount === 0 || !activeSourceId) return;
+    actionPendingRef.current = true;
     setIsStartingRender(true);
     try {
       await prepareApprovedRender({
         clipIds: [...clips.map((clip) => clip.id), ...stitchedClips.map((clip) => clip.id)],
       });
     } finally {
+      actionPendingRef.current = false;
       setIsStartingRender(false);
     }
   };
@@ -566,7 +637,7 @@ export function ClipGrid(): React.JSX.Element {
   // Rendering rejected clips is potentially expensive, so keep the confirmation
   // while stating that the creator's review decisions are preserved.
   const requestRenderAll = (): void => {
-    if (isStartingRender || totalCount === 0 || !activeSourceId) return;
+    if (actionPendingRef.current || exportDisabled || totalCount === 0 || !activeSourceId) return;
     if (rejectedCount > 0) {
       setConfirmRenderAll(true);
       return;
@@ -594,7 +665,8 @@ export function ClipGrid(): React.JSX.Element {
   );
 
   const handleKeyboardRender = async (): Promise<void> => {
-    if (isStartingRender) return;
+    if (actionPendingRef.current || exportDisabled || keyboardItems.length === 0) return;
+    actionPendingRef.current = true;
     setConfirmKeyboardRender(false);
     setIsStartingRender(true);
     const renderIds =
@@ -602,6 +674,7 @@ export function ClipGrid(): React.JSX.Element {
     try {
       await prepareApprovedRender(renderIds.length > 0 ? { clipIds: renderIds } : undefined);
     } finally {
+      actionPendingRef.current = false;
       setIsStartingRender(false);
     }
   };
@@ -739,12 +812,13 @@ export function ClipGrid(): React.JSX.Element {
       }
       if (key === 'r') {
         event.preventDefault();
-        if (sourceUnavailable) {
-          toast('Relink the source media before rendering');
+        if (actionPendingRef.current || workBusy || isStartingRender || isReprocessing) return;
+        if (sourceUnavailable || !source) {
+          toast('Relink the source media before preparing an export');
           return;
         }
         if (selectedIds.length === 0 && !selectedItem && approvedCount === 0) {
-          toast('Select a clip or approve clips before rendering');
+          toast('Select a clip or approve clips before preparing an export');
           return;
         }
         setConfirmKeyboardRender(true);
@@ -760,15 +834,19 @@ export function ClipGrid(): React.JSX.Element {
     approvedCount,
     clearSelection,
     inspectorOpen,
+    isReprocessing,
+    isStartingRender,
     moveSelection,
     openClipEditor,
     selectAllVisible,
     selectedIds,
     selectedItem,
     selectionMode,
+    source,
     sourceUnavailable,
     toggleClipSelection,
     visibleIds,
+    workBusy,
   ]);
 
   return (
@@ -788,6 +866,9 @@ export function ClipGrid(): React.JSX.Element {
           >
             {source?.name ?? 'No source selected'}
           </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            AI scores are suggestions. You decide what to export.
+          </p>
         </div>
         <section
           className="flex flex-wrap items-center gap-2 md:justify-end"
@@ -800,6 +881,9 @@ export function ClipGrid(): React.JSX.Element {
             {clipFilter === 'all'
               ? `${totalCount} ${totalCount === 1 ? 'clip' : 'clips'}`
               : `${allItems.length} ${allItems.length === 1 ? 'result' : 'results'} · ${totalCount} total`}
+          </span>
+          <span className="text-sm font-medium tabular-nums" aria-live="polite">
+            {unreviewedCount} left to review
           </span>
           <span className="rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1.5 text-xs font-medium text-primary">
             {approvedCount} approved
@@ -834,20 +918,7 @@ export function ClipGrid(): React.JSX.Element {
             <MousePointer2 aria-hidden="true" />
             {selectionMode ? 'Selecting' : 'Select'}
           </Button>
-          <Select
-            value={gridDensity}
-            onValueChange={(value) =>
-              setDisplayPreferences({ gridDensity: value as 'comfortable' | 'compact' })
-            }
-          >
-            <SelectTrigger className="h-9 w-32" aria-label="Grid density">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="comfortable">Comfortable</SelectItem>
-              <SelectItem value="compact">Compact</SelectItem>
-            </SelectContent>
-          </Select>
+
           <Select
             value={clipFilter}
             onValueChange={(value) => setClipFilter(value as typeof clipFilter)}
@@ -863,33 +934,78 @@ export function ClipGrid(): React.JSX.Element {
               <SelectItem value="stitched">Stitched</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={clipSort} onValueChange={(value) => setClipSort(value as typeof clipSort)}>
-            <SelectTrigger className="h-9 w-36" aria-label="Sort clips">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="score">Score</SelectItem>
-              <SelectItem value="source-time">Source time</SelectItem>
-              <SelectItem value="duration">Duration</SelectItem>
-              <SelectItem value="status">Status</SelectItem>
-            </SelectContent>
-          </Select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" variant="outline">
+                <SlidersHorizontal aria-hidden="true" />
+                View options
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52">
+              <DropdownMenuLabel>Sort clips</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                aria-label="Sort clips"
+                value={clipSort}
+                onValueChange={(value) => setClipSort(value as typeof clipSort)}
+              >
+                <DropdownMenuRadioItem value="score">AI score</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="source-time">Source time</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="duration">Duration</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="status">Status</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Grid density</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                aria-label="Grid density"
+                value={gridDensity}
+                onValueChange={(value) =>
+                  setDisplayPreferences({ gridDensity: value as 'comfortable' | 'compact' })
+                }
+              >
+                <DropdownMenuRadioItem value="comfortable">Comfortable</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="compact">Compact</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+              {isWideReview && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Inspector width</DropdownMenuLabel>
+                  <DropdownMenuRadioGroup
+                    aria-label="Inspector width"
+                    value={inspectorWidth}
+                    onValueChange={(value) =>
+                      setDisplayPreferences({ inspectorWidth: value as typeof inspectorWidth })
+                    }
+                  >
+                    <DropdownMenuRadioItem value="narrow">Narrow</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="standard">Standard</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="wide">Wide</DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <HistoryControls scope="global" compact />
           <TemplateEditor />
+          <div className="flex flex-col gap-1">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={totalCount === 0 || exportDisabled}
+              onClick={requestRenderAll}
+              aria-describedby="all-clips-export-scope"
+            >
+              Prepare {totalCount} {totalCount === 1 ? 'clip' : 'clips'} for export
+            </Button>
+            <p id="all-clips-export-scope" className="text-center text-xs text-muted-foreground">
+              All clips · {unreviewedCount} unreviewed · {rejectedCount} rejected
+            </p>
+          </div>
           <Button
             size="sm"
-            variant="outline"
-            disabled={totalCount === 0 || isStartingRender || sourceUnavailable}
-            onClick={requestRenderAll}
-          >
-            Render All {totalCount > 0 && `(${totalCount})`}
-          </Button>
-          <Button
-            size="sm"
-            disabled={approvedCount === 0 || isStartingRender || sourceUnavailable}
+            disabled={approvedCount === 0 || exportDisabled}
             onClick={handleRenderApproved}
           >
-            Render Approved {approvedCount > 0 && `(${approvedCount})`}
+            Prepare {approvedCount} approved {approvedCount === 1 ? 'clip' : 'clips'} for export
           </Button>
         </div>
       </header>
@@ -906,7 +1022,7 @@ export function ClipGrid(): React.JSX.Element {
           hiddenSelectedCount={hiddenSelectedCount}
           allVisibleSelected={allVisibleSelected}
           compareEligible={compareEligible}
-          renderDisabled={isStartingRender || sourceUnavailable}
+          renderDisabled={exportDisabled}
           onSelectAll={() => {
             if (allVisibleSelected) clearSelection();
             else selectAllVisible(visibleIds);
@@ -945,7 +1061,7 @@ export function ClipGrid(): React.JSX.Element {
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle>Source media is offline</AlertTitle>
               <AlertDescription>
-                Review data is safe. Relink the source before previewing or rendering.
+                Review data is safe. Relink the source before previewing or preparing an export.
               </AlertDescription>
             </Alert>
           )}
@@ -973,7 +1089,11 @@ export function ClipGrid(): React.JSX.Element {
           {isLoading && totalCount === 0 ? (
             <ClipGridSkeleton density={gridDensity} />
           ) : totalCount === 0 ? (
-            <EmptyState processed={runCompletedEmpty} />
+            <EmptyState
+              processed={runCompletedEmpty}
+              reprocessDisabled={reprocessDisabled}
+              onReprocess={() => setConfirmReprocess(true)}
+            />
           ) : allItems.length === 0 ? (
             <Card className="flex min-h-52 flex-col items-center justify-center gap-3 p-6 text-center">
               <SearchX className="h-9 w-9 text-muted-foreground" aria-hidden />
@@ -1053,16 +1173,34 @@ export function ClipGrid(): React.JSX.Element {
       <AlertDialog open={confirmRenderAll} onOpenChange={setConfirmRenderAll}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Render all {totalCount} clips?</AlertDialogTitle>
+            <AlertDialogTitle>Prepare all {totalCount} clips for export?</AlertDialogTitle>
             <AlertDialogDescription>
-              This batch includes {rejectedCount} rejected {rejectedCount === 1 ? 'clip' : 'clips'}.
-              Your review decisions will stay exactly as they are after rendering.
+              All clips: {unreviewedCount} unreviewed and {rejectedCount} rejected included. Review
+              decisions will not change. Next: check export settings before exporting.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmRenderAll}>
-              Render all {totalCount}
+            <AlertDialogAction disabled={exportDisabled} onClick={handleConfirmRenderAll}>
+              Prepare {totalCount} {totalCount === 1 ? 'clip' : 'clips'} for export
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={confirmReprocess} onOpenChange={setConfirmReprocess}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Reprocess with current settings?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Find clips again using your saved source and transcript, starting from scoring. This
+              uses AI and may incur usage costs. Your source and transcript will not be reset.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction disabled={reprocessDisabled} onClick={() => void handleReprocess()}>
+              Reprocess now
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -1072,28 +1210,23 @@ export function ClipGrid(): React.JSX.Element {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {selectedIds.length > 0
-                ? `Render ${selectedIds.length} selected ${selectedIds.length === 1 ? 'clip' : 'clips'}?`
-                : selectedItem
-                  ? 'Render selected clip?'
-                  : `Render ${approvedCount} approved clips?`}
+              Prepare {keyboardItems.length} {keyboardScope}{' '}
+              {keyboardItems.length === 1 ? 'clip' : 'clips'} for export?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {selectedIds.length > 0
-                ? `Start a render batch for the ${selectedIds.length} checked ${selectedIds.length === 1 ? 'clip' : 'clips'}.${selectedRejectedCount > 0 ? ` This includes ${selectedRejectedCount} rejected ${selectedRejectedCount === 1 ? 'clip' : 'clips'}.` : ''} Review decisions will not change.`
-                : selectedItem
-                  ? `Render “${selectedItem.clip.hookText || 'Untitled clip'}” now. Its ${selectedItem.clip.status === 'pending' ? 'unreviewed' : selectedItem.clip.status} decision will not change.`
-                  : 'Start the approved batch now. Review decisions will not change.'}
+              {keyboardScope === 'selected'
+                ? `Selected only: ${keyboardUnreviewed} unreviewed and ${keyboardRejected} rejected included.${hiddenSelectedCount > 0 ? ` ${hiddenSelectedCount} hidden by the current filter.` : ''} Selection does not mean approval.`
+                : 'Approved clips only, across all filters.'}{' '}
+              Review decisions will not change. Next: check export settings before exporting.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => void handleKeyboardRender()}>
-              {selectedIds.length > 0
-                ? `Render selected (${selectedIds.length})`
-                : selectedItem
-                  ? 'Render selected'
-                  : `Render approved (${approvedCount})`}
+            <AlertDialogAction
+              disabled={exportDisabled || keyboardItems.length === 0}
+              onClick={() => void handleKeyboardRender()}
+            >
+              Export {keyboardScope} ({keyboardItems.length})
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

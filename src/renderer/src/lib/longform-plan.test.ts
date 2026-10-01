@@ -1,12 +1,17 @@
 import { MAX_LONGFORM_BLOCK_SECONDS } from '@shared/longform-plan-timing';
+import { isSceneFirstPlanEnvelope } from '@shared/longform-scenes';
 import type { LongformEditPlan, WordTimestamp } from '@shared/types';
 import { describe, expect, it } from 'vitest';
+import { makeScenePlan, SCENE_WORDS } from '@/components/__tests__/longform-scene-fixture';
 import {
   buildLongformPlanItems,
   buildLongformSections,
   compareLongformPlans,
+  longformSceneReviewProblem,
+  longformSceneScheduleIssues,
   mergePreservedLongformItems,
   removeLongformPlanItem,
+  snapshotLongformPlanItem,
   updateLongformPlanItem,
 } from './longform-plan';
 
@@ -46,6 +51,91 @@ function makePlan(): LongformEditPlan {
     generatedAt: 1,
   };
 }
+
+describe('scene-first review helpers', () => {
+  it('uses scene IDs, authored sections, source words and scene item types', () => {
+    const plan = makeScenePlan();
+    expect(isSceneFirstPlanEnvelope(plan)).toBe(true);
+    const items = buildLongformPlanItems(plan, SCENE_WORDS);
+    expect(items.map((item) => item.type)).toEqual(['scene', 'scene']);
+    expect(items[0]).toMatchObject({
+      id: plan.scenes[0]?.id,
+      key: plan.scenes[0]?.id,
+      sourceText: 'Build trust with evidence',
+    });
+    expect(buildLongformSections(plan, SCENE_WORDS, 150).map((section) => section.id)).toEqual([
+      'section-opening',
+      'section-evidence',
+    ]);
+  });
+
+  it('allows presentation/omit only, never retiming or converting source specs even when indices are wrong', () => {
+    const plan = makeScenePlan();
+    const original = structuredClone(plan);
+    const id = plan.scenes[1]?.id;
+    const edited = updateLongformPlanItem(
+      plan,
+      { type: 'scene', id, index: 0 },
+      {
+        presentation: 'full-frame',
+        title: 'Fabricated',
+        detail: 'Never applied',
+        startTime: 0,
+        endTime: 1,
+      },
+    );
+    expect(isSceneFirstPlanEnvelope(edited)).toBe(true);
+    if (!isSceneFirstPlanEnvelope(edited)) throw new Error('invalid fixture');
+    expect(edited.scenes[0]).toEqual(plan.scenes[0]);
+    expect(edited.scenes[1]).toEqual({ ...plan.scenes[1], presentation: 'full-frame' });
+    expect(plan).toEqual(original);
+    expect(updateLongformPlanItem(plan, { type: 'scene', index: 1 }, { omitted: true })).toBe(plan);
+    const omitted = removeLongformPlanItem(edited, { type: 'scene', id });
+    expect(isSceneFirstPlanEnvelope(omitted) && omitted.scenes[1]?.omitted).toBe(true);
+    expect(
+      updateLongformPlanItem(omitted, { type: 'scene', id }, { omitted: false }),
+    ).toMatchObject({ scenes: [{}, { omitted: false, sourceSpec: plan.scenes[1]?.sourceSpec }] });
+  });
+
+  it('preserves exact omitted specs and compares presentation changes by ID across reordering', () => {
+    const plan = makeScenePlan();
+    const id = plan.scenes[0]?.id;
+    const edited = updateLongformPlanItem(
+      plan,
+      { type: 'scene', id },
+      { omitted: true, presentation: 'full-frame' },
+    );
+    const saved = snapshotLongformPlanItem(edited, { type: 'scene', id });
+    if (!saved) throw new Error('missing preserved scene');
+    const generated = makeScenePlan();
+    generated.scenes.reverse();
+    const merged = mergePreservedLongformItems(generated, [saved]);
+    expect(
+      isSceneFirstPlanEnvelope(merged) && merged.scenes.find((scene) => scene.id === id),
+    ).toEqual(saved.item);
+    expect(compareLongformPlans(plan, merged)).toMatchObject({
+      added: 0,
+      removed: 0,
+      timingChanges: 0,
+      contentChanges: 1,
+    });
+    expect(generated.scenes[1]?.omitted).toBeUndefined();
+  });
+
+  it('flags stale/unsupported plans and whole-window conflicts without repairing source timing', () => {
+    const plan = makeScenePlan();
+    expect(longformSceneReviewProblem(plan, SCENE_WORDS, 151)).toMatch(/stale/);
+    const unsupported = { ...plan, parserVersion: 99 } as unknown as LongformEditPlan;
+    expect(buildLongformPlanItems(unsupported, SCENE_WORDS)).toEqual([]);
+    expect(longformSceneReviewProblem(unsupported, SCENE_WORDS, 150)).toMatch(/Unsupported/);
+    const second = plan.scenes[1];
+    if (!second) throw new Error('missing scene');
+    second.startTime = 4;
+    const before = structuredClone(plan);
+    expect(longformSceneScheduleIssues(plan).get(second.id)).toMatch(/overlaps/);
+    expect(plan).toEqual(before);
+  });
+});
 
 describe('long-form Cut Plan helpers', () => {
   it('builds chronological evidence beats with transcript sources and editorial sections', () => {

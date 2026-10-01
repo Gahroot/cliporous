@@ -1,0 +1,5292 @@
+[
+  {
+    "name": "attention-reference-link-diagram",
+    "sourceText": "Word attention is illustrative. Maya opened her shop. It sells bread. Select It as the target. It refers to shop in this illustration. This illustrated relationship has no measured attention weights. Words use earlier context. The link supplies context.",
+    "sourceWords": [
+      {
+        "text": "Word",
+        "start": 0.25,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "attention",
+        "start": 0.41363636363636364,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "is",
+        "start": 0.5772727272727273,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "illustrative.",
+        "start": 0.740909090909091,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "Maya",
+        "start": 0.9045454545454545,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "opened",
+        "start": 1.0681818181818183,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "her",
+        "start": 1.231818181818182,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "shop.",
+        "start": 1.3954545454545455,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "It",
+        "start": 1.559090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "sells",
+        "start": 1.7227272727272727,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "bread.",
+        "start": 1.8863636363636365,
+        "end": 2.05
+      },
+      {
+        "text": "Select",
+        "start": 2.15,
+        "end": 2.51
+      },
+      {
+        "text": "It",
+        "start": 2.51,
+        "end": 2.87
+      },
+      {
+        "text": "as",
+        "start": 2.87,
+        "end": 3.23
+      },
+      {
+        "text": "the",
+        "start": 3.23,
+        "end": 3.59
+      },
+      {
+        "text": "target.",
+        "start": 3.59,
+        "end": 3.95
+      },
+      {
+        "text": "It",
+        "start": 4.05,
+        "end": 4.307142857142857
+      },
+      {
+        "text": "refers",
+        "start": 4.307142857142857,
+        "end": 4.564285714285714
+      },
+      {
+        "text": "to",
+        "start": 4.564285714285714,
+        "end": 4.821428571428571
+      },
+      {
+        "text": "shop",
+        "start": 4.821428571428571,
+        "end": 5.078571428571428
+      },
+      {
+        "text": "in",
+        "start": 5.078571428571428,
+        "end": 5.335714285714285
+      },
+      {
+        "text": "this",
+        "start": 5.335714285714285,
+        "end": 5.5928571428571425
+      },
+      {
+        "text": "illustration.",
+        "start": 5.5928571428571425,
+        "end": 5.85
+      },
+      {
+        "text": "This",
+        "start": 5.949999999999999,
+        "end": 6.174999999999999
+      },
+      {
+        "text": "illustrated",
+        "start": 6.174999999999999,
+        "end": 6.3999999999999995
+      },
+      {
+        "text": "relationship",
+        "start": 6.3999999999999995,
+        "end": 6.624999999999999
+      },
+      {
+        "text": "has",
+        "start": 6.624999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "no",
+        "start": 6.85,
+        "end": 7.074999999999999
+      },
+      {
+        "text": "measured",
+        "start": 7.074999999999999,
+        "end": 7.299999999999999
+      },
+      {
+        "text": "attention",
+        "start": 7.299999999999999,
+        "end": 7.5249999999999995
+      },
+      {
+        "text": "weights.",
+        "start": 7.5249999999999995,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Words",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "use",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "earlier",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "context.",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "The",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "link",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "supplies",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "context.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "token-attention",
+      "preset": "reference-link",
+      "visualMode": "diagram",
+      "label": "Word attention",
+      "subject": "Maya",
+      "outcome": "Words use earlier context",
+      "evidence": "illustrative",
+      "sentence": "Maya opened her shop. It sells bread.",
+      "targetIndex": 4,
+      "contextIndex": 3,
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 16,
+      "checkWord": 23,
+      "resolveWord": 31,
+      "startWord": 0,
+      "endWord": 38,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "token-attention",
+      "preset": "reference-link",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "Word attention",
+      "subject": "Maya",
+      "outcome": "Words use earlier context",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "sentence": "Maya opened her shop. It sells bread.",
+      "tokens": [
+        {
+          "id": "token-0",
+          "text": "Maya"
+        },
+        {
+          "id": "token-1",
+          "text": "opened"
+        },
+        {
+          "id": "token-2",
+          "text": "her"
+        },
+        {
+          "id": "token-3",
+          "text": "shop."
+        },
+        {
+          "id": "token-4",
+          "text": "It"
+        },
+        {
+          "id": "token-5",
+          "text": "sells"
+        },
+        {
+          "id": "token-6",
+          "text": "bread."
+        }
+      ],
+      "targetIndex": 4,
+      "contextIndex": 3
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "token-attention",
+      "reference-link",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "attention-context-link-diagram",
+    "sourceText": "Word attention is illustrative. Maya opened her shop. It sells bread. Select It as the target. It uses shop as context in this illustration. This illustrated relationship has no measured attention weights. Words use earlier context. The link supplies context.",
+    "sourceWords": [
+      {
+        "text": "Word",
+        "start": 0.25,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "attention",
+        "start": 0.41363636363636364,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "is",
+        "start": 0.5772727272727273,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "illustrative.",
+        "start": 0.740909090909091,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "Maya",
+        "start": 0.9045454545454545,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "opened",
+        "start": 1.0681818181818183,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "her",
+        "start": 1.231818181818182,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "shop.",
+        "start": 1.3954545454545455,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "It",
+        "start": 1.559090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "sells",
+        "start": 1.7227272727272727,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "bread.",
+        "start": 1.8863636363636365,
+        "end": 2.05
+      },
+      {
+        "text": "Select",
+        "start": 2.15,
+        "end": 2.51
+      },
+      {
+        "text": "It",
+        "start": 2.51,
+        "end": 2.87
+      },
+      {
+        "text": "as",
+        "start": 2.87,
+        "end": 3.23
+      },
+      {
+        "text": "the",
+        "start": 3.23,
+        "end": 3.59
+      },
+      {
+        "text": "target.",
+        "start": 3.59,
+        "end": 3.95
+      },
+      {
+        "text": "It",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "uses",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "shop",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "as",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "context",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "in",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "this",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "illustration.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "This",
+        "start": 5.949999999999999,
+        "end": 6.174999999999999
+      },
+      {
+        "text": "illustrated",
+        "start": 6.174999999999999,
+        "end": 6.3999999999999995
+      },
+      {
+        "text": "relationship",
+        "start": 6.3999999999999995,
+        "end": 6.624999999999999
+      },
+      {
+        "text": "has",
+        "start": 6.624999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "no",
+        "start": 6.85,
+        "end": 7.074999999999999
+      },
+      {
+        "text": "measured",
+        "start": 7.074999999999999,
+        "end": 7.299999999999999
+      },
+      {
+        "text": "attention",
+        "start": 7.299999999999999,
+        "end": 7.5249999999999995
+      },
+      {
+        "text": "weights.",
+        "start": 7.5249999999999995,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Words",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "use",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "earlier",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "context.",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "The",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "link",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "supplies",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "context.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "token-attention",
+      "preset": "context-link",
+      "visualMode": "diagram",
+      "label": "Word attention",
+      "subject": "Maya",
+      "outcome": "Words use earlier context",
+      "evidence": "illustrative",
+      "sentence": "Maya opened her shop. It sells bread.",
+      "targetIndex": 4,
+      "contextIndex": 3,
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 16,
+      "checkWord": 24,
+      "resolveWord": 32,
+      "startWord": 0,
+      "endWord": 39,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "token-attention",
+      "preset": "context-link",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "Word attention",
+      "subject": "Maya",
+      "outcome": "Words use earlier context",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "sentence": "Maya opened her shop. It sells bread.",
+      "tokens": [
+        {
+          "id": "token-0",
+          "text": "Maya"
+        },
+        {
+          "id": "token-1",
+          "text": "opened"
+        },
+        {
+          "id": "token-2",
+          "text": "her"
+        },
+        {
+          "id": "token-3",
+          "text": "shop."
+        },
+        {
+          "id": "token-4",
+          "text": "It"
+        },
+        {
+          "id": "token-5",
+          "text": "sells"
+        },
+        {
+          "id": "token-6",
+          "text": "bread."
+        }
+      ],
+      "targetIndex": 4,
+      "contextIndex": 3
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "token-attention",
+      "context-link",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "tradeoff-measured-comparison-diagram",
+    "sourceText": "Model tradeoffs are illustrative for Model A and Model B. Both models run sorting on one test. Model A cost is 2 USD/task. Model B cost is 1 USD/task. Model A latency is 100 ms/task. Model B latency is 200 ms/task. Model A score is 90 score/100. Model B score is 80 score/100. No universal winner. Tradeoffs depend on the task.",
+    "sourceWords": [
+      {
+        "text": "Model",
+        "start": 0.25,
+        "end": 0.3558823529411765
+      },
+      {
+        "text": "tradeoffs",
+        "start": 0.3558823529411765,
+        "end": 0.46176470588235297
+      },
+      {
+        "text": "are",
+        "start": 0.46176470588235297,
+        "end": 0.5676470588235294
+      },
+      {
+        "text": "illustrative",
+        "start": 0.5676470588235294,
+        "end": 0.6735294117647059
+      },
+      {
+        "text": "for",
+        "start": 0.6735294117647059,
+        "end": 0.7794117647058824
+      },
+      {
+        "text": "Model",
+        "start": 0.7794117647058824,
+        "end": 0.8852941176470589
+      },
+      {
+        "text": "A",
+        "start": 0.8852941176470589,
+        "end": 0.9911764705882353
+      },
+      {
+        "text": "and",
+        "start": 0.9911764705882353,
+        "end": 1.0970588235294119
+      },
+      {
+        "text": "Model",
+        "start": 1.0970588235294119,
+        "end": 1.2029411764705882
+      },
+      {
+        "text": "B.",
+        "start": 1.2029411764705882,
+        "end": 1.3088235294117647
+      },
+      {
+        "text": "Both",
+        "start": 1.3088235294117647,
+        "end": 1.4147058823529413
+      },
+      {
+        "text": "models",
+        "start": 1.4147058823529413,
+        "end": 1.5205882352941178
+      },
+      {
+        "text": "run",
+        "start": 1.5205882352941178,
+        "end": 1.6264705882352943
+      },
+      {
+        "text": "sorting",
+        "start": 1.6264705882352943,
+        "end": 1.7323529411764707
+      },
+      {
+        "text": "on",
+        "start": 1.7323529411764707,
+        "end": 1.838235294117647
+      },
+      {
+        "text": "one",
+        "start": 1.838235294117647,
+        "end": 1.9441176470588235
+      },
+      {
+        "text": "test.",
+        "start": 1.9441176470588235,
+        "end": 2.05
+      },
+      {
+        "text": "Model",
+        "start": 2.15,
+        "end": 2.3
+      },
+      {
+        "text": "A",
+        "start": 2.3,
+        "end": 2.4499999999999997
+      },
+      {
+        "text": "cost",
+        "start": 2.4499999999999997,
+        "end": 2.6
+      },
+      {
+        "text": "is",
+        "start": 2.6,
+        "end": 2.75
+      },
+      {
+        "text": "2",
+        "start": 2.75,
+        "end": 2.9
+      },
+      {
+        "text": "USD/task.",
+        "start": 2.9,
+        "end": 3.05
+      },
+      {
+        "text": "Model",
+        "start": 3.05,
+        "end": 3.2
+      },
+      {
+        "text": "B",
+        "start": 3.2,
+        "end": 3.3499999999999996
+      },
+      {
+        "text": "cost",
+        "start": 3.3499999999999996,
+        "end": 3.5
+      },
+      {
+        "text": "is",
+        "start": 3.5,
+        "end": 3.65
+      },
+      {
+        "text": "1",
+        "start": 3.65,
+        "end": 3.8
+      },
+      {
+        "text": "USD/task.",
+        "start": 3.8,
+        "end": 3.95
+      },
+      {
+        "text": "Model",
+        "start": 4.05,
+        "end": 4.2
+      },
+      {
+        "text": "A",
+        "start": 4.2,
+        "end": 4.35
+      },
+      {
+        "text": "latency",
+        "start": 4.35,
+        "end": 4.5
+      },
+      {
+        "text": "is",
+        "start": 4.5,
+        "end": 4.6499999999999995
+      },
+      {
+        "text": "100",
+        "start": 4.6499999999999995,
+        "end": 4.8
+      },
+      {
+        "text": "ms/task.",
+        "start": 4.8,
+        "end": 4.95
+      },
+      {
+        "text": "Model",
+        "start": 4.95,
+        "end": 5.1
+      },
+      {
+        "text": "B",
+        "start": 5.1,
+        "end": 5.25
+      },
+      {
+        "text": "latency",
+        "start": 5.25,
+        "end": 5.3999999999999995
+      },
+      {
+        "text": "is",
+        "start": 5.3999999999999995,
+        "end": 5.55
+      },
+      {
+        "text": "200",
+        "start": 5.55,
+        "end": 5.7
+      },
+      {
+        "text": "ms/task.",
+        "start": 5.7,
+        "end": 5.85
+      },
+      {
+        "text": "Model",
+        "start": 5.949999999999999,
+        "end": 6.1
+      },
+      {
+        "text": "A",
+        "start": 6.1,
+        "end": 6.249999999999999
+      },
+      {
+        "text": "score",
+        "start": 6.249999999999999,
+        "end": 6.3999999999999995
+      },
+      {
+        "text": "is",
+        "start": 6.3999999999999995,
+        "end": 6.549999999999999
+      },
+      {
+        "text": "90",
+        "start": 6.549999999999999,
+        "end": 6.699999999999999
+      },
+      {
+        "text": "score/100.",
+        "start": 6.699999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "Model",
+        "start": 6.85,
+        "end": 6.999999999999999
+      },
+      {
+        "text": "B",
+        "start": 6.999999999999999,
+        "end": 7.1499999999999995
+      },
+      {
+        "text": "score",
+        "start": 7.1499999999999995,
+        "end": 7.299999999999999
+      },
+      {
+        "text": "is",
+        "start": 7.299999999999999,
+        "end": 7.449999999999999
+      },
+      {
+        "text": "80",
+        "start": 7.449999999999999,
+        "end": 7.6
+      },
+      {
+        "text": "score/100.",
+        "start": 7.6,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "No",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "universal",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "winner.",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "Tradeoffs",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "depend",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "on",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "the",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "task.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "inference-tradeoff",
+      "preset": "measured-comparison",
+      "visualMode": "diagram",
+      "label": "Model tradeoffs",
+      "subject": "Model A",
+      "outcome": "No universal winner",
+      "evidence": "illustrative",
+      "models": [
+        {
+          "id": "a",
+          "label": "Model A"
+        },
+        {
+          "id": "b",
+          "label": "Model B"
+        }
+      ],
+      "task": "sorting",
+      "basis": "one test",
+      "metrics": [
+        {
+          "kind": "cost",
+          "unit": "USD/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 2,
+                "unit": "USD/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 1,
+                "unit": "USD/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "latency",
+          "unit": "ms/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 100,
+                "unit": "ms/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 200,
+                "unit": "ms/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "score",
+          "unit": "score/100",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 90,
+                "unit": "score/100"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 80,
+                "unit": "score/100"
+              }
+            }
+          ]
+        }
+      ],
+      "setupWord": 0,
+      "actionWord": 17,
+      "responseWord": 29,
+      "checkWord": 41,
+      "resolveWord": 53,
+      "startWord": 0,
+      "endWord": 60,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "inference-tradeoff",
+      "preset": "measured-comparison",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "Model tradeoffs",
+      "subject": "Model A",
+      "outcome": "No universal winner",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "models": [
+        {
+          "id": "a",
+          "label": "Model A"
+        },
+        {
+          "id": "b",
+          "label": "Model B"
+        }
+      ],
+      "task": "sorting",
+      "basis": "one test",
+      "metrics": [
+        {
+          "kind": "cost",
+          "unit": "USD/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 2,
+                "unit": "USD/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 1,
+                "unit": "USD/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "latency",
+          "unit": "ms/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 100,
+                "unit": "ms/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 200,
+                "unit": "ms/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "score",
+          "unit": "score/100",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 90,
+                "unit": "score/100"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 80,
+                "unit": "score/100"
+              }
+            }
+          ]
+        }
+      ],
+      "constraint": null
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "inference-tradeoff",
+      "measured-comparison",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "tradeoff-constraint-choice-diagram",
+    "sourceText": "Model tradeoffs are illustrative for Model A and Model B. Both models run sorting on one test. Model A cost is 2 USD/task. Model B cost is 1 USD/task. Model A latency is 100 ms/task. Model B latency is 200 ms/task. Model A score is 90 score/100. Model B score is 80 score/100. Model B fits the 1 USD/task budget for sorting. Model B fits the stated budget.",
+    "sourceWords": [
+      {
+        "text": "Model",
+        "start": 0.25,
+        "end": 0.3558823529411765
+      },
+      {
+        "text": "tradeoffs",
+        "start": 0.3558823529411765,
+        "end": 0.46176470588235297
+      },
+      {
+        "text": "are",
+        "start": 0.46176470588235297,
+        "end": 0.5676470588235294
+      },
+      {
+        "text": "illustrative",
+        "start": 0.5676470588235294,
+        "end": 0.6735294117647059
+      },
+      {
+        "text": "for",
+        "start": 0.6735294117647059,
+        "end": 0.7794117647058824
+      },
+      {
+        "text": "Model",
+        "start": 0.7794117647058824,
+        "end": 0.8852941176470589
+      },
+      {
+        "text": "A",
+        "start": 0.8852941176470589,
+        "end": 0.9911764705882353
+      },
+      {
+        "text": "and",
+        "start": 0.9911764705882353,
+        "end": 1.0970588235294119
+      },
+      {
+        "text": "Model",
+        "start": 1.0970588235294119,
+        "end": 1.2029411764705882
+      },
+      {
+        "text": "B.",
+        "start": 1.2029411764705882,
+        "end": 1.3088235294117647
+      },
+      {
+        "text": "Both",
+        "start": 1.3088235294117647,
+        "end": 1.4147058823529413
+      },
+      {
+        "text": "models",
+        "start": 1.4147058823529413,
+        "end": 1.5205882352941178
+      },
+      {
+        "text": "run",
+        "start": 1.5205882352941178,
+        "end": 1.6264705882352943
+      },
+      {
+        "text": "sorting",
+        "start": 1.6264705882352943,
+        "end": 1.7323529411764707
+      },
+      {
+        "text": "on",
+        "start": 1.7323529411764707,
+        "end": 1.838235294117647
+      },
+      {
+        "text": "one",
+        "start": 1.838235294117647,
+        "end": 1.9441176470588235
+      },
+      {
+        "text": "test.",
+        "start": 1.9441176470588235,
+        "end": 2.05
+      },
+      {
+        "text": "Model",
+        "start": 2.15,
+        "end": 2.3
+      },
+      {
+        "text": "A",
+        "start": 2.3,
+        "end": 2.4499999999999997
+      },
+      {
+        "text": "cost",
+        "start": 2.4499999999999997,
+        "end": 2.6
+      },
+      {
+        "text": "is",
+        "start": 2.6,
+        "end": 2.75
+      },
+      {
+        "text": "2",
+        "start": 2.75,
+        "end": 2.9
+      },
+      {
+        "text": "USD/task.",
+        "start": 2.9,
+        "end": 3.05
+      },
+      {
+        "text": "Model",
+        "start": 3.05,
+        "end": 3.2
+      },
+      {
+        "text": "B",
+        "start": 3.2,
+        "end": 3.3499999999999996
+      },
+      {
+        "text": "cost",
+        "start": 3.3499999999999996,
+        "end": 3.5
+      },
+      {
+        "text": "is",
+        "start": 3.5,
+        "end": 3.65
+      },
+      {
+        "text": "1",
+        "start": 3.65,
+        "end": 3.8
+      },
+      {
+        "text": "USD/task.",
+        "start": 3.8,
+        "end": 3.95
+      },
+      {
+        "text": "Model",
+        "start": 4.05,
+        "end": 4.2
+      },
+      {
+        "text": "A",
+        "start": 4.2,
+        "end": 4.35
+      },
+      {
+        "text": "latency",
+        "start": 4.35,
+        "end": 4.5
+      },
+      {
+        "text": "is",
+        "start": 4.5,
+        "end": 4.6499999999999995
+      },
+      {
+        "text": "100",
+        "start": 4.6499999999999995,
+        "end": 4.8
+      },
+      {
+        "text": "ms/task.",
+        "start": 4.8,
+        "end": 4.95
+      },
+      {
+        "text": "Model",
+        "start": 4.95,
+        "end": 5.1
+      },
+      {
+        "text": "B",
+        "start": 5.1,
+        "end": 5.25
+      },
+      {
+        "text": "latency",
+        "start": 5.25,
+        "end": 5.3999999999999995
+      },
+      {
+        "text": "is",
+        "start": 5.3999999999999995,
+        "end": 5.55
+      },
+      {
+        "text": "200",
+        "start": 5.55,
+        "end": 5.7
+      },
+      {
+        "text": "ms/task.",
+        "start": 5.7,
+        "end": 5.85
+      },
+      {
+        "text": "Model",
+        "start": 5.949999999999999,
+        "end": 6.1
+      },
+      {
+        "text": "A",
+        "start": 6.1,
+        "end": 6.249999999999999
+      },
+      {
+        "text": "score",
+        "start": 6.249999999999999,
+        "end": 6.3999999999999995
+      },
+      {
+        "text": "is",
+        "start": 6.3999999999999995,
+        "end": 6.549999999999999
+      },
+      {
+        "text": "90",
+        "start": 6.549999999999999,
+        "end": 6.699999999999999
+      },
+      {
+        "text": "score/100.",
+        "start": 6.699999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "Model",
+        "start": 6.85,
+        "end": 6.999999999999999
+      },
+      {
+        "text": "B",
+        "start": 6.999999999999999,
+        "end": 7.1499999999999995
+      },
+      {
+        "text": "score",
+        "start": 7.1499999999999995,
+        "end": 7.299999999999999
+      },
+      {
+        "text": "is",
+        "start": 7.299999999999999,
+        "end": 7.449999999999999
+      },
+      {
+        "text": "80",
+        "start": 7.449999999999999,
+        "end": 7.6
+      },
+      {
+        "text": "score/100.",
+        "start": 7.6,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Model",
+        "start": 7.85,
+        "end": 7.97
+      },
+      {
+        "text": "B",
+        "start": 7.97,
+        "end": 8.09
+      },
+      {
+        "text": "fits",
+        "start": 8.09,
+        "end": 8.209999999999999
+      },
+      {
+        "text": "the",
+        "start": 8.209999999999999,
+        "end": 8.33
+      },
+      {
+        "text": "1",
+        "start": 8.33,
+        "end": 8.45
+      },
+      {
+        "text": "USD/task",
+        "start": 8.45,
+        "end": 8.57
+      },
+      {
+        "text": "budget",
+        "start": 8.57,
+        "end": 8.69
+      },
+      {
+        "text": "for",
+        "start": 8.69,
+        "end": 8.81
+      },
+      {
+        "text": "sorting.",
+        "start": 8.81,
+        "end": 8.93
+      },
+      {
+        "text": "Model",
+        "start": 8.93,
+        "end": 9.049999999999999
+      },
+      {
+        "text": "B",
+        "start": 9.049999999999999,
+        "end": 9.17
+      },
+      {
+        "text": "fits",
+        "start": 9.17,
+        "end": 9.29
+      },
+      {
+        "text": "the",
+        "start": 9.29,
+        "end": 9.41
+      },
+      {
+        "text": "stated",
+        "start": 9.41,
+        "end": 9.53
+      },
+      {
+        "text": "budget.",
+        "start": 9.53,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "inference-tradeoff",
+      "preset": "constraint-choice",
+      "visualMode": "diagram",
+      "label": "Model tradeoffs",
+      "subject": "Model A",
+      "outcome": "Model B fits the stated budget",
+      "evidence": "illustrative",
+      "models": [
+        {
+          "id": "a",
+          "label": "Model A"
+        },
+        {
+          "id": "b",
+          "label": "Model B"
+        }
+      ],
+      "task": "sorting",
+      "basis": "one test",
+      "metrics": [
+        {
+          "kind": "cost",
+          "unit": "USD/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 2,
+                "unit": "USD/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 1,
+                "unit": "USD/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "latency",
+          "unit": "ms/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 100,
+                "unit": "ms/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 200,
+                "unit": "ms/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "score",
+          "unit": "score/100",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 90,
+                "unit": "score/100"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 80,
+                "unit": "score/100"
+              }
+            }
+          ]
+        }
+      ],
+      "constraint": {
+        "metric": "cost",
+        "maximum": 1,
+        "unit": "USD/task",
+        "selectedId": "b"
+      },
+      "setupWord": 0,
+      "actionWord": 17,
+      "responseWord": 29,
+      "checkWord": 41,
+      "resolveWord": 53,
+      "startWord": 0,
+      "endWord": 67,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "inference-tradeoff",
+      "preset": "constraint-choice",
+      "visualMode": "diagram",
+      "evidence": "illustrative",
+      "label": "Model tradeoffs",
+      "subject": "Model A",
+      "outcome": "Model B fits the stated budget",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "models": [
+        {
+          "id": "a",
+          "label": "Model A"
+        },
+        {
+          "id": "b",
+          "label": "Model B"
+        }
+      ],
+      "task": "sorting",
+      "basis": "one test",
+      "metrics": [
+        {
+          "kind": "cost",
+          "unit": "USD/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 2,
+                "unit": "USD/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 1,
+                "unit": "USD/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "latency",
+          "unit": "ms/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 100,
+                "unit": "ms/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 200,
+                "unit": "ms/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "score",
+          "unit": "score/100",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 90,
+                "unit": "score/100"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 80,
+                "unit": "score/100"
+              }
+            }
+          ]
+        }
+      ],
+      "constraint": {
+        "metric": "cost",
+        "maximum": 1,
+        "unit": "USD/task",
+        "selectedId": "b"
+      }
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "inference-tradeoff",
+      "constraint-choice",
+      "diagram"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "attention-reference-link-hybrid",
+    "sourceText": "Word attention is illustrative. Maya opened her shop. It sells bread. Select It as the target. It refers to shop in this illustration. This illustrated relationship has no measured attention weights. Words use earlier context. The link supplies context.",
+    "sourceWords": [
+      {
+        "text": "Word",
+        "start": 0.25,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "attention",
+        "start": 0.41363636363636364,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "is",
+        "start": 0.5772727272727273,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "illustrative.",
+        "start": 0.740909090909091,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "Maya",
+        "start": 0.9045454545454545,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "opened",
+        "start": 1.0681818181818183,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "her",
+        "start": 1.231818181818182,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "shop.",
+        "start": 1.3954545454545455,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "It",
+        "start": 1.559090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "sells",
+        "start": 1.7227272727272727,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "bread.",
+        "start": 1.8863636363636365,
+        "end": 2.05
+      },
+      {
+        "text": "Select",
+        "start": 2.15,
+        "end": 2.51
+      },
+      {
+        "text": "It",
+        "start": 2.51,
+        "end": 2.87
+      },
+      {
+        "text": "as",
+        "start": 2.87,
+        "end": 3.23
+      },
+      {
+        "text": "the",
+        "start": 3.23,
+        "end": 3.59
+      },
+      {
+        "text": "target.",
+        "start": 3.59,
+        "end": 3.95
+      },
+      {
+        "text": "It",
+        "start": 4.05,
+        "end": 4.307142857142857
+      },
+      {
+        "text": "refers",
+        "start": 4.307142857142857,
+        "end": 4.564285714285714
+      },
+      {
+        "text": "to",
+        "start": 4.564285714285714,
+        "end": 4.821428571428571
+      },
+      {
+        "text": "shop",
+        "start": 4.821428571428571,
+        "end": 5.078571428571428
+      },
+      {
+        "text": "in",
+        "start": 5.078571428571428,
+        "end": 5.335714285714285
+      },
+      {
+        "text": "this",
+        "start": 5.335714285714285,
+        "end": 5.5928571428571425
+      },
+      {
+        "text": "illustration.",
+        "start": 5.5928571428571425,
+        "end": 5.85
+      },
+      {
+        "text": "This",
+        "start": 5.949999999999999,
+        "end": 6.174999999999999
+      },
+      {
+        "text": "illustrated",
+        "start": 6.174999999999999,
+        "end": 6.3999999999999995
+      },
+      {
+        "text": "relationship",
+        "start": 6.3999999999999995,
+        "end": 6.624999999999999
+      },
+      {
+        "text": "has",
+        "start": 6.624999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "no",
+        "start": 6.85,
+        "end": 7.074999999999999
+      },
+      {
+        "text": "measured",
+        "start": 7.074999999999999,
+        "end": 7.299999999999999
+      },
+      {
+        "text": "attention",
+        "start": 7.299999999999999,
+        "end": 7.5249999999999995
+      },
+      {
+        "text": "weights.",
+        "start": 7.5249999999999995,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Words",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "use",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "earlier",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "context.",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "The",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "link",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "supplies",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "context.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "token-attention",
+      "preset": "reference-link",
+      "visualMode": "hybrid",
+      "label": "Word attention",
+      "subject": "Maya",
+      "outcome": "Words use earlier context",
+      "evidence": "illustrative",
+      "sentence": "Maya opened her shop. It sells bread.",
+      "targetIndex": 4,
+      "contextIndex": 3,
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 16,
+      "checkWord": 23,
+      "resolveWord": 31,
+      "startWord": 0,
+      "endWord": 38,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "token-attention",
+      "preset": "reference-link",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "Word attention",
+      "subject": "Maya",
+      "outcome": "Words use earlier context",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "sentence": "Maya opened her shop. It sells bread.",
+      "tokens": [
+        {
+          "id": "token-0",
+          "text": "Maya"
+        },
+        {
+          "id": "token-1",
+          "text": "opened"
+        },
+        {
+          "id": "token-2",
+          "text": "her"
+        },
+        {
+          "id": "token-3",
+          "text": "shop."
+        },
+        {
+          "id": "token-4",
+          "text": "It"
+        },
+        {
+          "id": "token-5",
+          "text": "sells"
+        },
+        {
+          "id": "token-6",
+          "text": "bread."
+        }
+      ],
+      "targetIndex": 4,
+      "contextIndex": 3
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "token-attention",
+      "reference-link",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "attention-context-link-hybrid",
+    "sourceText": "Word attention is illustrative. Maya opened her shop. It sells bread. Select It as the target. It uses shop as context in this illustration. This illustrated relationship has no measured attention weights. Words use earlier context. The link supplies context.",
+    "sourceWords": [
+      {
+        "text": "Word",
+        "start": 0.25,
+        "end": 0.41363636363636364
+      },
+      {
+        "text": "attention",
+        "start": 0.41363636363636364,
+        "end": 0.5772727272727273
+      },
+      {
+        "text": "is",
+        "start": 0.5772727272727273,
+        "end": 0.740909090909091
+      },
+      {
+        "text": "illustrative.",
+        "start": 0.740909090909091,
+        "end": 0.9045454545454545
+      },
+      {
+        "text": "Maya",
+        "start": 0.9045454545454545,
+        "end": 1.0681818181818183
+      },
+      {
+        "text": "opened",
+        "start": 1.0681818181818183,
+        "end": 1.231818181818182
+      },
+      {
+        "text": "her",
+        "start": 1.231818181818182,
+        "end": 1.3954545454545455
+      },
+      {
+        "text": "shop.",
+        "start": 1.3954545454545455,
+        "end": 1.559090909090909
+      },
+      {
+        "text": "It",
+        "start": 1.559090909090909,
+        "end": 1.7227272727272727
+      },
+      {
+        "text": "sells",
+        "start": 1.7227272727272727,
+        "end": 1.8863636363636365
+      },
+      {
+        "text": "bread.",
+        "start": 1.8863636363636365,
+        "end": 2.05
+      },
+      {
+        "text": "Select",
+        "start": 2.15,
+        "end": 2.51
+      },
+      {
+        "text": "It",
+        "start": 2.51,
+        "end": 2.87
+      },
+      {
+        "text": "as",
+        "start": 2.87,
+        "end": 3.23
+      },
+      {
+        "text": "the",
+        "start": 3.23,
+        "end": 3.59
+      },
+      {
+        "text": "target.",
+        "start": 3.59,
+        "end": 3.95
+      },
+      {
+        "text": "It",
+        "start": 4.05,
+        "end": 4.2749999999999995
+      },
+      {
+        "text": "uses",
+        "start": 4.2749999999999995,
+        "end": 4.5
+      },
+      {
+        "text": "shop",
+        "start": 4.5,
+        "end": 4.725
+      },
+      {
+        "text": "as",
+        "start": 4.725,
+        "end": 4.95
+      },
+      {
+        "text": "context",
+        "start": 4.95,
+        "end": 5.175
+      },
+      {
+        "text": "in",
+        "start": 5.175,
+        "end": 5.4
+      },
+      {
+        "text": "this",
+        "start": 5.4,
+        "end": 5.625
+      },
+      {
+        "text": "illustration.",
+        "start": 5.625,
+        "end": 5.85
+      },
+      {
+        "text": "This",
+        "start": 5.949999999999999,
+        "end": 6.174999999999999
+      },
+      {
+        "text": "illustrated",
+        "start": 6.174999999999999,
+        "end": 6.3999999999999995
+      },
+      {
+        "text": "relationship",
+        "start": 6.3999999999999995,
+        "end": 6.624999999999999
+      },
+      {
+        "text": "has",
+        "start": 6.624999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "no",
+        "start": 6.85,
+        "end": 7.074999999999999
+      },
+      {
+        "text": "measured",
+        "start": 7.074999999999999,
+        "end": 7.299999999999999
+      },
+      {
+        "text": "attention",
+        "start": 7.299999999999999,
+        "end": 7.5249999999999995
+      },
+      {
+        "text": "weights.",
+        "start": 7.5249999999999995,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Words",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "use",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "earlier",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "context.",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "The",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "link",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "supplies",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "context.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "token-attention",
+      "preset": "context-link",
+      "visualMode": "hybrid",
+      "label": "Word attention",
+      "subject": "Maya",
+      "outcome": "Words use earlier context",
+      "evidence": "illustrative",
+      "sentence": "Maya opened her shop. It sells bread.",
+      "targetIndex": 4,
+      "contextIndex": 3,
+      "setupWord": 0,
+      "actionWord": 11,
+      "responseWord": 16,
+      "checkWord": 24,
+      "resolveWord": 32,
+      "startWord": 0,
+      "endWord": 39,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "token-attention",
+      "preset": "context-link",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "Word attention",
+      "subject": "Maya",
+      "outcome": "Words use earlier context",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "sentence": "Maya opened her shop. It sells bread.",
+      "tokens": [
+        {
+          "id": "token-0",
+          "text": "Maya"
+        },
+        {
+          "id": "token-1",
+          "text": "opened"
+        },
+        {
+          "id": "token-2",
+          "text": "her"
+        },
+        {
+          "id": "token-3",
+          "text": "shop."
+        },
+        {
+          "id": "token-4",
+          "text": "It"
+        },
+        {
+          "id": "token-5",
+          "text": "sells"
+        },
+        {
+          "id": "token-6",
+          "text": "bread."
+        }
+      ],
+      "targetIndex": 4,
+      "contextIndex": 3
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "token-attention",
+      "context-link",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "tradeoff-measured-comparison-hybrid",
+    "sourceText": "Model tradeoffs are illustrative for Model A and Model B. Both models run sorting on one test. Model A cost is 2 USD/task. Model B cost is 1 USD/task. Model A latency is 100 ms/task. Model B latency is 200 ms/task. Model A score is 90 score/100. Model B score is 80 score/100. No universal winner. Tradeoffs depend on the task.",
+    "sourceWords": [
+      {
+        "text": "Model",
+        "start": 0.25,
+        "end": 0.3558823529411765
+      },
+      {
+        "text": "tradeoffs",
+        "start": 0.3558823529411765,
+        "end": 0.46176470588235297
+      },
+      {
+        "text": "are",
+        "start": 0.46176470588235297,
+        "end": 0.5676470588235294
+      },
+      {
+        "text": "illustrative",
+        "start": 0.5676470588235294,
+        "end": 0.6735294117647059
+      },
+      {
+        "text": "for",
+        "start": 0.6735294117647059,
+        "end": 0.7794117647058824
+      },
+      {
+        "text": "Model",
+        "start": 0.7794117647058824,
+        "end": 0.8852941176470589
+      },
+      {
+        "text": "A",
+        "start": 0.8852941176470589,
+        "end": 0.9911764705882353
+      },
+      {
+        "text": "and",
+        "start": 0.9911764705882353,
+        "end": 1.0970588235294119
+      },
+      {
+        "text": "Model",
+        "start": 1.0970588235294119,
+        "end": 1.2029411764705882
+      },
+      {
+        "text": "B.",
+        "start": 1.2029411764705882,
+        "end": 1.3088235294117647
+      },
+      {
+        "text": "Both",
+        "start": 1.3088235294117647,
+        "end": 1.4147058823529413
+      },
+      {
+        "text": "models",
+        "start": 1.4147058823529413,
+        "end": 1.5205882352941178
+      },
+      {
+        "text": "run",
+        "start": 1.5205882352941178,
+        "end": 1.6264705882352943
+      },
+      {
+        "text": "sorting",
+        "start": 1.6264705882352943,
+        "end": 1.7323529411764707
+      },
+      {
+        "text": "on",
+        "start": 1.7323529411764707,
+        "end": 1.838235294117647
+      },
+      {
+        "text": "one",
+        "start": 1.838235294117647,
+        "end": 1.9441176470588235
+      },
+      {
+        "text": "test.",
+        "start": 1.9441176470588235,
+        "end": 2.05
+      },
+      {
+        "text": "Model",
+        "start": 2.15,
+        "end": 2.3
+      },
+      {
+        "text": "A",
+        "start": 2.3,
+        "end": 2.4499999999999997
+      },
+      {
+        "text": "cost",
+        "start": 2.4499999999999997,
+        "end": 2.6
+      },
+      {
+        "text": "is",
+        "start": 2.6,
+        "end": 2.75
+      },
+      {
+        "text": "2",
+        "start": 2.75,
+        "end": 2.9
+      },
+      {
+        "text": "USD/task.",
+        "start": 2.9,
+        "end": 3.05
+      },
+      {
+        "text": "Model",
+        "start": 3.05,
+        "end": 3.2
+      },
+      {
+        "text": "B",
+        "start": 3.2,
+        "end": 3.3499999999999996
+      },
+      {
+        "text": "cost",
+        "start": 3.3499999999999996,
+        "end": 3.5
+      },
+      {
+        "text": "is",
+        "start": 3.5,
+        "end": 3.65
+      },
+      {
+        "text": "1",
+        "start": 3.65,
+        "end": 3.8
+      },
+      {
+        "text": "USD/task.",
+        "start": 3.8,
+        "end": 3.95
+      },
+      {
+        "text": "Model",
+        "start": 4.05,
+        "end": 4.2
+      },
+      {
+        "text": "A",
+        "start": 4.2,
+        "end": 4.35
+      },
+      {
+        "text": "latency",
+        "start": 4.35,
+        "end": 4.5
+      },
+      {
+        "text": "is",
+        "start": 4.5,
+        "end": 4.6499999999999995
+      },
+      {
+        "text": "100",
+        "start": 4.6499999999999995,
+        "end": 4.8
+      },
+      {
+        "text": "ms/task.",
+        "start": 4.8,
+        "end": 4.95
+      },
+      {
+        "text": "Model",
+        "start": 4.95,
+        "end": 5.1
+      },
+      {
+        "text": "B",
+        "start": 5.1,
+        "end": 5.25
+      },
+      {
+        "text": "latency",
+        "start": 5.25,
+        "end": 5.3999999999999995
+      },
+      {
+        "text": "is",
+        "start": 5.3999999999999995,
+        "end": 5.55
+      },
+      {
+        "text": "200",
+        "start": 5.55,
+        "end": 5.7
+      },
+      {
+        "text": "ms/task.",
+        "start": 5.7,
+        "end": 5.85
+      },
+      {
+        "text": "Model",
+        "start": 5.949999999999999,
+        "end": 6.1
+      },
+      {
+        "text": "A",
+        "start": 6.1,
+        "end": 6.249999999999999
+      },
+      {
+        "text": "score",
+        "start": 6.249999999999999,
+        "end": 6.3999999999999995
+      },
+      {
+        "text": "is",
+        "start": 6.3999999999999995,
+        "end": 6.549999999999999
+      },
+      {
+        "text": "90",
+        "start": 6.549999999999999,
+        "end": 6.699999999999999
+      },
+      {
+        "text": "score/100.",
+        "start": 6.699999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "Model",
+        "start": 6.85,
+        "end": 6.999999999999999
+      },
+      {
+        "text": "B",
+        "start": 6.999999999999999,
+        "end": 7.1499999999999995
+      },
+      {
+        "text": "score",
+        "start": 7.1499999999999995,
+        "end": 7.299999999999999
+      },
+      {
+        "text": "is",
+        "start": 7.299999999999999,
+        "end": 7.449999999999999
+      },
+      {
+        "text": "80",
+        "start": 7.449999999999999,
+        "end": 7.6
+      },
+      {
+        "text": "score/100.",
+        "start": 7.6,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "No",
+        "start": 7.85,
+        "end": 8.075
+      },
+      {
+        "text": "universal",
+        "start": 8.075,
+        "end": 8.299999999999999
+      },
+      {
+        "text": "winner.",
+        "start": 8.299999999999999,
+        "end": 8.525
+      },
+      {
+        "text": "Tradeoffs",
+        "start": 8.525,
+        "end": 8.75
+      },
+      {
+        "text": "depend",
+        "start": 8.75,
+        "end": 8.975
+      },
+      {
+        "text": "on",
+        "start": 8.975,
+        "end": 9.2
+      },
+      {
+        "text": "the",
+        "start": 9.2,
+        "end": 9.424999999999999
+      },
+      {
+        "text": "task.",
+        "start": 9.424999999999999,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "inference-tradeoff",
+      "preset": "measured-comparison",
+      "visualMode": "hybrid",
+      "label": "Model tradeoffs",
+      "subject": "Model A",
+      "outcome": "No universal winner",
+      "evidence": "illustrative",
+      "models": [
+        {
+          "id": "a",
+          "label": "Model A"
+        },
+        {
+          "id": "b",
+          "label": "Model B"
+        }
+      ],
+      "task": "sorting",
+      "basis": "one test",
+      "metrics": [
+        {
+          "kind": "cost",
+          "unit": "USD/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 2,
+                "unit": "USD/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 1,
+                "unit": "USD/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "latency",
+          "unit": "ms/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 100,
+                "unit": "ms/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 200,
+                "unit": "ms/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "score",
+          "unit": "score/100",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 90,
+                "unit": "score/100"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 80,
+                "unit": "score/100"
+              }
+            }
+          ]
+        }
+      ],
+      "setupWord": 0,
+      "actionWord": 17,
+      "responseWord": 29,
+      "checkWord": 41,
+      "resolveWord": 53,
+      "startWord": 0,
+      "endWord": 60,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "inference-tradeoff",
+      "preset": "measured-comparison",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "Model tradeoffs",
+      "subject": "Model A",
+      "outcome": "No universal winner",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "models": [
+        {
+          "id": "a",
+          "label": "Model A"
+        },
+        {
+          "id": "b",
+          "label": "Model B"
+        }
+      ],
+      "task": "sorting",
+      "basis": "one test",
+      "metrics": [
+        {
+          "kind": "cost",
+          "unit": "USD/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 2,
+                "unit": "USD/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 1,
+                "unit": "USD/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "latency",
+          "unit": "ms/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 100,
+                "unit": "ms/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 200,
+                "unit": "ms/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "score",
+          "unit": "score/100",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 90,
+                "unit": "score/100"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 80,
+                "unit": "score/100"
+              }
+            }
+          ]
+        }
+      ],
+      "constraint": null
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "inference-tradeoff",
+      "measured-comparison",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "tradeoff-constraint-choice-hybrid",
+    "sourceText": "Model tradeoffs are illustrative for Model A and Model B. Both models run sorting on one test. Model A cost is 2 USD/task. Model B cost is 1 USD/task. Model A latency is 100 ms/task. Model B latency is 200 ms/task. Model A score is 90 score/100. Model B score is 80 score/100. Model B fits the 1 USD/task budget for sorting. Model B fits the stated budget.",
+    "sourceWords": [
+      {
+        "text": "Model",
+        "start": 0.25,
+        "end": 0.3558823529411765
+      },
+      {
+        "text": "tradeoffs",
+        "start": 0.3558823529411765,
+        "end": 0.46176470588235297
+      },
+      {
+        "text": "are",
+        "start": 0.46176470588235297,
+        "end": 0.5676470588235294
+      },
+      {
+        "text": "illustrative",
+        "start": 0.5676470588235294,
+        "end": 0.6735294117647059
+      },
+      {
+        "text": "for",
+        "start": 0.6735294117647059,
+        "end": 0.7794117647058824
+      },
+      {
+        "text": "Model",
+        "start": 0.7794117647058824,
+        "end": 0.8852941176470589
+      },
+      {
+        "text": "A",
+        "start": 0.8852941176470589,
+        "end": 0.9911764705882353
+      },
+      {
+        "text": "and",
+        "start": 0.9911764705882353,
+        "end": 1.0970588235294119
+      },
+      {
+        "text": "Model",
+        "start": 1.0970588235294119,
+        "end": 1.2029411764705882
+      },
+      {
+        "text": "B.",
+        "start": 1.2029411764705882,
+        "end": 1.3088235294117647
+      },
+      {
+        "text": "Both",
+        "start": 1.3088235294117647,
+        "end": 1.4147058823529413
+      },
+      {
+        "text": "models",
+        "start": 1.4147058823529413,
+        "end": 1.5205882352941178
+      },
+      {
+        "text": "run",
+        "start": 1.5205882352941178,
+        "end": 1.6264705882352943
+      },
+      {
+        "text": "sorting",
+        "start": 1.6264705882352943,
+        "end": 1.7323529411764707
+      },
+      {
+        "text": "on",
+        "start": 1.7323529411764707,
+        "end": 1.838235294117647
+      },
+      {
+        "text": "one",
+        "start": 1.838235294117647,
+        "end": 1.9441176470588235
+      },
+      {
+        "text": "test.",
+        "start": 1.9441176470588235,
+        "end": 2.05
+      },
+      {
+        "text": "Model",
+        "start": 2.15,
+        "end": 2.3
+      },
+      {
+        "text": "A",
+        "start": 2.3,
+        "end": 2.4499999999999997
+      },
+      {
+        "text": "cost",
+        "start": 2.4499999999999997,
+        "end": 2.6
+      },
+      {
+        "text": "is",
+        "start": 2.6,
+        "end": 2.75
+      },
+      {
+        "text": "2",
+        "start": 2.75,
+        "end": 2.9
+      },
+      {
+        "text": "USD/task.",
+        "start": 2.9,
+        "end": 3.05
+      },
+      {
+        "text": "Model",
+        "start": 3.05,
+        "end": 3.2
+      },
+      {
+        "text": "B",
+        "start": 3.2,
+        "end": 3.3499999999999996
+      },
+      {
+        "text": "cost",
+        "start": 3.3499999999999996,
+        "end": 3.5
+      },
+      {
+        "text": "is",
+        "start": 3.5,
+        "end": 3.65
+      },
+      {
+        "text": "1",
+        "start": 3.65,
+        "end": 3.8
+      },
+      {
+        "text": "USD/task.",
+        "start": 3.8,
+        "end": 3.95
+      },
+      {
+        "text": "Model",
+        "start": 4.05,
+        "end": 4.2
+      },
+      {
+        "text": "A",
+        "start": 4.2,
+        "end": 4.35
+      },
+      {
+        "text": "latency",
+        "start": 4.35,
+        "end": 4.5
+      },
+      {
+        "text": "is",
+        "start": 4.5,
+        "end": 4.6499999999999995
+      },
+      {
+        "text": "100",
+        "start": 4.6499999999999995,
+        "end": 4.8
+      },
+      {
+        "text": "ms/task.",
+        "start": 4.8,
+        "end": 4.95
+      },
+      {
+        "text": "Model",
+        "start": 4.95,
+        "end": 5.1
+      },
+      {
+        "text": "B",
+        "start": 5.1,
+        "end": 5.25
+      },
+      {
+        "text": "latency",
+        "start": 5.25,
+        "end": 5.3999999999999995
+      },
+      {
+        "text": "is",
+        "start": 5.3999999999999995,
+        "end": 5.55
+      },
+      {
+        "text": "200",
+        "start": 5.55,
+        "end": 5.7
+      },
+      {
+        "text": "ms/task.",
+        "start": 5.7,
+        "end": 5.85
+      },
+      {
+        "text": "Model",
+        "start": 5.949999999999999,
+        "end": 6.1
+      },
+      {
+        "text": "A",
+        "start": 6.1,
+        "end": 6.249999999999999
+      },
+      {
+        "text": "score",
+        "start": 6.249999999999999,
+        "end": 6.3999999999999995
+      },
+      {
+        "text": "is",
+        "start": 6.3999999999999995,
+        "end": 6.549999999999999
+      },
+      {
+        "text": "90",
+        "start": 6.549999999999999,
+        "end": 6.699999999999999
+      },
+      {
+        "text": "score/100.",
+        "start": 6.699999999999999,
+        "end": 6.85
+      },
+      {
+        "text": "Model",
+        "start": 6.85,
+        "end": 6.999999999999999
+      },
+      {
+        "text": "B",
+        "start": 6.999999999999999,
+        "end": 7.1499999999999995
+      },
+      {
+        "text": "score",
+        "start": 7.1499999999999995,
+        "end": 7.299999999999999
+      },
+      {
+        "text": "is",
+        "start": 7.299999999999999,
+        "end": 7.449999999999999
+      },
+      {
+        "text": "80",
+        "start": 7.449999999999999,
+        "end": 7.6
+      },
+      {
+        "text": "score/100.",
+        "start": 7.6,
+        "end": 7.749999999999999
+      },
+      {
+        "text": "Model",
+        "start": 7.85,
+        "end": 7.97
+      },
+      {
+        "text": "B",
+        "start": 7.97,
+        "end": 8.09
+      },
+      {
+        "text": "fits",
+        "start": 8.09,
+        "end": 8.209999999999999
+      },
+      {
+        "text": "the",
+        "start": 8.209999999999999,
+        "end": 8.33
+      },
+      {
+        "text": "1",
+        "start": 8.33,
+        "end": 8.45
+      },
+      {
+        "text": "USD/task",
+        "start": 8.45,
+        "end": 8.57
+      },
+      {
+        "text": "budget",
+        "start": 8.57,
+        "end": 8.69
+      },
+      {
+        "text": "for",
+        "start": 8.69,
+        "end": 8.81
+      },
+      {
+        "text": "sorting.",
+        "start": 8.81,
+        "end": 8.93
+      },
+      {
+        "text": "Model",
+        "start": 8.93,
+        "end": 9.049999999999999
+      },
+      {
+        "text": "B",
+        "start": 9.049999999999999,
+        "end": 9.17
+      },
+      {
+        "text": "fits",
+        "start": 9.17,
+        "end": 9.29
+      },
+      {
+        "text": "the",
+        "start": 9.29,
+        "end": 9.41
+      },
+      {
+        "text": "stated",
+        "start": 9.41,
+        "end": 9.53
+      },
+      {
+        "text": "budget.",
+        "start": 9.53,
+        "end": 9.65
+      }
+    ],
+    "plannerInput": {
+      "kind": "inference-tradeoff",
+      "preset": "constraint-choice",
+      "visualMode": "hybrid",
+      "label": "Model tradeoffs",
+      "subject": "Model A",
+      "outcome": "Model B fits the stated budget",
+      "evidence": "illustrative",
+      "models": [
+        {
+          "id": "a",
+          "label": "Model A"
+        },
+        {
+          "id": "b",
+          "label": "Model B"
+        }
+      ],
+      "task": "sorting",
+      "basis": "one test",
+      "metrics": [
+        {
+          "kind": "cost",
+          "unit": "USD/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 2,
+                "unit": "USD/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 1,
+                "unit": "USD/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "latency",
+          "unit": "ms/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 100,
+                "unit": "ms/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 200,
+                "unit": "ms/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "score",
+          "unit": "score/100",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 90,
+                "unit": "score/100"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 80,
+                "unit": "score/100"
+              }
+            }
+          ]
+        }
+      ],
+      "constraint": {
+        "metric": "cost",
+        "maximum": 1,
+        "unit": "USD/task",
+        "selectedId": "b"
+      },
+      "setupWord": 0,
+      "actionWord": 17,
+      "responseWord": 29,
+      "checkWord": 41,
+      "resolveWord": 53,
+      "startWord": 0,
+      "endWord": 67,
+      "layout": "stack"
+    },
+    "durationSec": 10,
+    "scene": {
+      "kind": "inference-tradeoff",
+      "preset": "constraint-choice",
+      "visualMode": "hybrid",
+      "evidence": "illustrative",
+      "label": "Model tradeoffs",
+      "subject": "Model A",
+      "outcome": "Model B fits the stated budget",
+      "setupAt": 0.3,
+      "actionAt": 2.15,
+      "responseAt": 4.05,
+      "checkAt": 5.949999999999999,
+      "resolveAt": 7.85,
+      "models": [
+        {
+          "id": "a",
+          "label": "Model A"
+        },
+        {
+          "id": "b",
+          "label": "Model B"
+        }
+      ],
+      "task": "sorting",
+      "basis": "one test",
+      "metrics": [
+        {
+          "kind": "cost",
+          "unit": "USD/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 2,
+                "unit": "USD/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 1,
+                "unit": "USD/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "latency",
+          "unit": "ms/task",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 100,
+                "unit": "ms/task"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 200,
+                "unit": "ms/task"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "score",
+          "unit": "score/100",
+          "values": [
+            {
+              "modelId": "a",
+              "measurement": {
+                "state": "measured",
+                "value": 90,
+                "unit": "score/100"
+              }
+            },
+            {
+              "modelId": "b",
+              "measurement": {
+                "state": "measured",
+                "value": 80,
+                "unit": "score/100"
+              }
+            }
+          ]
+        }
+      ],
+      "constraint": {
+        "metric": "cost",
+        "maximum": 1,
+        "unit": "USD/task",
+        "selectedId": "b"
+      }
+    },
+    "palette": {
+      "bgOuter": "#1a0c09",
+      "bgInner": "#36241e",
+      "card": "#321f1a",
+      "cardRaised": "#3e2d27",
+      "cardBorder": "rgba(246, 236, 217, 0.09)",
+      "text": "#f8f0e1",
+      "muted": "#97897d",
+      "accent": "#9f75ff",
+      "accent2": "#c1a1f7",
+      "accentSoft": "rgba(159, 117, 255, 0.18)",
+      "positive": "#6fbf8a",
+      "negative": "#e0735f",
+      "paper": "#fbf7f0",
+      "paperText": "#190b08",
+      "clay": [
+        "#caaef5",
+        "#e7d4ee",
+        "#977bba"
+      ]
+    },
+    "covers": [
+      "inference-tradeoff",
+      "constraint-choice",
+      "hybrid"
+    ],
+    "samples": [
+      {
+        "name": "setup",
+        "frame": 30
+      },
+      {
+        "name": "action",
+        "frame": 87
+      },
+      {
+        "name": "response",
+        "frame": 126
+      },
+      {
+        "name": "check",
+        "frame": 200
+      },
+      {
+        "name": "resolve",
+        "frame": 247
+      },
+      {
+        "name": "hold",
+        "frame": 282
+      }
+    ],
+    "cases": [
+      {
+        "name": "stack-light",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-dark",
+        "layout": "stack",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-light",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "stack-flipped-dark",
+        "layout": "stack-flipped",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-light",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "pip-dark",
+        "layout": "pip",
+        "aspect": "9:16",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-light",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#f6ecd9",
+          "bgInner": "#fffaf2",
+          "card": "#f6ecd9",
+          "cardRaised": "#fffaf2",
+          "cardBorder": "#7c6c62",
+          "text": "#23100c",
+          "muted": "#635045",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fffaf2",
+          "paperText": "#23100c",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      },
+      {
+        "name": "over-dark",
+        "layout": "over",
+        "aspect": "16:9",
+        "palette": {
+          "bgOuter": "#1a0c09",
+          "bgInner": "#36241e",
+          "card": "#321f1a",
+          "cardRaised": "#3e2d27",
+          "cardBorder": "rgba(246, 236, 217, 0.09)",
+          "text": "#f8f0e1",
+          "muted": "#97897d",
+          "accent": "#9f75ff",
+          "accent2": "#c1a1f7",
+          "accentSoft": "rgba(159, 117, 255, 0.18)",
+          "positive": "#6fbf8a",
+          "negative": "#e0735f",
+          "paper": "#fbf7f0",
+          "paperText": "#190b08",
+          "clay": [
+            "#caaef5",
+            "#e7d4ee",
+            "#977bba"
+          ]
+        }
+      }
+    ]
+  }
+]

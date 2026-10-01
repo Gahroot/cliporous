@@ -7,7 +7,9 @@ import type { AnyKindSpec } from './kind-spec';
 import { THREE_D_KIND_SPECS } from './kinds-3d';
 import { OBJECT_KIND_SPECS } from './kinds-3d-objects';
 import { AGENT_WORKFLOW_SPEC } from './kinds-agent-workflow';
+import { inferenceTradeoffSpec, tokenAttentionSpec } from './kinds-ai-diagrams';
 import { ASSEMBLY_KIND_SPECS } from './kinds-assemblies';
+import { cashTimingSpec } from './kinds-cash-timing';
 import { COGNITION_KIND_SPECS } from './kinds-cognition';
 import { COMPOSED_KIND_SPECS } from './kinds-composed';
 import { CONCEPT_ADAPTIVE_SPECS } from './kinds-concept-adaptive';
@@ -19,6 +21,8 @@ import { CONCEPT_PERSPECTIVE_SPECS } from './kinds-concept-perspective';
 import { CONTEXT_WINDOW_SPEC } from './kinds-context-window';
 import { CORE_KIND_SPECS } from './kinds-core';
 import { DATA_KIND_SPECS } from './kinds-data';
+import { detroitPlaceSpec } from './kinds-detroit';
+import { fundFlowSpec, ownershipChangeSpec, portfolioExposureSpec } from './kinds-finance';
 import { IDEA_KIND_SPECS } from './kinds-ideas';
 import { MECHANISM_KIND_SPECS } from './kinds-mechanisms';
 import { MONEY_KIND_SPECS } from './kinds-money';
@@ -54,6 +58,13 @@ export const ALL_KIND_SPECS: readonly AnyKindSpec[] = [
   ...CONCEPT_BUSINESS_POPULATIONS_SPECS,
   ...CONCEPT_PERSPECTIVE_SPECS,
   ...CONCEPT_ADAPTIVE_SPECS,
+  detroitPlaceSpec,
+  fundFlowSpec,
+  ownershipChangeSpec,
+  portfolioExposureSpec,
+  cashTimingSpec,
+  tokenAttentionSpec,
+  inferenceTradeoffSpec,
 ];
 
 const BY_KIND = new Map<ExplainerSceneKind, AnyKindSpec>(ALL_KIND_SPECS.map((s) => [s.kind, s]));

@@ -129,7 +129,9 @@ describe('QA-05 through QA-10 release contracts', () => {
     const renderScreen = readProjectFile('src/renderer/src/components/screens/RenderScreen.tsx');
     const clipCard = readProjectFile('src/renderer/src/components/ClipCard.tsx');
 
-    expect(dropScreen).toContain('Or choose a local file to start this project.');
+    expect(dropScreen).toContain('Drop a video here or choose a file.');
+    expect(dropScreen).toContain('aria-label="Choose a video file or drop it here"');
+    expect(dropScreen).toContain('onClick={() => void handleBrowse()}');
     expect(templateEditor).toContain('type="number"');
     expect(templateEditor).toContain("event.key === 'ArrowLeft'");
     expect(renderScreen).toMatch(/aria-label=\{`Move \$\{label\} earlier`\}/);
