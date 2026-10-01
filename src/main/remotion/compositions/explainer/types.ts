@@ -13,6 +13,13 @@
  * time under any other key, and never name a non-time number `…At`.
  */
 
+import type { CognitionScene } from './cognition/types';
+import type { AdaptiveScene } from './concepts/adaptive/types';
+import type { BusinessOperationsScene } from './concepts/business-operations/types';
+import type { BusinessPopulationsScene } from './concepts/business-populations/types';
+import type { InferenceScene } from './concepts/inference/types';
+import type { InformationScene } from './concepts/information/types';
+import type { PerspectiveScene } from './concepts/perspective/types';
 import type {
   LabelTreatment,
   NumberPresentation,
@@ -24,6 +31,8 @@ import type {
   RelayScene,
   SynchronizationScene,
 } from './mechanisms/composed-types';
+import type { SpatialScene } from './spatial/types';
+import type { TechnologyScene } from './technology/types';
 
 export type {
   ExplodedTarget,
@@ -305,7 +314,29 @@ export type HeroTone = 'up' | 'down';
 // Scene kinds
 // ---------------------------------------------------------------------------
 
-/** Authored causal sequences need their complete setup, contact and outcome window. */
+/** Non-causal explanations share the authored-story timing and emphasis protections. */
+export const CONCEPT_SCENE_KINDS = [
+  'system-layers',
+  'semantic-sort',
+  'information-transform',
+  'token-choice',
+  'expert-selection',
+  'edge-cloud',
+  'resource-allocation',
+  'market-exchange',
+  'unit-economics',
+  'population-distribution',
+  'customer-cohort',
+  'inventory-demand',
+  'scale-hierarchy',
+  'possible-futures',
+  'digital-twin',
+  'collective-pattern',
+  'robot-perception',
+  'modular-machine',
+] as const;
+
+/** Authored stories need complete setup/action/outcome windows and own their emphasis. */
 export const CAUSAL_SCENE_KINDS = [
   'bottleneck',
   'momentum',
@@ -317,6 +348,26 @@ export const CAUSAL_SCENE_KINDS = [
   'synchronization',
   'relay',
   'exploded-view',
+  'agent-workflow',
+  'retrieval-grounding',
+  'context-window',
+  'software-release',
+  'request-routing',
+  'house-cutaway',
+  'house-build',
+  'house-renovation',
+  'property-access',
+  'neighborhood',
+  'floorplan-fit',
+  'house-options',
+  'property-lifecycle',
+  'agent-team',
+  'agent-plan',
+  'agent-budget',
+  'model-training',
+  'model-evaluation',
+  'evidence-conflict',
+  ...CONCEPT_SCENE_KINDS,
 ] as const;
 
 export function isCausalSceneKind(kind: string): boolean {
@@ -947,7 +998,16 @@ export type ExplainerSceneBody =
   | SwitchyardScene
   | SynchronizationScene
   | RelayScene
-  | ExplodedViewScene;
+  | ExplodedViewScene
+  | TechnologyScene
+  | SpatialScene
+  | CognitionScene
+  | InformationScene
+  | InferenceScene
+  | BusinessOperationsScene
+  | BusinessPopulationsScene
+  | PerspectiveScene
+  | AdaptiveScene;
 
 // ---------------------------------------------------------------------------
 // Cross-kind extras: continuation beats + emphasis reactions

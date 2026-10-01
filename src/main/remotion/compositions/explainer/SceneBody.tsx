@@ -4,6 +4,7 @@
  */
 
 import type React from 'react';
+import { AgentWorkflowScene } from './AgentWorkflowScene';
 import { BalanceScene } from './BalanceScene';
 import { BeforeAfterScene } from './BeforeAfterScene';
 import { BottleneckScene } from './BottleneckScene';
@@ -12,6 +13,14 @@ import { ChatScene } from './ChatScene';
 import { ChecklistScene } from './ChecklistScene';
 import { CodeScene } from './CodeScene';
 import { CompoundScene } from './CompoundScene';
+import { ContextWindowScene } from './ContextWindowScene';
+import { CognitionSceneView } from './cognition/CognitionSceneView';
+import { AdaptiveSceneView } from './concepts/adaptive/Scene';
+import { BusinessOperationsSceneView } from './concepts/business-operations/Scene';
+import { BusinessPopulationsSceneView } from './concepts/business-populations/Scene';
+import { InferenceSceneView } from './concepts/inference/Scene';
+import { InformationSceneView } from './concepts/information/Scene';
+import { PerspectiveSceneView } from './concepts/perspective/Scene';
 import { DefinitionScene } from './DefinitionScene';
 import { DominoesScene } from './DominoesScene';
 import { EquationScene } from './EquationScene';
@@ -39,8 +48,11 @@ import { QuoteScene } from './QuoteScene';
 import { RankingScene } from './RankingScene';
 import { ReceiptScene } from './ReceiptScene';
 import { RelayScene } from './RelayScene';
+import { RequestRoutingScene } from './RequestRoutingScene';
 import { ResourceLeakScene } from './ResourceLeakScene';
+import { RetrievalGroundingScene } from './RetrievalGroundingScene';
 import { SearchScene } from './SearchScene';
+import { SoftwareReleaseScene } from './SoftwareReleaseScene';
 import { SpectrumScene } from './SpectrumScene';
 import { StackScene } from './StackScene';
 import { StairsScene } from './StairsScene';
@@ -50,6 +62,7 @@ import { StreakScene } from './StreakScene';
 import { StudyScene } from './StudyScene';
 import { SwitchyardScene } from './SwitchyardScene';
 import { SynchronizationScene } from './SynchronizationScene';
+import { SpatialSceneView } from './spatial/SpatialSceneView';
 import { TimelineScene } from './TimelineScene';
 import type { ExplainerScene } from './types';
 import { VennScene } from './VennScene';
@@ -57,6 +70,56 @@ import { VersusScene } from './VersusScene';
 
 export const SceneBody: React.FC<{ scene: ExplainerScene }> = ({ scene }) => {
   switch (scene.kind) {
+    case 'system-layers':
+    case 'semantic-sort':
+    case 'information-transform':
+      return <InformationSceneView scene={scene} />;
+    case 'token-choice':
+    case 'expert-selection':
+    case 'edge-cloud':
+      return <InferenceSceneView scene={scene} />;
+    case 'resource-allocation':
+    case 'market-exchange':
+    case 'unit-economics':
+      return <BusinessOperationsSceneView scene={scene} />;
+    case 'population-distribution':
+    case 'customer-cohort':
+    case 'inventory-demand':
+      return <BusinessPopulationsSceneView scene={scene} />;
+    case 'scale-hierarchy':
+    case 'possible-futures':
+    case 'digital-twin':
+      return <PerspectiveSceneView scene={scene} />;
+    case 'collective-pattern':
+    case 'robot-perception':
+    case 'modular-machine':
+      return <AdaptiveSceneView scene={scene} />;
+    case 'house-cutaway':
+    case 'house-build':
+    case 'house-renovation':
+    case 'property-access':
+    case 'neighborhood':
+    case 'floorplan-fit':
+    case 'house-options':
+    case 'property-lifecycle':
+      return <SpatialSceneView scene={scene} />;
+    case 'agent-team':
+    case 'agent-plan':
+    case 'agent-budget':
+    case 'model-training':
+    case 'model-evaluation':
+    case 'evidence-conflict':
+      return <CognitionSceneView scene={scene} />;
+    case 'agent-workflow':
+      return <AgentWorkflowScene scene={scene} />;
+    case 'retrieval-grounding':
+      return <RetrievalGroundingScene scene={scene} />;
+    case 'context-window':
+      return <ContextWindowScene scene={scene} />;
+    case 'software-release':
+      return <SoftwareReleaseScene scene={scene} />;
+    case 'request-routing':
+      return <RequestRoutingScene scene={scene} />;
     case 'synchronization':
       return <SynchronizationScene scene={scene} />;
     case 'relay':

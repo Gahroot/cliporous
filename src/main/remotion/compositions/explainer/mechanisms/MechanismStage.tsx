@@ -17,18 +17,27 @@ export function MechanismStage({
   title,
   overlay,
   camera = MECHANISM_CAMERA,
+  bobAmount,
 }: {
   children: React.ReactNode;
   title?: string;
   overlay?: (camera: CameraSpec) => React.ReactNode;
   camera?: CameraSpec;
+  bobAmount?: number;
 }): React.ReactElement {
   const S = useStage();
   const compact = useCompactMechanism();
-  const sampled = useRigCamera(camera, { driftDeg: 0, pushAmount: 0 });
+  const sampled = useRigCamera(camera, { driftDeg: 0, pushAmount: 0, bobAmount });
   return (
     <>
-      <Stage3D camera={camera} driftDeg={0} pushAmount={0} groundY={-1.4} shadowScale={9}>
+      <Stage3D
+        camera={camera}
+        driftDeg={0}
+        pushAmount={0}
+        bobAmount={bobAmount}
+        groundY={-1.4}
+        shadowScale={9}
+      >
         {children}
       </Stage3D>
       {title && (

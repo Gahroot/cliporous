@@ -40,6 +40,8 @@ export interface Stage3DProps {
   focusAt?: number;
   driftDeg?: number;
   pushAmount?: number;
+  /** Vertical camera motion; zero gives an exact static final hold. */
+  bobAmount?: number;
   /** World y of the ground shadow plane; omit to hide the shadow. */
   groundY?: number;
   shadowScale?: number;
@@ -49,7 +51,7 @@ export interface Stage3DProps {
 /** Hook for HTML overlays that must track the same camera as the 3D scene. */
 export function useRigCamera(
   camera: CameraSpec,
-  opts: Pick<Stage3DProps, 'focusAt' | 'driftDeg' | 'pushAmount'> = {},
+  opts: Pick<Stage3DProps, 'focusAt' | 'driftDeg' | 'pushAmount' | 'bobAmount'> = {},
 ): CameraSpec {
   const { t } = useSceneTime();
   return cameraRig(camera, t, opts);
@@ -60,12 +62,13 @@ export const Stage3D: React.FC<Stage3DProps> = ({
   focusAt,
   driftDeg,
   pushAmount,
+  bobAmount,
   groundY,
   shadowScale = 9,
   children,
 }) => {
   const S = useStage();
-  const spec = useRigCamera(camera, { focusAt, driftDeg, pushAmount });
+  const spec = useRigCamera(camera, { focusAt, driftDeg, pushAmount, bobAmount });
   const sky = mixHex(S.text, '#ffffff', 0.4);
   const ground = S.bgInner;
 

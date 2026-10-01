@@ -56,7 +56,7 @@ export function worldUnitsPerPixel(
 export function cameraRig(
   base: CameraSpec,
   t: number,
-  opts: { focusAt?: number; driftDeg?: number; pushAmount?: number } = {},
+  opts: { focusAt?: number; driftDeg?: number; pushAmount?: number; bobAmount?: number } = {},
 ): CameraSpec {
   const driftDeg = opts.driftDeg ?? 6;
   const pushAmount = opts.pushAmount ?? 0.08;
@@ -76,7 +76,7 @@ export function cameraRig(
     fov: base.fov,
     position: [
       Math.sin(az) * radius * k,
-      (y + Math.sin(t * 0.45) * 0.08) * k,
+      (y + Math.sin(t * 0.45) * (opts.bobAmount ?? 0.08)) * k,
       Math.cos(az) * radius * k,
     ],
   };
