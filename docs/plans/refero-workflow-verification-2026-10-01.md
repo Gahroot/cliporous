@@ -44,7 +44,7 @@ Run on Windows with Node 22.18.0 and the installed toolchain, after the last app
 | `npm run build` | Pass, including Remotion browser bundle. Existing Browserslist data-age notice remains. |
 | `git diff --check` | Pass. Git also emitted existing LF/CRLF conversion notices. |
 
-The full main run preceded the final renderer-only cancellation-status adjustment; the affected main UI contract, full renderer suite, lint, typecheck and build were rerun afterward. No main runtime source changed in this pass.
+Both full test suites, the affected main UI contract, lint and typecheck were rerun after the final application-code edits with direct npm commands. Results above are unchanged. Build also passed after the final application-code edit. No main runtime source changed in this pass.
 
 ### Remaining main failures
 
@@ -55,7 +55,7 @@ Both failures are in `src/main/promo/brand-pack-loader.test.ts`:
 
 The implementation uses host-native `node:path.join`; the assertions expect literal POSIX separators. On Windows the result is `\\packs\\assets\\skool-about.png`, not `/packs/assets/skool-about.png`. Both source and test have no diff against git HEAD. The same failures appear in the earlier `.ezcoder/tmp/longform-final-20261001/main-tests-final.log`, before this UX work. They were not rewritten or suppressed to manufacture a green gate.
 
-Current logs: `.ezcoder/tmp/refero-ux/main-verification.log` and `renderer-verification-final.log`. Final lint/typecheck/UI-contract/build output is background task `94496163` in the local EZ Coder logs.
+Final direct-command test output is in background tasks `72fb2411` (renderer) and `6a633f67` (main) in the local EZ Coder logs; the main UI contract was also rerun directly and passed all six tests. Earlier retained logs: `.ezcoder/tmp/refero-ux/main-verification.log` and `renderer-verification-final.log`. Final build output is in task `94496163`. The five local harness scripts all pass `node --check`; capture, interaction, keyboard and native-media probes were also executed directly and passed.
 
 ## Browser evidence
 
