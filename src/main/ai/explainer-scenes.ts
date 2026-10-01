@@ -172,8 +172,8 @@ ${layoutGuide(aspect)}
 
 Every scene object ALSO has these common fields:
   "startWord":N, "endWord":N, "layout":"...",
-  "continues": true|false  — true when this scene directly carries on from the previous scene (the next beat of the same story, starting right where it ended); the stage morphs instead of cutting,
-  "transition": "grow"|"slide"|"fade" — only for continues:true ("grow" = the previous scene's focus item grows into this one),
+  "continues": true|false  — true when this scene directly carries on from the previous scene (the next beat of the same story, starting right where it ended); the scenes share a transition instead of cutting; object identity is guaranteed only inside an authored scene,
+  "transition": "grow"|"slide"|"fade" — only for continues:true ("grow" = a focus-led scene transition, not arbitrary object morphing),
   "laterStamp": {"text":"YES, BUT","word":N} or null — a stamp that lands on top of the running scene later (lets one scene keep going across several sentences),
   "dimWord": N or null — the whole scene dims on this word (e.g. "broken", "fails"),
   "annotation": {"kind":"marker"|"underline"|"circle"|"box"|"arrow","word":N} or null — ONLY hero/statement: draw attention to its label/accent word after it appears. ONE annotation OR laterStamp, not both. Use only when the speaker stresses that exact label; no decoration for its own sake.
@@ -187,6 +187,13 @@ Rules:
 - icon must be one of: ${EXPLAINER_ICONS.join(', ')}.
 - Do not start before word ${firstAllowed}. Never overlap scenes.
 - Prefer ONE scene that keeps going (more beats, a laterStamp, a dim) over several short separate ones — like keeping the same object on screen across two sentences.
+- Technology, spatial, cognition and concept stories need a supported preset, five explicit setup/action/response/check/resolve word indices, source-backed actors/outcome, 5–12 seconds including entrance/exit padding, and a readable final hold. Nouns alone never establish a relationship. Failed calls, requested approval, running tests or attempted fallbacks are not success.
+- Only selected source excerpts enter retrieval answers; references show provenance, not correctness. Context leaving the working window is not deletion from storage; summaries omit detail. Both parallel checks must pass before release; rollback restores the stated prior version. Cache hits bypass backend work; misses fill cache only after response; alternate routes must be explicitly supported.
+- Spatial stories explain anatomy, construction, renovation, permission boundaries, fit, alternatives, context, scale or property lifecycle. Use a house only when the source supplies the house/building analogy or property subject. Nearby spatial scenes may reuse the same source-backed subject and continues:true for a coherent miniature world; do not imply uninterrupted object-state morphing or merge different properties. Alternative houses are options, not forecasts or winners; rent and expenses are not net profit.
+- Cognition stories explain delegation, changed plans, limited resources, training versus use, fair evaluation or conflicting evidence. A request for resources is not a grant; referral to a human is not resolution. Never invent team speedups, scores, winners, evidence agreement or learning during ordinary model use.
+- Concept stories explain structure, sorting, synthesis, scale, choices, distributions, uncertainty, collective patterns or exchange. Similarity is not truth; a selected token is not verified knowledge; a digital twin or forecast is not an actual future. Preserve unselected experts, unmatched participants, unknown recognition and incompatible parts. Bind every quantity to its subject, unit and period; never invent probabilities, denominators, fees, total wallet balances, retention, profits or guarantees.
+- Preserve the complete source condition in condition for hypothetical technology, spatial, cognition and concept explanations. Never present if/when as a verified event or invent a missing result, metric, excerpt, version or approval. Keep causal setup and resolution intact; do not add generic stamps or reactions to these scenes.
+- Business wording can justify bottleneck (approval queues/support backlogs), resource-leak (recurring waste plus correction), or feedback-control (measured demand/capacity correction). Content→leads→revenue→reinvestment uses loop, not physical momentum. Receipt/chart margin needs supplied revenue, costs AND margin; do not invent or calculate missing values.
 - Variety: never the same scene type twice in a row; mix 2D and 3D; vary layouts.
 - Restraint: annotations are occasional, never on adjacent scenes. Do not combine an annotation with a stamp. At most one reaction in annotated scenes. Use object motion to explain a change, not to fill empty space.
 - Leave at least 1.5 s of plain speaker between separate scenes (continues:true scenes are exempt).
@@ -236,6 +243,7 @@ Now act as the creative director reviewing this draft before anything renders. F
 - Swap a scene to a better-fitting type or layout when it would explain the idea more clearly.
 - Remove scenes that do not genuinely help; merge back-to-back scenes that tell one story using "continues".
 - Check every word index lands on the word where that beat is actually said.
+- Re-check each authored technology, spatial, cognition or concept branch against its local source claim: no failure-to-success reversal, unsupported permission or grant, missing evidence, stale-cache hit, incomplete parallel join, invented rollback, profit, model score or resolution. Training and ordinary use are separate; conflicting claims stay unresolved unless the source supplies a resolution. Preserve conditions and the final hold; drop ambiguous outcomes instead of repairing them with invented facts.
 - Keep all limits and rules above.
 Return the FINAL plan as JSON only, same schema: {"scenes":[ ... ]}`;
 }

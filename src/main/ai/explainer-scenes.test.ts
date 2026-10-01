@@ -1,6 +1,127 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { HERO_CATALOG } from '../remotion/compositions/explainer/hero-catalog';
+import {
+  TECHNOLOGY_KINDS,
+  type TechnologyScene,
+} from '../remotion/compositions/explainer/technology/types';
+import { collectSceneTimes, mapSceneTimes } from '../remotion/compositions/explainer/types';
+import { BEAT_EDGE_SEC } from './explainer/kind-spec';
 import { type PlannerWord, parseExplainerPlan, toSceneRelative } from './explainer-scenes';
+
+describe('technology fixtures through the real planner boundary', () => {
+  const fixtures = TECHNOLOGY_KINDS.flatMap(
+    (kind) =>
+      JSON.parse(
+        readFileSync(
+          new URL(
+            `../../../scripts/explainer-stills/fixtures/technology-${kind}.json`,
+            import.meta.url,
+          ),
+          'utf8',
+        ),
+      ) as {
+        name: string;
+        raw: Record<string, unknown>;
+        words?: PlannerWord[];
+        sourceText: string;
+        wordStepSec?: number;
+        wordTiming?: { fps: number; stepFrames: number; durationFrames: number };
+        scene: TechnologyScene;
+      }[],
+  );
+
+  function sourceWords(fixture: (typeof fixtures)[number]): PlannerWord[] {
+    if (fixture.words) return fixture.words;
+    const timing = fixture.wordTiming;
+    if (timing)
+      return fixture.sourceText.split(/\s+/).map((text, i) => ({
+        text,
+        start: (i * timing.stepFrames) / timing.fps,
+        end: (i * timing.stepFrames + timing.durationFrames) / timing.fps,
+      }));
+    const step = fixture.wordStepSec;
+    if (step === undefined) throw new Error(`Missing source timing: ${fixture.name}`);
+    const round = (time: number): number => Math.round(time * 1e6) / 1e6;
+    return fixture.sourceText
+      .split(/\s+/)
+      .map((text, i) => ({ text, start: round(i * step), end: round((i + 0.9) * step) }));
+  }
+
+  it.each(
+    fixtures,
+  )('$name keeps all five source beats at nonzero absolute timestamps', (fixture) => {
+    const offset = 30;
+    const shifted = sourceWords(fixture).map((word) => ({
+      ...word,
+      start: word.start + offset,
+      end: word.end + offset,
+    }));
+    const plan = parseExplainerPlan(
+      {
+        scenes: [
+          {
+            ...fixture.raw,
+            laterStamp: { text: 'DONE', word: fixture.raw.resolveWord },
+            dimWord: fixture.raw.checkWord,
+            reactions: [{ word: fixture.raw.checkWord, strength: 'shake' }],
+          },
+        ],
+      },
+      shifted,
+      { minStart: 0, maxEnd: 90 },
+      { emphasisTimes: [offset + 3] },
+    );
+    expect(plan).toHaveLength(1);
+    const [scene] = plan;
+    const expected = mapSceneTimes(fixture.scene, (time) => time + offset);
+    // The shared entrance clamp is intentional; later beats must stay on exact source time.
+    expected.setupAt = Math.max(
+      shifted[Number(fixture.raw.setupWord)].start,
+      scene.startTime + BEAT_EDGE_SEC,
+    );
+    expect(mapSceneTimes(scene.scene, () => 0)).toEqual(mapSceneTimes(expected, () => 0));
+    const expectedTimes = collectSceneTimes(expected);
+    expect(collectSceneTimes(scene.scene)).toHaveLength(5);
+    collectSceneTimes(scene.scene).forEach((time, i) => {
+      expect(time).toBeCloseTo(expectedTimes[i], 10);
+    });
+    expect(scene.scene).not.toHaveProperty('pulses');
+    expect(scene.scene).not.toHaveProperty('overlayStamp');
+    expect(scene.scene).not.toHaveProperty('dimAt');
+    expect(scene.cues.length).toBeGreaterThan(0);
+    expect(scene.cues.every((cue) => cue.at >= scene.startTime && cue.at <= scene.endTime)).toBe(
+      true,
+    );
+    expect(toSceneRelative(scene.scene, scene.startTime)).toEqual(
+      mapSceneTimes(expected, (time) =>
+        Math.max(0, Math.round((time - scene.startTime) * 1000) / 1000),
+      ),
+    );
+  });
+
+  it.each(
+    fixtures,
+  )('$name is rejected rather than clipping setup or the resolution hold', (fixture) => {
+    const shifted = sourceWords(fixture).map((word) => ({
+      ...word,
+      start: word.start + 30,
+      end: word.end + 30,
+    }));
+    expect(
+      parseExplainerPlan({ scenes: [fixture.raw] }, shifted, {
+        minStart: fixture.scene.setupAt + 30.3,
+        maxEnd: 90,
+      }),
+    ).toEqual([]);
+    expect(
+      parseExplainerPlan({ scenes: [fixture.raw] }, shifted, {
+        minStart: 0,
+        maxEnd: fixture.scene.resolveAt + 30.4,
+      }),
+    ).toEqual([]);
+  });
+});
 
 /** 40 words, one every 0.5s starting at t=10 (source-absolute time). */
 function words(count = 40, start = 10): PlannerWord[] {

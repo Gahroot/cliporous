@@ -1,4 +1,9 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import {
+  TECHNOLOGY_KINDS,
+  TECHNOLOGY_PRESETS,
+} from '../../remotion/compositions/explainer/technology/types';
 import type { PlannerWord } from './kind-spec';
 import { ALL_KIND_SPECS } from './kinds';
 import { buildShortlist, SHORTLIST_LIMITS } from './shortlist';
@@ -7,12 +12,160 @@ function toWords(text: string): PlannerWord[] {
   return text.split(/\s+/).map((w, i) => ({ text: w, start: i * 0.4, end: i * 0.4 + 0.35 }));
 }
 
+describe('technology domain selection without broader menus', () => {
+  const fixtures = TECHNOLOGY_KINDS.flatMap(
+    (kind) =>
+      JSON.parse(
+        readFileSync(
+          new URL(
+            `../../../../scripts/explainer-stills/fixtures/technology-${kind}.json`,
+            import.meta.url,
+          ),
+          'utf8',
+        ),
+      ) as { sourceText: string; scene: { kind: string; preset: string } }[],
+  );
+
+  it('has one source example for every approved preset and exactly one registry entry per kind', () => {
+    expect(
+      fixtures.map((fixture) => `${fixture.scene.kind}/${fixture.scene.preset}`).sort(),
+    ).toEqual(
+      TECHNOLOGY_KINDS.flatMap((kind) =>
+        TECHNOLOGY_PRESETS[kind].map((preset) => `${kind}/${preset}`),
+      ).sort(),
+    );
+    for (const kind of TECHNOLOGY_KINDS)
+      expect(ALL_KIND_SPECS.filter((spec) => spec.kind === kind)).toHaveLength(1);
+    expect(SHORTLIST_LIMITS).toEqual({
+      maxKinds: 16,
+      minKinds: 10,
+      maxProps: 10,
+      minProps: 5,
+      maxHitsPerTrigger: 3,
+    });
+  });
+
+  it.each(fixtures)('offers $scene.kind/$scene.preset from ordinary source wording', (fixture) => {
+    const menu = buildShortlist(toWords(fixture.sourceText));
+    expect(menu.kinds.map((spec) => spec.kind)).toContain(fixture.scene.kind);
+    expect(menu.scores[fixture.scene.kind]).toBeGreaterThan(0);
+    expect(menu.kinds.length).toBeLessThanOrEqual(16);
+    expect(menu.heroProps.length).toBeLessThanOrEqual(10);
+  });
+
+  it.each([
+    ['agent-workflow', 'Our travel agent likes human stories.'],
+    ['retrieval-grounding', 'I found retrieval difficult at the library.'],
+    ['context-window', 'I remember our shared childhood memories.'],
+    ['software-release', 'We released a new song after rehearsals.'],
+    ['request-routing', 'The customer requested a new bus route.'],
+  ])('does not score the misleading %s example', (kind, text) => {
+    expect(buildShortlist(toWords(text)).scores[kind] ?? 0).toBe(0);
+  });
+});
+
+describe('concept domain selection without broader menus', () => {
+  const packs = [
+    'information',
+    'inference',
+    'business-operations',
+    'business-populations',
+    'perspective',
+    'adaptive',
+  ];
+  const rows = packs.flatMap(
+    (pack) =>
+      JSON.parse(
+        readFileSync(
+          new URL(
+            `../../../../scripts/explainer-stills/fixtures/concept-${pack}.json`,
+            import.meta.url,
+          ),
+          'utf8',
+        ),
+      ) as { sourceText: string; scene: { kind: string } }[],
+  );
+  const examples = rows.filter(
+    (row, index) => rows.findIndex((other) => other.scene.kind === row.scene.kind) === index,
+  );
+
+  it('adds an offline evaluation example for each of the 18 concept kinds', () => {
+    expect(examples).toHaveLength(18);
+  });
+
+  it.each(
+    examples,
+  )('offers $scene.kind from its source words within the existing caps', (example) => {
+    const menu = buildShortlist(toWords(example.sourceText));
+    expect(menu.kinds.map((spec) => spec.kind)).toContain(example.scene.kind);
+    expect(menu.scores[example.scene.kind]).toBeGreaterThan(0);
+    expect(menu.kinds.length).toBeLessThanOrEqual(SHORTLIST_LIMITS.maxKinds);
+    expect(menu.heroProps.length).toBeLessThanOrEqual(SHORTLIST_LIMITS.maxProps);
+  });
+});
+
 /**
  * Offline eval set: realistic podcast lines → a kind (and optionally a prop)
  * that MUST be on the menu the planner sees. This is how we notice when a new
  * kind's triggers crowd out an old one, or a line stops reaching its kind.
  */
 const CASES: { text: string; kind: string; prop?: string }[] = [
+  {
+    text: 'Lift the roof off this house and look inside: the cutaway reveals the kitchen and bedroom, with plumbing behind the walls.',
+    kind: 'house-cutaway',
+  },
+  {
+    text: 'Start with a blueprint for the house, lay the foundation, build the walls and roof, then compare the finished home with the plan.',
+    kind: 'house-build',
+  },
+  {
+    text: 'Repainting this house is a cosmetic renovation; replacing a load-bearing beam is a structural renovation underneath the surface.',
+    kind: 'house-renovation',
+  },
+  {
+    text: 'This house key has scoped access: it opens the living room, not the private bedroom. Revoke the key and that access stops.',
+    kind: 'property-access',
+  },
+  {
+    text: 'Repeat the same house template across a neighborhood. Each home has the same structure, but the surroundings and context differ.',
+    kind: 'neighborhood',
+  },
+  {
+    text: 'The sofa and table need to fit the floor plan. Rearrange the furniture inside the fixed room without moving its walls.',
+    kind: 'floorplan-fit',
+  },
+  {
+    text: 'Compare two renovation options for the same house: a side extension or a new upper room. Each alternative has a tradeoff.',
+    kind: 'house-options',
+  },
+  {
+    text: 'The rental property is vacant, then a tenant moves in. Occupancy brings rental income, while maintenance remains a separate expense.',
+    kind: 'property-lifecycle',
+  },
+  {
+    text: 'The coordinator delegates tasks to specialist agents. Research and writing happen in parallel, then their results come back together.',
+    kind: 'agent-team',
+  },
+  {
+    text: 'The agent makes a plan, encounters an obstacle, and replans. A fixed automation follows its original route instead of adapting.',
+    kind: 'agent-plan',
+  },
+  {
+    text: 'Each tool call consumes the agent budget. When the allowance runs out the agent stops and requests more, rather than spending without limits.',
+    kind: 'agent-budget',
+  },
+  {
+    text: 'Training examples change the model during training. Later, inference uses that trained model on a new input without retraining it.',
+    kind: 'model-training',
+  },
+  {
+    text: 'Evaluate both models on the same tests. Compare their accuracy and speed as tradeoffs, not a universal winner.',
+    kind: 'model-evaluation',
+  },
+  {
+    text: 'Two sources disagree. These conflicting claims remain unresolved, so we refer the evidence to a human reviewer instead of inventing agreement.',
+    kind: 'evidence-conflict',
+  },
   { text: 'The formula is simple: consistency times time equals results.', kind: 'equation' },
   {
     text: 'Plot every task on effort versus impact and do the high impact low effort ones first.',

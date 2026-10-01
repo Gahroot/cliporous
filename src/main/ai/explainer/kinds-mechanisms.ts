@@ -146,9 +146,10 @@ export const resourceLeakSpec: KindSpec<'resource-leak'> = {
   triggers: [
     /\b(?:inflow|(?:water|money|revenue|income|resources?|cash|energy) (?:flows?|comes?|pours?) in)\b.{0,90}\bleak(?:s|ed|ing)?\b.{0,70}\b(?:seal(?:s|ed|ing)?|plug(?:s|ged|ging)?|clos(?:e[sd]?|ing))\b.{0,90}\b(?:retain(?:s|ed|ing)?|keeps?|builds? up|rises?|fills?)\b/,
     /\b(?:fill(?:s|ed|ing)?|pour(?:s|ed|ing)?)\b.{0,35}\b(?:tank|reservoir|bucket)\b.{0,70}\bleak(?:s|ed|ing)?\b.{0,70}\b(?:seal(?:s|ed|ing)?|plug(?:s|ged|ging)?|clos(?:e[sd]?|ing))\b.{0,90}\b(?:retain(?:s|ed|ing)?|keeps?|builds? up|rises?|fills?)\b/,
+    /\b(?:revenue|income|cash|resources?|money)\b.{0,25}\b(?:arrives?|comes? in|flows? in)\b.{0,90}\b(?:waste|wasting|loss)\b.{0,80}\b(?:we|they|the team) (?:cancel|remove|stop)\b.{0,100}\bmore (?:revenue|money|resources?) (?:stays?|remains?) available\b/,
   ],
   avoid:
-    'an isolated leak metaphor without a source-supported correction and retained result (use statement or hero), generic spending, or a reservoir merely filling; never invent a saving or quantity',
+    'an isolated leak metaphor without a source-supported correction and retained result (use statement or hero), generic spending, or a reservoir merely filling; never invent a saving or quantity. Ordinary business waste qualifies only with recurring inflow, corrective action and retained resources.',
   parse: (raw, ctx) => {
     const label = sourceLabel(raw.label, ctx, 26);
     if (!label) return null;
@@ -186,9 +187,10 @@ export const feedbackControlSpec: KindSpec<'feedback-control'> = {
   family: 'object',
   triggers: [
     /\b(?:gauge|pressure|level|temperature)\b.{0,45}\b(?:exceeds?|above|overshoots?)\b.{0,20}\b(?:target|set ?point)\b.{0,60}\bsensor\b.{0,30}\b(?:respond(?:s|ed)?|detect(?:s|ed)?|signals?|notic(?:es|ed))\b.{0,55}\bvalve\b.{0,75}\b(?:settle[sd]?|stabili[sz]e[sd]?|returns? to|back (?:at|to))\b/,
+    /\bdemand (?:exceeds?|is above)\b.{0,35}\bcapacity target\b.{0,55}\bmeasure (?:the )?workload\b.{0,75}\b(?:add staff|increase staffing|adjust capacity)\b.{0,55}\bworkload (?:returns? to|settles? at) (?:the )?target\b.{0,30}\b(?:stays?|stable)\b/,
   ],
   avoid:
-    'isolated "pressure", generic customer feedback, a reading without sensor-driven valve correction, or a recurring flywheel (use hero, statement or loop); require a spoken stable result, not invented regulation',
+    'isolated "pressure", generic customer feedback, a reading without measured correction, or a recurring flywheel (use hero, statement or loop); require a spoken stable result, not invented regulation. Business capacity needs excess demand, measurement, staffing correction and a return toward target.',
   parse: (raw, ctx) => {
     const label = sourceLabel(raw.label, ctx, 26);
     if (!label) return null;
