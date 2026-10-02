@@ -1,3 +1,4 @@
+import { findLongformPalette } from '@shared/longform-palette';
 import {
   longformLayersMayOverlap,
   longformRangesOverlap,
@@ -15,14 +16,48 @@ import {
   sceneFirstPlanProblem,
   scheduleLongformScenes,
 } from '@shared/longform-scenes';
+import type { Palette } from '@shared/palettes';
+import { DEFAULT_STORYBOARD_STYLE, type StoryboardStyle } from '@shared/storyboards';
 import type {
   BlockPlacement,
   DelosCardPlacement,
   LongformEditPlan,
   LongformPlanItemType,
+  LongformSkinId,
   PhraseEmphasis,
   WordTimestamp,
 } from '@shared/types';
+
+export interface LongformAppearanceSnapshot {
+  skin: LongformSkinId;
+  paletteId: string;
+  palette: Palette;
+  storyboardStyle: StoryboardStyle;
+}
+
+/** Call before the first await, never on completion: colors are content, not a library reference. */
+export function captureLongformAppearance(
+  appearance: {
+    skin: LongformSkinId;
+    paletteId: string;
+    palette?: Palette;
+    storyboardStyle?: StoryboardStyle;
+  },
+  customPalettes: readonly Palette[],
+): LongformAppearanceSnapshot {
+  const palette =
+    appearance.palette?.id === appearance.paletteId
+      ? appearance.palette
+      : findLongformPalette(appearance.paletteId, [...customPalettes]);
+  if (!palette)
+    throw new Error('Selected palette is unavailable. Choose a palette before generating.');
+  return {
+    skin: appearance.skin,
+    paletteId: appearance.paletteId,
+    palette: structuredClone(palette),
+    storyboardStyle: appearance.storyboardStyle ?? DEFAULT_STORYBOARD_STYLE,
+  };
+}
 
 /** Scene mutations use persisted IDs, never array positions. */
 export interface LongformPlanItemRef {
@@ -340,6 +375,66 @@ function clonePlan(plan: LongformEditPlan): LongformEditPlan {
   return structuredClone(plan);
 }
 
+export function longformItemEditProblem(
+  item: LongformPlanItemView,
+  update: LongformPlanItemUpdate,
+): string | null {
+  if (item.scene?.kind !== 'storyboard') return null;
+  if (
+    (update.startTime !== undefined && update.startTime !== item.startTime) ||
+    (update.endTime !== undefined && update.endTime !== item.endTime)
+  )
+    return 'Source-indexed beats need their complete authored window. Use feedback to request timing changes; no timing was changed.';
+  if (
+    item.scene.kind === 'storyboard' &&
+    update.presentation !== undefined &&
+    update.presentation !== 'full-frame'
+  )
+    return 'Continuous storyboards require full-screen presentation. Speaker layouts remain available for ordinary scenes.';
+  return null;
+}
+
+export interface StoryboardPanelSummary {
+  id: string;
+  kind: string;
+  title: string;
+  beats: string[];
+}
+/** Read-only summary, not an alternate parser: unsupported stored payloads remain recoverable. */
+export function storyboardPanelSummary(
+  scene: LongformScenePlacement,
+  words: readonly WordTimestamp[],
+): StoryboardPanelSummary[] {
+  if (scene.kind !== 'storyboard' || !Array.isArray(scene.sourceSpec.panels)) return [];
+  const at = (word: unknown): string =>
+    typeof word === 'number' && words[word] ? formatTimecode(words[word].start) : 'unavailable';
+  return scene.sourceSpec.panels.flatMap((panel, index) => {
+    if (!panel || typeof panel !== 'object' || Array.isArray(panel)) return [];
+    const title = panel.title;
+    const prop = panel.prop;
+    const beats = [`Reveal ${at(panel.revealWord)}`, `Camera move ${at(panel.moveWord)}`];
+    if (prop && typeof prop === 'object' && !Array.isArray(prop))
+      beats.push(
+        `${typeof prop.model === 'string' ? humanizeLongformKind(prop.model) : 'Prop'} · ${typeof prop.action === 'string' ? prop.action : 'action'} ${at(prop.atWord)}`,
+      );
+    return [
+      {
+        id: typeof panel.id === 'string' ? panel.id : String(index),
+        kind:
+          typeof panel.kind === 'string' ? humanizeLongformKind(panel.kind) : 'Unsupported panel',
+        title:
+          title &&
+          typeof title === 'object' &&
+          !Array.isArray(title) &&
+          typeof title.text === 'string'
+            ? title.text
+            : 'Untitled panel',
+        beats,
+      },
+    ];
+  });
+}
+
 export function updateLongformPlanItem(
   plan: LongformEditPlan,
   ref: LongformPlanItemRef,
@@ -348,6 +443,8 @@ export function updateLongformPlanItem(
   if (isScenePlanForReview(plan) && !isSceneFirstPlanEnvelope(plan)) return plan;
   if (isSceneFirstLongformPlan(plan)) {
     if (ref.type !== 'scene' || !plan.scenes.some((scene) => scene.id === ref.id)) return plan;
+    const original = buildLongformPlanItems(plan, []).find((item) => item.key === ref.id);
+    if (original && longformItemEditProblem(original, update)) return plan;
     const next = clonePlan(plan);
     if (!isSceneFirstLongformPlan(next)) return plan;
     const scene = next.scenes.find((candidate) => candidate.id === ref.id);

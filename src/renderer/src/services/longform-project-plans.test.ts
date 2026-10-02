@@ -112,6 +112,95 @@ describe('scene-first project restore without destructive migration', () => {
     expect(restored.source?.approvedVersionId).toBe('version-1');
   });
 
+  it('keeps parser-1 plans byte-for-byte through repeated read/save without adding style', () => {
+    const { record, source, transcript } = fixture();
+    const original = JSON.stringify(record);
+    let restored = record;
+    for (let index = 0; index < 3; index++) {
+      restored = restoreLongformPlans(JSON.parse(JSON.stringify({ source: restored })), [source], {
+        source: transcript,
+      }).source;
+      expect(JSON.stringify(restored)).toBe(original);
+    }
+    expect(restored.plan).not.toHaveProperty('storyboardStyle');
+  });
+
+  it('round trips mixed parser versions, styles and palette snapshots without collapsing history', () => {
+    const { record, source, transcript } = fixture();
+    const oldVersion = structuredClone(record.versions?.[0]);
+    if (!oldVersion) throw new Error('Expected historical version');
+    const polishPlan = {
+      ...oldVersion.plan,
+      parserVersion: 2,
+      storyboardStyle: 'polish',
+    } as SceneFirstLongformPlan;
+    const inkPlan = { ...polishPlan, storyboardStyle: 'ink' } as SceneFirstLongformPlan;
+    const palette = {
+      ...getPaletteById('brand'),
+      id: 'custom-deleted',
+      builtin: false,
+      accent: '#123456',
+    };
+    record.plan = inkPlan;
+    record.paletteId = palette.id;
+    record.palette = palette;
+    record.activeVersionId = 'ink';
+    record.approvedVersionId = 'ink';
+    record.versions = [
+      oldVersion,
+      { ...oldVersion, id: 'polish', plan: polishPlan },
+      {
+        ...oldVersion,
+        id: 'ink',
+        plan: structuredClone(inkPlan),
+        paletteId: palette.id,
+        palette: { ...palette },
+      },
+    ];
+    const restored = restoreLongformPlans(
+      JSON.parse(JSON.stringify({ source: record })),
+      [source],
+      { source: transcript },
+    );
+    expect(restored.source).toEqual(record);
+    expect(restored.source.versions?.[0]).toEqual(oldVersion);
+    expect(restored.source.palette).toEqual(palette);
+  });
+
+  it.each([
+    { parserVersion: 99, storyboardStyle: 'polish' },
+    { parserVersion: 2 },
+    { parserVersion: 2, storyboardStyle: 'future' },
+    { parserVersion: 2, storyboardStyle: null },
+    { parserVersion: 2, storyboardStyle: { value: 'ink' } },
+  ])('retains and blocks unsupported parser/style %j through repeated saves', (patch) => {
+    const { record, source, transcript } = fixture();
+    const raw = { ...record, plan: { ...record.plan, ...patch } };
+    let restored = restoreLongformPlans({ source: raw }, [source], { source: transcript }).source;
+    expect(restored.status).toBe('draft');
+    expect(restored.approvedVersionId).toBeNull();
+    expect(restored.validationProblem).toBeTruthy();
+    expect(restored.preservedPlanData).toEqual(raw);
+    restored = restoreLongformPlans(JSON.parse(JSON.stringify({ source: restored })), [source], {
+      source: transcript,
+    }).source;
+    expect(restored.preservedPlanData).toEqual(raw);
+    expect(restored.approvedVersionId).toBeNull();
+  });
+
+  it('retains a missing custom palette ID and blocks approval instead of substituting Brand', () => {
+    const { record, source, transcript } = fixture();
+    record.paletteId = 'custom-missing';
+    delete record.palette;
+    const restored = restoreLongformPlans({ source: record }, [source], {
+      source: transcript,
+    }).source;
+    expect(restored.paletteId).toBe('custom-missing');
+    expect(restored.palette).toBeUndefined();
+    expect(restored.approvedVersionId).toBeNull();
+    expect(restored.preservedPlanData).toEqual(record);
+  });
+
   it('keeps source-mismatched plans but revokes approval', () => {
     const { record, source, transcript } = fixture();
     transcript.words[0].text = 'Changed';

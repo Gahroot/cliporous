@@ -2,18 +2,53 @@ import { MAX_LONGFORM_BLOCK_SECONDS } from '@shared/longform-plan-timing';
 import { isSceneFirstPlanEnvelope } from '@shared/longform-scenes';
 import type { LongformEditPlan, WordTimestamp } from '@shared/types';
 import { describe, expect, it } from 'vitest';
-import { makeScenePlan, SCENE_WORDS } from '@/components/__tests__/longform-scene-fixture';
+import {
+  makeScenePlan,
+  makeStoryboardPlan,
+  SCENE_WORDS,
+} from '@/components/__tests__/longform-scene-fixture';
 import {
   buildLongformPlanItems,
   buildLongformSections,
   compareLongformPlans,
+  longformItemEditProblem,
   longformSceneReviewProblem,
   longformSceneScheduleIssues,
   mergePreservedLongformItems,
   removeLongformPlanItem,
   snapshotLongformPlanItem,
+  storyboardPanelSummary,
   updateLongformPlanItem,
 } from './longform-plan';
+
+describe('storyboard review edits', () => {
+  it('rejects trimmed windows and speaker layouts without modifying the plan', () => {
+    const plan = makeStoryboardPlan();
+    const board = buildLongformPlanItems(plan, SCENE_WORDS)[0];
+    expect(board).toBeDefined();
+    if (!board?.scene) throw new Error('Missing board fixture');
+    const trimmed = { startTime: board.startTime + 1, endTime: board.endTime - 1 };
+    expect(longformItemEditProblem(board, trimmed)).toContain('complete authored window');
+    expect(updateLongformPlanItem(plan, board, trimmed)).toBe(plan);
+    expect(longformItemEditProblem(board, { presentation: 'speaker-side' })).toContain(
+      'full-screen',
+    );
+    expect(updateLongformPlanItem(plan, board, { presentation: 'speaker-side' })).toBe(plan);
+    expect(storyboardPanelSummary(board.scene, SCENE_WORDS)[0]).toMatchObject({
+      title: 'Build trust',
+      kind: 'Statement',
+      beats: ['Reveal 0:04', 'Camera move 0:05'],
+    });
+    const omitted = updateLongformPlanItem(plan, board, { omitted: true });
+    expect(isSceneFirstPlanEnvelope(omitted) && omitted.scenes[0]?.omitted).toBe(true);
+    const ordinary = buildLongformPlanItems(plan, SCENE_WORDS)[1];
+    if (!ordinary) throw new Error('Missing ordinary fixture');
+    const changed = updateLongformPlanItem(plan, ordinary, { presentation: 'speaker-side' });
+    expect(isSceneFirstPlanEnvelope(changed) && changed.scenes[1]?.presentation).toBe(
+      'speaker-side',
+    );
+  });
+});
 
 const words: WordTimestamp[] = [
   { text: 'Build', start: 4, end: 4.4 },

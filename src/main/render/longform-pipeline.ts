@@ -14,6 +14,7 @@ import { copyFileSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, extname, join } from 'node:path';
 import { Ch } from '@shared/ipc-channels';
+import { findLongformPalette, isLongformPalette } from '@shared/longform-palette';
 import { resolveLongformPlanOverlaps } from '@shared/longform-plan-timing';
 import { isSceneFirstPlanEnvelope, sceneFirstPlanProblem } from '@shared/longform-scenes';
 import { getPaletteById } from '@shared/palettes';
@@ -322,14 +323,19 @@ export async function renderLongformVideo(
       });
       const sourceName = basename(job.sourceVideoPath, extname(job.sourceVideoPath));
       const outputPath = resolveNewOutputPath(join(outputDirectory, `${sourceName}_longform.mp4`));
+      const selectedPalette = findLongformPalette(
+        options.longformPaletteId,
+        options.customPalettes,
+      );
+      if (!selectedPalette || !isLongformPalette(selectedPalette))
+        throw new Error('The approved long-form palette is unavailable or invalid.');
       const reconciliation = await renderSceneFirstLongform({
         plan: requestedPlan,
         words: job.wordTimestamps ?? [],
         sourceVideoPath: job.sourceVideoPath,
         outputPath,
-        palette: deriveExplainerPalette(
-          getPaletteById(options.longformPaletteId, options.customPalettes),
-        ),
+        palette: deriveExplainerPalette(selectedPalette),
+        storyboardPalette: selectedPalette,
         qualityParams,
         sceneSfxEnabled: options.sceneSfxEnabled,
         signal,

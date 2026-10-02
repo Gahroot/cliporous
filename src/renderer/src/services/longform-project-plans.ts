@@ -5,9 +5,14 @@ import {
   sceneFirstPlanProblem,
   validLongformWords,
 } from '@shared/longform-scenes';
+import { BUILTIN_PALETTES } from '@shared/palettes';
 import type { LongformEditPlan } from '@shared/types';
 import { longformApprovalProblem } from '../lib/longform-approval';
-import type { LongformPlanRecord, LongformPlanVersion } from '../store/longform-slice';
+import {
+  LONGFORM_PALETTE_PROBLEM,
+  type LongformPlanRecord,
+  type LongformPlanVersion,
+} from '../store/longform-slice';
 import type { SourceVideo, TranscriptionData } from '../store/types';
 import { LONGFORM_RENDER_DEFAULTS } from './render-defaults';
 
@@ -69,6 +74,16 @@ function planProblem(
   return null;
 }
 
+function paletteProblem(paletteId: unknown, palette: unknown): string | null {
+  if (palette !== undefined)
+    return isLongformPalette(palette) && palette.id === paletteId ? null : LONGFORM_PALETTE_PROBLEM;
+  // Older built-in versions did not require snapshots. Custom palettes can only
+  // be recovered from the embedded version, never today's mutable library.
+  return paletteId === undefined || BUILTIN_PALETTES.some((item) => item.id === paletteId)
+    ? null
+    : LONGFORM_PALETTE_PROBLEM;
+}
+
 /** Additive restoration: unsupported data is retained, never silently treated as a usable legacy edit. */
 export function restoreLongformPlans(
   input: unknown,
@@ -83,11 +98,7 @@ export function restoreLongformPlans(
     const transcript = transcriptions[sourceId];
     const problem =
       planProblem(isRecord(raw) ? raw.plan : undefined, source, transcript) ||
-      (isRecord(raw) &&
-      raw.palette !== undefined &&
-      (!isLongformPalette(raw.palette) || raw.palette.id !== raw.paletteId)
-        ? 'The saved palette is invalid. Select a palette in a new draft; the saved data is preserved.'
-        : null);
+      (isRecord(raw) ? paletteProblem(raw.paletteId, raw.palette) : null);
     // Existing metadata is maintained through the project's record type; plan payloads are checked separately.
     const record = isRecord(raw) ? (raw as unknown as LongformPlanRecord) : undefined;
     const safePlan =
@@ -99,10 +110,7 @@ export function restoreLongformPlans(
           if (!isRecord(version) || typeof version.id !== 'string') return [];
           const versionProblem =
             planProblem(version.plan, source, transcript) ||
-            (version.palette !== undefined &&
-            (!isLongformPalette(version.palette) || version.palette.id !== version.paletteId)
-              ? 'The saved version palette is invalid.'
-              : null);
+            paletteProblem(version.paletteId, version.palette);
           return [
             {
               ...version,

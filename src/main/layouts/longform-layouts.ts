@@ -40,6 +40,8 @@ export interface LongformSceneLayoutOptions {
   background: string;
   /** Omitted for speaker gaps/fallbacks. Scene input 1 is a full-canvas alpha render. */
   presentation?: LongformPresentation;
+  /** Internal only: validated full-frame storyboard alpha fades over contained source footage. */
+  sourceUnderlay?: boolean;
 }
 
 /** Scene-first only: the shared geometry owns every pane; source is contained, never cropped. */
@@ -50,13 +52,19 @@ export function buildLongformSceneLayout(opts: LongformSceneLayoutOptions): stri
   if (!/^#[0-9a-f]{6}$/i.test(opts.background)) throw new Error('Invalid scene background.');
   const fps = LANDSCAPE_FPS;
   const canvas = { x: 0, y: 0, width: LANDSCAPE_WIDTH, height: LANDSCAPE_HEIGHT };
-  const speaker = presentation ? getLongformLayout(presentation).speaker : canvas;
+  if (opts.sourceUnderlay && presentation !== 'full-frame')
+    throw new Error('Storyboard source underlay requires full-frame presentation.');
+  const speaker = opts.sourceUnderlay
+    ? canvas
+    : presentation
+      ? getLongformLayout(presentation).speaker
+      : canvas;
   const normalize = `setpts=PTS-STARTPTS,fps=${fps},tpad=stop_mode=clone:stop=${frameCount},trim=end_frame=${frameCount},setpts=N/${fps}/TB,setsar=1`;
   const filters = [
     `color=c=${opts.background}:s=${canvas.width}x${canvas.height}:r=${fps},trim=end_frame=${frameCount},setpts=N/${fps}/TB[base]`,
   ];
   let base = 'base';
-  if (presentation) {
+  if (presentation && !opts.sourceUnderlay) {
     filters.push(`[1:v]${normalize}[scene]`);
     filters.push('[base][scene]overlay=x=0:y=0:shortest=1:eof_action=repeat[explained]');
     base = 'explained';
@@ -70,6 +78,11 @@ export function buildLongformSceneLayout(opts: LongformSceneLayoutOptions): stri
       `[${base}][speaker]overlay=x=${rect.x}:y=${rect.y}:shortest=1:eof_action=repeat[placed]`,
     );
     base = 'placed';
+  }
+  if (opts.sourceUnderlay) {
+    filters.push(`[1:v]${normalize}[scene]`);
+    filters.push(`[${base}][scene]overlay=x=0:y=0:shortest=1:eof_action=repeat[board]`);
+    base = 'board';
   }
   filters.push(`[${base}]format=yuv420p[outv]`);
   return filters.join(';');

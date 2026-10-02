@@ -8,6 +8,7 @@ import {
   type ProjectIdentity,
   type RecoverySnapshotMetadata,
 } from '@shared/project';
+import { DEFAULT_STORYBOARD_STYLE, normalizeStoryboardStyle } from '@shared/storyboards';
 import type {
   AppSettings,
   BRollSettings,
@@ -285,6 +286,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   targetPlatform: DEFAULT_TARGET_PLATFORM,
   outputMode: 'short',
   longformSkin: 'editorial',
+  longformStoryboardStyle: DEFAULT_STORYBOARD_STYLE,
   longformPaletteId: DEFAULT_PALETTE_ID,
   customPalettes: [],
 };
@@ -339,6 +341,9 @@ export type ProjectSettings = Pick<
   | 'templateLayout'
   | 'targetPlatform'
   | 'outputMode'
+  | 'longformSkin'
+  | 'longformStoryboardStyle'
+  | 'longformPaletteId'
 >;
 
 /** Canonical versioned shape written to / read from .batchclip files. */
@@ -427,7 +432,11 @@ export function loadPersistedSettings(): AppSettings {
           },
         },
         targetPlatform: saved.targetPlatform ?? DEFAULT_TARGET_PLATFORM,
-        longformPaletteId: saved.longformPaletteId ?? DEFAULT_PALETTE_ID,
+        longformStoryboardStyle: normalizeStoryboardStyle(saved.longformStoryboardStyle),
+        longformPaletteId:
+          typeof saved.longformPaletteId === 'string' && saved.longformPaletteId.trim()
+            ? saved.longformPaletteId
+            : DEFAULT_PALETTE_ID,
         customPalettes: Array.isArray(saved.customPalettes) ? saved.customPalettes : [],
       };
     }

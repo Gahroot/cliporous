@@ -1,8 +1,9 @@
 import type { LongformScenePreviewRequest } from '@shared/longform-scenes';
+import { getPaletteById } from '@shared/palettes';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LongformScenePreview } from '@/components/LongformScenePreview';
-import { deferred, makeScenePlan, SCENE_WORDS } from './longform-scene-fixture';
+import { deferred, makeScenePlan, makeStoryboardPlan, SCENE_WORDS } from './longform-scene-fixture';
 import { installApiStub } from './test-utils';
 
 function request(): Omit<LongformScenePreviewRequest, 'requestId'> {
@@ -230,6 +231,69 @@ describe('LongformScenePreview', () => {
     expect(renderScene).toHaveBeenCalledOnce();
     fireEvent.click(screen.getByRole('button', { name: 'Retry draft preview' }));
     await waitFor(() => expect(renderScene).toHaveBeenCalledTimes(2));
+  });
+
+  it.each([
+    'style',
+    'palette-content',
+  ] as const)('invalidates a completed preview and releases Windows media handles after %s revision', async (revision) => {
+    let video: HTMLVideoElement | null = null;
+    const cleanupScene = vi.fn(async () => {
+      expect(video).not.toHaveAttribute('src');
+    });
+    installApiStub({
+      renderLongformScenePreview: vi.fn(async () => '/owned/old-appearance.mp4'),
+      cleanupLongformScenePreview: cleanupScene,
+    });
+    const input = { ...request(), plan: makeStoryboardPlan(), palette: getPaletteById('brand') };
+    const view = render(<LongformScenePreview request={input} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Render draft preview' }));
+    await waitFor(() =>
+      expect(view.container.querySelector('video')).toHaveAttribute(
+        'src',
+        expect.stringContaining('old-appearance.mp4'),
+      ),
+    );
+    video = view.container.querySelector('video');
+    const changed = structuredClone(input);
+    if (revision === 'style') changed.plan.storyboardStyle = 'ink';
+    else changed.palette.accent = '#123456';
+    view.rerender(<LongformScenePreview request={changed} />);
+    expect(cleanupScene).toHaveBeenCalledExactlyOnceWith('/owned/old-appearance.mp4');
+    expect(HTMLMediaElement.prototype.load).toHaveBeenCalled();
+    expect(window.api.renderLongformScenePreview).toHaveBeenCalledOnce();
+    expect(view.container.querySelector('video')).not.toHaveAttribute('autoplay');
+    expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    'style',
+    'palette-content',
+  ] as const)('cancels and cleans late results after %s changes in flight', async (revision) => {
+    const pending = deferred<string>();
+    const cancel = vi.fn(async () => {});
+    const cleanupScene = vi.fn(async () => {});
+    installApiStub({
+      renderLongformScenePreview: vi.fn(() => pending.promise),
+      cancelLongformScenePreview: cancel,
+      cleanupLongformScenePreview: cleanupScene,
+    });
+    const input = { ...request(), plan: makeStoryboardPlan(), palette: getPaletteById('brand') };
+    const view = render(<LongformScenePreview request={input} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Render draft preview' }));
+    const changed = structuredClone(input);
+    if (revision === 'style') changed.plan.storyboardStyle = 'ink';
+    else changed.palette.accent = '#123456';
+    view.rerender(<LongformScenePreview request={changed} />);
+    expect(cancel).toHaveBeenCalledOnce();
+    await act(async () => pending.resolve('/owned/late-appearance.mp4'));
+    expect(cleanupScene).toHaveBeenCalledExactlyOnceWith('/owned/late-appearance.mp4');
+    expect(view.container.querySelector('video')).not.toHaveAttribute(
+      'src',
+      expect.stringContaining('late-appearance'),
+    );
+    expect(window.api.renderLongformScenePreview).toHaveBeenCalledOnce();
+    expect(screen.getByRole('button', { name: 'Render draft preview' })).toBeEnabled();
   });
 
   it('reports render failures with retry, and blocks stale/omitted previews', async () => {

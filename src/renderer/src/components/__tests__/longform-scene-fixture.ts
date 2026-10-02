@@ -82,6 +82,40 @@ export function makeScenePlan(
   };
 }
 
+export function makeStoryboardPlan(): SceneFirstLongformPlan {
+  const plan = makeScenePlan();
+  plan.parserVersion = 2;
+  plan.storyboardStyle = 'polish';
+  const first = plan.scenes[0];
+  if (!first) throw new Error('Fixture scene missing');
+  Object.assign(first, {
+    kind: 'storyboard',
+    presentation: 'full-frame',
+    endTime: 8,
+    sourceSpec: {
+      kind: 'storyboard',
+      specVersion: 1,
+      startWord: 0,
+      endWord: 3,
+      subject: { text: 'Build trust', startWord: 0, endWord: 1 },
+      panels: [
+        {
+          id: 'panel-trust',
+          kind: 'statement',
+          startWord: 0,
+          endWord: 3,
+          revealWord: 0,
+          moveWord: 1,
+          title: { text: 'Build trust', startWord: 0, endWord: 1 },
+          body: { text: 'with evidence', startWord: 2, endWord: 3 },
+        },
+      ],
+      overview: { atWord: 3 },
+    },
+  });
+  return plan;
+}
+
 export function deferred<T>(): {
   promise: Promise<T>;
   resolve: (value: T) => void;

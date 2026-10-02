@@ -1,5 +1,5 @@
 import { isSceneFirstPlanEnvelope } from '@shared/longform-scenes';
-import { getPaletteById } from '@shared/palettes';
+import { BUILTIN_PALETTES, getPaletteById } from '@shared/palettes';
 import type { LongformEditPlan } from '@shared/types';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { toast } from 'sonner';
@@ -8,7 +8,7 @@ import { CutPlanReviewScreen } from '@/components/screens/CutPlanReviewScreen';
 import { resolveGeminiKey } from '@/lib/gemini-key';
 import { useStore } from '@/store';
 import type { SourceVideo } from '@/store/types';
-import { deferred, makeScenePlan } from './longform-scene-fixture';
+import { deferred, makeScenePlan, makeStoryboardPlan } from './longform-scene-fixture';
 import { installApiStub, resetStore } from './test-utils';
 
 vi.mock('@/lib/gemini-key', () => ({
@@ -437,6 +437,120 @@ describe('CutPlanReviewScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Include scene' }));
     record = useStore.getState().longformPlans[SOURCE.id];
     expect(record?.plan).toMatchObject({ scenes: [{ omitted: false }, {}] });
+  });
+
+  it('summarizes board panels and beats, locks full-screen/timing, and retains ordinary layout choices', async () => {
+    useStore.getState().setLongformPlan(SOURCE.id, {
+      plan: makeStoryboardPlan(),
+      skin: 'editorial',
+      paletteId: 'brand',
+    });
+    render(<CutPlanReviewScreen />);
+    const summary = screen.getByRole('region', { name: 'Storyboard panels and beats' });
+    expect(summary).toHaveTextContent('Continuous storyboard · 1 panel');
+    expect(summary).toHaveTextContent('Build trust · Statement');
+    expect(summary).toHaveTextContent('Reveal 0:04 · Camera move 0:05');
+    expect(summary).toHaveTextContent('Final overview');
+    fireEvent.click(within(selectedScene()).getByRole('button', { name: 'Edit' }));
+    const editor = screen.getByRole('dialog');
+    expect(within(editor).getByRole('combobox', { name: 'Presentation' })).toBeDisabled();
+    expect(within(editor).getAllByRole('option')).toHaveLength(1);
+    expect(editor).toHaveTextContent('Source timing (read-only)');
+    expect(editor).toHaveTextContent('Use scene feedback');
+    expect(within(editor).queryByRole('spinbutton')).not.toBeInTheDocument();
+    fireEvent.click(within(editor).getByRole('button', { name: 'Done' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Next scene' }));
+    fireEvent.click(within(selectedScene()).getByRole('button', { name: 'Edit' }));
+    expect(screen.getByRole('combobox', { name: 'Presentation' })).toBeEnabled();
+    expect(within(screen.getByRole('dialog')).getAllByRole('option')).toHaveLength(3);
+    expect(window.api.generateLongformEditPlan).not.toHaveBeenCalled();
+  });
+
+  it('changes board style and palette into new unapproved drafts without AI and restores original appearance', () => {
+    useStore.getState().setLongformPlan(SOURCE.id, {
+      plan: makeStoryboardPlan(),
+      skin: 'editorial',
+      paletteId: 'brand',
+    });
+    useStore.getState().acceptLongformPlan(SOURCE.id, 'editorial', 'brand');
+    const initial = useStore.getState().longformPlans[SOURCE.id];
+    const originalVersion = initial?.activeVersionId;
+    render(<CutPlanReviewScreen />);
+    openPlanDetails();
+    fireEvent.click(screen.getByText('Change style and palette'));
+    fireEvent.click(screen.getByRole('button', { name: 'Ink' }));
+    let revised = useStore.getState().longformPlans[SOURCE.id];
+    expect(revised?.plan).toMatchObject({ storyboardStyle: 'ink' });
+    expect(revised?.status).toBe('draft');
+    expect(revised?.approvedVersionId).toBeNull();
+    expect(revised?.versions).toHaveLength((initial?.versions?.length ?? 0) + 1);
+    const alternative = BUILTIN_PALETTES.find((palette) => palette.id !== 'brand');
+    if (!alternative) throw new Error('Missing alternate built-in palette');
+    fireEvent.click(screen.getByRole('button', { name: `Use ${alternative.name} palette` }));
+    revised = useStore.getState().longformPlans[SOURCE.id];
+    expect(revised?.paletteId).toBe(alternative.id);
+    expect(revised?.versions).toHaveLength((initial?.versions?.length ?? 0) + 2);
+    expect(window.api.generateLongformEditPlan).not.toHaveBeenCalled();
+    if (!originalVersion) throw new Error('Missing original version');
+    act(() => useStore.getState().restoreLongformPlanVersion(SOURCE.id, originalVersion));
+    expect(useStore.getState().longformPlans[SOURCE.id]).toMatchObject({
+      paletteId: 'brand',
+      plan: { storyboardStyle: 'polish' },
+      status: 'draft',
+      approvedVersionId: null,
+    });
+  });
+
+  it('regeneration keeps request-start style and full palette despite settings/library changes before and during AI', async () => {
+    const palette = {
+      ...getPaletteById('brand'),
+      id: 'custom-snapshot',
+      name: 'Snapshot',
+      builtin: false,
+    };
+    useStore.setState((state) => {
+      state.settings.customPalettes = [palette];
+      state.settings.longformStoryboardStyle = 'ink';
+    });
+    useStore.getState().setLongformPlan(SOURCE.id, {
+      plan: makeStoryboardPlan(),
+      skin: 'editorial',
+      paletteId: palette.id,
+      palette,
+    });
+    const key = deferred<string>();
+    const generated = deferred<LongformEditPlan>();
+    vi.mocked(resolveGeminiKey).mockImplementationOnce(() => key.promise);
+    window.api.generateLongformEditPlan = vi.fn(() => generated.promise);
+    render(<CutPlanReviewScreen />);
+    openPlanDetails();
+    fireEvent.click(screen.getByRole('button', { name: 'Regenerate plan' }));
+    act(() =>
+      useStore.setState((state) => {
+        state.settings.longformStoryboardStyle = 'ink';
+        state.settings.longformPaletteId = 'founder-gold';
+        state.settings.customPalettes = [{ ...palette, accent: '#123456' }];
+      }),
+    );
+    await act(async () => key.resolve('test-key'));
+    await waitFor(() => expect(window.api.generateLongformEditPlan).toHaveBeenCalledOnce());
+    expect(vi.mocked(window.api.generateLongformEditPlan).mock.calls[0]?.[4]).toMatchObject({
+      mode: 'scene-first',
+      storyboardStyle: 'polish',
+    });
+    act(() =>
+      useStore.setState((state) => {
+        state.settings.customPalettes = [];
+      }),
+    );
+    await act(async () => generated.resolve(makeStoryboardPlan()));
+    const record = useStore.getState().longformPlans[SOURCE.id];
+    expect(record?.versions).toHaveLength(2);
+    expect(record?.palette).toEqual(palette);
+    expect(record?.versions?.at(-1)?.palette).toEqual(palette);
+    expect(record?.plan).toMatchObject({ storyboardStyle: 'polish' });
+    expect(record?.status).toBe('draft');
+    expect(window.api.cancelLongformEditPlan).not.toHaveBeenCalled();
   });
 
   it('retries only failed sections with request-scoped progress, previous plan and preserved scene IDs', async () => {

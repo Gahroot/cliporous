@@ -1,3 +1,4 @@
+import { normalizeStoryboardStyle } from '@shared/storyboards';
 import type { StateCreator } from 'zustand';
 import type {
   AppState,
@@ -137,7 +138,10 @@ export const createWorkspaceSlice: StateCreator<
   setCreatorProfileOverride: (key, value) =>
     set((state) => {
       if (value === undefined) delete state.creatorProfile.overrides[key];
-      else Object.assign(state.creatorProfile.overrides, { [key]: value });
+      else
+        Object.assign(state.creatorProfile.overrides, {
+          [key]: key === 'longformStoryboardStyle' ? normalizeStoryboardStyle(value) : value,
+        });
     }),
   clearCreatorProfileOverride: (key) =>
     set((state) => {

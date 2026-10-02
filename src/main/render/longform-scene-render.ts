@@ -1,12 +1,15 @@
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
+import { isLongformPalette } from '@shared/longform-palette';
 import type {
   LongformScenePreviewRequest,
   LongformSceneRenderResult,
   SceneFirstLongformPlan,
 } from '@shared/longform-scenes';
-import { getPaletteById } from '@shared/palettes';
+import { getPaletteById, type Palette } from '@shared/palettes';
+import { resolveStoryboardPalette } from '@shared/storyboard-palette';
+import type { StoryboardStyle } from '@shared/storyboards';
 import type { LongformRenderReconciliation, WordTimestamp } from '@shared/types';
 import { validateSceneFirstLongformPlan } from '../ai/longform-scene-contract';
 import { LANDSCAPE_FPS, LANDSCAPE_HEIGHT, LANDSCAPE_WIDTH } from '../aspect-ratios';
@@ -20,6 +23,7 @@ import {
 } from '../remotion/compositions/explainer/types';
 import { concatLongformSceneSegments, encodeLongformSceneSegment } from './longform-encode';
 import { buildLongformSceneTimeline, type LongformSceneSegment } from './longform-scene-timeline';
+import { buildLongformStoryboardProps } from './longform-storyboard-props';
 import { mixSceneSfx } from './scene-sfx';
 import { publishNewOutput } from './writable-output-path';
 
@@ -29,6 +33,8 @@ interface Source {
   sourceWidth: number;
   sourceHeight: number;
   palette: ExplainerPalette;
+  storyboardPalette?: Palette;
+  storyboardStyle?: StoryboardStyle;
   signal?: AbortSignal | undefined;
 }
 interface SegmentOptions extends Source {
@@ -44,6 +50,7 @@ export function buildLongformSceneProps(
   segment: SceneSegment,
   palette: ExplainerPalette,
 ): ExplainerSequenceProps {
+  if (segment.compiled.kind !== 'explainer') throw new Error('Expected a compiled explainer.');
   return {
     scenes: [
       {
@@ -67,16 +74,22 @@ async function renderSceneSegment(opts: SegmentOptions): Promise<void> {
   const { segment, signal } = opts;
   signal?.throwIfAborted();
   const visualPath = join(opts.workDirectory, 'scene.mov');
+  const isBoard = segment.kind === 'scene' && segment.compiled.kind === 'storyboard';
+  if (isBoard && (!opts.storyboardPalette || !opts.storyboardStyle))
+    throw new Error('Storyboard appearance is missing from the saved plan.');
+  const background =
+    isBoard && opts.storyboardPalette && opts.storyboardStyle
+      ? resolveStoryboardPalette(opts.storyboardStyle, opts.storyboardPalette).canvas
+      : opts.palette.bgOuter;
   try {
     if (segment.kind === 'scene') {
       const { renderRemotionSegment } = await import('../remotion/render');
       signal?.throwIfAborted();
       const renderOptions = {
-        compositionId: 'ExplainerSequence',
-        inputProps: buildLongformSceneProps(segment, opts.palette) as unknown as Record<
-          string,
-          unknown
-        >,
+        compositionId: isBoard ? 'StoryBoard' : 'ExplainerSequence',
+        inputProps: (isBoard && opts.storyboardStyle && opts.storyboardPalette
+          ? buildLongformStoryboardProps(segment, opts.storyboardStyle, opts.storyboardPalette)
+          : buildLongformSceneProps(segment, opts.palette)) as unknown as Record<string, unknown>,
         durationSec: (segment.endFrame - segment.startFrame) / LANDSCAPE_FPS,
         fps: LANDSCAPE_FPS,
         width: LANDSCAPE_WIDTH,
@@ -97,11 +110,15 @@ async function renderSceneSegment(opts: SegmentOptions): Promise<void> {
       outputPath: opts.outputPath,
       sourceWidth: opts.sourceWidth,
       sourceHeight: opts.sourceHeight,
-      background: opts.palette.bgOuter,
+      background,
       startTime: segment.startTime,
       frameCount: segment.endFrame - segment.startFrame,
       ...(segment.kind === 'scene'
-        ? { visualPath, presentation: segment.compiled.placement.presentation }
+        ? {
+            visualPath,
+            presentation: segment.compiled.placement.presentation,
+            ...(isBoard ? { sourceUnderlay: true } : {}),
+          }
         : {}),
       signal,
       qualityParams: opts.qualityParams,
@@ -121,6 +138,8 @@ export interface SceneFirstLongformRenderOptions {
   sourceVideoPath: string;
   outputPath: string;
   palette: ExplainerPalette;
+  /** Raw immutable palette snapshot, required when the approved plan contains a board. */
+  storyboardPalette?: Palette;
   qualityParams: QualityParams;
   sceneSfxEnabled?: boolean | undefined;
   signal?: AbortSignal | undefined;
@@ -141,6 +160,11 @@ export async function renderSceneFirstLongform(
   opts.signal?.throwIfAborted();
   const validated = validateSceneFirstLongformPlan(opts.plan, opts.words, meta.duration);
   if (!validated.ok) throw new Error(validated.error);
+  if (
+    validated.value.scenes.some((scene) => scene.kind === 'storyboard') &&
+    !isLongformPalette(opts.storyboardPalette)
+  )
+    throw new Error('The approved storyboard palette snapshot is missing or invalid.');
   const timeline = buildLongformSceneTimeline(validated.value.plan, validated.value.scenes);
   // Keep the final encode on the destination volume for atomic publication after success.
   const workDirectory = mkdtempSync(join(dirname(opts.outputPath), '.batchcontent-lf-scenes-'));
@@ -153,6 +177,8 @@ export async function renderSceneFirstLongform(
     sourceWidth: meta.width,
     sourceHeight: meta.height,
     palette: opts.palette,
+    storyboardPalette: opts.storyboardPalette,
+    storyboardStyle: validated.value.plan.storyboardStyle,
     signal: opts.signal,
   };
   try {
@@ -174,7 +200,7 @@ export async function renderSceneFirstLongform(
         if (segment.kind === 'scene') {
           sceneResults.push(sceneResult(segment, 'rendered'));
           // Full-source output: validated cue times are already absolute. Never rebase here.
-          if (opts.sceneSfxEnabled !== false) cues.push(...segment.compiled.planned.cues);
+          if (opts.sceneSfxEnabled !== false) cues.push(...compiledCues(segment));
         }
       } catch (error) {
         opts.signal?.throwIfAborted();
@@ -280,6 +306,12 @@ async function mixSceneAudio(
   return mixed.outputPath;
 }
 
+function compiledCues(segment: SceneSegment): SceneCue[] {
+  return segment.compiled.kind === 'storyboard'
+    ? segment.compiled.cues
+    : segment.compiled.planned.cues;
+}
+
 function sceneResult(
   segment: SceneSegment,
   status: 'rendered' | 'failed',
@@ -310,7 +342,10 @@ export async function renderLongformScenePreview(
   );
   if (!segment) throw new Error('This scene is missing or omitted from the plan.');
   const selected = getPaletteById(request.paletteId, request.customPalettes);
-  if (request.paletteId !== undefined && selected.id !== request.paletteId) {
+  if (
+    !isLongformPalette(selected) ||
+    (request.paletteId !== undefined && selected.id !== request.paletteId)
+  ) {
     throw new Error('The preview palette is unavailable. Restore or select a palette first.');
   }
   const palette = deriveExplainerPalette({
@@ -334,6 +369,8 @@ export async function renderLongformScenePreview(
       sourceWidth: meta.width,
       sourceHeight: meta.height,
       palette,
+      storyboardPalette: selected,
+      storyboardStyle: validated.value.plan.storyboardStyle,
       outputPath: intermediate,
       workDirectory,
       qualityParams,
@@ -353,7 +390,7 @@ export async function renderLongformScenePreview(
     const cues =
       request.sceneSfxEnabled === false
         ? []
-        : segment.compiled.planned.cues.map((cue) => ({ ...cue, at: cue.at - segment.startTime }));
+        : compiledCues(segment).map((cue) => ({ ...cue, at: cue.at - segment.startTime }));
     const mixedPath = await mixSceneAudio(
       narrated,
       cues,

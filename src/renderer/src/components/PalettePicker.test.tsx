@@ -137,7 +137,7 @@ describe('PalettePicker', () => {
     expect(useStore.getState().settings.longformPaletteId).toBe(created?.id);
   });
 
-  it('deletes custom palettes with confirmation and repairs creator defaults', async () => {
+  it('deletes custom palettes with confirmation and preserves unresolved selected IDs', async () => {
     useStore.getState().addCustomPalette(CUSTOM_PALETTE);
     useStore.getState().setLongformPaletteId(CUSTOM_PALETTE.id);
     const profile = createCreatorProfile('Founder Studio');
@@ -151,12 +151,35 @@ describe('PalettePicker', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Delete palette' }));
 
     await waitFor(() => expect(useStore.getState().settings.customPalettes).toHaveLength(0));
-    expect(useStore.getState().settings.longformPaletteId).toBe('brand');
+    expect(useStore.getState().settings.longformPaletteId).toBe(CUSTOM_PALETTE.id);
     expect(useStore.getState().creatorProfile.overrides.longformPaletteId).toBeUndefined();
-    expect(getCreatorProfiles()[0]?.longformPaletteId).toBe('brand');
+    expect(getCreatorProfiles()[0]?.longformPaletteId).toBe(CUSTOM_PALETTE.id);
+    expect(screen.getByRole('alert')).toHaveTextContent('unavailable');
   });
 
-  it('compact variant renders only palette swatches and changes selection', () => {
+  it('controlled deletion does not silently select Brand', async () => {
+    useStore.getState().addCustomPalette(CUSTOM_PALETTE);
+    const onPaletteChange = vi.fn();
+    render(
+      <PalettePicker
+        variant="compact"
+        requireResolvedPalette
+        paletteId={CUSTOM_PALETTE.id}
+        onPaletteChange={onPaletteChange}
+      />,
+    );
+    fireEvent.click(screen.getByText('Manage custom palettes'));
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Studio Sunrise palette' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delete palette' }));
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('unavailable'));
+    expect(onPaletteChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Use Brand Default palette' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+  });
+
+  it('compact variant renders palette swatches and changes selection', () => {
     useStore.getState().addCustomPalette(CUSTOM_PALETTE);
     render(
       <PalettePicker
@@ -170,10 +193,10 @@ describe('PalettePicker', () => {
     expect(
       screen.getByText('Used for animated scenes and caption highlights.'),
     ).toBeInTheDocument();
-    // No skin selector, preview, or custom-palette management in compact mode.
+    // Compact mode keeps custom management, without the old skin axis or media preview.
     expect(screen.queryByText('Block style')).toBeNull();
     expect(screen.queryByText('Project preview')).toBeNull();
-    expect(screen.queryByRole('button', { name: 'New palette' })).toBeNull();
+    expect(screen.getByText('Manage custom palettes')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Editorial' })).toBeNull();
 
     const brand = screen.getByRole('button', { name: 'Use Brand Default palette' });
@@ -191,15 +214,14 @@ describe('PalettePicker', () => {
     expect(brand).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('compact variant shows the fallback palette when the saved one is missing', () => {
+  it('compact variant leaves a missing palette unresolved instead of selecting a fallback', () => {
     useStore.getState().setLongformPaletteId('deleted-palette');
-    render(<PalettePicker variant="compact" title="Animation colours" />);
+    render(<PalettePicker variant="compact" requireResolvedPalette title="Animation colours" />);
 
-    expect(screen.getByRole('status')).toHaveTextContent('Brand Default will be used');
-    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.getByRole('alert')).toHaveTextContent('Selected palette is unavailable');
     expect(screen.getByRole('button', { name: 'Use Brand Default palette' })).toHaveAttribute(
       'aria-pressed',
-      'true',
+      'false',
     );
   });
 

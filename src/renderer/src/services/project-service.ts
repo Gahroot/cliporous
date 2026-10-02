@@ -7,6 +7,7 @@ import {
   type ProjectIdentity,
   type RecoverySnapshotMetadata,
 } from '@shared/project';
+import { normalizeStoryboardStyle } from '@shared/storyboards';
 import { useStore, withoutDirtyTracking } from '../store';
 import type { ProjectFileData, ProjectSettings } from '../store/helpers';
 import {
@@ -93,6 +94,12 @@ function projectSettingsFrom(settings: Partial<AppSettings> | undefined): Projec
     templateLayout: merged.templateLayout,
     targetPlatform: merged.targetPlatform,
     outputMode: merged.outputMode,
+    longformSkin: merged.longformSkin ?? DEFAULT_SETTINGS.longformSkin,
+    longformStoryboardStyle: normalizeStoryboardStyle(saved.longformStoryboardStyle),
+    longformPaletteId:
+      typeof saved.longformPaletteId === 'string' && saved.longformPaletteId.trim()
+        ? saved.longformPaletteId
+        : DEFAULT_SETTINGS.longformPaletteId,
   };
 }
 
@@ -348,6 +355,15 @@ export function migrateProjectData(input: unknown, filePath?: string | null): Pr
   const recovery = normalizeRecoveryMetadata(sanitized.recovery);
   const processingState = normalizeProcessingState(sanitized.processingState);
   const workspace = normalizeWorkspace(sanitized.workspace);
+  const profileOverrides = { ...(sanitized.creatorProfile?.overrides ?? {}) };
+  if (profileOverrides.longformStoryboardStyle !== undefined) {
+    profileOverrides.longformStoryboardStyle = normalizeStoryboardStyle(
+      profileOverrides.longformStoryboardStyle,
+    );
+  }
+  const profile = getCreatorProfiles().find(
+    (item) => item.id === sanitized.creatorProfile?.profileId,
+  );
   if (!sanitized.workspace) {
     const hasReadyContent =
       Object.values(sanitized.clips ?? {}).some((items) => items.length > 0) ||
@@ -368,7 +384,22 @@ export function migrateProjectData(input: unknown, filePath?: string | null): Pr
       sources,
       sanitized.transcriptions ?? {},
     ),
-    settings: projectSettingsFrom(sanitized.settings),
+    // Saved project choices win over mutable profile defaults, including before
+    // planning. Older projects may only have profile choices; never borrow from
+    // whichever project happened to be open previously.
+    settings: projectSettingsFrom({
+      ...sanitized.settings,
+      longformSkin:
+        sanitized.settings?.longformSkin ?? profileOverrides.longformSkin ?? profile?.longformSkin,
+      longformStoryboardStyle:
+        sanitized.settings?.longformStoryboardStyle ??
+        profileOverrides.longformStoryboardStyle ??
+        profile?.longformStoryboardStyle,
+      longformPaletteId:
+        sanitized.settings?.longformPaletteId ??
+        profileOverrides.longformPaletteId ??
+        profile?.longformPaletteId,
+    }),
     processingConfig: {
       ...DEFAULT_PROCESSING_CONFIG,
       ...(sanitized.processingConfig ?? {}),
@@ -384,7 +415,7 @@ export function migrateProjectData(input: unknown, filePath?: string | null): Pr
     creatorProfile: {
       ...DEFAULT_PROJECT_CREATOR_PROFILE,
       ...(sanitized.creatorProfile ?? {}),
-      overrides: { ...(sanitized.creatorProfile?.overrides ?? {}) },
+      overrides: profileOverrides,
     },
     promoPlan: normalizePromoPlan(sanitized.promoPlan),
     ...(processingState ? { processingState } : {}),
@@ -547,14 +578,6 @@ export function restoreProject(
       },
       ...(profileTemplateLayout ? { templateLayout: profileTemplateLayout } : {}),
       ...(profileTargetPlatform ? { targetPlatform: profileTargetPlatform } : {}),
-      longformSkin:
-        profileOverrides.longformSkin ??
-        assignedProfile?.longformSkin ??
-        currentSettings.longformSkin,
-      longformPaletteId:
-        profileOverrides.longformPaletteId ??
-        assignedProfile?.longformPaletteId ??
-        currentSettings.longformPaletteId,
     },
     pipeline,
     creatorJobs,
@@ -737,23 +760,15 @@ export async function loadProjectFromPath(filePath: string): Promise<boolean> {
   }
 }
 
-function hasProjectContent(state: AppState): boolean {
-  return (
-    state.sources.length > 0 ||
-    Object.keys(state.transcriptions).length > 0 ||
-    Object.values(state.clips).some((clips) => clips.length > 0) ||
-    Object.values(state.stitchedClips).some((clips) => clips.length > 0) ||
-    Object.keys(state.longformPlans).length > 0
-  );
-}
-
 let autoSaveInFlight: Promise<void> | null = null;
 
 export function autoSaveProject(options: { recoveryOnly?: boolean } = {}): Promise<void> {
   if (autoSaveInFlight) return autoSaveInFlight;
 
   const startingState = useStore.getState();
-  if (!startingState.isDirty || !hasProjectContent(startingState)) return Promise.resolve();
+  // A dirty preplan choice is project content, including a return to defaults.
+  // Pristine empty projects remain clean and do not produce recovery snapshots.
+  if (!startingState.isDirty) return Promise.resolve();
 
   const revision = startingState.projectRevision;
   const currentPath = options.recoveryOnly ? null : startingState.currentProject.filePath;

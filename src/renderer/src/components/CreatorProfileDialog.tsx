@@ -1,4 +1,5 @@
 import { BUILTIN_PALETTES } from '@shared/palettes';
+import { DEFAULT_STORYBOARD_STYLE, type StoryboardStyle } from '@shared/storyboards';
 import type { LongformSkinId, Platform } from '@shared/types';
 import {
   CircleUserRound,
@@ -11,8 +12,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { PalettePicker } from '@/components/PalettePicker';
-import { LONGFORM_SKINS } from '@/components/SkinThumbnail';
+import { LongformAppearancePicker } from '@/components/LongformAppearancePicker';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -172,6 +172,7 @@ export function CreatorProfileDialog({
   const setTemplateLayout = useStore((state) => state.setTemplateLayout);
   const setLongformSkin = useStore((state) => state.setLongformSkin);
   const setLongformPaletteId = useStore((state) => state.setLongformPaletteId);
+  const setLongformStoryboardStyle = useStore((state) => state.setLongformStoryboardStyle);
   const customPalettes = useStore((state) => state.settings.customPalettes);
   const [activeTab, setActiveTab] = useState<ProfileTab>('profiles');
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -253,6 +254,7 @@ export function CreatorProfileDialog({
     setTargetPlatform(profile.targetPlatform);
     setTemplateLayout(profile.templateLayout);
     setLongformSkin(profile.longformSkin);
+    setLongformStoryboardStyle(profile.longformStoryboardStyle ?? DEFAULT_STORYBOARD_STYLE);
     setLongformPaletteId(profile.longformPaletteId);
   };
 
@@ -270,6 +272,8 @@ export function CreatorProfileDialog({
     if (key === 'longformSkin' && typeof value === 'string')
       setLongformSkin(value as LongformSkinId);
     if (key === 'longformPaletteId' && typeof value === 'string') setLongformPaletteId(value);
+    if (key === 'longformStoryboardStyle' && typeof value === 'string')
+      setLongformStoryboardStyle(value as StoryboardStyle);
   };
 
   const clearOverride = (key: keyof ProjectCreatorProfile['overrides']): void => {
@@ -279,6 +283,8 @@ export function CreatorProfileDialog({
     if (key === 'targetPlatform') setTargetPlatform(appliedProfile.targetPlatform);
     if (key === 'templateLayout') setTemplateLayout(appliedProfile.templateLayout);
     if (key === 'longformSkin') setLongformSkin(appliedProfile.longformSkin);
+    if (key === 'longformStoryboardStyle')
+      setLongformStoryboardStyle(appliedProfile.longformStoryboardStyle);
     if (key === 'longformPaletteId') setLongformPaletteId(appliedProfile.longformPaletteId);
   };
 
@@ -289,6 +295,7 @@ export function CreatorProfileDialog({
       setTargetPlatform(appliedProfile.targetPlatform);
       setTemplateLayout(appliedProfile.templateLayout);
       setLongformSkin(appliedProfile.longformSkin);
+      setLongformStoryboardStyle(appliedProfile.longformStoryboardStyle);
       setLongformPaletteId(appliedProfile.longformPaletteId);
     }
   };
@@ -609,11 +616,13 @@ export function CreatorProfileDialog({
                           </ProfileField>
                         </div>
                         <div className="border-t border-border pt-4">
-                          <PalettePicker
-                            skin={selectedProfile.longformSkin}
+                          <LongformAppearancePicker
+                            style={selectedProfile.longformStoryboardStyle}
                             paletteId={selectedProfile.longformPaletteId}
-                            onSkinChange={(longformSkin) =>
-                              updateSelected({ longformSkin }, ['longformSkin'])
+                            onStyleChange={(longformStoryboardStyle) =>
+                              updateSelected({ longformStoryboardStyle }, [
+                                'longformStoryboardStyle',
+                              ])
                             }
                             onPaletteChange={(longformPaletteId) =>
                               updateSelected({ longformPaletteId }, ['longformPalette'])
@@ -773,13 +782,13 @@ export function CreatorProfileDialog({
                       </div>
                       <div className="grid gap-1.5">
                         <div className="flex items-center justify-between gap-2">
-                          <Label htmlFor="project-skin">Long-form skin</Label>
-                          {'longformSkin' in projectProfile.overrides && (
+                          <Label htmlFor="project-storyboard-style">Storyboard style</Label>
+                          {'longformStoryboardStyle' in projectProfile.overrides && (
                             <Button
                               type="button"
                               size="sm"
                               variant="ghost"
-                              onClick={() => clearOverride('longformSkin')}
+                              onClick={() => clearOverride('longformStoryboardStyle')}
                             >
                               Use profile
                             </Button>
@@ -787,21 +796,19 @@ export function CreatorProfileDialog({
                         </div>
                         <Select
                           value={
-                            projectProfile.overrides.longformSkin ?? appliedProfile.longformSkin
+                            projectProfile.overrides.longformStoryboardStyle ??
+                            appliedProfile.longformStoryboardStyle
                           }
                           onValueChange={(value) =>
-                            setProjectOverride('longformSkin', value as LongformSkinId)
+                            setProjectOverride('longformStoryboardStyle', value as StoryboardStyle)
                           }
                         >
-                          <SelectTrigger id="project-skin">
+                          <SelectTrigger id="project-storyboard-style">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {LONGFORM_SKINS.map((skin) => (
-                              <SelectItem key={skin.id} value={skin.id}>
-                                {skin.label}
-                              </SelectItem>
-                            ))}
+                            <SelectItem value="ink">Ink</SelectItem>
+                            <SelectItem value="polish">Polish</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

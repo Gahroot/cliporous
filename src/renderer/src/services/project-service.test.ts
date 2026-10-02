@@ -38,6 +38,12 @@ import type {
   TranscriptionData,
 } from '@/store/types';
 import {
+  createCreatorProfile,
+  deleteCreatorProfile,
+  getCreatorProfiles,
+  updateCreatorProfile,
+} from './creator-profiles';
+import {
   autoSaveProject,
   clearRecovery,
   createNewProject,
@@ -412,6 +418,9 @@ function expectedProjectSettings(): ProjectSettings {
     templateLayout: SETTINGS_FIXTURE.templateLayout,
     targetPlatform: SETTINGS_FIXTURE.targetPlatform,
     outputMode: SETTINGS_FIXTURE.outputMode,
+    longformSkin: SETTINGS_FIXTURE.longformSkin,
+    longformStoryboardStyle: SETTINGS_FIXTURE.longformStoryboardStyle,
+    longformPaletteId: SETTINGS_FIXTURE.longformPaletteId,
   };
 }
 
@@ -865,9 +874,127 @@ describe('project-service · credential and settings scope migration', () => {
     expect(settings.enableNotifications).toBe(true);
     expect(settings.developerMode).toBe(false);
     expect(settings.renderConcurrency).toBe(4);
-    expect(settings.longformSkin).toBe('blueprint');
-    expect(settings.longformPaletteId).toBe('creator-palette');
+    expect(settings.longformSkin).toBe(SETTINGS_FIXTURE.longformSkin);
+    expect(settings.longformPaletteId).toBe(SETTINGS_FIXTURE.longformPaletteId);
     expect(settings.minScore).toBe(SETTINGS_FIXTURE.minScore);
+  });
+});
+
+describe('project-service · preplan storyboard appearance', () => {
+  beforeEach(() => {
+    for (const profile of getCreatorProfiles()) deleteCreatorProfile(profile.id);
+    createNewProject();
+    useStore.setState({ settings: { ...DEFAULT_SETTINGS }, sources: [], longformPlans: {} });
+    useStore.setState({ isDirty: false, saveStatus: 'saved' });
+  });
+
+  it('dirty-tracks, saves and reopens explicit choices before any plan or source exists', async () => {
+    useStore.getState().setLongformStoryboardStyle('ink');
+    useStore.getState().setLongformPaletteId('custom-missing');
+    expect(useStore.getState().isDirty).toBe(true);
+    expect(await saveProject()).toBe(SAVE_PATH);
+    const json = vfs.saved.get(SAVE_PATH);
+    if (!json) throw new Error('Expected saved project');
+    const saved = JSON.parse(json);
+    expect(saved.settings).toMatchObject({
+      longformStoryboardStyle: 'ink',
+      longformPaletteId: 'custom-missing',
+    });
+    expect(saved.longformPlans).toEqual({});
+    useStore.getState().setLongformStoryboardStyle('polish');
+    useStore.getState().setLongformPaletteId('brand');
+    expect(await loadProjectFromPath(SAVE_PATH)).toBe(true);
+    expect(useStore.getState().settings).toMatchObject({
+      longformStoryboardStyle: 'ink',
+      longformPaletteId: 'custom-missing',
+    });
+    expect(useStore.getState().isDirty).toBe(false);
+    useStore.getState().setLongformStoryboardStyle('polish');
+    expect(useStore.getState().isDirty).toBe(true);
+  });
+
+  it('recovers preplan appearance and switches projects without inheriting another project default', async () => {
+    useStore.getState().setLongformStoryboardStyle('ink');
+    useStore.getState().setLongformPaletteId('custom-recovery');
+    await autoSaveProject();
+    const recovery = vfs.recovery;
+    if (!recovery) throw new Error('Expected recovery');
+    useStore.getState().reset();
+    useStore.getState().setLongformStoryboardStyle('polish');
+    useStore.getState().setLongformPaletteId('slate');
+    const loaded = await loadRecovery();
+    if (!loaded) throw new Error('Expected loaded recovery');
+    restoreProject(loaded.json, undefined, { recovered: true });
+    expect(useStore.getState().settings).toMatchObject({
+      longformStoryboardStyle: 'ink',
+      longformPaletteId: 'custom-recovery',
+    });
+    const other = {
+      ...JSON.parse(recovery),
+      settings: { longformStoryboardStyle: 'polish', longformPaletteId: 'brand' },
+    };
+    restoreProject(JSON.stringify(other));
+    expect(useStore.getState().settings).toMatchObject({
+      longformStoryboardStyle: 'polish',
+      longformPaletteId: 'brand',
+    });
+    restoreProject(recovery);
+    expect(useStore.getState().settings).toMatchObject({
+      longformStoryboardStyle: 'ink',
+      longformPaletteId: 'custom-recovery',
+    });
+    restoreProject(JSON.stringify({ ...other, settings: {} }));
+    expect(useStore.getState().settings).toMatchObject({
+      longformStoryboardStyle: 'polish',
+      longformPaletteId: 'brand',
+    });
+  });
+
+  it('autosaves an explicit return to default appearance before a source exists', async () => {
+    useStore.getState().setLongformStoryboardStyle('ink');
+    useStore.getState().setLongformPaletteId('custom-previous');
+    await autoSaveProject();
+    useStore.getState().setLongformStoryboardStyle('polish');
+    useStore.getState().setLongformPaletteId('brand');
+    await autoSaveProject();
+    const loaded = await loadRecovery();
+    if (!loaded) throw new Error('Expected recovery for explicit default choices');
+    expect(JSON.parse(loaded.json).settings).toMatchObject({
+      longformStoryboardStyle: 'polish',
+      longformPaletteId: 'brand',
+    });
+  });
+
+  it('keeps explicit dialog choices after profile defaults and later profile edits', async () => {
+    const profile = createCreatorProfile('Creator');
+    updateCreatorProfile(profile.id, {
+      longformStoryboardStyle: 'ink',
+      longformPaletteId: 'slate',
+    });
+    useStore.getState().setCreatorProfile(profile.id);
+    useStore.getState().setLongformStoryboardStyle('ink');
+    useStore.getState().setLongformPaletteId('slate');
+    // The dialog applies its explicit choices after applying profile defaults.
+    useStore.getState().setLongformStoryboardStyle('polish');
+    useStore.getState().setLongformPaletteId('custom-dialog');
+    useStore.getState().setCreatorProfileOverride('longformStoryboardStyle', 'polish');
+    useStore.getState().setCreatorProfileOverride('longformPaletteId', 'custom-dialog');
+    await saveProject();
+    updateCreatorProfile(profile.id, {
+      longformStoryboardStyle: 'ink',
+      longformPaletteId: 'brand',
+    });
+    expect(await loadProjectFromPath(SAVE_PATH)).toBe(true);
+    expect(useStore.getState().settings).toMatchObject({
+      longformStoryboardStyle: 'polish',
+      longformPaletteId: 'custom-dialog',
+    });
+    expect(useStore.getState().creatorProfile.overrides).toMatchObject({
+      longformStoryboardStyle: 'polish',
+      longformPaletteId: 'custom-dialog',
+    });
+    useStore.getState().clearCreatorProfileOverride('longformStoryboardStyle');
+    expect(useStore.getState().creatorProfile.overrides.longformStoryboardStyle).toBeUndefined();
   });
 });
 

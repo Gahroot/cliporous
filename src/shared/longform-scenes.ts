@@ -1,8 +1,9 @@
 import type { Palette } from './palettes';
+import { isStoryboardStyle, STORYBOARD_LIMITS, type StoryboardStyle } from './storyboards';
 import type { LongformEditPlan, WordTimestamp } from './types';
 
 export const LONGFORM_SCENE_SCHEMA_VERSION = 2 as const;
-export const LONGFORM_SCENE_PARSER_VERSION = 1 as const;
+export const LONGFORM_SCENE_PARSER_VERSION = 2 as const;
 export const LONGFORM_PRESENTATIONS = ['speaker-side', 'speaker-pip', 'full-frame'] as const;
 export type LongformPresentation = (typeof LONGFORM_PRESENTATIONS)[number];
 export const LONGFORM_PRESENTATION_LABELS: Record<LongformPresentation, string> = {
@@ -50,7 +51,9 @@ export interface LongformPlanningSection {
 export interface LongformScenePlanFields {
   schemaVersion: 2;
   mode: 'scene-first';
-  parserVersion: 1;
+  parserVersion: 1 | 2;
+  /** Required and validated for parser 2; never inserted into historical parser-1 plans. */
+  storyboardStyle?: StoryboardStyle;
   sourceFingerprint: string;
   sourceDuration: number;
   scenes: LongformScenePlacement[];
@@ -66,6 +69,7 @@ export interface LongformGenerationRequest {
   videoDuration: number;
   feedback?: string[];
   mode?: 'scene-first' | 'legacy';
+  storyboardStyle?: StoryboardStyle;
   previousPlan?: LongformEditPlan;
   preservedSceneIds?: string[];
   sectionIds?: string[];
@@ -211,9 +215,11 @@ export function sceneFirstPlanProblem(value: unknown): string | null {
     !isRecord(value) ||
     value.mode !== 'scene-first' ||
     value.schemaVersion !== 2 ||
-    value.parserVersion !== 1
+    (value.parserVersion !== 1 && value.parserVersion !== 2)
   )
     return 'Unsupported scene plan version. Regenerate a new draft; the saved version is preserved.';
+  if (value.parserVersion === 2 && !isStoryboardStyle(value.storyboardStyle))
+    return 'Invalid storyboard style. Review a new draft; the saved version is preserved.';
   if (
     typeof value.sourceDuration !== 'number' ||
     !Number.isFinite(value.sourceDuration) ||
@@ -286,6 +292,13 @@ export function sceneFirstPlanProblem(value: unknown): string | null {
       scene.sourceSpec.endWord !== scene.endWord
     )
       return 'Scene identity does not match its source specification.';
+    if (scene.kind === 'storyboard') {
+      if (value.parserVersion !== 2) return 'Parser-1 plans cannot contain storyboards.';
+      if (scene.presentation !== 'full-frame')
+        return 'Storyboards require full-frame presentation.';
+      if (JSON.stringify(scene.sourceSpec).length > STORYBOARD_LIMITS.maxSpecBytes)
+        return 'Storyboard source specification exceeds its size budget.';
+    }
     ids.add(scene.id);
   }
   const sectionIds = new Set<string>();

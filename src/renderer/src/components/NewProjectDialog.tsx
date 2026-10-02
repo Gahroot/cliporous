@@ -1,6 +1,9 @@
+import { findLongformPalette } from '@shared/longform-palette';
+import { DEFAULT_STORYBOARD_STYLE, type StoryboardStyle } from '@shared/storyboards';
 import { FileVideo, FolderOpen } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { type EntrySource, isYouTubeUrl } from '@/components/entry-source';
+import { LongformAppearancePicker } from '@/components/LongformAppearancePicker';
 import { PythonSetupCard } from '@/components/PythonSetupCard';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +30,7 @@ export interface NewProjectDraft {
   name: string;
   outputMode: 'short' | 'longform';
   source: EntrySource;
+  appearance: { storyboardStyle: StoryboardStyle; paletteId: string };
   profileId?: string;
   brief?: {
     audience: string;
@@ -66,7 +70,8 @@ export function NewProjectDialog({
   onCreate,
 }: NewProjectDialogProps): React.JSX.Element {
   const profiles = useCreatorProfiles();
-  const rememberedMode = useStore((state) => state.settings.outputMode);
+  const settings = useStore((state) => state.settings);
+  const rememberedMode = settings.outputMode;
   const projectName = useStore((state) => state.currentProject.displayName);
   const pythonStatus = useStore((state) => state.pythonStatus);
   const initialized = useRef(false);
@@ -80,12 +85,32 @@ export function NewProjectDialog({
   const [goal, setGoal] = useState('');
   const [callToAction, setCallToAction] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [storyboardStyle, setStoryboardStyle] = useState<StoryboardStyle>(DEFAULT_STORYBOARD_STYLE);
+  const [paletteId, setPaletteId] = useState(settings.longformPaletteId);
+  const explicitStyle = useRef(false);
+  const explicitPalette = useRef(false);
+  const paletteResolved = findLongformPalette(paletteId, settings.customPalettes);
+
+  const selectProfile = (id: string): void => {
+    setProfileId(id);
+    const profile = profiles.find((item) => item.id === id);
+    if (!explicitStyle.current)
+      setStoryboardStyle(
+        profile?.longformStoryboardStyle ??
+          settings.longformStoryboardStyle ??
+          DEFAULT_STORYBOARD_STYLE,
+      );
+    if (!explicitPalette.current)
+      setPaletteId(profile?.longformPaletteId ?? settings.longformPaletteId);
+  };
 
   useEffect(() => {
     if (!open || initialized.current) return;
     initialized.current = true;
     setOutputMode(rememberedMode);
-  }, [open, rememberedMode]);
+    setStoryboardStyle(settings.longformStoryboardStyle ?? DEFAULT_STORYBOARD_STYLE);
+    setPaletteId(settings.longformPaletteId);
+  }, [open, rememberedMode, settings.longformStoryboardStyle, settings.longformPaletteId]);
 
   useEffect(() => {
     if (!initialSource) return;
@@ -107,6 +132,10 @@ export function NewProjectDialog({
     const trimmedName = name.trim();
     const trimmedUrl = url.trim();
     if (busy || pythonStatus !== 'ready') return;
+    if (outputMode === 'longform' && !paletteResolved) {
+      setError('Choose an available palette before generating.');
+      return;
+    }
     if (intent === 'new' && !trimmedName) {
       setError('Enter a project name.');
       return;
@@ -122,6 +151,7 @@ export function NewProjectDialog({
     onCreate({
       name: intent === 'new' ? trimmedName : projectName,
       outputMode,
+      appearance: { storyboardStyle, paletteId },
       source: filePath ? { kind: 'file', value: filePath } : { kind: 'url', value: trimmedUrl },
       ...(profileId !== 'none' ? { profileId } : {}),
       ...(audience.trim() || goal.trim() || callToAction.trim()
@@ -139,7 +169,8 @@ export function NewProjectDialog({
   const canCreate =
     (intent === 'add' || name.trim().length > 0) &&
     (filePath.length > 0 || url.trim().length > 0) &&
-    pythonStatus === 'ready';
+    pythonStatus === 'ready' &&
+    (outputMode !== 'longform' || Boolean(paletteResolved));
 
   return (
     <Dialog
@@ -275,6 +306,23 @@ export function NewProjectDialog({
             )}
           </div>
 
+          {outputMode === 'longform' && (
+            <LongformAppearancePicker
+              style={storyboardStyle}
+              paletteId={paletteId}
+              onStyleChange={(style) => {
+                explicitStyle.current = true;
+                setStoryboardStyle(style);
+              }}
+              onPaletteChange={(id) => {
+                explicitPalette.current = true;
+                setPaletteId(id);
+              }}
+              showProfileDefault={false}
+              disabled={busy}
+            />
+          )}
+
           {intent === 'new' && (outputMode === 'short' || profiles.length > 0) && (
             <details className="border-border rounded-lg border px-3 py-2.5">
               <summary className="cursor-pointer rounded-sm text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
@@ -286,7 +334,7 @@ export function NewProjectDialog({
                 {profiles.length > 0 && (
                   <div className="grid gap-2">
                     <Label htmlFor="new-project-profile">Creator Profile</Label>
-                    <Select value={profileId} onValueChange={setProfileId} disabled={busy}>
+                    <Select value={profileId} onValueChange={selectProfile} disabled={busy}>
                       <SelectTrigger id="new-project-profile">
                         <SelectValue />
                       </SelectTrigger>
@@ -300,8 +348,8 @@ export function NewProjectDialog({
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-muted-foreground">
-                      Applies audience, platform, layout, skin and palette settings. These also
-                      update remembered defaults.
+                      Seeds audience, platform, layout, storyboard style and palette defaults. Your
+                      explicit appearance choices above take precedence on confirmation.
                     </p>
                   </div>
                 )}

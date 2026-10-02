@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import type { StoryboardStyle } from '@shared/storyboards';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   createCreatorProfile,
   deleteCreatorProfile,
@@ -18,6 +19,33 @@ function clearProfiles(): void {
 describe('creator profile persistence and transparent memory', () => {
   beforeEach(() => {
     clearProfiles();
+  });
+
+  it('defaults existing and malformed profile styles to Polish, and saves explicit Ink', () => {
+    const persist = vi.spyOn(localStorage, 'setItem');
+    const profile = createCreatorProfile('Existing creator');
+    expect(profile.longformStoryboardStyle).toBe('polish');
+    const key = persist.mock.calls.find(([, value]) => value.includes(profile.id))?.[0];
+    persist.mockRestore();
+    if (!key) throw new Error('Missing persisted profile');
+    const oldProfile = { ...profile };
+    Reflect.deleteProperty(oldProfile, 'longformStoryboardStyle');
+    window.dispatchEvent(
+      new StorageEvent('storage', { key, newValue: JSON.stringify({ profiles: [oldProfile] }) }),
+    );
+    expect(getCreatorProfiles()[0]?.longformStoryboardStyle).toBe('polish');
+    updateCreatorProfile(profile.id, { longformStoryboardStyle: 'future' as StoryboardStyle });
+    expect(getCreatorProfiles()[0]?.longformStoryboardStyle).toBe('polish');
+    updateCreatorProfile(profile.id, { longformStoryboardStyle: 'ink' }, [
+      'longformStoryboardStyle',
+    ]);
+    expect(getCreatorProfiles()[0]?.longformStoryboardStyle).toBe('ink');
+    expect(listRememberedPreferences()).toContainEqual(
+      expect.objectContaining({ key: 'longformStoryboardStyle', value: 'ink' }),
+    );
+    deleteRememberedPreference(profile.id, 'longformStoryboardStyle');
+    expect(getCreatorProfiles()[0]?.longformStoryboardStyle).toBe('polish');
+    expect(listRememberedPreferences()).toHaveLength(0);
   });
 
   it('keeps reusable profile values inspectable with source, scope, and update time', () => {

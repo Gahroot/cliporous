@@ -1,4 +1,5 @@
 import { LONGFORM_PRESENTATION_LABELS } from '@shared/longform-scenes';
+import type { WordTimestamp } from '@shared/types';
 import {
   ChevronDown,
   ChevronLeft,
@@ -11,11 +12,16 @@ import {
 import { type ReactNode, useId } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { formatTimecode, type LongformPlanItemView } from '@/lib/longform-plan';
+import {
+  formatTimecode,
+  type LongformPlanItemView,
+  storyboardPanelSummary,
+} from '@/lib/longform-plan';
 import { cn } from '@/lib/utils';
 
 interface LongformSceneWorkspaceProps {
   items: LongformPlanItemView[];
+  words?: readonly WordTimestamp[];
   selectedSceneId: string;
   preservedKeys: ReadonlySet<string>;
   disabled: boolean;
@@ -41,6 +47,7 @@ function repeatsSource(purpose: string, source: string): boolean {
 /** Selection is navigation only; inclusion and preservation remain explicit editorial decisions. */
 export function LongformSceneWorkspace({
   items,
+  words = [],
   selectedSceneId,
   preservedKeys,
   disabled,
@@ -57,6 +64,12 @@ export function LongformSceneWorkspace({
   const selected = items[index];
   if (!selected?.scene) return null;
   const preserved = preservedKeys.has(selected.key);
+  const panels = storyboardPanelSummary(selected.scene, words);
+  const overview = selected.scene.sourceSpec.overview;
+  const overviewWord =
+    overview && typeof overview === 'object' && !Array.isArray(overview)
+      ? overview.atWord
+      : undefined;
   return (
     <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-[minmax(0,200px)_minmax(0,1fr)] lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)]">
       <nav
@@ -223,6 +236,38 @@ export function LongformSceneWorkspace({
           <p className="text-xs text-warning">
             {issue} Omit this scene or request a new draft; timing is never shortened.
           </p>
+        )}
+        {selected.scene.kind === 'storyboard' && (
+          <section
+            aria-label="Storyboard panels and beats"
+            className="min-w-0 space-y-2 rounded-md border border-border p-3"
+          >
+            <h3 className="text-sm font-semibold">
+              Continuous storyboard · {panels.length} {panels.length === 1 ? 'panel' : 'panels'}
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Full-screen only. Source-indexed reveals, camera moves and final holds stay intact.
+              Use scene feedback to request timing changes.
+            </p>
+            <ol className="grid min-w-0 gap-2">
+              {panels.map((panel, position) => (
+                <li key={panel.id} className="min-w-0 border-t border-border pt-2 text-xs">
+                  <p className="font-medium">
+                    {position + 1}. {panel.title} · {panel.kind}
+                  </p>
+                  <p className="mt-1 text-muted-foreground">{panel.beats.join(' · ')}</p>
+                </li>
+              ))}
+            </ol>
+            {typeof overviewWord === 'number' && (
+              <p className="text-xs text-muted-foreground">
+                Final overview ·{' '}
+                {words[overviewWord]
+                  ? formatTimecode(words[overviewWord].start)
+                  : 'Timing unavailable'}
+              </p>
+            )}
+          </section>
         )}
         {children}
         <section

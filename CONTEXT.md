@@ -7,3 +7,9 @@
 - **Presentation** — The arrangement of the speaker and explanation on the output canvas, distinct from scene kind and palette.
 - **Render reconciliation** — The comparison of approved decisions with what actually rendered, including intentional omissions and failures.
 - **Legacy plan** — An existing block/phrase/card edit retained without automatic conversion. Creating a scene-first draft does not erase its saved versions.
+- **Storyboard** — One source-grounded explanation on a persistent canvas. The camera moves between panels while earlier material remains in place; the whole board occupies one indivisible scene placement.
+- **Panel** — An authored grouping of text, diagrams, notes or explanatory props on a storyboard. It explains one source-backed idea, not necessarily one act of a narrative.
+- **Storyboard source specification** — The saved facts, source-word evidence, panel identities and word-anchored beats of a board. It describes meaning, not generated graphics or arbitrary geometry.
+- **Storyboard style** — Ink or Polish, a material and typography treatment independent of color palette, legacy block skin and app theme.
+- **Appearance snapshot** — The style and resolved palette saved with an edit-plan version. Later changes to defaults or a custom palette do not change that version.
+- **Overview hold** — An optional readable pause showing the accumulated board; it is only used when the source window has enough time.

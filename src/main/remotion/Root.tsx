@@ -1,5 +1,6 @@
 import type React from 'react';
 import { Composition } from 'remotion';
+import { BUILTIN_PALETTES } from '../../shared/palettes';
 import { BRAND_ACCENT, BRAND_BG, BRAND_FG } from '../edit-styles/shared/brand';
 import {
   BakeoffAuroraGlass,
@@ -93,6 +94,8 @@ import {
   type FullscreenQuotePlusBrollProps,
 } from './compositions/FullscreenQuotePlusBroll';
 import { PhraseOverlay, type PhraseOverlayProps } from './compositions/PhraseOverlay';
+import { StoryBoard } from './compositions/storyboard/StoryBoard';
+import type { ProductionStoryBoardProps } from './compositions/storyboard/types';
 import { SKINS, type SkinId } from './shared/skins';
 
 // Locked 9:16 vertical canvas — must match OUTPUT_WIDTH/HEIGHT/FPS in src/main/aspect-ratios.ts.
@@ -125,6 +128,32 @@ const PRESTYJ_QUOTE_DEFAULTS = {
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* Production-only inputs: no proof fixtures or source media in this bundle. */}
+      <Composition
+        id="StoryBoard"
+        component={StoryBoard}
+        durationInFrames={1}
+        fps={FPS}
+        width={LANDSCAPE_WIDTH}
+        height={LANDSCAPE_HEIGHT}
+        defaultProps={
+          {
+            style: 'polish',
+            palette: BUILTIN_PALETTES[0],
+            spec: {
+              durationSec: 1 / FPS,
+              boardIn: { at: 0, dur: 0 },
+              boardOut: { at: 0, dur: 0 },
+              shots: [{ at: 0, dur: 0, x: 0, y: 0, zoom: 1 }],
+              elements: [],
+              props: [],
+            },
+          } satisfies ProductionStoryBoardProps
+        }
+        calculateMetadata={({ props }) => ({
+          durationInFrames: Math.max(1, Math.ceil(props.spec.durationSec * FPS - 1e-6)),
+        })}
+      />
       {/* Explainer stage: top half of a split short. Opaque, 1080×960. */}
       <Composition
         id="ExplainerScene"

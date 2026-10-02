@@ -115,6 +115,53 @@ beforeEach(async () => {
 afterEach(async () => {
   await rm(root, { recursive: true, force: true });
 });
+it.each([
+  'ink',
+  'polish',
+])('forwards the bounded storyboard style %s before generation', async (storyboardStyle) => {
+  const input = preview();
+  await invoke(
+    Ch.Invoke.AI_GENERATE_LONGFORM_EDIT_PLAN,
+    windowEvent(1),
+    'offline-key',
+    input.wordTimestamps,
+    15,
+    [],
+    { mode: 'scene-first', storyboardStyle },
+  );
+  expect(m.plan).toHaveBeenCalledWith(expect.objectContaining({ storyboardStyle }));
+});
+it.each([
+  'editorial',
+  'dark',
+  {},
+  'url(example)',
+])('rejects an invalid storyboard style before planning (%s)', async (storyboardStyle) => {
+  const input = preview();
+  await expect(
+    invoke(
+      Ch.Invoke.AI_GENERATE_LONGFORM_EDIT_PLAN,
+      windowEvent(1),
+      'offline-key',
+      input.wordTimestamps,
+      15,
+      [],
+      { mode: 'scene-first', storyboardStyle },
+    ),
+  ).rejects.toThrow('generation options');
+  expect(m.plan).not.toHaveBeenCalled();
+  expect(m.legacy).not.toHaveBeenCalled();
+});
+it('rejects malformed parser-2 style before preview I/O', async () => {
+  const input = preview();
+  input.plan.parserVersion = 2;
+  Reflect.set(input.plan, 'storyboardStyle', 'terminal');
+  await expect(
+    invoke(Ch.Invoke.RENDER_LONGFORM_SCENE_PREVIEW, windowEvent(1), input),
+  ).rejects.toThrow('preview request');
+  expect(m.stat).not.toHaveBeenCalled();
+  expect(m.render).not.toHaveBeenCalled();
+});
 it.each([false, true])('preserves the preview sound-cue choice (%s)', async (enabled) => {
   const input = { ...preview(), sceneSfxEnabled: enabled };
   await invoke(Ch.Invoke.RENDER_LONGFORM_SCENE_PREVIEW, windowEvent(1), input);

@@ -14,14 +14,18 @@ import {
   scheduleLongformScenes,
   validLongformWords,
 } from '@shared/longform-scenes';
+import { DEFAULT_STORYBOARD_STYLE, isStoryboardStyle } from '../../shared/storyboards';
 import { LONGFORM_PLANNER_PROFILE } from './explainer/planner-profiles';
 import { clipIdentity, summarizeUsage, type UsageRecord } from './explainer/recent-usage';
 import { parseLongformSceneSpec, planExplainerEditPlan } from './explainer-scenes';
+import { validateSceneFirstLongformPlan } from './longform-scene-contract';
 import {
   LONGFORM_SECTION_POLICY,
   type LongformSection,
   partitionLongformSections,
 } from './longform-sections';
+import { arbitrateStoryboards, storyboardPolicyProblem } from './storyboards/arbitration';
+import { planStoryboardSection } from './storyboards/planner';
 
 export type SceneFirstLongformGenerationOptions = LongformGenerationRequest & {
   signal?: AbortSignal;
@@ -52,6 +56,8 @@ export async function generateSceneFirstLongformPlan(
   if (!validLongformWords(words, videoDuration))
     throw new Error('Invalid long-form source transcript.');
   if (options.mode === 'legacy') throw new Error('Use the legacy generator for legacy plans.');
+  if (options.storyboardStyle !== undefined && !isStoryboardStyle(options.storyboardStyle))
+    throw new Error('Invalid storyboard style.');
   const sourceFingerprint = longformSourceFingerprint(words, videoDuration);
   const windows = partitionLongformSections(words);
   if (windows.length > LONGFORM_SCENE_LIMITS.maxSections)
@@ -85,22 +91,14 @@ export async function generateSceneFirstLongformPlan(
       })
     )
       throw new Error('Previous planning sections are stale; regenerate without preservation.');
-    // Even preserved scenes must reconstruct; never trust saved compiled content or timing.
+    // One authoritative dispatcher, including omitted boards and historical parser-1 scenes.
+    const validation = validateSceneFirstLongformPlan(previous, words, videoDuration);
+    if (!validation.ok) throw new Error(validation.error);
     for (const scene of previous.scenes) {
-      const parsed = parseLongformSceneSpec(scene.sourceSpec, words, {
-        clipStart: 0,
-        clipEnd: videoDuration,
-      });
       const owner = byId.get(scene.sectionId);
       if (
-        !parsed ||
-        scene.id !== longformSceneId(scene.kind, scene.startWord, scene.endWord) ||
         !owner ||
-        scene.startWord < owner.startWord ||
-        scene.startWord > owner.endWord ||
-        scene.endWord > owner.contextEndWord ||
-        parsed.startTime !== scene.startTime ||
-        parsed.endTime !== scene.endTime
+        scene.endWord > (scene.kind === 'storyboard' ? owner.endWord : owner.contextEndWord)
       )
         throw new Error('A previous scene cannot be reconstructed from this source.');
     }
@@ -117,6 +115,9 @@ export async function generateSceneFirstLongformPlan(
   if ([...preserved].some((id) => !previousSceneIds.has(id)))
     throw new Error('Unknown preserved scene requested.');
 
+  if (previous && !attempted.size) return structuredClone(previous);
+  const storyboardStyle =
+    options.storyboardStyle ?? previous?.storyboardStyle ?? DEFAULT_STORYBOARD_STYLE;
   const priorSections = new Map(previous?.sections.map((section) => [section.id, section]));
   const sections = windows.map(
     ({ id, startWord, endWord, startTime, endTime }): LongformPlanningSection => {
@@ -128,7 +129,7 @@ export async function generateSceneFirstLongformPlan(
   );
   const sectionResults = new Map(sections.map((section) => [section.id, section]));
   const retained = (previous?.scenes ?? [])
-    .filter((scene) => !attempted.has(scene.sectionId) || preserved.has(scene.id))
+    .filter((scene) => !attempted.has(scene.sectionId) || preserved.has(scene.id) || scene.omitted)
     .map((scene) => structuredClone(scene));
   const proposals: LongformScenePlacement[] = [];
   let recent: UsageRecord[] = [];
@@ -213,10 +214,51 @@ export async function generateSceneFirstLongformPlan(
       if (!placements.length && result.value.scenes.length) {
         output.status = 'failed';
         note(output, 'all-source-specs-rejected');
-      } else {
-        output.status = placements.length ? 'planned' : 'empty';
-        successes++;
+        return [];
       }
+      // Sequential within this section: ordinary + storyboard requests together never exceed TWO.
+      const proposal = await planStoryboardSection({
+        apiKey: options.apiKey,
+        words,
+        duration: videoDuration,
+        section,
+        style: storyboardStyle,
+        feedback: options.feedback,
+        signal,
+      });
+      signal?.throwIfAborted();
+      const diagnostics = proposal.ok ? proposal.value.diagnostics : proposal.diagnostics;
+      for (const diagnostic of diagnostics)
+        note(output, `storyboard:${diagnostic.code}:${diagnostic.message}`);
+      if (!proposal.ok) {
+        note(output, 'storyboard-generation-failed');
+        // A valid ordinary proposal remains usable, including on regeneration.
+        // Without one, do not erase an old explanation or claim empty success on failure.
+        if (!placements.length) {
+          output.status = 'failed';
+          return [];
+        }
+      } else if (proposal.value.board) {
+        const board = proposal.value.board;
+        const raw = board.sourceSpec;
+        if (!isLongformSourceSpec(raw))
+          throw new Error('Storyboard exceeds saved source envelope.');
+        placements.push({
+          id: longformSceneId('storyboard', raw.startWord, raw.endWord),
+          kind: 'storyboard',
+          startWord: raw.startWord,
+          endWord: raw.endWord,
+          startTime: board.startTime,
+          endTime: board.endTime,
+          sectionId: section.id,
+          presentation: 'full-frame',
+          sourceSpec: structuredClone(raw),
+          label: raw.subject.text,
+          purpose: `Explain the source passage: ${raw.subject.text}`,
+        });
+      }
+      output.status = placements.length ? 'planned' : 'empty';
+      successes++;
       return placements;
     } catch {
       signal?.throwIfAborted();
@@ -266,6 +308,7 @@ export async function generateSceneFirstLongformPlan(
         ...results[index],
       ];
       const compiled = usageScenes.flatMap((scene) => {
+        if (scene.kind === 'storyboard') return [];
         const parsed = parseLongformSceneSpec(scene.sourceSpec, words, {
           clipStart: 0,
           clipEnd: videoDuration,
@@ -298,22 +341,41 @@ export async function generateSceneFirstLongformPlan(
       note(section, `duplicate-or-preserved:${scene.id}`);
       continue;
     }
-    if (retained.some((other) => !other.omitted && overlaps(scene, other))) {
+    if (retained.some((other) => overlaps(scene, other))) {
       note(section, `preserved-window-conflict:${scene.id}`);
       continue;
     }
     occupiedIds.add(scene.id);
     candidates.push(scene);
   }
-  const scheduled = scheduleLongformScenes(candidates, videoDuration);
+  const protectedProblem = storyboardPolicyProblem(retained, videoDuration);
+  if (protectedProblem) throw new Error(protectedProblem);
+  const scheduled = scheduleLongformScenes(
+    candidates.filter((s) => s.kind !== 'storyboard'),
+    videoDuration,
+  );
   for (const rejection of scheduled.rejected) {
     const scene = candidates.find((candidate) => candidate.id === rejection.id);
     const section = scene && sectionResults.get(scene.sectionId);
     if (section) note(section, `schedule-rejected:${rejection.id}:${rejection.reason}`);
   }
-  const scenes = [...retained, ...scheduled.scenes].sort(
-    (a, b) => a.startTime - b.startTime || a.id.localeCompare(b.id),
-  );
+  const arbitration = arbitrateStoryboards({
+    ordinary: scheduled.scenes,
+    proposals: candidates.filter((s) => s.kind === 'storyboard'),
+    protectedScenes: retained,
+    duration: videoDuration,
+  });
+  for (const diagnostic of arbitration.diagnostics) {
+    const candidate = candidates.find((s) => s.id === diagnostic.sourceId);
+    const section = candidate && sectionResults.get(candidate.sectionId);
+    if (section)
+      note(section, `storyboard:${diagnostic.code}:${diagnostic.sourceId}:${diagnostic.message}`);
+  }
+  for (const replacement of arbitration.replacements) {
+    const section = sectionResults.get(replacement.sectionId);
+    if (section) note(section, `storyboard-replaced:${replacement.boardId}:${replacement.sceneId}`);
+  }
+  const scenes = arbitration.scenes;
   if (scenes.length > LONGFORM_SCENE_LIMITS.maxScenes)
     throw new Error('Too many scene placements.');
   for (const section of sections) {
@@ -324,7 +386,8 @@ export async function generateSceneFirstLongformPlan(
   return {
     schemaVersion: 2,
     mode: 'scene-first',
-    parserVersion: 1,
+    parserVersion: 2,
+    storyboardStyle,
     sourceFingerprint,
     sourceDuration: videoDuration,
     scenes,

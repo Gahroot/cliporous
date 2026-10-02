@@ -1,6 +1,7 @@
 import { isLongformPalette } from '@shared/longform-palette';
-import { isSceneFirstPlanEnvelope } from '@shared/longform-scenes';
-import { getPaletteById, type Palette } from '@shared/palettes';
+import { isSceneFirstPlanEnvelope, sceneFirstPlanProblem } from '@shared/longform-scenes';
+import { BUILTIN_PALETTES, type Palette } from '@shared/palettes';
+import { isStoryboardStyle } from '@shared/storyboards';
 import type { LongformEditPlan, LongformRenderReconciliation } from '@shared/types';
 import type { StateCreator } from 'zustand';
 import {
@@ -14,6 +15,16 @@ import type { AppState, LongformSkinId } from './types';
 
 export type LongformPlanVersionOrigin = 'generated' | 'user-edited' | 'regenerated' | 'accepted';
 export type LongformPlanStatus = 'draft' | 'accepted' | 'rejected';
+
+/** Appearance captured when a generation request starts, never resolved on completion. */
+export interface LongformPlanAppearance {
+  skin: LongformSkinId;
+  paletteId: string;
+  palette: Palette;
+}
+
+export const LONGFORM_PALETTE_PROBLEM =
+  'The saved palette is unavailable or invalid. Select a palette in a new draft; the saved data is preserved.';
 
 export interface LongformPlanVersion {
   id: string;
@@ -73,10 +84,12 @@ export interface LongformSlice {
     plan: LongformEditPlan,
     origin: LongformPlanVersionOrigin,
     note?: string,
+    appearance?: LongformPlanAppearance,
   ) => void;
   restoreLongformPlanVersion: (sourceId: string, versionId: string) => void;
   acceptLongformPlan: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
   setLongformPlanStyle: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
+  setLongformPlanStoryboardStyle: AppState['setLongformPlanStoryboardStyle'];
   rejectLongformPlan: (sourceId: string) => void;
   addLongformPlanFeedback: (
     sourceId: string,
@@ -96,16 +109,22 @@ function makeId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-function cloneLongformPlan(plan: LongformEditPlan): LongformEditPlan {
-  return JSON.parse(JSON.stringify(plan)) as LongformEditPlan;
+function cloneLongformPlan<T extends LongformEditPlan>(plan: T): T {
+  return JSON.parse(JSON.stringify(plan)) as T;
 }
 
-function snapshotPalette(paletteId: string, custom: Palette[], saved?: Palette): Palette {
-  return {
-    ...(isLongformPalette(saved) && saved.id === paletteId
+function snapshotPalette(
+  paletteId: string,
+  custom: Palette[] = [],
+  saved?: Palette,
+): Palette | undefined {
+  // An embedded snapshot is authoritative, including when invalid. Do not repair
+  // saved colors from a mutable library or resolve an unknown ID to Brand.
+  const palette =
+    saved !== undefined
       ? saved
-      : getPaletteById(paletteId, custom)),
-  };
+      : [...BUILTIN_PALETTES, ...custom].find((item) => item.id === paletteId);
+  return isLongformPalette(palette) && palette.id === paletteId ? { ...palette } : undefined;
 }
 
 function clonePreservedItems(items: PreservedLongformItem[]): PreservedLongformItem[] {
@@ -164,6 +183,13 @@ function currentPlanProblem(
   sourceId: string,
   plan: LongformEditPlan,
 ): string | null {
+  if (
+    plan.mode === 'scene-first' ||
+    (plan.schemaVersion !== undefined && plan.schemaVersion !== 1)
+  ) {
+    const problem = sceneFirstPlanProblem(plan);
+    if (problem) return problem;
+  }
   if (!isScenePlanForReview(plan)) return null;
   const source = state.sources.find((candidate) => candidate.id === sourceId);
   return longformSceneReviewProblem(
@@ -230,27 +256,34 @@ export const createLongformSlice: StateCreator<
   setLongformPlan: (sourceId, record) =>
     set((state) => {
       const snapshot = JSON.parse(JSON.stringify(record)) as LongformPlanRecord;
-      snapshot.palette = snapshotPalette(
-        snapshot.paletteId,
-        state.settings.customPalettes,
-        snapshot.palette,
-      );
+      const palette = snapshotPalette(snapshot.paletteId, [], snapshot.palette);
+      if (palette) snapshot.palette = palette;
+      const problem =
+        currentPlanProblem(state, sourceId, snapshot.plan) ||
+        (!palette ? LONGFORM_PALETTE_PROBLEM : null);
+      if (problem) {
+        snapshot.preservedPlanData ??= JSON.parse(JSON.stringify(record));
+        snapshot.validationProblem = problem;
+      }
       ensureRecord(snapshot);
       state.longformPlans[sourceId] = snapshot;
     }),
 
-  addLongformPlanVersion: (sourceId, plan, origin, note) =>
+  addLongformPlanVersion: (sourceId, plan, origin, note, appearance) =>
     set((state) => {
       const record = state.longformPlans[sourceId];
       if (!record) return;
       ensureRecord(record);
-      record.palette = snapshotPalette(
-        record.paletteId,
-        state.settings.customPalettes,
-        record.palette,
-      );
+      if (appearance) {
+        record.skin = appearance.skin;
+        record.paletteId = appearance.paletteId;
+        record.palette = { ...appearance.palette };
+      }
+      const palette = snapshotPalette(record.paletteId, [], record.palette);
+      if (palette) record.palette = palette;
       const problem =
         currentPlanProblem(state, sourceId, plan) ||
+        (!palette ? LONGFORM_PALETTE_PROBLEM : null) ||
         (origin === 'generated' || origin === 'regenerated' ? null : record.validationProblem);
       if (problem) record.validationProblem = problem;
       else delete record.validationProblem;
@@ -262,7 +295,7 @@ export const createLongformSlice: StateCreator<
         createdAt: Date.now(),
         skin: record.skin,
         paletteId: record.paletteId,
-        palette: { ...record.palette },
+        ...(record.palette ? { palette: { ...record.palette } } : {}),
         preservedItems: clonePreservedItems(record.preservedItems ?? []),
         ...(note ? { note } : {}),
       };
@@ -284,13 +317,15 @@ export const createLongformSlice: StateCreator<
       if (!version) return;
       record.plan = cloneLongformPlan(version.plan);
       record.skin = version.skin ?? record.skin;
+      // Historical versions without appearance metadata retain the record's prior meaning.
+      // A missing custom snapshot still fails closed below; never consult global defaults.
       record.paletteId = version.paletteId ?? record.paletteId;
-      record.palette = snapshotPalette(
-        record.paletteId,
-        state.settings.customPalettes,
-        version.palette,
-      );
-      const problem = version.validationProblem || currentPlanProblem(state, sourceId, record.plan);
+      const palette = snapshotPalette(record.paletteId, [], version.palette);
+      record.palette = palette ?? version.palette;
+      const problem =
+        version.validationProblem ||
+        currentPlanProblem(state, sourceId, record.plan) ||
+        (!palette ? LONGFORM_PALETTE_PROBLEM : null);
       if (problem) record.validationProblem = problem;
       else delete record.validationProblem;
       record.activeVersionId = version.id;
@@ -306,14 +341,21 @@ export const createLongformSlice: StateCreator<
       const record = state.longformPlans[sourceId];
       if (!record) return;
       ensureRecord(record);
-      const problem = record.validationProblem || currentPlanProblem(state, sourceId, record.plan);
-      if (problem || sceneApprovalBlocked(record.plan)) {
+      const palette = snapshotPalette(
+        paletteId,
+        paletteId === record.paletteId ? [] : state.settings.customPalettes,
+        paletteId === record.paletteId ? record.palette : undefined,
+      );
+      const problem =
+        record.validationProblem ||
+        currentPlanProblem(state, sourceId, record.plan) ||
+        (!palette ? LONGFORM_PALETTE_PROBLEM : null);
+      if (problem || !palette || sceneApprovalBlocked(record.plan)) {
         if (problem) record.validationProblem = problem;
         record.status = 'draft';
         record.approvedVersionId = null;
         return;
       }
-      const palette = snapshotPalette(paletteId, state.settings.customPalettes, record.palette);
       const version: LongformPlanVersion = {
         id: makeId('cut-plan'),
         plan: cloneLongformPlan(record.plan),
@@ -339,7 +381,13 @@ export const createLongformSlice: StateCreator<
     set((state) => {
       const record = state.longformPlans[sourceId];
       if (!record) return;
-      const palette = snapshotPalette(paletteId, state.settings.customPalettes);
+      const palette = snapshotPalette(
+        paletteId,
+        state.settings.customPalettes,
+        record.paletteId === paletteId && record.skin !== skin && isLongformPalette(record.palette)
+          ? record.palette
+          : undefined,
+      );
       if (
         record.skin === skin &&
         record.paletteId === paletteId &&
@@ -347,6 +395,12 @@ export const createLongformSlice: StateCreator<
       )
         return;
       ensureRecord(record);
+      const problem =
+        currentPlanProblem(state, sourceId, record.plan) ||
+        (!palette ? LONGFORM_PALETTE_PROBLEM : null) ||
+        (record.validationProblem === LONGFORM_PALETTE_PROBLEM ? null : record.validationProblem);
+      if (problem) record.validationProblem = problem;
+      else delete record.validationProblem;
       const version: LongformPlanVersion = {
         id: makeId('cut-plan'),
         plan: cloneLongformPlan(record.plan),
@@ -355,7 +409,7 @@ export const createLongformSlice: StateCreator<
         note: 'Changed scene style or palette',
         skin,
         paletteId,
-        palette: { ...palette },
+        ...(palette ? { palette: { ...palette } } : {}),
         preservedItems: clonePreservedItems(record.preservedItems ?? []),
         ...(record.validationProblem ? { validationProblem: record.validationProblem } : {}),
       };
@@ -363,10 +417,50 @@ export const createLongformSlice: StateCreator<
       record.activeVersionId = version.id;
       record.skin = skin;
       record.paletteId = paletteId;
-      record.palette = { ...palette };
+      record.palette = palette;
       record.status = 'draft';
       record.approvedVersionId = null;
       record.reconciliation = null;
+    }),
+
+  setLongformPlanStoryboardStyle: (sourceId, style) =>
+    set((state) => {
+      const record = state.longformPlans[sourceId];
+      if (
+        !record ||
+        !isStoryboardStyle(style) ||
+        !isSceneFirstPlanEnvelope(record.plan) ||
+        record.plan.parserVersion !== 2 ||
+        record.plan.storyboardStyle === style
+      )
+        return;
+      ensureRecord(record);
+      const plan = cloneLongformPlan(record.plan);
+      plan.storyboardStyle = style;
+      const problem =
+        currentPlanProblem(state, sourceId, plan) ||
+        record.validationProblem ||
+        (!snapshotPalette(record.paletteId, [], record.palette) ? LONGFORM_PALETTE_PROBLEM : null);
+      const version: LongformPlanVersion = {
+        id: makeId('cut-plan'),
+        plan,
+        origin: 'user-edited',
+        createdAt: Date.now(),
+        note: 'Changed storyboard style',
+        skin: record.skin,
+        paletteId: record.paletteId,
+        ...(record.palette ? { palette: { ...record.palette } } : {}),
+        preservedItems: clonePreservedItems(record.preservedItems ?? []),
+        ...(problem ? { validationProblem: problem } : {}),
+      };
+      record.versions?.push(version);
+      record.plan = cloneLongformPlan(plan);
+      record.activeVersionId = version.id;
+      record.status = 'draft';
+      record.approvedVersionId = null;
+      record.reconciliation = null;
+      if (problem) record.validationProblem = problem;
+      else delete record.validationProblem;
     }),
 
   rejectLongformPlan: (sourceId) =>
@@ -410,7 +504,8 @@ export const createLongformSlice: StateCreator<
       record.preservedItems = clonePreservedItems(items);
       const version = record.versions?.find((candidate) => candidate.id === record.activeVersionId);
       // Preservation is review metadata, not a mutation of the approved scene spec.
-      if (version) version.preservedItems = clonePreservedItems(items);
+      if (version && version.origin !== 'accepted')
+        version.preservedItems = clonePreservedItems(items);
     }),
 
   setLongformReconciliation: (sourceId, reconciliation) =>

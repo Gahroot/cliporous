@@ -1,4 +1,6 @@
+import { findLongformPalette } from '@shared/longform-palette';
 import type { RecentProjectEntry } from '@shared/recent-projects';
+import { DEFAULT_STORYBOARD_STYLE } from '@shared/storyboards';
 import {
   AlertTriangle,
   ArrowRight,
@@ -13,8 +15,8 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { type EntrySource, isYouTubeUrl } from '@/components/entry-source';
+import { LongformAppearancePicker } from '@/components/LongformAppearancePicker';
 import { NewProjectDialog, type NewProjectDraft } from '@/components/NewProjectDialog';
-import { PalettePicker } from '@/components/PalettePicker';
 import { ProcessingRecipe } from '@/components/ProcessingRecipe';
 import { PythonSetupCard } from '@/components/PythonSetupCard';
 import { RecentProjectLibrary } from '@/components/RecentProjectLibrary';
@@ -70,6 +72,7 @@ export function DropScreen(): React.JSX.Element {
   const setTemplateLayout = useStore((state) => state.setTemplateLayout);
   const setLongformSkin = useStore((state) => state.setLongformSkin);
   const setLongformPaletteId = useStore((state) => state.setLongformPaletteId);
+  const setLongformStoryboardStyle = useStore((state) => state.setLongformStoryboardStyle);
   const { processVideo } = usePipeline();
   const { processLongform } = useLongformPipeline();
 
@@ -348,6 +351,16 @@ export function DropScreen(): React.JSX.Element {
         setIngestError('Paste a valid YouTube video URL.');
         return;
       }
+      if (
+        draft.outputMode === 'longform' &&
+        !findLongformPalette(
+          draft.appearance.paletteId,
+          useStore.getState().settings.customPalettes,
+        )
+      ) {
+        setIngestError('Choose an available palette before generating.');
+        return;
+      }
       const projectId = useStore.getState().currentProject.id;
       starting.current = true;
       setIsStarting(true);
@@ -385,6 +398,18 @@ export function DropScreen(): React.JSX.Element {
           return;
         }
         if (useStore.getState().pythonStatus !== 'ready' || !canStartEntry()) return;
+        if (
+          draft.outputMode === 'longform' &&
+          !findLongformPalette(
+            draft.appearance.paletteId,
+            useStore.getState().settings.customPalettes,
+          )
+        ) {
+          setIngestError(
+            'The selected palette is no longer available. Choose another before generating.',
+          );
+          return;
+        }
         if (intent === 'new') {
           if (!canReplaceProject()) return;
           createNewProject();
@@ -397,6 +422,9 @@ export function DropScreen(): React.JSX.Element {
               setTargetPlatform(profile.targetPlatform);
               setTemplateLayout(profile.templateLayout);
               setLongformSkin(profile.longformSkin);
+              setLongformStoryboardStyle(
+                profile.longformStoryboardStyle ?? DEFAULT_STORYBOARD_STYLE,
+              );
               setLongformPaletteId(profile.longformPaletteId);
             }
           }
@@ -408,6 +436,27 @@ export function DropScreen(): React.JSX.Element {
           setProjectDisplayName(
             draft.source.kind === 'file' ? filenameStem(draft.source.value) : 'YouTube project',
           );
+        }
+        // Explicit dialog choices win after profile defaults, before any processing starts.
+        if (draft.outputMode === 'longform') {
+          setLongformStoryboardStyle(draft.appearance.storyboardStyle);
+          setLongformPaletteId(draft.appearance.paletteId);
+          const state = useStore.getState();
+          const profile = getCreatorProfiles().find(
+            (item) => item.id === state.creatorProfile.profileId,
+          );
+          if (profile) {
+            if (draft.appearance.storyboardStyle === profile.longformStoryboardStyle)
+              state.clearCreatorProfileOverride('longformStoryboardStyle');
+            else
+              state.setCreatorProfileOverride(
+                'longformStoryboardStyle',
+                draft.appearance.storyboardStyle,
+              );
+            if (draft.appearance.paletteId === profile.longformPaletteId)
+              state.clearCreatorProfileOverride('longformPaletteId');
+            else state.setCreatorProfileOverride('longformPaletteId', draft.appearance.paletteId);
+          }
         }
         setOutputMode(draft.outputMode);
         addSource(source);
@@ -451,6 +500,7 @@ export function DropScreen(): React.JSX.Element {
       setCreatorProfile,
       setLongformPaletteId,
       setLongformSkin,
+      setLongformStoryboardStyle,
       setOutputMode,
       setProcessingConfig,
       setProjectDisplayName,
@@ -647,7 +697,7 @@ export function DropScreen(): React.JSX.Element {
               {outputMode === 'short' ? (
                 <ProcessingRecipe disabled={isStarting} />
               ) : (
-                <PalettePicker disabled={isStarting} />
+                <LongformAppearancePicker disabled={isStarting} />
               )}
             </div>
           </details>

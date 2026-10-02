@@ -63,7 +63,8 @@ export function registerRenderHandlers(): void {
             if (
               plan &&
               (plan.mode === 'scene-first' ||
-                (plan.schemaVersion !== undefined && plan.schemaVersion !== 1))
+                (plan.schemaVersion !== undefined && plan.schemaVersion !== 1) ||
+                'scenes' in plan)
             ) {
               if (
                 options.jobs.length !== 1 ||

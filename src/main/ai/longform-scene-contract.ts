@@ -1,6 +1,7 @@
 import {
   isSceneFirstPlanEnvelope,
   type LongformScenePlacement,
+  longformSceneId,
   longformSourceFingerprint,
   type SceneFirstLongformPlan,
   sceneFirstPlanProblem,
@@ -8,12 +9,20 @@ import {
   validLongformWords,
 } from '../../shared/longform-scenes';
 import type { WordTimestamp } from '../../shared/types';
+import type { SceneCue } from '../remotion/compositions/explainer/types';
+import type { StoryBoardSpec } from '../remotion/compositions/storyboard/types';
 import { type PlannedExplainerScene, parseLongformSceneSpec } from './explainer-scenes';
+import { storyboardPolicyProblem } from './storyboards/arbitration';
+import { compileStoryboardSpec } from './storyboards/compiler';
 
-export interface CompiledLongformScene {
-  placement: LongformScenePlacement;
-  planned: PlannedExplainerScene;
-}
+export type CompiledLongformScene =
+  | { kind: 'explainer'; placement: LongformScenePlacement; planned: PlannedExplainerScene }
+  | {
+      kind: 'storyboard';
+      placement: LongformScenePlacement;
+      board: StoryBoardSpec;
+      cues: SceneCue[];
+    };
 
 export type ValidatedLongformScenes =
   | { ok: true; value: { plan: SceneFirstLongformPlan; scenes: CompiledLongformScene[] } }
@@ -55,6 +64,8 @@ export function validateSceneFirstLongformPlan(
       };
     }
   }
+  const boardProblem = storyboardPolicyProblem(input.scenes, duration);
+  if (boardProblem) return { ok: false, error: boardProblem };
   const schedule = scheduleLongformScenes(input.scenes, duration);
   if (schedule.rejected.length > 0) {
     return {
@@ -66,6 +77,44 @@ export function validateSceneFirstLongformPlan(
   for (const placement of input.scenes) {
     if (!words[placement.startWord] || !words[placement.endWord]) {
       return { ok: false, error: `Scene ${placement.id} refers to missing source words.` };
+    }
+    const section = input.sections.find((s) => s.id === placement.sectionId);
+    if (
+      !section ||
+      placement.id !== longformSceneId(placement.kind, placement.startWord, placement.endWord) ||
+      placement.startWord < section.startWord ||
+      placement.startWord > section.endWord
+    ) {
+      return {
+        ok: false,
+        error: `Scene ${placement.id} no longer matches its section or source identity.`,
+      };
+    }
+    if (placement.kind === 'storyboard') {
+      if (input.parserVersion !== 2 || placement.presentation !== 'full-frame')
+        return { ok: false, error: 'Storyboards require parser 2 and full-frame presentation.' };
+      const result = compileStoryboardSpec(placement.sourceSpec, words, {
+        clipStart: 0,
+        clipEnd: duration,
+        section,
+        sourceId: placement.id,
+      });
+      if (!result.ok)
+        return {
+          ok: false,
+          error: `Storyboard ${placement.id}: ${result.diagnostics.map((d) => `${d.code}: ${d.message}`).join('; ')}`,
+        };
+      const { board, cues, startTime, endTime } = result.value;
+      if (
+        Math.abs(startTime - placement.startTime) > 0.001 ||
+        Math.abs(endTime - placement.endTime) > 0.001
+      )
+        return {
+          ok: false,
+          error: `Storyboard ${placement.id} no longer matches its approved timing.`,
+        };
+      if (!placement.omitted) compiled.push({ kind: 'storyboard', placement, board, cues });
+      continue;
     }
     const parsed = parseLongformSceneSpec(placement.sourceSpec, words, {
       clipStart: 0,
@@ -86,7 +135,7 @@ export function validateSceneFirstLongformPlan(
         error: `Scene ${placement.id} no longer matches its approved timing. Review a new draft before exporting.`,
       };
     }
-    if (!placement.omitted) compiled.push({ placement, planned: parsed });
+    if (!placement.omitted) compiled.push({ kind: 'explainer', placement, planned: parsed });
   }
   compiled.sort(
     (a, b) =>

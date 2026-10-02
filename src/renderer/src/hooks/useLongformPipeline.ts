@@ -1,8 +1,8 @@
-import { isSceneFirstLongformPlan } from '@shared/longform-scenes';
-import { useCallback, useRef } from 'react';
+import { isSceneFirstLongformPlan, sceneFirstPlanProblem } from '@shared/longform-scenes';
+import { useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { MISSING_GEMINI_KEY_MESSAGE, resolveGeminiKey } from '../lib/gemini-key';
-import { LONGFORM_RENDER_DEFAULTS } from '../services/render-defaults';
+import { captureLongformAppearance, isScenePlanForReview } from '../lib/longform-plan';
 import type { SourceVideo } from '../store';
 import { useStore } from '../store';
 import { cancelActiveProcessingAndWait, trackActiveProcessingRun } from './usePipeline';
@@ -33,6 +33,15 @@ export function useLongformPipeline(): {
   const cancelledRef = useRef(false);
   const requestIdRef = useRef<string | null>(null);
 
+  useEffect(
+    () => () => {
+      cancelledRef.current = true;
+      if (requestIdRef.current)
+        void window.api.cancelLongformEditPlan?.(requestIdRef.current).catch(() => {});
+    },
+    [],
+  );
+
   const cancelLongform = useCallback(async (): Promise<void> => {
     cancelledRef.current = true;
     try {
@@ -44,6 +53,10 @@ export function useLongformPipeline(): {
 
   const processLongform = useCallback(
     async (source: SourceVideo): Promise<void> => {
+      // One hook instance owns one run. Later starts must wait for cancellation/settlement.
+      if (requestIdRef.current) return;
+      const initial = useStore.getState();
+      const projectId = initial.currentProject.id;
       cancelledRef.current = false;
       const requestId = crypto.randomUUID();
       requestIdRef.current = requestId;
@@ -52,6 +65,8 @@ export function useLongformPipeline(): {
       const isCurrent = (): boolean =>
         !cancelledRef.current &&
         requestIdRef.current === requestId &&
+        useStore.getState().currentProject.id === projectId &&
+        useStore.getState().activeSourceId === source.id &&
         useStore.getState().currentProcessingJobId === processingJobId &&
         useStore.getState().sources.some((candidate) => candidate.id === source.id);
       const finishTrackedRun = trackActiveProcessingRun(() => {
@@ -64,11 +79,26 @@ export function useLongformPipeline(): {
         });
       });
 
+      const unsubscribe = useStore.subscribe(() => {
+        if (!isCurrent() && !cancelledRef.current) {
+          cancelledRef.current = true;
+          void window.api.cancelLongformEditPlan?.(requestId).catch(() => {});
+        }
+      });
       const check = (): void => {
         if (!isCurrent()) throw new Error('Processing cancelled');
       };
 
       try {
+        const appearance = captureLongformAppearance(
+          {
+            skin: initial.settings.longformSkin,
+            paletteId: initial.settings.longformPaletteId,
+            storyboardStyle: initial.settings.longformStoryboardStyle,
+          },
+          initial.settings.customPalettes,
+        );
+        check();
         if (!navigator.onLine) {
           const msg = 'No internet connection. Long-form editing requires Gemini access.';
           setPipeline({ stage: 'error', message: msg, percent: 0 });
@@ -76,8 +106,8 @@ export function useLongformPipeline(): {
           return;
         }
 
-        const state = useStore.getState();
-        const geminiApiKey = await resolveGeminiKey(state.settings.geminiApiKey);
+        const geminiApiKey = await resolveGeminiKey(initial.settings.geminiApiKey);
+        check();
 
         if (!geminiApiKey) {
           const msg = MISSING_GEMINI_KEY_MESSAGE;
@@ -94,6 +124,7 @@ export function useLongformPipeline(): {
         let resolvedName = source.name;
         if (source.origin === 'youtube' && source.youtubeUrl && !sourcePath) {
           const unsub = window.api.onYouTubeProgress(({ percent }) => {
+            if (!isCurrent()) return;
             setPipeline({
               stage: 'downloading',
               message: `Downloading… ${Math.round(percent)}%`,
@@ -153,6 +184,7 @@ export function useLongformPipeline(): {
           transcribing: 70,
         };
         const unsubT = window.api.onTranscribeProgress(({ stage, message, percent }) => {
+          if (!isCurrent()) return;
           let p = stagePercents[stage] ?? 50;
           if (stage === 'downloading-model' && typeof percent === 'number') {
             p = Math.round(20 + (percent / 100) * 30);
@@ -213,7 +245,7 @@ export function useLongformPipeline(): {
             transcription.words,
             duration,
             undefined,
-            { requestId, mode: 'scene-first' },
+            { requestId, mode: 'scene-first', storyboardStyle: appearance.storyboardStyle },
           );
         } finally {
           unsubE();
@@ -223,13 +255,23 @@ export function useLongformPipeline(): {
         // Persist the (expensive) plan keyed by source so a save/recovery can
         // re-render without re-calling Gemini. Store the same skin + palette
         // axes the render below uses so a restored project renders identically.
-        const longformSkin = state.settings.longformSkin ?? LONGFORM_RENDER_DEFAULTS.longformSkinId;
-        const longformPaletteId =
-          state.settings.longformPaletteId ?? LONGFORM_RENDER_DEFAULTS.longformPaletteId;
+        if (isScenePlanForReview(plan)) {
+          const problem = sceneFirstPlanProblem(plan);
+          if (problem) throw new Error(problem);
+          if (
+            isSceneFirstLongformPlan(plan) &&
+            plan.parserVersion === 2 &&
+            plan.storyboardStyle !== appearance.storyboardStyle
+          )
+            throw new Error(
+              'The generated storyboard style does not match this request. Generate a new draft.',
+            );
+        }
         setLongformPlan(source.id, {
           plan,
-          skin: longformSkin,
-          paletteId: longformPaletteId,
+          skin: appearance.skin,
+          paletteId: appearance.paletteId,
+          palette: appearance.palette,
         });
         markStageCompleted('ai-editing');
         if (isSceneFirstLongformPlan(plan)) {
@@ -276,6 +318,7 @@ export function useLongformPipeline(): {
         });
         toast.error(structured.headline);
       } finally {
+        unsubscribe();
         if (requestIdRef.current === requestId) requestIdRef.current = null;
         finishTrackedRun();
       }

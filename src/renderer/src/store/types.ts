@@ -4,6 +4,7 @@ import type { CreatorJob } from '@shared/jobs';
 import type { Palette } from '@shared/palettes';
 import type { ProjectIdentity, ProjectSaveStatus } from '@shared/project';
 import type { PythonSetupProgress, PythonSetupStatus } from '@shared/python-setup';
+import type { StoryboardStyle } from '@shared/storyboards';
 import type {
   CaptionAnimation,
   CaptionBackgroundBox,
@@ -478,6 +479,8 @@ export interface AppSettings {
   outputMode: OutputMode;
   /** Visual skin applied to every long-form content block. */
   longformSkin: LongformSkinId;
+  /** Material/type treatment for continuous storyboards, not legacy block skins. */
+  longformStoryboardStyle: StoryboardStyle;
   /**
    * Id of the color palette applied to long-form block renders. Resolved
    * against `customPalettes` then the built-in presets (see
@@ -543,6 +546,7 @@ export interface ProjectCreatorProfile {
     targetPlatform: Platform;
     templateLayout: TemplateLayout;
     longformSkin: LongformSkinId;
+    longformStoryboardStyle: StoryboardStyle;
     longformPaletteId: string;
   }>;
 }
@@ -739,10 +743,12 @@ export interface AppState {
     plan: import('@shared/types').LongformEditPlan,
     origin: import('./longform-slice').LongformPlanVersionOrigin,
     note?: string,
+    appearance?: import('./longform-slice').LongformPlanAppearance,
   ) => void;
   restoreLongformPlanVersion: (sourceId: string, versionId: string) => void;
   acceptLongformPlan: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
   setLongformPlanStyle: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
+  setLongformPlanStoryboardStyle: (sourceId: string, style: StoryboardStyle) => void;
   rejectLongformPlan: (sourceId: string) => void;
   addLongformPlanFeedback: (
     sourceId: string,
@@ -962,6 +968,7 @@ export interface AppState {
   // Actions — Output mode + long-form skin / palette (16:9 path)
   setOutputMode: (mode: OutputMode) => void;
   setLongformSkin: (skin: LongformSkinId) => void;
+  setLongformStoryboardStyle: (style: StoryboardStyle) => void;
   setLongformPaletteId: (id: string) => void;
   addCustomPalette: (palette: Palette) => void;
   updateCustomPalette: (id: string, patch: Partial<Palette>) => void;

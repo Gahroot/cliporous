@@ -1,6 +1,6 @@
 import { registerCredentialValue } from '@shared/credential-safety';
-import { DEFAULT_PALETTE_ID } from '@shared/palettes';
 import { clampAutosaveInterval, DEFAULT_AUTOSAVE_INTERVAL_MS } from '@shared/project';
+import { normalizeStoryboardStyle } from '@shared/storyboards';
 import type { StateCreator } from 'zustand';
 import {
   DEFAULT_PROCESSING_CONFIG,
@@ -99,6 +99,7 @@ export interface SettingsSlice {
   setRenderConcurrency: (concurrency: number) => void;
   setOutputMode: (mode: import('./types').OutputMode) => void;
   setLongformSkin: (skin: import('./types').LongformSkinId) => void;
+  setLongformStoryboardStyle: AppState['setLongformStoryboardStyle'];
   setLongformPaletteId: (id: string) => void;
   addCustomPalette: (palette: import('./types').Palette) => void;
   updateCustomPalette: (id: string, patch: Partial<import('./types').Palette>) => void;
@@ -577,6 +578,11 @@ export const createSettingsSlice: StateCreator<
       state.settings.longformSkin = skin;
     }),
 
+  setLongformStoryboardStyle: (style) =>
+    set((state) => {
+      state.settings.longformStoryboardStyle = normalizeStoryboardStyle(style);
+    }),
+
   // --- Long-form color palette ---
 
   setLongformPaletteId: (id) =>
@@ -607,10 +613,8 @@ export const createSettingsSlice: StateCreator<
   removeCustomPalette: (id) =>
     set((state) => {
       state.settings.customPalettes = state.settings.customPalettes.filter((p) => p.id !== id);
-      // If the removed palette was selected, fall back to the brand default.
-      if (state.settings.longformPaletteId === id) {
-        state.settings.longformPaletteId = DEFAULT_PALETTE_ID;
-      }
+      // Keep the scoped selection visible as unavailable. A deleted library entry
+      // must neither silently recolor a project nor touch any saved plan snapshot.
     }),
 
   // --- Template Layout (on-screen text positioning) ---

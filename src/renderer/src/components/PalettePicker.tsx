@@ -27,8 +27,10 @@ export interface PalettePickerProps {
   className?: string;
   skin?: LongformSkinId;
   paletteId?: string;
+  /** Frozen plan palette, retained even if its library entry is removed. */
+  palette?: Palette | undefined;
   onSkinChange?: (skin: LongformSkinId) => void;
-  onPaletteChange?: (paletteId: string) => void;
+  onPaletteChange?: ((paletteId: string) => void) | undefined;
   showProfileDefault?: boolean;
   showProjectPreview?: boolean;
   /**
@@ -37,6 +39,8 @@ export interface PalettePickerProps {
    * and names, for surfaces where the skin axis doesn't apply (short-form).
    */
   variant?: 'full' | 'compact';
+  /** Scene-first plans require an explicit palette; short-form retains its existing fallback. */
+  requireResolvedPalette?: boolean;
   /** Group label for the compact variant. */
   title?: string;
   /** Helper text shown under the compact variant's label. */
@@ -188,11 +192,13 @@ export function PalettePicker({
   className,
   skin,
   paletteId,
+  palette,
   onSkinChange,
   onPaletteChange,
   showProfileDefault = true,
   showProjectPreview = true,
   variant = 'full',
+  requireResolvedPalette = false,
   title = 'Palette',
   description,
 }: PalettePickerProps): React.JSX.Element {
@@ -207,10 +213,10 @@ export function PalettePicker({
   const profiles = useCreatorProfiles();
   const selectedSkin = skin ?? storedSkin;
   const selectedPaletteId = paletteId ?? storedPaletteId;
-  const allPalettes = React.useMemo(
-    () => [...BUILTIN_PALETTES, ...customPalettes],
-    [customPalettes],
-  );
+  const allPalettes = React.useMemo(() => {
+    const library = [...BUILTIN_PALETTES, ...customPalettes];
+    return palette ? [...library.filter((item) => item.id !== palette.id), palette] : library;
+  }, [customPalettes, palette]);
   const selectedPalette = allPalettes.find((item) => item.id === selectedPaletteId);
   const fallbackPalette = BUILTIN_PALETTES[0] as Palette;
   const previewPalette = selectedPalette ?? fallbackPalette;
@@ -268,19 +274,13 @@ export function PalettePicker({
   const useProfileDefaults = (): void => {
     if (!appliedProfile) return;
     commitSkin(appliedProfile.longformSkin);
-    commitPalette(
-      allPalettes.some((item) => item.id === appliedProfile.longformPaletteId)
-        ? appliedProfile.longformPaletteId
-        : DEFAULT_PALETTE_ID,
-    );
+    commitPalette(appliedProfile.longformPaletteId);
   };
 
   const confirmDelete = (target: Palette): void => {
-    const wasSelected = target.id === selectedPaletteId;
+    // Keep the selected ID in controlled drafts too. Deletion makes it visibly
+    // unresolved; only an explicit selection may replace it.
     deleteCustomPaletteEverywhere(target.id);
-    // Store-backed pickers are repaired by the shared delete service. Controlled
-    // pickers still need their owner (for example, a profile draft) notified.
-    if (wasSelected && onPaletteChange) onPaletteChange(DEFAULT_PALETTE_ID);
     setDeletingPalette(null);
   };
 
@@ -289,23 +289,97 @@ export function PalettePicker({
       <fieldset className={cn('grid gap-2', className)}>
         <legend className="text-sm font-semibold text-foreground">{title}</legend>
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
-        {paletteMissing && (
-          <p role="status" className="flex items-start gap-1.5 text-xs text-muted-foreground">
-            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden />
-            The selected palette is unavailable, so {fallbackPalette.name} will be used.
-          </p>
-        )}
+        {paletteMissing &&
+          (requireResolvedPalette ? (
+            <p role="alert" className="flex items-start gap-1.5 text-xs text-destructive">
+              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+              Selected palette is unavailable. Choose a palette before generating. No fallback is
+              selected.
+            </p>
+          ) : (
+            <p role="status" className="flex items-start gap-1.5 text-xs text-muted-foreground">
+              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden />
+              The selected palette is unavailable, so {fallbackPalette.name} will be used.
+            </p>
+          ))}
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {allPalettes.map((option) => (
             <PaletteSwatchButton
               key={option.id}
               palette={option}
-              selected={option.id === previewPalette.id}
+              selected={
+                option.id === (requireResolvedPalette ? selectedPaletteId : previewPalette.id)
+              }
               disabled={disabled}
               onSelect={() => commitPalette(option.id)}
             />
           ))}
         </div>
+        <details className="min-w-0 rounded-md border border-border p-2">
+          <summary className="min-h-11 cursor-pointer rounded-sm py-3 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            Manage custom palettes
+          </summary>
+          <div className="grid gap-2 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={disabled}
+              onClick={openCreate}
+              className="min-h-11"
+            >
+              <Plus className="h-3.5 w-3.5" aria-hidden />
+              New palette
+            </Button>
+            {customPalettes.map((custom) => (
+              <div key={custom.id} className="flex flex-wrap items-center gap-1">
+                <span className="min-w-0 flex-1 break-words text-xs">{custom.name}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="min-h-11"
+                  disabled={disabled}
+                  aria-label={`Edit ${custom.name} palette`}
+                  onClick={() => openEdit(custom)}
+                >
+                  <Pencil className="h-3.5 w-3.5" aria-hidden />
+                  Edit
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="min-h-11"
+                  disabled={disabled}
+                  aria-label={`Delete ${custom.name} palette`}
+                  onClick={() => setDeletingPalette(custom)}
+                >
+                  <Trash2 className="h-3.5 w-3.5" aria-hidden />
+                  Delete
+                </Button>
+              </div>
+            ))}
+          </div>
+        </details>
+        <PaletteEditor
+          open={editorOpen}
+          onOpenChange={setEditorOpen}
+          palette={editingPalette}
+          onSaved={(saved) => {
+            if (!editingPalette) commitPalette(saved.id);
+          }}
+          onRequestDelete={setDeletingPalette}
+          previewSkin={selectedSkin}
+        />
+        <PaletteDeleteDialog
+          palette={deletingPalette}
+          open={deletingPalette !== null}
+          onOpenChange={(open) => {
+            if (!open) setDeletingPalette(null);
+          }}
+          onConfirm={confirmDelete}
+        />
       </fieldset>
     );
   }

@@ -83,11 +83,12 @@ describe('saved scene plan trust boundary', () => {
     );
     expect(result.ok).toBe(true);
     if (!result.ok) throw new Error(result.error);
-    expect(result.value.scenes[0]?.planned.endTime).toBe(plan.scenes[0]?.endTime);
-    expect(result.value.scenes[0]?.planned.scene.kind).toBe('hero');
-    expect(
-      result.value.scenes[0]?.planned.endTime - result.value.scenes[0]?.planned.startTime,
-    ).toBeGreaterThan(3.5);
+    const scene = result.value.scenes[0];
+    expect(scene.kind).toBe('explainer');
+    if (scene.kind !== 'explainer') throw new Error('Expected ordinary parser-1 scene');
+    expect(scene.planned.endTime).toBe(plan.scenes[0]?.endTime);
+    expect(scene.planned.scene.kind).toBe('hero');
+    expect(scene.planned.endTime - scene.planned.startTime).toBeGreaterThan(3.5);
   });
 
   it('rejects metadata whose source evidence does not match the authoritative specification', () => {

@@ -1,4 +1,9 @@
 import { DEFAULT_PALETTE_ID } from '@shared/palettes';
+import {
+  DEFAULT_STORYBOARD_STYLE,
+  normalizeStoryboardStyle,
+  type StoryboardStyle,
+} from '@shared/storyboards';
 import type { LongformSkinId, Platform } from '@shared/types';
 import { useSyncExternalStore } from 'react';
 import { DEFAULT_TARGET_PLATFORM, DEFAULT_TEMPLATE_LAYOUT } from '@/store/helpers';
@@ -14,7 +19,8 @@ export type CreatorProfileFieldKey =
   | 'targetPlatform'
   | 'safeZone'
   | 'longformSkin'
-  | 'longformPalette';
+  | 'longformPalette'
+  | 'longformStoryboardStyle';
 
 export interface CreatorProfile {
   id: string;
@@ -33,6 +39,7 @@ export interface CreatorProfile {
   targetPlatform: Platform;
   templateLayout: TemplateLayout;
   longformSkin: LongformSkinId;
+  longformStoryboardStyle: StoryboardStyle;
   longformPaletteId: string;
   createdAt: string;
   updatedAt: string;
@@ -120,6 +127,7 @@ function normalizeProfile(value: Partial<CreatorProfile>): CreatorProfile {
       },
     },
     longformSkin: isLongformSkin(value.longformSkin) ? value.longformSkin : 'editorial',
+    longformStoryboardStyle: normalizeStoryboardStyle(value.longformStoryboardStyle),
     longformPaletteId:
       typeof value.longformPaletteId === 'string' && value.longformPaletteId
         ? value.longformPaletteId
@@ -291,6 +299,8 @@ function preferenceValue(profile: CreatorProfile, key: CreatorProfileFieldKey): 
       return profile.longformSkin;
     case 'longformPalette':
       return profile.longformPaletteId;
+    case 'longformStoryboardStyle':
+      return profile.longformStoryboardStyle;
   }
 }
 
@@ -305,6 +315,7 @@ const PREFERENCE_LABELS: Record<CreatorProfileFieldKey, string> = {
   safeZone: 'Safe-zone layout',
   longformSkin: 'Long-form skin',
   longformPalette: 'Long-form palette',
+  longformStoryboardStyle: 'Storyboard style',
 };
 
 export function buildCreatorProfileGuidance(project: ProjectCreatorProfile): string {
@@ -380,6 +391,9 @@ export function deleteRememberedPreference(profileId: string, key: CreatorProfil
       break;
     case 'longformPalette':
       updateCreatorProfile(profileId, { longformPaletteId: DEFAULT_PALETTE_ID }, [key]);
+      break;
+    case 'longformStoryboardStyle':
+      updateCreatorProfile(profileId, { longformStoryboardStyle: DEFAULT_STORYBOARD_STYLE }, [key]);
       break;
   }
   const updatedProfile = snapshot.profiles.find((item) => item.id === profileId);

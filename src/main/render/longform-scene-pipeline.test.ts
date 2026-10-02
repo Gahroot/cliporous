@@ -135,6 +135,7 @@ beforeEach(() => {
       scenes: value.scenes
         .filter((s: { omitted?: boolean }) => !s.omitted)
         .map((placement: (typeof plan.scenes)[number]) => ({
+          kind: 'explainer',
           placement,
           planned: {
             startTime: placement.startTime,
@@ -182,6 +183,141 @@ function previewRequest(): LongformScenePreviewRequest {
     ],
   };
 }
+
+function useBoardPlan(style: 'ink' | 'polish'): SceneFirstLongformPlan {
+  const saved = structuredClone(plan);
+  saved.parserVersion = 2;
+  saved.storyboardStyle = style;
+  saved.scenes[0].kind = 'storyboard';
+  saved.scenes[0].sourceSpec.kind = 'storyboard';
+  saved.scenes[0].presentation = 'full-frame';
+  mocks.validate.mockImplementation((value: SceneFirstLongformPlan) => ({
+    ok: true,
+    value: {
+      plan: value,
+      scenes: value.scenes
+        .filter((scene) => !scene.omitted)
+        .map((placement) => ({
+          kind: 'storyboard',
+          placement,
+          board: {
+            durationSec: placement.endTime - placement.startTime,
+            boardIn: { at: placement.startTime, dur: 0.3 },
+            boardOut: { at: placement.endTime - 0.3, dur: 0.3 },
+            shots: [{ at: placement.startTime, dur: 0, x: 700, y: 400, zoom: 1 }],
+            elements: [
+              {
+                id: 'title',
+                kind: 'text',
+                text: 'Source',
+                x: 200,
+                y: 200,
+                size: 44,
+                tone: 'ink',
+                at: placement.startTime + 0.5,
+              },
+            ],
+            props: [],
+          },
+          cues: [{ kind: 'tick', at: placement.startTime + 0.5, gain: 0.4 }],
+        })),
+    },
+  }));
+  return saved;
+}
+
+describe('storyboard shared preview/export route', () => {
+  it.each([
+    'ink',
+    'polish',
+  ] as const)('dispatches %s with the same snapshot, local beats and source underlay', async (style) => {
+    const saved = useBoardPlan(style);
+    const palette = {
+      id: 'light-custom',
+      name: 'Local light',
+      background: '#fafafa',
+      foreground: '#101010',
+      accent: '#317b50',
+      builtin: false,
+    };
+    const opts = options();
+    opts.longformEditPlan = saved;
+    opts.longformPaletteId = palette.id;
+    opts.customPalettes = [palette];
+    opts.geminiApiKey = undefined;
+    const { send, window } = windowStub();
+    await renderLongformVideo(opts, window);
+    expect(send).not.toHaveBeenCalledWith(Ch.Send.RENDER_CLIP_ERROR, expect.anything());
+    const request = {
+      ...previewRequest(),
+      plan: saved,
+      paletteId: palette.id,
+      customPalettes: [palette],
+    };
+    const preview = await renderLongformScenePreview(request);
+    dirs.push(dirname(preview));
+    expect(mocks.render).toHaveBeenCalledTimes(2);
+    const exported = mocks.render.mock.calls[0][0];
+    const previewed = mocks.render.mock.calls[1][0];
+    expect(exported).toMatchObject({
+      compositionId: 'StoryBoard',
+      width: 1920,
+      height: 1080,
+      fps: 30,
+      concurrency: 1,
+      transparent: true,
+      durationSec: 4,
+    });
+    expect(previewed.inputProps).toEqual(exported.inputProps);
+    expect(exported.inputProps).toMatchObject({
+      style,
+      palette,
+      spec: { boardIn: { at: 0, dur: 0.3 }, elements: [{ at: 0.5 }] },
+    });
+    const visuals = mocks.encode.mock.calls.map(([args]) => args).filter((args) => args.visualPath);
+    expect(visuals).toHaveLength(2);
+    for (const args of visuals)
+      expect(args).toMatchObject({
+        sourceUnderlay: true,
+        presentation: 'full-frame',
+        frameCount: 120,
+      });
+    expect(mocks.concat).toHaveBeenCalledTimes(2);
+    expect(mocks.mix.mock.calls[0][1]).toEqual([{ kind: 'tick', at: 2.5, gain: 0.4 }]);
+    expect(mocks.mix.mock.calls[1][1]).toEqual([{ kind: 'tick', at: 0.5, gain: 0.4 }]);
+    expect(mocks.planAtExport).not.toHaveBeenCalled();
+  });
+  it('falls back for the complete board interval but reports preview visual failure', async () => {
+    const saved = useBoardPlan('ink');
+    const opts = options();
+    opts.longformEditPlan = saved;
+    mocks.render.mockRejectedValue(new Error('Board graphics failed'));
+    const { send, window } = windowStub();
+    await renderLongformVideo(opts, window);
+    expect(send).not.toHaveBeenCalledWith(Ch.Send.RENDER_CLIP_ERROR, expect.anything());
+    expect(mocks.encode.mock.calls.map(([args]) => args.frameCount)).toEqual([60, 120, 420]);
+    expect(mocks.encode.mock.calls.every(([args]) => !args.visualPath)).toBe(true);
+    expect(mocks.mix).not.toHaveBeenCalled();
+    expect(send).toHaveBeenCalledWith(
+      Ch.Send.RENDER_CLIP_DONE,
+      expect.objectContaining({
+        reconciliation: expect.objectContaining({
+          sceneResults: [
+            expect.objectContaining({
+              kind: 'storyboard',
+              status: 'failed',
+              reason: expect.stringContaining('Speaker fallback'),
+            }),
+          ],
+        }),
+      }),
+    );
+    await expect(renderLongformScenePreview({ ...previewRequest(), plan: saved })).rejects.toThrow(
+      'Board graphics failed',
+    );
+    expect(readdirSync(opts.outputDirectory)).toEqual(['source_longform.mp4']);
+  });
+});
 
 describe('scene-first saved SFX', () => {
   it.each([

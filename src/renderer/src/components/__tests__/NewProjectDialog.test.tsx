@@ -2,13 +2,29 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { isYouTubeUrl } from '@/components/entry-source';
 import { NewProjectDialog } from '@/components/NewProjectDialog';
+import {
+  createCreatorProfile,
+  deleteCreatorProfile,
+  getCreatorProfiles,
+  updateCreatorProfile,
+} from '@/services/creator-profiles';
 import { useStore } from '@/store';
 import { installApiStub, resetStore } from './test-utils';
 
 beforeEach(() => {
   resetStore();
   installApiStub();
-  useStore.setState((state) => ({ settings: { ...state.settings, outputMode: 'short' } }));
+  getCreatorProfiles().forEach((profile) => {
+    deleteCreatorProfile(profile.id);
+  });
+  useStore.setState((state) => ({
+    settings: {
+      ...state.settings,
+      outputMode: 'short',
+      longformStoryboardStyle: 'polish',
+      longformPaletteId: 'brand',
+    },
+  }));
 });
 afterEach(cleanup);
 
@@ -52,6 +68,70 @@ describe('NewProjectDialog', () => {
         outputMode: 'longform',
       }),
     );
+  });
+
+  it('profile seeds appearance, explicit choices win, and cancel leaves the project unchanged', async () => {
+    const profile = createCreatorProfile('Ink studio');
+    updateCreatorProfile(profile.id, {
+      longformStoryboardStyle: 'ink',
+      longformPaletteId: 'navy-mint',
+    });
+    useStore.getState().setOutputMode('longform');
+    const settings = useStore.getState().settings;
+    const project = useStore.getState().currentProject;
+    const callbacks = props();
+    const { rerender } = render(<NewProjectDialog {...callbacks} />);
+    fireEvent.change(screen.getByLabelText('Project name'), {
+      target: { value: 'Appearance test' },
+    });
+    fireEvent.change(screen.getByLabelText('YouTube URL'), {
+      target: { value: 'https://youtu.be/dQw4w9WgXcQ' },
+    });
+    fireEvent.click(screen.getByText('Creator Profile (optional)'));
+    fireEvent.keyDown(screen.getByRole('combobox', { name: 'Creator Profile' }), {
+      key: 'ArrowDown',
+    });
+    fireEvent.click(await screen.findByRole('option', { name: 'Ink studio' }));
+    expect(screen.getByRole('button', { name: 'Ink', pressed: true })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Polish' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Use Brand Default palette' }));
+    fireEvent.keyDown(screen.getByRole('combobox', { name: 'Creator Profile' }), {
+      key: 'ArrowDown',
+    });
+    fireEvent.click(await screen.findByRole('option', { name: 'No reusable profile' }));
+    fireEvent.keyDown(screen.getByRole('combobox', { name: 'Creator Profile' }), {
+      key: 'ArrowDown',
+    });
+    fireEvent.click(await screen.findByRole('option', { name: 'Ink studio' }));
+    expect(screen.getByRole('button', { name: 'Polish', pressed: true })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    expect(useStore.getState().settings).toEqual(settings);
+    expect(useStore.getState().currentProject).toEqual(project);
+    expect(callbacks.onCreate).not.toHaveBeenCalled();
+    rerender(<NewProjectDialog {...callbacks} open={false} />);
+    rerender(<NewProjectDialog {...callbacks} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Create project and process' }));
+    expect(callbacks.onCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        profileId: profile.id,
+        appearance: { storyboardStyle: 'polish', paletteId: 'brand' },
+      }),
+    );
+  });
+
+  it('blocks a missing custom palette until explicitly repaired', () => {
+    useStore.getState().setOutputMode('longform');
+    useStore.getState().setLongformPaletteId('missing-custom');
+    render(
+      <NewProjectDialog {...props()} initialSource={{ kind: 'file', value: '/source.mp4' }} />,
+    );
+    fireEvent.change(screen.getByLabelText('Project name'), {
+      target: { value: 'Palette repair' },
+    });
+    expect(screen.getByRole('alert')).toHaveTextContent('unavailable');
+    expect(screen.getByRole('button', { name: 'Create project and process' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Use Brand Default palette' }));
+    expect(screen.getByRole('button', { name: 'Create project and process' })).toBeEnabled();
   });
 
   it('retains entered brief text while hiding irrelevant long-form prompts', async () => {

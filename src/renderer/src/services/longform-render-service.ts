@@ -8,9 +8,9 @@ import { BUILTIN_PALETTES } from '@shared/palettes';
 import { toast } from 'sonner';
 import { longformApprovalProblem } from '@/lib/longform-approval';
 import { useStore } from '@/store';
+import { LONGFORM_PALETTE_PROBLEM } from '@/store/longform-slice';
 import type { RenderProgress, SourceVideo } from '@/store/types';
 import { estimateExport, hashRenderOptions, runExportPreflight } from './export-queue';
-import { LONGFORM_RENDER_DEFAULTS } from './render-defaults';
 
 export interface StartLongformRenderResult {
   started: boolean;
@@ -39,6 +39,8 @@ function getReadyLongform():
   if (source.mediaStatus === 'offline') return { reason: 'source-offline' };
   const record = state.getLongformPlan(sourceId);
   if (!record) return { reason: 'no-plan' };
+  if (record.validationProblem === LONGFORM_PALETTE_PROBLEM)
+    return { reason: 'palette-unavailable' };
   if (record.validationProblem || longformApprovalProblem(record))
     return { reason: 'plan-invalid' };
   if (
@@ -47,7 +49,11 @@ function getReadyLongform():
       record.approvedVersionId !== record.activeVersionId)
   )
     return { reason: 'plan-not-approved' };
-  if (isSceneFirstLongformPlan(record.plan)) {
+  if (
+    record.plan.mode === 'scene-first' ||
+    (record.plan.schemaVersion !== undefined && record.plan.schemaVersion !== 1)
+  ) {
+    if (!isSceneFirstLongformPlan(record.plan)) return { reason: 'plan-invalid' };
     const words = state.transcriptions[sourceId]?.words ?? [];
     if (
       sceneFirstPlanProblem(record.plan) ||
@@ -56,10 +62,9 @@ function getReadyLongform():
       return { reason: 'plan-invalid' };
   }
   const paletteAvailable =
-    (isLongformPalette(record.palette) && record.palette.id === record.paletteId) ||
-    [...BUILTIN_PALETTES, ...state.settings.customPalettes].some(
-      (palette) => palette.id === record.paletteId,
-    );
+    record.palette !== undefined
+      ? isLongformPalette(record.palette) && record.palette.id === record.paletteId
+      : BUILTIN_PALETTES.some((palette) => palette.id === record.paletteId);
   if (!paletteAvailable) return { reason: 'palette-unavailable' };
   return { state, source, sourceId };
 }
@@ -216,9 +221,7 @@ export async function startLongformRender(): Promise<StartLongformRenderResult> 
       ...(isSceneFirstLongformPlan(record.plan)
         ? { longformEditsEnabled: state.settings.explainerScenesEnabled }
         : {}),
-      customPalettes: record.palette
-        ? [{ ...record.palette }]
-        : (state.settings.customPalettes ?? LONGFORM_RENDER_DEFAULTS.customPalettes),
+      customPalettes: record.palette ? [{ ...record.palette }] : [],
       renderQuality: state.settings.renderQuality,
       developerMode: state.settings.developerMode,
       ...(isSceneFirstLongformPlan(record.plan)

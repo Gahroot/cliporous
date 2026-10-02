@@ -306,7 +306,12 @@ useStore.subscribe((state, prevState) => {
 useStore.subscribe((state, prevState) => {
   if (suppressDirtyTracking > 0) return;
 
+  const appearanceChanged =
+    state.settings.longformSkin !== prevState.settings.longformSkin ||
+    state.settings.longformStoryboardStyle !== prevState.settings.longformStoryboardStyle ||
+    state.settings.longformPaletteId !== prevState.settings.longformPaletteId;
   const projectChanged =
+    appearanceChanged ||
     state.sources !== prevState.sources ||
     state.transcriptions !== prevState.transcriptions ||
     state.clips !== prevState.clips ||
@@ -342,7 +347,7 @@ useStore.subscribe((state, prevState) => {
     state.projectRevision === 0 &&
     !state.isDirty;
 
-  if (!projectChanged || isCleanEmptyProject) return;
+  if (!projectChanged || (isCleanEmptyProject && !appearanceChanged)) return;
   useStore.setState({
     projectRevision: state.projectRevision + 1,
     isDirty: true,
@@ -366,6 +371,11 @@ listenForSettingsChanges(() => {
   useStore.setState({
     settings: {
       ...freshSettings,
+      // App-library updates may cross windows; another window's defaults must
+      // not overwrite a project's already chosen appearance, even before a plan.
+      longformSkin: current.longformSkin,
+      longformStoryboardStyle: current.longformStoryboardStyle,
+      longformPaletteId: current.longformPaletteId,
       geminiApiKey: current.geminiApiKey,
       falApiKey: current.falApiKey,
       pexelsApiKey: current.pexelsApiKey,

@@ -1,5 +1,5 @@
+import { findLongformPalette } from '@shared/longform-palette';
 import { isSceneFirstPlanEnvelope, LONGFORM_PRESENTATION_LABELS } from '@shared/longform-scenes';
-import { getPaletteById } from '@shared/palettes';
 import type { LongformPlanItemType } from '@shared/types';
 import {
   AlertTriangle,
@@ -25,6 +25,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { CutPlanItemEditor } from '@/components/CutPlanItemEditor';
 import { CutPlanVersionDialog } from '@/components/CutPlanVersionDialog';
+import { LongformAppearancePicker } from '@/components/LongformAppearancePicker';
 import { LongformScenePreview } from '@/components/LongformScenePreview';
 import { LongformSceneWorkspace } from '@/components/LongformSceneWorkspace';
 import { PalettePicker } from '@/components/PalettePicker';
@@ -41,10 +42,19 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { MISSING_GEMINI_KEY_MESSAGE, resolveGeminiKey } from '@/lib/gemini-key';
 import {
   buildLongformPlanItems,
   buildLongformSections,
+  captureLongformAppearance,
   compareLongformPlans,
   estimateLongformRenderSeconds,
   formatTimecode,
@@ -52,6 +62,7 @@ import {
   isScenePlanForReview,
   type LongformPlanItemUpdate,
   type LongformPlanItemView,
+  longformItemEditProblem,
   longformSceneReviewProblem,
   longformSceneScheduleIssues,
   mergePreservedLongformItems,
@@ -299,6 +310,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
   const markFeedbackApplied = useStore((state) => state.markLongformFeedbackApplied);
   const setPreservedItems = useStore((state) => state.setLongformPreservedItems);
   const setPlanStyle = useStore((state) => state.setLongformPlanStyle);
+  const setPlanStoryboardStyle = useStore((state) => state.setLongformPlanStoryboardStyle);
   const reviewFocus = useStore((state) => state.longformReviewFocus);
   const setReviewFocus = useStore((state) => state.setLongformReviewFocus);
 
@@ -396,10 +408,16 @@ export function CutPlanReviewScreen(): React.JSX.Element {
       ? compareLongformPlans(priorVersion.plan, plan)
       : null;
   const approvalBlocked =
-    Boolean(validationProblem) || invalidItems.length > 0 || planningIncomplete;
+    Boolean(validationProblem) ||
+    invalidItems.length > 0 ||
+    planningIncomplete ||
+    !(
+      record?.palette ??
+      findLongformPalette(record?.paletteId ?? settings.longformPaletteId, settings.customPalettes)
+    );
   const palette =
     record?.palette ??
-    getPaletteById(record?.paletteId ?? settings.longformPaletteId, settings.customPalettes);
+    findLongformPalette(record?.paletteId ?? settings.longformPaletteId, settings.customPalettes);
   const status = record?.status ?? 'draft';
   const feedbackMode = feedbackTarget !== undefined;
 
@@ -432,7 +450,13 @@ export function CutPlanReviewScreen(): React.JSX.Element {
   };
 
   const saveItemEdit = (item: LongformPlanItemView, update: LongformPlanItemUpdate): void => {
+    const problem = longformItemEditProblem(item, update);
+    if (problem) {
+      toast.error(problem);
+      return;
+    }
     const nextPlan = updateLongformPlanItem(plan, item, update);
+    if (nextPlan === plan) return;
     const edited = snapshotLongformPlanItem(nextPlan, item);
     const nextPreserved = preservedItems.filter((entry) => entry.key !== item.key);
     if (edited) nextPreserved.push(edited);
@@ -520,6 +544,23 @@ export function CutPlanReviewScreen(): React.JSX.Element {
       return;
     }
     const initial = useStore.getState();
+    let appearance: ReturnType<typeof captureLongformAppearance>;
+    try {
+      appearance = captureLongformAppearance(
+        {
+          skin: record.skin,
+          paletteId: record.paletteId,
+          ...(record.palette ? { palette: record.palette } : {}),
+          storyboardStyle: scenePlan?.storyboardStyle ?? initial.settings.longformStoryboardStyle,
+        },
+        initial.settings.customPalettes,
+      );
+    } catch (caught) {
+      toast.error(
+        caught instanceof Error ? caught.message : 'Choose an available palette before generating.',
+      );
+      return;
+    }
     const requestId = crypto.randomUUID();
     let cancelled = false;
     let started = false;
@@ -579,6 +620,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
         {
           requestId,
           mode,
+          ...(mode === 'scene-first' ? { storyboardStyle: appearance.storyboardStyle } : {}),
           ...(canReuse
             ? {
                 previousPlan: scenePlan,
@@ -595,6 +637,14 @@ export function CutPlanReviewScreen(): React.JSX.Element {
         throw new Error(
           'Generation returned an unsupported scene plan. Your saved draft is unchanged.',
         );
+      if (
+        isSceneFirstPlanEnvelope(generated) &&
+        generated.parserVersion === 2 &&
+        generated.storyboardStyle !== appearance.storyboardStyle
+      )
+        throw new Error(
+          'The generated storyboard style does not match this request. Your saved draft is unchanged.',
+        );
       // Scene preservation belongs to the source-aware planner, not the legacy overlap merger.
       const merged =
         mode === 'scene-first' ? generated : mergePreservedLongformItems(generated, preservedItems);
@@ -608,6 +658,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
         sectionIds?.length
           ? `Retried ${sectionIds.length} failed section(s)`
           : `${feedback.length} feedback note(s) applied`,
+        appearance,
       );
       if (!canReuse && mode === 'scene-first') setPreservedItems(activeSourceId, []);
       markFeedbackApplied(activeSourceId);
@@ -783,6 +834,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
             {scenePlan && selectedSceneId && (
               <LongformSceneWorkspace
                 items={items}
+                words={words}
                 selectedSceneId={selectedSceneId}
                 preservedKeys={preservedKeys}
                 disabled={regenerating || Boolean(validationProblem)}
@@ -811,6 +863,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
                   }}
                   disabledReason={
                     validationProblem ||
+                    (!palette ? 'Choose an available palette before previewing.' : undefined) ||
                     scheduleIssues.get(selectedSceneId) ||
                     (regenerating ? 'Finish or cancel generation before previewing.' : undefined)
                   }
@@ -977,43 +1030,62 @@ export function CutPlanReviewScreen(): React.JSX.Element {
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {sceneReview
-                    ? 'Applied to explanation scenes and on-demand previews.'
+                    ? 'Changing appearance creates an unapproved draft and clears the preview. No AI request is needed.'
                     : 'Applied to every full-frame content block.'}
                 </p>
                 <div className="mt-3 flex items-center gap-3 rounded-md border border-border bg-muted/35 p-3">
                   <span className="flex gap-1" aria-hidden>
-                    {[palette.background, palette.foreground, palette.accent].map((color) => (
-                      <span
-                        key={color}
-                        className="h-5 w-5 rounded border border-border"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
+                    {(palette ? [palette.background, palette.foreground, palette.accent] : []).map(
+                      (color) => (
+                        <span
+                          key={color}
+                          className="h-5 w-5 rounded border border-border"
+                          style={{ backgroundColor: color }}
+                        />
+                      ),
+                    )}
                   </span>
                   <div className="min-w-0">
                     <p className="truncate text-xs font-medium">
                       {sceneReview ? 'Scene-first explanations' : humanizeLongformKind(record.skin)}
                     </p>
-                    <p className="truncate text-[11px] text-muted-foreground">{palette.name}</p>
+                    <p className="truncate text-[11px] text-muted-foreground">
+                      {palette?.name ?? 'Palette unavailable — choose another'}
+                    </p>
                   </div>
                 </div>
                 <details className="mt-3 group">
                   <summary className="cursor-pointer rounded-md px-2 py-2 text-xs font-medium text-primary outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     Change style and palette
                   </summary>
-                  <PalettePicker
-                    className="mt-3 border-t border-border pt-4"
-                    disabled={regenerating || Boolean(validationProblem)}
-                    skin={record.skin}
-                    paletteId={record.paletteId}
-                    onSkinChange={(skin) => setPlanStyle(activeSourceId, skin, record.paletteId)}
-                    onPaletteChange={(paletteId) =>
-                      setPlanStyle(activeSourceId, record.skin, paletteId)
-                    }
-                    variant={sceneReview ? 'compact' : 'full'}
-                    showProjectPreview={false}
-                    showProfileDefault={false}
-                  />
+                  {scenePlan?.parserVersion === 2 ? (
+                    <div className="mt-3 border-t border-border pt-4">
+                      <LongformAppearancePicker
+                        style={scenePlan.storyboardStyle}
+                        paletteId={record.paletteId}
+                        palette={record.palette}
+                        onStyleChange={(style) => setPlanStoryboardStyle(activeSourceId, style)}
+                        onPaletteChange={(id) => setPlanStyle(activeSourceId, record.skin, id)}
+                        disabled={regenerating || Boolean(validationProblem && palette)}
+                        showProfileDefault={false}
+                      />
+                    </div>
+                  ) : (
+                    <PalettePicker
+                      className="mt-3 border-t border-border pt-4"
+                      disabled={regenerating || Boolean(validationProblem)}
+                      skin={record.skin}
+                      paletteId={record.paletteId}
+                      palette={record.palette}
+                      onSkinChange={(skin) => setPlanStyle(activeSourceId, skin, record.paletteId)}
+                      onPaletteChange={(paletteId) =>
+                        setPlanStyle(activeSourceId, record.skin, paletteId)
+                      }
+                      variant={sceneReview ? 'compact' : 'full'}
+                      showProjectPreview={false}
+                      showProfileDefault={false}
+                    />
+                  )}
                 </details>
               </Card>
 
@@ -1256,20 +1328,79 @@ export function CutPlanReviewScreen(): React.JSX.Element {
         </div>
       </footer>
 
-      <CutPlanItemEditor
-        returnFocusRef={editorTriggerRef}
-        item={editingItem}
-        open={editingItem !== null}
-        onOpenChange={(open) => {
-          if (!open) setEditingItem(null);
-        }}
-        onSave={(update) => {
-          if (editingItem) saveItemEdit(editingItem, update);
-        }}
-        onRemove={() => {
-          if (editingItem) removeItem(editingItem);
-        }}
-      />
+      {editingItem?.scene?.kind === 'storyboard' ? (
+        <Dialog
+          open
+          onOpenChange={(open) => {
+            if (!open) setEditingItem(null);
+          }}
+        >
+          <DialogContent
+            className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-lg"
+            onCloseAutoFocus={(event) => {
+              const trigger = editorTriggerRef.current;
+              if (trigger?.isConnected && !trigger.disabled) {
+                event.preventDefault();
+                trigger.focus();
+              }
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Edit storyboard</DialogTitle>
+              <DialogDescription>
+                Continuous storyboards keep their complete source-indexed window. Use scene feedback
+                to request a different explanation or timing.
+              </DialogDescription>
+            </DialogHeader>
+            <label className="grid gap-2 text-sm font-medium" htmlFor="board-presentation">
+              Presentation
+              <select
+                id="board-presentation"
+                value="full-frame"
+                disabled
+                className="min-h-11 w-full min-w-0 rounded-md border border-input bg-muted px-3 text-sm disabled:opacity-70"
+              >
+                <option value="full-frame">Full-screen explanation</option>
+              </select>
+            </label>
+            <p className="text-xs text-muted-foreground">
+              Full-screen only; speaker-side and inset layouts are available for ordinary scenes.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Source timing (read-only): {editingItem.startTime.toFixed(2)}–
+              {editingItem.endTime.toFixed(2)}s. Reveals, camera moves and final holds cannot be
+              trimmed here.
+            </p>
+            <DialogFooter className="flex-wrap gap-2 sm:justify-between">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  removeItem(editingItem);
+                  setEditingItem(null);
+                }}
+              >
+                {editingItem.scene.omitted ? 'Include scene' : 'Omit scene'}
+              </Button>
+              <Button onClick={() => setEditingItem(null)}>Done</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <CutPlanItemEditor
+          returnFocusRef={editorTriggerRef}
+          item={editingItem}
+          open={editingItem !== null}
+          onOpenChange={(open) => {
+            if (!open) setEditingItem(null);
+          }}
+          onSave={(update) => {
+            if (editingItem) saveItemEdit(editingItem, update);
+          }}
+          onRemove={() => {
+            if (editingItem) removeItem(editingItem);
+          }}
+        />
+      )}
       <CutPlanVersionDialog
         open={versionsOpen}
         onOpenChange={setVersionsOpen}

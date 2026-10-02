@@ -1,11 +1,27 @@
-# Compliance Register: Detroit + hybrid explanations only
+# Compliance Register: scoped rendering features
 
 Snapshot: 2026-10-01 · EZ Coder compliance-guard · **Engineering guidance, NOT LEGAL ADVICE.**
 Baseline: `9aef4b169c20265f80df5f5177d7ae6e5d5c0f54` plus existing working-tree changes.
 
 This is a narrowly scoped feature register, not a product-wide legal/privacy/security review or a launch certification.
 
-## Exposure profile
+## Continuous storyboard extension: 2026-10-02
+
+Engineering guidance only, not legal advice. Scope: the uncommitted storyboard changes based on `890a6b84db87a72839062dc99b5300b4b221966d`. Nothing was deployed. Earlier Detroit/hybrid rows below were **not re-audited** and must not be read as fresh findings or approvals from this pass.
+
+Confirmed code scope: the local Electron editor accepts source media/transcripts and uses its existing Gemini connection for planning. This adds bounded storyboard proposals, not a new provider, public endpoint, tracker, voice generator or remote asset service. Source footage can contain personal data; actual customers, distribution jurisdictions and source permissions were not investigated here.
+
+| ID | Severity | Trigger and evidence | Implemented control / residual responsibility | Guard / status |
+| --- | --- | --- | --- | --- |
+| SB-C01 | MEDIUM | **RUNTIME:** generated explanations can imply unsupported facts; raw-response fixtures, numeric/sign/precision negatives and real saved-plan compilation were exercised | Source spans, exact quantities, relationship evidence, allowlisted models/actions and complete timing windows are required. The existing whole-plan approval remains; this does not establish the truth of the speaker or transcription | Contract/compiler/planner and persistence tests; production proof. Implemented, with human editorial judgment still required |
+| SB-C02 | MEDIUM | **CODE:** storyboard proposals send bounded transcript/feedback data through the existing Gemini client and usage ledger | Existing source-processing permissions/vendor arrangements remain relevant. Extra calls are bounded and usage-visible; preview/export work from saved specs without AI. No live provider behavior or retention terms were checked | Planner fixture/cancellation tests; offline render proof. No new privacy/vendor certification |
+| SB-C03 | MEDIUM | **RUNTIME:** new appearance/review controls affect keyboard and visual access | Native controls and existing Radix semantics are retained. 54 browser checks and 28 screenshots cover selection, keyboard focus, reflow, CSS zoom, missing palettes, preview recovery and history; sampled text/ring contrast passed | `scripts/storyboard-proof/ui.mjs`; packaged screen readers, forced colors, OS scaling and complete accessibility conformance remain unverified |
+| SB-C04 | LAWYER | **CODE:** explanatory graphics are generated/manipulated output, separate from the right to use the source | This feature does not add a persistent export disclosure or a machine-readable provenance standard. Before public distribution, the release owner must obtain advice on the appropriate labeling/provenance for the actual product and audience, separately from source-media permissions | Open release-policy question, not a conclusion that a particular law requires one specific mark. No date-sensitive legal claim was verified |
+| SB-C05 | MEDIUM | **RUNTIME:** prototype/reference media could accidentally enter a shipped composition | Production bundle gates reject the proof module/private reference dependency. Verification used authored panels and synthetic local tone/video, no downloaded footage. Existing local model allowlists stay in force; no rights-blocked asset was enabled | Bundle/source hashes, gate tests and production renders. Existing asset-license records were not re-certified |
+
+No new payments, messaging, hosted UGC, biometrics, training-data collection or user-ranking service was added in this scope. This is not a fresh audit of those surfaces elsewhere in the app. No legal thresholds, statutes' effective dates or vendor terms were re-verified. Current evidence and limits: [long-form storyboard verification](docs/plans/longform-storyboard-verification.md).
+
+## Earlier Detroit/hybrid exposure profile (historical)
 
 Confirmed: desktop video-production software; transcript-driven illustrative finance/business/AI animations; local authored landmark assets; generated videos may be distributed. This feature adds no accounts, payments, tracking, precise location, new personal-data storage, external assets or paid model calls. Distribution is treated cautiously as potentially commercial. The examples are educational fixtures, not advice, live holdings, actual Detroit business performance or measured AI internals.
 

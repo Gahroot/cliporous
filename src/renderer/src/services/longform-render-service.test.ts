@@ -1,4 +1,5 @@
 import { longformSourceFingerprint, type SceneFirstLongformPlan } from '@shared/longform-scenes';
+import { getPaletteById } from '@shared/palettes';
 import type { LongformEditPlan } from '@shared/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { installApiStub, resetStore } from '@/components/__tests__/test-utils';
@@ -115,6 +116,54 @@ describe('longform render readiness', () => {
     expect(payload?.customPalettes).toEqual([approved?.palette]);
     expect(payload).not.toHaveProperty('geminiApiKey');
     expect(window.api.generateLongformEditPlan).not.toHaveBeenCalled();
+  });
+
+  it('exports parser-2 style and a custom snapshot after its library entry is edited and deleted', async () => {
+    acceptScenePlan();
+    const store = useStore.getState();
+    const palette = {
+      ...getPaletteById('brand'),
+      id: 'custom-approved',
+      builtin: false,
+      accent: '#123456',
+    };
+    const previous = store.getLongformPlan('source-1');
+    if (!previous) throw new Error('Expected saved plan');
+    const plan = {
+      ...previous.plan,
+      parserVersion: 2,
+      storyboardStyle: 'ink',
+    } as SceneFirstLongformPlan;
+    store.setLongformPlan('source-1', { plan, skin: 'editorial', paletteId: palette.id, palette });
+    store.acceptLongformPlan('source-1', 'editorial', palette.id);
+    store.addCustomPalette({ ...palette, accent: '#654321' });
+    store.removeCustomPalette(palette.id);
+    store.setLongformStoryboardStyle('polish');
+    store.setLongformPaletteId('slate');
+    expect(await startLongformRender()).toEqual({ started: true });
+    const payload = vi.mocked(window.api.startBatchRender).mock.calls[0]?.[0];
+    expect(payload?.longformEditPlan).toEqual(plan);
+    expect(payload?.longformPaletteId).toBe(palette.id);
+    expect(payload?.customPalettes).toEqual([palette]);
+    expect(window.api.generateLongformEditPlan).not.toHaveBeenCalled();
+  });
+
+  it('cannot reconstruct a missing accepted custom snapshot from the current library', async () => {
+    acceptScenePlan();
+    const palette = { ...getPaletteById('brand'), id: 'custom-missing', builtin: false };
+    useStore.getState().addCustomPalette(palette);
+    useStore.setState((state) => {
+      const record = state.longformPlans['source-1'];
+      record.paletteId = palette.id;
+      delete record.palette;
+      const version = record.versions?.find((item) => item.id === record.activeVersionId);
+      if (version) {
+        version.paletteId = palette.id;
+        delete version.palette;
+      }
+    });
+    expect(await startLongformRender()).toEqual({ started: false, reason: 'palette-unavailable' });
+    expect(window.api.startBatchRender).not.toHaveBeenCalled();
   });
 
   it('blocks stale or divergent approved snapshots before invoking export', async () => {

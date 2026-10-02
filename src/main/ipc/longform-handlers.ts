@@ -9,6 +9,7 @@ import {
   type LongformScenePreviewRequest,
   validLongformWords,
 } from '@shared/longform-scenes';
+import { isStoryboardStyle } from '@shared/storyboards';
 import type { LongformEditPlan, WordTimestamp } from '@shared/types';
 import { type IpcMainInvokeEvent, ipcMain, type WebContents } from 'electron';
 import { generateLongformEditPlan } from '../ai/longform-edit-plan';
@@ -42,7 +43,7 @@ interface LongformOwner {
 
 type GenerationOptions = Pick<
   LongformGenerationRequest,
-  'requestId' | 'mode' | 'previousPlan' | 'preservedSceneIds' | 'sectionIds'
+  'requestId' | 'mode' | 'storyboardStyle' | 'previousPlan' | 'preservedSceneIds' | 'sectionIds'
 >;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -135,6 +136,7 @@ export function registerLongformHandlers(): void {
           (options.mode !== undefined &&
             options.mode !== 'legacy' &&
             options.mode !== 'scene-first') ||
+          (options.storyboardStyle !== undefined && !isStoryboardStyle(options.storyboardStyle)) ||
           (options.requestId !== undefined && !validRequestId(options.requestId)) ||
           (options.preservedSceneIds !== undefined &&
             !stringList(options.preservedSceneIds, 2_000, 160)) ||
@@ -195,6 +197,7 @@ export function registerLongformHandlers(): void {
                   feedback,
                   requestId: request.id,
                   mode: 'scene-first',
+                  storyboardStyle: options.storyboardStyle,
                   previousPlan,
                   preservedSceneIds: options.preservedSceneIds,
                   sectionIds: options.sectionIds,

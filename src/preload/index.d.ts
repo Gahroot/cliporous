@@ -707,7 +707,7 @@ interface Api {
     feedback?: string[],
     options?: Pick<
       LongformGenerationRequest,
-      'requestId' | 'mode' | 'previousPlan' | 'preservedSceneIds' | 'sectionIds'
+      'requestId' | 'mode' | 'storyboardStyle' | 'previousPlan' | 'preservedSceneIds' | 'sectionIds'
     >,
   ) => Promise<LongformEditPlan>;
   cancelLongformEditPlan: (requestId?: string) => Promise<void>;

@@ -2,12 +2,14 @@
 // Settings-slice palette/skin defaults + custom-palette CRUD tests.
 //
 // Locks the long-form defaults (skin / palette id / empty custom list) and the
-// add/update/remove setters — including the rule that removing the currently
-// selected custom palette resets the selection back to the brand default.
+// add/update/remove setters — a missing custom palette remains an explicit
+// unresolved choice, never a silent replacement with the brand default.
 // ---------------------------------------------------------------------------
 
 import { clearRegisteredCredentialValues } from '@shared/credential-safety';
+import { BUILTIN_PALETTES } from '@shared/palettes';
 import { DEFAULT_AUTOSAVE_INTERVAL_MS } from '@shared/project';
+import type { StoryboardStyle } from '@shared/storyboards';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { installApiStub } from '@/components/__tests__/test-utils';
 
@@ -52,8 +54,41 @@ function resetStore(): void {
 describe('settings defaults — long-form skin & palette', () => {
   it('ship the expected long-form defaults', () => {
     expect(DEFAULT_SETTINGS.longformSkin).toBe('editorial');
+    expect(DEFAULT_SETTINGS.longformStoryboardStyle).toBe('polish');
+    expect(BUILTIN_PALETTES).toHaveLength(8);
     expect(DEFAULT_SETTINGS.longformPaletteId).toBe('brand');
     expect(DEFAULT_SETTINGS.customPalettes).toEqual([]);
+  });
+});
+
+describe('storyboard settings', () => {
+  it.each([
+    undefined,
+    null,
+    'unknown',
+    {},
+    'ink',
+    'polish',
+  ])('normalizes persisted %j style', (style) => {
+    localStorage.setItem(
+      'batchclip-settings',
+      JSON.stringify({ longformStoryboardStyle: style, longformPaletteId: 'custom-missing' }),
+    );
+    try {
+      expect(loadPersistedSettings().longformStoryboardStyle).toBe(
+        style === 'ink' ? 'ink' : 'polish',
+      );
+      expect(loadPersistedSettings().longformPaletteId).toBe('custom-missing');
+    } finally {
+      localStorage.removeItem('batchclip-settings');
+    }
+  });
+
+  it('sets and normalizes style without generating a plan', () => {
+    useStore.getState().setLongformStoryboardStyle('ink');
+    expect(useStore.getState().settings.longformStoryboardStyle).toBe('ink');
+    useStore.getState().setLongformStoryboardStyle('future' as StoryboardStyle);
+    expect(useStore.getState().settings.longformStoryboardStyle).toBe('polish');
   });
 });
 
@@ -217,13 +252,13 @@ describe('custom-palette CRUD setters', () => {
     expect(useStore.getState().settings.customPalettes).toEqual([]);
   });
 
-  it('removing the selected custom palette resets longformPaletteId to brand', () => {
+  it('removing the selected custom palette keeps its unresolved ID', () => {
     useStore.getState().addCustomPalette(customPalette());
     useStore.getState().setLongformPaletteId('custom-1');
     expect(useStore.getState().settings.longformPaletteId).toBe('custom-1');
 
     useStore.getState().removeCustomPalette('custom-1');
-    expect(useStore.getState().settings.longformPaletteId).toBe('brand');
+    expect(useStore.getState().settings.longformPaletteId).toBe('custom-1');
   });
 
   it('removing a non-selected custom palette leaves the selection intact', () => {

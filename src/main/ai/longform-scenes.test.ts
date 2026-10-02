@@ -1,7 +1,11 @@
 import { readFileSync } from 'node:fs';
-import type { LongformGenerationRequest, SceneFirstLongformPlan } from '@shared/longform-scenes';
-import { sceneFirstPlanProblem } from '@shared/longform-scenes';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type {
+  LongformGenerationRequest,
+  SceneFirstLongformPlan,
+} from '../../shared/longform-scenes';
+import { sceneFirstPlanProblem } from '../../shared/longform-scenes';
+import type { StoryboardSourceSpec } from '../../shared/storyboards';
 import { collectSceneTimes } from '../remotion/compositions/explainer/types';
 import { LONGFORM_PLANNER_PROFILE } from './explainer/planner-profiles';
 import {
@@ -12,10 +16,18 @@ import {
 import { validateSceneFirstLongformPlan } from './longform-scene-contract';
 import { generateSceneFirstLongformPlan } from './longform-scenes';
 import { partitionLongformSections } from './longform-sections';
+import { compileStoryboardSpec } from './storyboards/compiler';
 
 // Only the paid SDK boundary is replaced. Transport/retries, prompts, review, kind
 // parsers, coordinator, scheduler and saved-plan validator are production code.
-const { generateContent } = vi.hoisted(() => ({
+const { generateContent, generateBoardContent } = vi.hoisted(() => ({
+  generateBoardContent:
+    vi.fn<
+      (request: {
+        contents: string;
+        config?: { abortSignal?: AbortSignal };
+      }) => Promise<{ text: string }>
+    >(),
   generateContent:
     vi.fn<
       (request: {
@@ -26,7 +38,12 @@ const { generateContent } = vi.hoisted(() => ({
 }));
 vi.mock('@google/genai', () => ({
   GoogleGenAI: class {
-    models = { generateContent };
+    models = {
+      generateContent: (request: { contents: string; config?: { abortSignal?: AbortSignal } }) =>
+        request.contents.startsWith('STORYBOARD_PROPOSAL_V1')
+          ? generateBoardContent(request)
+          : generateContent(request),
+    };
   },
   ThinkingLevel: { LOW: 'LOW', MEDIUM: 'MEDIUM', HIGH: 'HIGH' },
 }));
@@ -77,6 +94,15 @@ function verifyReconstruction(plan: SceneFirstLongformPlan, input: LongformGener
   expect(sceneFirstPlanProblem(plan)).toBeNull();
   expect(validateSceneFirstLongformPlan(plan, input.words, input.videoDuration).ok).toBe(true);
   for (const saved of plan.scenes) {
+    if (saved.kind === 'storyboard') {
+      const board = compileStoryboardSpec(saved.sourceSpec, input.words, {
+        clipStart: 0,
+        clipEnd: input.videoDuration,
+      });
+      expect(board.ok && board.value.startTime).toBe(saved.startTime);
+      expect(board.ok && board.value.endTime).toBe(saved.endTime);
+      continue;
+    }
     const parsed = parseLongformSceneSpec(saved.sourceSpec, input.words, {
       clipStart: 0,
       clipEnd: input.videoDuration,
@@ -88,6 +114,8 @@ function verifyReconstruction(plan: SceneFirstLongformPlan, input: LongformGener
 }
 
 beforeEach(() => {
+  generateBoardContent.mockReset();
+  generateBoardContent.mockResolvedValue({ text: JSON.stringify({ board: null }) });
   generateContent.mockReset();
   generateContent.mockImplementation(async ({ contents }) => response([hero(owner(contents) + 4)]));
 });
@@ -112,7 +140,10 @@ describe('scene-first long-form coordinator at the model boundary', () => {
     expect(plan.blocks).toEqual([]);
     expect(plan.phrases).toEqual([]);
     expect(plan.cards).toEqual([]);
-    expect(generateContent).toHaveBeenCalledTimes(6);
+    expect(generateContent).toHaveBeenCalledTimes(6); // three ordinary drafts + reviews
+    expect(generateBoardContent).toHaveBeenCalledTimes(3); // exactly one explicit null per section
+    expect(plan.parserVersion).toBe(2);
+    expect(plan.storyboardStyle).toBe('polish');
     for (const scene of plan.scenes) {
       expect(scene.sourceSpec).toEqual({
         ...hero(scene.startWord),
@@ -360,6 +391,7 @@ describe('scene-first long-form coordinator at the model boundary', () => {
     });
     expect(generateContent).toHaveBeenCalledTimes(2);
     expect(generateContent.mock.calls.every(([call]) => owner(call.contents) === 0)).toBe(true);
+    expect(generateBoardContent.mock.calls.at(-1)?.[0].contents).toContain('startWord 0..');
     for (const scene of prior.scenes) expect(next.scenes).toContainEqual(scene);
     expect(next.scenes.some((scene) => scene.startWord === 0)).toBe(false);
     expect(next.scenes.some((scene) => scene.startWord === 30)).toBe(true);
@@ -467,6 +499,151 @@ describe('scene-first long-form coordinator at the model boundary', () => {
       ),
     ).toBe(true);
     verifyReconstruction(plan, input);
+  });
+});
+
+describe('storyboards in real scene-first regeneration', () => {
+  function boardInput() {
+    const input = request(360);
+    'A storyboard keeps related ideas on one canvas while the camera moves between panels'
+      .split(' ')
+      .forEach((text, i) => {
+        input.words[i + 4].text = text;
+      });
+    const spec: StoryboardSourceSpec = {
+      kind: 'storyboard',
+      specVersion: 1,
+      startWord: 4,
+      endWord: 28,
+      subject: { text: 'storyboard', startWord: 5, endWord: 5 },
+      panels: [
+        {
+          id: 'definition',
+          kind: 'statement',
+          startWord: 4,
+          endWord: 28,
+          title: { text: 'A storyboard', startWord: 4, endWord: 5 },
+          body: { text: 'keeps related ideas on one canvas', startWord: 6, endWord: 11 },
+          revealWord: 4,
+          moveWord: 4,
+        },
+      ],
+    };
+    generateContent.mockImplementation(async ({ contents }) =>
+      response([
+        { ...hero(owner(contents) + 4), ...(owner(contents) === 0 ? { label: 'storyboard' } : {}) },
+      ]),
+    );
+    generateBoardContent.mockImplementation(async ({ contents }) => ({
+      text: JSON.stringify({ board: owner(contents) === 0 ? spec : null }),
+    }));
+    return input;
+  }
+  it('records full replacements, saves raw source, recompiles, and preserves IDs/style across section regeneration', async () => {
+    const input = boardInput();
+    const first = await generateSceneFirstLongformPlan({ ...input, storyboardStyle: 'ink' });
+    expect(first.scenes.map((s) => s.kind)).toEqual(['storyboard', 'hero']);
+    expect(first.sections[0].diagnostics.some((d) => d.startsWith('storyboard-replaced:'))).toBe(
+      true,
+    );
+    const next = await generateSceneFirstLongformPlan({
+      ...input,
+      previousPlan: first,
+      sectionIds: [first.sections[0].id],
+    });
+    expect(next.scenes).toEqual(first.scenes);
+    expect(next.storyboardStyle).toBe('ink');
+    expect(next.scenes[0].sourceSpec).not.toHaveProperty('shots');
+    verifyReconstruction(JSON.parse(JSON.stringify(next)), input);
+  });
+  it('preserves pinned and omitted boards without mutating the previous plan', async () => {
+    const input = boardInput();
+    const prior = await generateSceneFirstLongformPlan(input);
+    for (const omitted of [false, true]) {
+      const previousPlan = structuredClone(prior);
+      previousPlan.scenes[0].omitted = omitted;
+      const untouched = structuredClone(previousPlan);
+      const result = await generateSceneFirstLongformPlan({
+        ...input,
+        previousPlan,
+        sectionIds: [prior.sections[0].id],
+        preservedSceneIds: omitted ? [] : [prior.scenes[0].id],
+      });
+      expect(result.scenes).toEqual(previousPlan.scenes);
+      expect(previousPlan).toEqual(untouched);
+      verifyReconstruction(result, input);
+    }
+  });
+  it('retains a valid ordinary alternative on board failure, and preserves history when all planning fails', async () => {
+    const input = boardInput();
+    const prior = await generateSceneFirstLongformPlan(input);
+    const untouched = structuredClone(prior);
+    generateBoardContent.mockResolvedValue({ text: 'broken' });
+    const fresh = await generateSceneFirstLongformPlan(input);
+    expect(fresh.scenes.map((s) => s.kind)).toEqual(['hero', 'hero']);
+    expect(fresh.sections[0].diagnostics).toContain('storyboard-generation-failed');
+    const regenerated = await generateSceneFirstLongformPlan({
+      ...input,
+      previousPlan: prior,
+      sectionIds: [prior.sections[0].id],
+    });
+    expect(regenerated.scenes.map((scene) => scene.kind)).toEqual(['hero', 'hero']);
+    expect(regenerated.sections[0].diagnostics).toContain('storyboard-generation-failed');
+    expect(regenerated.sections[0].status).toBe('planned');
+    verifyReconstruction(regenerated, input);
+    generateContent.mockResolvedValue({ text: 'broken ordinary response' });
+    await expect(
+      generateSceneFirstLongformPlan({
+        ...input,
+        previousPlan: prior,
+        sectionIds: [prior.sections[0].id],
+      }),
+    ).rejects.toThrow('Every attempted');
+    expect(prior).toEqual(untouched);
+    verifyReconstruction(prior, input);
+  });
+  it('propagates cancellation during a board proposal without repairs or a replacement plan', async () => {
+    const input = boardInput();
+    const prior = await generateSceneFirstLongformPlan(input);
+    const controller = new AbortController();
+    generateBoardContent.mockClear();
+    generateBoardContent.mockImplementation(() => new Promise(() => {}));
+    const pending = generateSceneFirstLongformPlan({
+      ...input,
+      previousPlan: prior,
+      sectionIds: [prior.sections[0].id],
+      signal: controller.signal,
+    });
+    const rejected = expect(pending).rejects.toMatchObject({ name: 'AbortError' });
+    await vi.waitFor(() => expect(generateBoardContent).toHaveBeenCalledTimes(1));
+    controller.abort();
+    await rejected;
+    expect(generateBoardContent).toHaveBeenCalledTimes(1);
+    verifyReconstruction(prior, input);
+  });
+  it('keeps ordinary AND board requests together within two active sections', async () => {
+    const gates = [deferred(), deferred()];
+    let active = 0;
+    let maximum = 0;
+    const handler = async (contents: string, board: boolean) => {
+      active++;
+      maximum = Math.max(maximum, active);
+      if (board && owner(contents) < 360) await gates[owner(contents) / 180].promise;
+      else await Promise.resolve();
+      active--;
+      return board ? { text: '{"board":null}' } : response([hero(owner(contents) + 4)]);
+    };
+    generateContent.mockImplementation(({ contents }) => handler(contents, false));
+    generateBoardContent.mockImplementation(({ contents }) => handler(contents, true));
+    const pending = generateSceneFirstLongformPlan(request(540));
+    await vi.waitFor(() => expect(generateBoardContent).toHaveBeenCalledTimes(2));
+    expect(active).toBe(2);
+    expect(generateContent.mock.calls.every(([c]) => owner(c.contents) < 360)).toBe(true);
+    gates[1].resolve();
+    gates[0].resolve();
+    await pending;
+    expect(maximum).toBe(2);
+    expect(generateBoardContent).toHaveBeenCalledTimes(3);
   });
 });
 

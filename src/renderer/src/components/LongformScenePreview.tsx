@@ -22,6 +22,8 @@ export function LongformScenePreview({
   disabledReason,
 }: LongformScenePreviewProps): React.JSX.Element {
   const scene = request.plan.scenes.find((candidate) => candidate.id === request.sceneId);
+  // Include the full plan/style and palette CONTENT, not just scene/palette IDs.
+  // An appearance revision must invalidate media even when every scene ID is retained.
   const signature = JSON.stringify(request);
   const previousInputs = useRef({ signature, disabledReason });
   const currentSignature = useRef(signature);

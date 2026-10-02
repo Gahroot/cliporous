@@ -54,7 +54,17 @@ describe('CreatorProfileDialog', () => {
         'founder-gold',
       );
     });
-    expect(screen.getByText('Project preview needs footage')).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Storyboard style' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Ink' }));
+    await waitFor(() =>
+      expect(
+        getCreatorProfiles().find((item) => item.id === profile.id)?.longformStoryboardStyle,
+      ).toBe('ink'),
+    );
+    expect(getCreatorProfiles().find((item) => item.id === profile.id)?.longformPaletteId).toBe(
+      'founder-gold',
+    );
+    expect(screen.queryByText('Project preview needs footage')).toBeNull();
   });
 
   it('shows explicit reusable memory metadata and deletes the underlying preference', async () => {

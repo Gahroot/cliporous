@@ -1,5 +1,18 @@
 # Rendered editorial graphics
 
+## Continuous source-bound storyboards (2026-10-02)
+
+- **Production owner:** `StoryBoard` in `Root.tsx`, compiled by `ai/storyboards/compiler.ts`, reached through the existing long-form preview/export functions. Saved inputs are source specifications, never model-authored graphics code. `board-proof.ts`, the optional proof entry and private reference footage do not enter the production bundle.
+- **Visual grammar:** one persistent left-to-right canvas with statement, comparison, process, notes, quantity and hero panels. Source-word reveals, authored line wrapping/geometry, bounded pans and final holds keep explanatory content on screen. Full-frame 1920×1080 at 30fps is fixed. A recap is optional: if scaling would put headings below 28px or other text below 18px, compilation returns a repair diagnostic rather than tiny text or silently missing facts.
+- **Two material treatments:** `resolveStoryboardPalette(style, palette)` supplies all board text, paper, strokes, accents and clay roles. Ink stays light paper; Polish retains the selected palette's direction. Light custom palettes are not converted to dark stages. Existing ordinary-scene palette derivation is unchanged.
+- **Resource contract:** 1–5 panels, at most 48 compiled 2D elements and six allowlisted props, plus mesh/world/camera limits. No canvas for 2D-only boards; one shared ThreeCanvas otherwise. Props are culled outside the camera; finished action clocks are frozen. One canvas does not imply constant memory with more models.
+- **Rendering contract:** absolute beats are rebased once at the outward-rounded source segment start. Transparent ProRes 4444 board output is composited over contained source, not a solid substitute. Source audio is retained once; local bounded cues go through the existing SFX mixer. Failure produces an entire-interval source fallback in export, failed reconciliation, and a truthful preview error.
+- **Fonts and assets:** bundled local faces have explicit delay/cancel/final-release handling. Seven verified model IDs reuse the authored hero/Clay/studio library; no downloaded graphics, arbitrary SVG/code or remote fonts are accepted.
+- **Runtime evidence:** the pinned production bundle rendered both styles, all eight built-in palettes plus two custom edges, all enabled models, long labels, dense pan/overview samples, five-panel holds, mixed timelines, real failure/cancel paths and a bounded two-board stress export. Eighty-four stills, exact repeated-frame checks, alpha probes and source-audio/frame-count comparisons are recorded in [the verification report](../../../docs/plans/longform-storyboard-verification.md).
+- **Measured limit:** on the tested Windows host, FFmpeg's hardware encoder failed and software fallback completed the proof. Peak sampled owned-process working set was about 1.32 GiB; settled owned descendants were zero. This is not a GPU-memory, cross-platform or long-session performance guarantee. No live planning-quality claim is made from authored fixtures.
+
+The older sections below describe earlier graphics work; their evidence is not renewed by this entry.
+
 ## Scope and design read
 
 These are video graphics, not application controls. The viewer needs to understand one fact during a short interruption of the speaker. Preserve existing palettes, bundled fonts, composition IDs, public props, caption behavior, and output dimensions. This pass targets the shared long-form block envelope, the default editorial skin, bar charts, and statistic heroes. Other skins retain their identities; existing uncommitted comparison/pipeline work is not edited.

@@ -41,6 +41,7 @@ function timeline(scenes: LongformScenePlacement[], sourceDuration: number) {
   const compiled: CompiledLongformScene[] = scenes
     .filter((scene) => !scene.omitted)
     .map((scene) => ({
+      kind: 'explainer',
       placement: scene,
       planned: {
         startTime: scene.startTime,
@@ -145,6 +146,32 @@ describe('FFmpeg shares the landscape presentation geometry', () => {
       } else expect(filter).not.toContain('[0:v]');
       expect(filter).toContain('[1:v]');
     }
+  });
+
+  it('composites storyboard alpha above the whole contained source, not above black', () => {
+    const filter = buildLongformSceneLayout({
+      sourceWidth: 1080,
+      sourceHeight: 1920,
+      frameCount: 90,
+      presentation: 'full-frame',
+      sourceUnderlay: true,
+      background: '#f6ecd9',
+    });
+    expect(filter).toContain('[0:v]');
+    expect(filter).toContain('[base][speaker]overlay');
+    expect(filter).toContain('[placed][scene]overlay=x=0:y=0');
+    expect(filter.indexOf('[base][speaker]')).toBeLessThan(filter.indexOf('[placed][scene]'));
+    expect(filter).toContain('[board]format=yuv420p[outv]');
+    expect(() =>
+      buildLongformSceneLayout({
+        sourceWidth: 1920,
+        sourceHeight: 1080,
+        frameCount: 90,
+        presentation: 'speaker-side',
+        sourceUnderlay: true,
+        background: '#f6ecd9',
+      }),
+    ).toThrow('full-frame');
   });
 
   it('contains the whole source in speaker-only fallback without an explanation input', () => {
