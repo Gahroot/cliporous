@@ -30,6 +30,7 @@ import { useKeyboardShortcuts, usePythonSetup } from '@/hooks';
 import { useAiTokenUsage } from '@/hooks/useAiTokenUsage';
 import { useDesktopLifecycle } from '@/hooks/useDesktopLifecycle';
 import { performHistoryCommand, useHistoryMenuSync } from '@/hooks/useHistoryControls';
+import { useLongformPipeline } from '@/hooks/useLongformPipeline';
 import { useNativeJobIntegration } from '@/hooks/useNativeJobIntegration';
 import { stopActiveProcessingAndKeepProgress } from '@/hooks/usePipeline';
 import { isMac, modifierKeyLabel } from '@/lib/platform';
@@ -207,6 +208,9 @@ export default function App(): React.JSX.Element {
   useHistoryMenuSync();
   useAiTokenUsage();
   useNativeJobIntegration();
+  // The run must outlive DropScreen and the stage-keyed screen transitions.
+  // Keep ownership here so only app teardown cancels it on unmount.
+  const { processLongform } = useLongformPipeline();
 
   useEffect(() => {
     void window.api.setAutoCleanup(autoCleanupTemp);
@@ -479,7 +483,7 @@ export default function App(): React.JSX.Element {
         <main className="relative flex-1 overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
             <ScreenFrame key={stage} motionKey={stage}>
-              {screen === 'drop' && <DropScreen />}
+              {screen === 'drop' && <DropScreen processLongform={processLongform} />}
               {screen === 'processing' && (
                 <ProcessingScreen onBackground={() => setProcessingForeground(false)} />
               )}

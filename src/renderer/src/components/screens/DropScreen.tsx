@@ -25,7 +25,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useLongformPipeline, usePipeline } from '@/hooks';
+import { usePipeline } from '@/hooks';
 import { resolveGeminiKey } from '@/lib/gemini-key';
 import { cn } from '@/lib/utils';
 import { createNewProject, loadProject, loadProjectFromPath } from '@/services';
@@ -56,7 +56,11 @@ function makeId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-export function DropScreen(): React.JSX.Element {
+export function DropScreen({
+  processLongform,
+}: {
+  processLongform: (source: SourceVideo) => Promise<void>;
+}): React.JSX.Element {
   const addSource = useStore((state) => state.addSource);
   const setActiveSource = useStore((state) => state.setActiveSource);
   const addError = useStore((state) => state.addError);
@@ -74,7 +78,6 @@ export function DropScreen(): React.JSX.Element {
   const setLongformPaletteId = useStore((state) => state.setLongformPaletteId);
   const setLongformStoryboardStyle = useStore((state) => state.setLongformStoryboardStyle);
   const { processVideo } = usePipeline();
-  const { processLongform } = useLongformPipeline();
 
   const showSetupCard =
     pythonStatus === 'not-setup' ||

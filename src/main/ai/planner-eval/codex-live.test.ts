@@ -1,7 +1,7 @@
 import type { ChildProcess, SpawnOptions } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createCodexGenerator, probeCodex } from './codex-transport';
 
 const preflight = {
@@ -31,6 +31,12 @@ const options = {
   platform: 'win32' as const,
   env: { SystemRoot: 'C:\\Windows' },
 };
+// The mocked Windows helper needs a Windows Node path even on macOS/Linux.
+beforeEach(() =>
+  vi.stubGlobal('process', { ...process, execPath: 'C:\\Program Files\\nodejs\\node.exe' }),
+);
+afterEach(() => vi.unstubAllGlobals());
+
 const request = {
   phase: 'draft' as const,
   prompt: 'PRIVATE TRANSCRIPT',
