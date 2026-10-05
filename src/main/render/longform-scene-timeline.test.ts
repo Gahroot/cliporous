@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { containLongformSource, getLongformLayout } from '../../shared/longform-layout';
+import {
+  containLongformSource,
+  coverLongformSource,
+  getLongformLayout,
+} from '../../shared/longform-layout';
 import {
   LONGFORM_PRESENTATIONS,
   type LongformScenePlacement,
@@ -122,7 +126,7 @@ describe('approved scene timeline frame contract', () => {
 describe('FFmpeg shares the landscape presentation geometry', () => {
   it.each(
     LONGFORM_PRESENTATIONS,
-  )('uses shared rectangles and safe contain for %s', (presentation) => {
+  )('uses shared rectangles and fills speaker panes for %s', (presentation) => {
     for (const [sourceWidth, sourceHeight] of [
       [1920, 1080],
       [1080, 1920],
@@ -137,13 +141,25 @@ describe('FFmpeg shares the landscape presentation geometry', () => {
       });
       expect(filter).toContain('color=c=#123456:s=1920x1080:r=30');
       expect(filter).toContain('trim=end_frame=121');
-      expect(filter).not.toMatch(/crop=|stretch|zoompan/);
+      expect(filter).not.toMatch(/stretch|zoompan/);
       const speaker = getLongformLayout(presentation).speaker;
       if (speaker) {
-        const contained = containLongformSource(sourceWidth, sourceHeight, speaker);
-        expect(filter).toContain(`scale=${contained.width}:${contained.height}`);
-        expect(filter).toContain(`overlay=x=${contained.x}:y=${contained.y}`);
-      } else expect(filter).not.toContain('[0:v]');
+        const { crop, rect } = coverLongformSource(sourceWidth, sourceHeight, speaker);
+        expect(rect).toEqual(speaker);
+        expect(crop.x + crop.width).toBeLessThanOrEqual(sourceWidth);
+        expect(crop.y + crop.height).toBeLessThanOrEqual(sourceHeight);
+        // Aspect matches the pane within even-pixel rounding, so the fill never distorts.
+        expect(Math.abs(crop.width / crop.height - speaker.width / speaker.height)).toBeLessThan(
+          0.01,
+        );
+        expect(filter).toContain(
+          `crop=${crop.width}:${crop.height}:${crop.x}:${crop.y},scale=${speaker.width}:${speaker.height}`,
+        );
+        expect(filter).toContain(`overlay=x=${speaker.x}:y=${speaker.y}`);
+      } else {
+        expect(filter).not.toContain('[0:v]');
+        expect(filter).not.toContain('crop=');
+      }
       expect(filter).toContain('[1:v]');
     }
   });

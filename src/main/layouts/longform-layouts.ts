@@ -12,7 +12,11 @@
  * Produces a `[outv]` label with SAR 1:1 + yuv420p, ready to encode.
  */
 
-import { containLongformSource, getLongformLayout } from '@shared/longform-layout';
+import {
+  containLongformSource,
+  coverLongformSource,
+  getLongformLayout,
+} from '@shared/longform-layout';
 import type { LongformPresentation } from '@shared/longform-scenes';
 import type { LongformArchetype } from '@shared/types';
 import { LANDSCAPE_FPS, LANDSCAPE_HEIGHT, LANDSCAPE_WIDTH } from '../aspect-ratios';
@@ -44,7 +48,11 @@ export interface LongformSceneLayoutOptions {
   sourceUnderlay?: boolean;
 }
 
-/** Scene-first only: the shared geometry owns every pane; source is contained, never cropped. */
+/**
+ * Scene-first only: the shared geometry owns every pane. Speaker panes beside/inset in an
+ * explanation are covered (cropped to fill, no bars); the full-canvas speaker and the
+ * storyboard underlay keep the whole source contained.
+ */
 export function buildLongformSceneLayout(opts: LongformSceneLayoutOptions): string {
   const { frameCount, sourceWidth, sourceHeight, presentation } = opts;
   if (!Number.isInteger(frameCount) || frameCount < 1)
@@ -70,9 +78,16 @@ export function buildLongformSceneLayout(opts: LongformSceneLayoutOptions): stri
     base = 'explained';
   }
   if (speaker) {
-    const rect = containLongformSource(sourceWidth, sourceHeight, speaker);
+    const pane = presentation && presentation !== 'full-frame' && !opts.sourceUnderlay;
+    let rect = speaker;
+    let crop = '';
+    if (pane) {
+      const cover = coverLongformSource(sourceWidth, sourceHeight, speaker);
+      rect = cover.rect;
+      crop = `crop=${cover.crop.width}:${cover.crop.height}:${cover.crop.x}:${cover.crop.y},`;
+    } else rect = containLongformSource(sourceWidth, sourceHeight, speaker);
     filters.push(
-      `[0:v]${normalize},scale=${rect.width}:${rect.height}:flags=lanczos+accurate_rnd[speaker]`,
+      `[0:v]${normalize},${crop}scale=${rect.width}:${rect.height}:flags=lanczos+accurate_rnd[speaker]`,
     );
     filters.push(
       `[${base}][speaker]overlay=x=${rect.x}:y=${rect.y}:shortest=1:eof_action=repeat[placed]`,
