@@ -1,3 +1,4 @@
+import { isLongformPresentation } from '../../../shared/longform-scenes';
 import {
   DETAIL_KINDS,
   type EditorialFields,
@@ -218,7 +219,13 @@ export function parseEditorialFields(
       } else if (at !== undefined) result.semanticText = { kind, targetIndex: index, at };
     }
   }
-  if (raw.presentation !== undefined && raw.presentation !== null) {
+  // Long-form specs share the key for their screen layout. It is not an optional number
+  // treatment; flagging it here made the review pass strip every full-frame/inset choice.
+  if (
+    raw.presentation !== undefined &&
+    raw.presentation !== null &&
+    !isLongformPresentation(raw.presentation)
+  ) {
     const presentation = NUMBER_PRESENTATIONS.find((p) => p === raw.presentation);
     if (body.kind !== 'number' || !presentation)
       note(ctx, 'presentation', 'only odometer/split-flap on number');

@@ -7,7 +7,13 @@ import {
 } from '../remotion/compositions/explainer/technology/types';
 import { collectSceneTimes, mapSceneTimes } from '../remotion/compositions/explainer/types';
 import { BEAT_EDGE_SEC } from './explainer/kind-spec';
-import { type PlannerWord, parseExplainerPlan, toSceneRelative } from './explainer-scenes';
+import { LONGFORM_PLANNER_PROFILE } from './explainer/planner-profiles';
+import {
+  type PlannerWord,
+  parseExplainerPlan,
+  parsePlanWithDiagnostics,
+  toSceneRelative,
+} from './explainer-scenes';
 
 describe('technology fixtures through the real planner boundary', () => {
   const fixtures = TECHNOLOGY_KINDS.flatMap(
@@ -212,6 +218,36 @@ describe('parseExplainerPlan', () => {
       at: p.scene.at + (info.downImpactSec ?? info.impactSec),
     });
   });
+  it.each([
+    'speaker-side',
+    'speaker-pip',
+    'full-frame',
+  ] as const)('keeps long-form %s layout out of the omitted-optional review feedback', (presentation) => {
+    const parsed = parsePlanWithDiagnostics(
+      {
+        scenes: [
+          {
+            kind: 'checklist',
+            presentation,
+            startWord: 6,
+            endWord: 16,
+            items: [
+              { label: 'Rebuild the deal', icon: 'FileText', word: 8 },
+              { label: 'Compare sources', icon: 'Search', word: 12 },
+            ],
+          },
+        ],
+      },
+      words(),
+      BOUNDS,
+      { aspect: '16:9', profile: LONGFORM_PLANNER_PROFILE },
+    );
+
+    expect(parsed.accepted).toHaveLength(1);
+    // An omitted entry tells the review pass to delete the field, collapsing every scene to side-by-side.
+    expect(parsed.omitted).toEqual([]);
+  });
+
   it('maps word indices to exact word times for a checklist', () => {
     const w = words();
     const plan = parseExplainerPlan(
