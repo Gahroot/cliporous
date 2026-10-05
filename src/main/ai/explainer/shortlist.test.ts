@@ -19,6 +19,38 @@ function toWords(text: string): PlannerWord[] {
   return text.split(/\s+/).map((w, i) => ({ text: w, start: i * 0.4, end: i * 0.4 + 0.35 }));
 }
 
+describe('organization/economics/markets source-specific selection', () => {
+  it.each([
+    ['organization-map', 'Federated pods retain local decisions and shared responsibilities.'],
+    ['system-reconciliation', 'Merger reconciliation leaves two source identities unresolved.'],
+    ['operating-cost', 'Compare quoted offers: Luma quotes Seatplan price at 20 USD per seat.'],
+    ['scale-economics', 'Fixed and variable costs use two stated output samples.'],
+    ['value-capture', 'Value capture allocation retains an explicit remainder.'],
+    ['market-dependency', "Iris's Design does not complement Theo's Build."],
+    ['procurement-commitment', 'Pike quoted Estimate with amount 12 USD. Mira paid Pike.'],
+  ])('offers %s from ordinary bounded source wording', (kind, text) => {
+    const menu = buildShortlist(toWords(text));
+    expect(menu.kinds.map((spec) => spec.kind)).toContain(kind);
+    expect(menu.scores[kind]).toBeGreaterThan(0);
+    expect(menu.kinds.length).toBeLessThanOrEqual(16);
+    expect(menu.heroProps.length).toBeLessThanOrEqual(10);
+  });
+  it.each([
+    ['organization-map', 'We organized photos into folders.'],
+    ['system-reconciliation', 'Git merged the branch and resolved a source-code conflict.'],
+    ['operating-cost', 'The algorithm has a computational cost and a training loss.'],
+    ['scale-economics', 'The fixed width changes when the CSS variable changes.'],
+    ['value-capture', 'This screen captures a frame and displays the color value.'],
+    ['market-dependency', 'The television channel aired a stock market forecast.'],
+    ['procurement-commitment', 'She quoted a sentence and accepted an invitation.'],
+  ])('does not score unrelated %s words or generic AI/business promises', (kind, text) => {
+    expect(buildShortlist(toWords(text)).scores[kind] ?? 0).toBe(0);
+    expect(buildShortlist(toWords('AI may change every business someday.')).scores[kind] ?? 0).toBe(
+      0,
+    );
+  });
+});
+
 describe('Detroit and hybrid targeted selection', () => {
   it.each([
     ['detroit-place', 'The Renaissance Center defines this Detroit skyline.'],

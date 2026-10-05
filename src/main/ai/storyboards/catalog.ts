@@ -1,7 +1,7 @@
 import type {
+  LegacyStoryboardPanel,
   StoryboardLabel,
   StoryboardModel,
-  StoryboardPanel,
 } from '../../../shared/storyboards';
 
 /** Authored geometry and conservative mesh ceilings, not model-supplied coordinates. */
@@ -10,6 +10,10 @@ export const BOARD_LAYOUT = Object.freeze({
   panelHeight: 820,
   panelGap: 100,
   inset: 80,
+  contentTop: 330,
+  contentGap: 12,
+  contentPreferredFont: 40,
+  contentMinFont: 30,
   panSec: 0.75,
   revealSec: 0.35,
   fadeSec: 0.25,
@@ -69,7 +73,7 @@ export const BOARD_MODELS: Record<
   },
 };
 
-export function panelLabels(panel: StoryboardPanel): StoryboardLabel[] {
+export function panelLabels(panel: LegacyStoryboardPanel): StoryboardLabel[] {
   switch (panel.kind) {
     case 'statement':
       return [panel.title, panel.body];
@@ -86,16 +90,17 @@ export function panelLabels(panel: StoryboardPanel): StoryboardLabel[] {
 }
 
 export const STORYBOARD_CATALOG_PROMPT = `Return only {"board": null} or {"board": <source spec>}. Never return multiple boards.
-A source spec has ONLY kind:"storyboard", specVersion:1, startWord,endWord, subject:{text,startWord,endWord}, panels, optional overview:{atWord}.
+A new source spec has ONLY kind:"storyboard", specVersion:2, startWord,endWord, subject:{text,startWord,endWord}, panels, optional overview:{atWord}. Historical specVersion:1 remains supported unchanged.
 Every panel has ONLY id,kind,startWord,endWord,title:{text,startWord,endWord},revealWord,moveWord, optional prop.
 Templates add exactly these fields:
 statement: body label. comparison: left/right labels and evidence:{startWord,endWord} containing both sides and explicit comparison.
 process: 2..4 ordered item labels, relationship:"sequence"|"causes", evidence span containing every item and explicit affirmative relationship.
 notes: 1..4 ordered item labels. quantity: finite value, unit label, evidence label containing that exact number and unit (no estimates/conditions).
 hero: caption label and required prop.
+explanation: ONLY the common id/kind/startWord/endWord/title/revealWord/moveWord fields and explanation:{sourceVersion:2,recipe,sourceChoices,identityLinks}. No prop. Use a concrete offered business source schema with all five protected beats, local evidence and complete reading hold. Conditions, negation, unknowns and quantities remain native facts, never legacy inferred causality. Identity links are source-backed {localId,sharedId,role:"subject"|"actor"|"task"|"asset"|"claim",startWord,endWord} identities; use identityLinks:[] when none are supported. Geometry, models and typography are compiled from the validated recipe, never supplied in source choices.
 Prop: {id,model,action,atWord,evidence:{startWord,endWord}}. Models: lightbulb,clapperboard,laptop,hourglass,battery,gears,book.
 All models allow reveal/activate; ONLY battery and lightbulb allow deactivate. Reveal identifies a literal source-backed object; actions require a local affirmative source clause about that object, not a metaphor or conditional claim.
 Repeated prop id retains identical model and evidence; no invented decorative objects. Every label is the exact source phrase in its inclusive span (<=96 chars, <=16 words).
 Use 1..5 ordered nonoverlapping panels in ONE owned section, one shared subject, 4..40 seconds total. First panel/reveal starts at board start; last panel ends at board end.
 Reveal each panel no later than its move; incoming title must be present during the 0.75s pan. Reserve reading time (3.5 words/sec), action time (up to 2s), and >=0.8s final hold per panel. Overview is optional and needs 0.75s move +1.5s hold. Use it only for one or two panels with short labels; otherwise omit the overview, not any source facts.
-Do not submit unsupported causality, negated/conditional directions, estimated quantities, URLs, code, SVG, styles, colors, geometry, fonts or extra fields. Null is better than an unsupported explanation.`;
+Legacy templates reject unsupported causality, negated/conditional directions and estimated quantities; explanation panels preserve such states only through their native source contracts. Never submit URLs, code, SVG, styles, colors, geometry, fonts or extra fields. Null is better than an unsupported explanation.`;

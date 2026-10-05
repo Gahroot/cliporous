@@ -6,11 +6,23 @@ import {
   STORYBOARD_PANEL_KINDS,
   type StoryboardDiagnostic,
   type StoryboardLabel,
+  type StoryboardPanel,
   type StoryboardResult,
   type StoryboardSourceSpan,
   type StoryboardSourceSpec,
+  storyboardSourceInputBudget,
 } from '../../../shared/storyboards';
 import type { WordTimestamp } from '../../../shared/types';
+import {
+  type BusinessExplanationReconstruction,
+  parseBusinessExplanationSource,
+} from './business-adapters';
+import {
+  type BusinessPanelProjection,
+  businessPanelProjection,
+  isBusinessStoryboardScene,
+} from './business-diagrams';
+import { businessReadingWords } from './business-reading';
 import { BOARD_LAYOUT, BOARD_MODELS, panelLabels } from './catalog';
 
 export interface StoryboardParseContext {
@@ -32,6 +44,10 @@ export interface ParsedStoryboard {
     actionEndAt?: number;
   }[];
   overviewAt?: number;
+  businessPanels?: ReadonlyMap<
+    string,
+    { reconstruction: BusinessExplanationReconstruction; projection: BusinessPanelProjection }
+  >;
 }
 
 // biome-ignore lint/suspicious/noControlCharactersInRegex: reject control characters in untrusted source labels.
@@ -71,34 +87,7 @@ function plain(value: unknown): value is Record<string, unknown> {
 
 /** Inspect before stringify or property access: no cycles, getters, class instances or oversized JSON. */
 export function storyboardInputBudget(input: unknown): boolean {
-  let nodes = 0;
-  const seen = new Set<object>();
-  const visit = (value: unknown, depth: number): boolean => {
-    if (++nodes > L.maxSpecNodes || depth > L.maxSpecDepth) return false;
-    if (value === null || typeof value === 'boolean') return true;
-    if (typeof value === 'number') return Number.isFinite(value);
-    if (typeof value === 'string') return value.length <= L.maxLabelChars;
-    if (typeof value !== 'object' || seen.has(value)) return false;
-    if (!Array.isArray(value) && !plain(value)) return false;
-    seen.add(value);
-    const entries = Object.getOwnPropertyDescriptors(value);
-    const ok =
-      Object.keys(entries).length <= 64 &&
-      Object.entries(entries).every(
-        ([key, d]) =>
-          !['__proto__', 'constructor', 'prototype'].includes(key) &&
-          key.length <= 64 &&
-          'value' in d &&
-          visit(d.value, depth + 1),
-      );
-    seen.delete(value);
-    return ok;
-  };
-  return (
-    plain(input) &&
-    visit(input, 0) &&
-    Buffer.byteLength(JSON.stringify(input), 'utf8') <= L.maxSpecBytes
-  );
+  return storyboardSourceInputBudget(input);
 }
 
 /** Strict source-only allowlist. This is also the saved-file security boundary. */
@@ -148,8 +137,13 @@ export function parseStoryboardSpec(
     !keys(input, ['kind', 'specVersion', 'startWord', 'endWord', 'subject', 'panels'], ['overview'])
   )
     return reject();
-  if (input.kind !== 'storyboard' || input.specVersion !== 1) {
-    fail('version', 'Expected storyboard specVersion 1.', undefined, false);
+  if (input.kind !== 'storyboard' || (input.specVersion !== 1 && input.specVersion !== 2)) {
+    fail(
+      'version',
+      'Expected storyboard specVersion 1 or 2; the saved version is preserved.',
+      undefined,
+      false,
+    );
     return reject();
   }
   if (
@@ -247,9 +241,21 @@ export function parseStoryboardSpec(
   let lastEndWord = boardSpan.startWord - 1;
   let modelMeshes = 0;
   let propCount = 0;
+  const businessPanels = new Map<
+    string,
+    { reconstruction: BusinessExplanationReconstruction; projection: BusinessPanelProjection }
+  >();
+  const sharedIdentities = new Map<
+    string,
+    { localId: string; label: string; role: string; origin: string }
+  >();
   for (const raw of input.panels) {
     const panelId = plain(raw) && typeof raw.id === 'string' ? raw.id.slice(0, 64) : undefined;
-    if (!plain(raw) || !STORYBOARD_PANEL_KINDS.some((kind) => kind === raw.kind)) {
+    if (
+      !plain(raw) ||
+      (!STORYBOARD_PANEL_KINDS.some((kind) => kind === raw.kind) &&
+        !(input.specVersion === 2 && raw.kind === 'explanation'))
+    ) {
       fail('unsupported', 'Unsupported panel template.', panelId, false);
       continue;
     }
@@ -260,6 +266,7 @@ export function parseStoryboardSpec(
       notes: ['items'],
       quantity: ['value', 'unit', 'evidence'],
       hero: ['caption', 'prop'],
+      explanation: ['explanation'],
     };
     if (
       !keys(
@@ -274,7 +281,7 @@ export function parseStoryboardSpec(
           'moveWord',
           ...additions[String(raw.kind)],
         ],
-        raw.kind === 'hero' ? [] : ['prop'],
+        raw.kind === 'hero' || raw.kind === 'explanation' ? [] : ['prop'],
         panelId,
       )
     )
@@ -299,6 +306,53 @@ export function parseStoryboardSpec(
     )
       fail('timing', 'Reveal and move must be ordered words inside the panel.', panelId);
     label(raw.title, pSpan, panelId);
+    if (raw.kind === 'explanation' && panelId) {
+      const reconstructed = parseBusinessExplanationSource(raw.explanation, [...words], {
+        ...context,
+        section: { id: panelId, ...pSpan },
+      });
+      if (!reconstructed.ok) {
+        diagnostics.push(...reconstructed.diagnostics.map((issue) => ({ ...issue, panelId })));
+        continue;
+      }
+      const native = reconstructed.value.planned.scene;
+      if (!isBusinessStoryboardScene(native)) {
+        fail('unsupported', 'Reconstruction is outside the business allowlist.', panelId, false);
+        continue;
+      }
+      const projected = businessPanelProjection(native, reconstructed.value.source.sourceVersion);
+      if (!projected.ok) {
+        diagnostics.push(...projected.diagnostics.map((issue) => ({ ...issue, panelId })));
+        continue;
+      }
+      for (const identity of reconstructed.value.identities) {
+        const link = identity.link;
+        if (!link) continue;
+        const previous = sharedIdentities.get(link.sharedId);
+        if (
+          previous &&
+          (previous.localId !== link.localId ||
+            previous.label !== identity.identity.label ||
+            previous.role !== link.role ||
+            previous.origin !== identity.origin)
+        )
+          fail(
+            'identity',
+            'Shared identity must retain its native ID, source label, semantic role and origin; a label or alias alone is not equivalence evidence.',
+            panelId,
+          );
+        sharedIdentities.set(link.sharedId, {
+          localId: link.localId,
+          label: identity.identity.label,
+          role: link.role,
+          origin: identity.origin,
+        });
+      }
+      businessPanels.set(panelId, {
+        reconstruction: reconstructed.value,
+        projection: projected.value,
+      });
+    }
     if (raw.kind === 'statement') label(raw.body, pSpan, panelId);
     if (raw.kind === 'hero') label(raw.caption, pSpan, panelId);
     if (raw.kind === 'comparison') {
@@ -469,20 +523,28 @@ export function parseStoryboardSpec(
   const subject = normalizedSourcePhrase(spec.subject.text);
   const seenProps = new Set<string>();
   const priorLabels = new Set<string>();
+  const seenBusinessLinks = new Set<string>();
+  const labelsForPanel = (panel: StoryboardPanel): StoryboardLabel[] =>
+    panel.kind === 'explanation' ? [panel.title] : panelLabels(panel);
   for (const panel of spec.panels) {
     const mentionsSubject = ` ${normalizedSourcePhrase(phrase(panel))} `.includes(` ${subject} `);
     const reusesSubject = panel.prop && seenProps.has(panel.prop.id);
     const connectedRelationship =
       (panel.kind === 'comparison' || panel.kind === 'process') &&
       panelLabels(panel).some((l) => priorLabels.has(normalizedSourcePhrase(l.text)));
-    if (!mentionsSubject && !reusesSubject && !connectedRelationship)
+    const connectedBusiness =
+      panel.kind === 'explanation' &&
+      panel.explanation.identityLinks.some((link) => seenBusinessLinks.has(link.sharedId));
+    if (!mentionsSubject && !reusesSubject && !connectedRelationship && !connectedBusiness)
       fail(
         'evidence',
         'Panel lacks a shared explanatory subject, repeated evidenced prop, or connected relationship.',
         panel.id,
       );
     if (panel.prop) seenProps.add(panel.prop.id);
-    for (const l of panelLabels(panel)) priorLabels.add(normalizedSourcePhrase(l.text));
+    for (const l of labelsForPanel(panel)) priorLabels.add(normalizedSourcePhrase(l.text));
+    if (panel.kind === 'explanation')
+      for (const link of panel.explanation.identityLinks) seenBusinessLinks.add(link.sharedId);
     if (panel.kind === 'process') {
       // Arrows follow the source direction; "A after B" / "A because B" must not become A → B.
       const marker =
@@ -523,7 +585,7 @@ export function parseStoryboardSpec(
   const panels = spec.panels.map((panel, index) => {
     const revealAt = words[panel.revealWord].start;
     const moveAt = words[panel.moveWord].start;
-    const labels = panelLabels(panel);
+    const labels = labelsForPanel(panel);
     const labelsAt = labels.map((l) => Math.max(revealAt, words[l.startWord].start));
     // Title is ready during the incoming pan, rather than panning to an empty panel.
     if (labelsAt[0] > moveAt || moveAt - revealAt > BOARD_LAYOUT.panSec)
@@ -544,17 +606,53 @@ export function parseStoryboardSpec(
       revealAt + BOARD_LAYOUT.revealSec,
       moveAt + (index ? BOARD_LAYOUT.panSec : 0),
     );
-    const readWords = new Set(
+    let readWords = new Set(
       labels.flatMap((l) =>
         Array.from({ length: l.endWord - l.startWord + 1 }, (_, n) => l.startWord + n),
       ),
     ).size;
+    const business = businessPanels.get(panel.id);
+    if (business) {
+      const plan = business.reconstruction.planned;
+      if (
+        plan.startTime < startTime ||
+        plan.endTime > endTime ||
+        (index > 0 && plan.startTime < moveAt) ||
+        (index + 1 < spec.panels.length && plan.endTime > exit)
+      )
+        fail(
+          'timing',
+          'Camera/window would trim the protected native explanation interval.',
+          panel.id,
+        );
+      const content = business.projection;
+      readWords = Math.max(
+        readWords,
+        [
+          content.title,
+          ...content.headings,
+          ...content.rows.flatMap((row) => row.cells),
+          ...content.notes,
+        ].reduce(
+          (count, text) =>
+            count +
+            (panel.kind === 'explanation' && panel.explanation.sourceVersion === 2
+              ? businessReadingWords(text)
+              : text.trim().split(/\s+/u).length),
+          0,
+        ),
+      );
+    }
     if (
       exit - readableStart < readWords / BOARD_LAYOUT.wordsPerSecond + L.minHoldSec ||
       Math.max(...labelsAt) + BOARD_LAYOUT.revealSec + L.minHoldSec > exit ||
       (actionEndAt !== undefined && actionEndAt + L.minHoldSec > exit)
     )
-      fail('timing', 'Insufficient reading, action or completed hold time.', panel.id);
+      fail(
+        'timing',
+        `Insufficient reading, action or completed hold time.${panel.kind === 'explanation' && panel.explanation.sourceVersion === 2 ? ` Reading: ${readWords} words need ${(readWords / BOARD_LAYOUT.wordsPerSecond + L.minHoldSec).toFixed(3)}s; ${(exit - readableStart).toFixed(3)}s available.` : ''}`,
+        panel.id,
+      );
     return { revealAt, moveAt, labelsAt, propAt, actionEndAt };
   });
   const lastPanel = panels.at(-1);
@@ -574,6 +672,7 @@ export function parseStoryboardSpec(
       endTime,
       panels,
       ...(overviewAt === undefined ? {} : { overviewAt }),
+      ...(businessPanels.size ? { businessPanels } : {}),
     },
   };
 }

@@ -16,6 +16,7 @@ import {
 import { BUILTIN_PALETTES } from '../../src/shared/palettes';
 import { resolveStoryboardPalette } from '../../src/shared/storyboard-palette';
 import {
+  businessFixtures,
   fixtures,
   materialize,
   mixedFixture,
@@ -304,6 +305,8 @@ it('raw source -> saved plan -> production props/dispatcher; optional real produ
         }
         contracts.push({
           name: f.name,
+          parserVersion: saved.plan.parserVersion,
+          specVersion: f.spec.specVersion,
           words: f.words,
           plan: saved.plan,
           timeline: saved.timeline,
@@ -424,6 +427,53 @@ it('raw source -> saved plan -> production props/dispatcher; optional real produ
             }
             assert.equal(JSON.stringify(plan), before);
           }
+          for (const raw of businessFixtures()) {
+            const saved = materialize(raw);
+            assert.equal(saved.plan.parserVersion, 3);
+            assert.equal(raw.spec.specVersion, 2);
+            const seg = saved.timeline.segments.find((s) => s.kind === 'scene');
+            assert.ok(seg?.kind === 'scene' && seg.compiled.kind === 'storyboard');
+            boundary.duration = saved.duration;
+            for (const style of STYLES)
+              for (const selectedPalette of PALETTES) {
+                const plan = structuredClone({ ...saved.plan, storyboardStyle: style });
+                const before = JSON.stringify(plan);
+                const renders = boundary.renders.length;
+                const result = await renderSceneFirstLongform({
+                  plan,
+                  words: saved.words,
+                  sourceVideoPath: source,
+                  outputPath: join(targets, `${raw.name}-${style}-${selectedPalette.id}.marker`),
+                  palette: deriveExplainerPalette(),
+                  storyboardPalette: selectedPalette,
+                  qualityParams: { crf: 28, preset: 'veryfast' },
+                  sceneSfxEnabled: true,
+                });
+                assert.equal(result.scenes?.rendered, 1);
+                assert.equal(result.fallbacks.length, 0);
+                assert.deepEqual(
+                  boundary.renders[renders].inputProps,
+                  buildLongformStoryboardProps(seg, style, selectedPalette),
+                );
+                const preview = await renderLongformScenePreview({
+                  requestId: `unit-${raw.name}`,
+                  sourceVideoPath: source,
+                  wordTimestamps: saved.words,
+                  plan,
+                  sceneId: plan.scenes[0].id,
+                  paletteId: selectedPalette.id,
+                  customPalettes: selectedPalette.builtin ? [] : [selectedPalette],
+                  sceneSfxEnabled: true,
+                });
+                assert.deepEqual(
+                  required(boundary.renders.at(-1), 'business preview').inputProps,
+                  boundary.renders[renders].inputProps,
+                );
+                assert.equal(JSON.stringify(plan), before);
+                rmSync(dirname(preview), { recursive: true, force: true });
+              }
+          }
+          boundary.duration = f.duration;
           assert.ok(boundary.encodes.some((e) => e.sourceUnderlay === true));
           boundary.failure = true;
           await assert.rejects(

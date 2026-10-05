@@ -5,6 +5,8 @@ import {
   TECHNOLOGY_LIMITS,
 } from '../../remotion/compositions/explainer/technology/types';
 import type { SceneCue } from '../../remotion/compositions/explainer/types';
+import { boundedBusinessInput } from './business-contract';
+import { onlyFields } from './hybrid-contract';
 import type { KindSpec, ParseContext, Rec } from './kind-spec';
 import { mechanismIssue } from './mechanism-contract';
 import { technologyEvidence, technologyPhrase, technologyStory } from './technology-contract';
@@ -53,6 +55,46 @@ function parseAgentWorkflow(raw: Rec, ctx: ParseContext): AgentWorkflowScene | n
       ctx,
       'agent-workflow needs an authored tool-success, tool-retry or approval-gate preset',
     );
+
+  const visualMode = raw.visualMode;
+  if (
+    visualMode !== undefined &&
+    (raw.preset !== 'approval-gate' || (visualMode !== 'diagram' && visualMode !== 'hybrid'))
+  )
+    return mechanismIssue(
+      ctx,
+      'visualMode is diagram/hybrid only for source-validated approval-gate',
+    );
+
+  // The additive business presentation is a closed bounded source contract. Legacy inputs
+  // without visualMode keep their original parser and truth conditions unchanged.
+  if (
+    visualMode !== undefined &&
+    (!boundedBusinessInput(raw, ctx) ||
+      !onlyFields(
+        raw,
+        [
+          'kind',
+          'preset',
+          'layout',
+          'startWord',
+          'endWord',
+          'visualMode',
+          'label',
+          'subject',
+          'toolLabel',
+          'outcome',
+          'condition',
+          'setupWord',
+          'actionWord',
+          'responseWord',
+          'checkWord',
+          'resolveWord',
+        ],
+        ctx,
+      ))
+  )
+    return null;
 
   const story = technologyStory(raw, ctx);
   const toolLabel = technologyPhrase(raw.toolLabel, ctx, TECHNOLOGY_LIMITS.actorLabel);
@@ -213,7 +255,13 @@ function parseAgentWorkflow(raw: Rec, ctx: ParseContext): AgentWorkflowScene | n
     return mechanismIssue(ctx, 'a human approval prerequisite must use the approval-gate branch');
   }
 
-  return { kind: 'agent-workflow', preset: raw.preset, ...story, toolLabel };
+  return {
+    kind: 'agent-workflow',
+    preset: raw.preset,
+    ...story,
+    toolLabel,
+    ...(visualMode ? { visualMode } : {}),
+  };
 }
 
 export const AGENT_WORKFLOW_SPEC: KindSpec<'agent-workflow'> = {
@@ -222,9 +270,9 @@ export const AGENT_WORKFLOW_SPEC: KindSpec<'agent-workflow'> = {
   describe:
     'An agent owns one task on a control desk, calls a named tool, checks its returned result, then completes the same task. tool-retry visibly stops a failed first call before an actual successful retry. approval-gate waits for an explicitly granted human approval, never a request alone. Retain any exact source condition; conditional outcomes are illustrative, not verified events.',
   schema:
-    '{"kind":"agent-workflow","preset":"tool-success|tool-retry|approval-gate","label":"source phrase","subject":"source task","toolLabel":"source tool","outcome":"source completion phrase","condition":"exact source condition, only if present","setupWord":N,"actionWord":N,"responseWord":N,"checkWord":N,"resolveWord":N}',
+    '{"kind":"agent-workflow","preset":"tool-success|tool-retry|approval-gate","label":"source phrase","subject":"source task","toolLabel":"source tool","visualMode":"optional diagram|hybrid only for approval-gate; omit for original clay","outcome":"source completion phrase","condition":"exact source condition, only if present","setupWord":N,"actionWord":N,"responseWord":N,"checkWord":N,"resolveWord":N}',
   limits:
-    'label ≤32, subject ≤24, outcome ≤40, condition ≤56, toolLabel ≤22; all source-backed. Five explicit word indices, 5–12s, gaps ≥0.6/1/1/1s, final hold ≥0.8s. setupWord: receives task; actionWord: calls tool; responseWord: return (or first failure, actual retry, then return); checkWord: checks/passes result, or human grant after a checked result and approval request; resolveWord: task completes. Choose clause-start words so actors remain in their evidence spans.',
+    'label ≤32, subject ≤24, outcome ≤40, condition ≤56, toolLabel ≤22; all source-backed. Five explicit word indices, 5–12s, gaps ≥0.6/1/1/1s, final hold ≥0.8s. setupWord: receives task; actionWord: calls tool; responseWord: return (or first failure, actual retry, then return); checkWord: checks/passes result, or human grant after a checked result and approval request; resolveWord: task completes. Choose clause-start words so actors remain in their evidence spans. Only approval-gate can opt into diagram/hybrid; omission preserves historical clay appearance. Its approval and completion source requirements are unchanged.',
   layouts: TECHNOLOGY_LAYOUTS,
   durationSec: [TECHNOLOGY_LIMITS.minDuration, TECHNOLOGY_LIMITS.maxDuration],
   triggers: [

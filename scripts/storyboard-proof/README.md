@@ -51,6 +51,30 @@ Metrics report wall time, worker Node RSS high-water/samples and owned scratch d
 
 The coordinator ran the production media and browser proofs on 2026-10-02. Exact results, local artifacts, visual corrections, platform limits and the two remaining unrelated Windows test failures are in [the completion record](../../docs/plans/longform-storyboard-verification.md). A unit-only run never substitutes for those measurements.
 
+## Business sequences (Step31; native execution remains coordinator-owned)
+
+```bash
+node scripts/explainer-stills/verify-systems-e2e.mjs --unit --business
+node scripts/storyboard-proof/verify.mjs --unit --scope business
+# After final checks/build/pins; run serially, never alongside builders or other native jobs:
+node scripts/explainer-stills/verify-systems-e2e.mjs --business --bundle "<explainer pin>"
+node scripts/storyboard-proof/verify.mjs --scope business --bundle "<storyboard pin>"
+# Preparation only: prints an unexecuted five-cycle schedule, touches no media.
+node scripts/storyboard-proof/verify.mjs --resource-plan
+# Five separate fresh owned workers, serial; each runs matched first/repeat controls:
+for cycle in 1 2 3 4 5; do
+  node scripts/storyboard-proof/verify.mjs --resource-cycle "$cycle" --bundle "<storyboard pin>" || break
+done
+```
+
+No-flag media behavior remains the full matrix. `--scope business` retains all eight source-authored sequences, both styles, ten actual palette IDs, historical moving/max-source still comparisons, and the existing native audio/alpha/SFX/bookend/fault/cancellation gates; it omits unrelated catalog stills. The matrix retains 160 saved preview/export pairs. Each sequence is compiled and saved under parser version 3/spec version 2; historical boards still use their old versions. Native records are published only after the entire worker succeeds, probes/full decodes finish, and the runner rechecks source/pin/artifact hashes. Unit/failed/cancelled runs supply no `businessSequences` success envelope. Failed media stays available for diagnosis, but its candidate receipt file is removed.
+
+The producer envelope is `schemaVersion: 1`, `status: 'passed'`, existing `source.sha256`, existing pinned `bundle.{path,sha256}`, and `businessSequences`. Records have `id/style/palette`, `approvedSourceSha256 = digest(fixture.spec)`, a separate `approvedSourceFileSha256` for canonical `{spec,words,duration}` JSON, saved-plan path/hash and versions, unchanged synthetic media source path/hash/duration, and preview/export route/path/hash/probe/full-decode receipts. **Preview expected frames are its selected scene window** (`previewWindow` frame interval); export expected frames cover the full source including bookends. Consumers must independently rehash/probe; declared receipts are not a substitute.
+
+`--resource-cycle` is deliberately separate from the large sequence matrix. It uses the unchanged exact-spawned-PID sampler/owned scratch sampler and exports historical moving/max-source boards versus representative/max-serialized-source business boards, first and repeat, Ink/first palette. “Cold” means first use of that control in a fresh worker, not evicted OS/GPU caches; production browser lifecycle is unchanged. JSON length chooses max *source*, not measured max GPU load. Compare five runs only on the same machine/build/pin. There are no authored performance thresholds or leak-free claims. Resource runs do not claim sequence coverage and do not replace the full matrix's real fault/cancellation tests.
+
+Retain final MP4s, critical PNGs, hashes/probes and reports outside git. Production alpha scratch keeps its existing finally cleanup. Business scope captures the baseline alpha critical PNGs then removes only its owned intermediate `alpha-ink.mov`; full scope retains the historical alpha artifact. Check free disk before each serialized job (the matrix can be large); no user output is deleted. Native measurements, visual/listening approval, actual Windows equivalence and five-cycle comparison are **not performed by implementation/unit checks**.
+
 ## Browser UI proof
 
 `node scripts/storyboard-proof/ui.mjs` serves the actual React controls with an authored desktop-bridge fixture, drives native browser keyboard/pointer events, measures picker contrast with the shared helper, and records PNGs plus `report.json` outside git. Use Node 22.18+ (native TypeScript stripping for the shared contrast module). `STORYBOARD_PROOF_BROWSER` can select an existing local browser; no browser is downloaded. The driver opens native disclosures, rejects offscreen pointer targets and waits for finite transitions before capture. Missing fixture media is intentional; packaged Electron playback and assistive technology are not exercised by this runner.

@@ -1,4 +1,9 @@
 import type React from 'react';
+import {
+  ApprovalGateDiagramParts,
+  ApprovalGateModelParts,
+} from './business/authority/ApprovalGateParts';
+import { HybridStage } from './diagrams/HybridStage';
 import { Clay } from './hero-kit';
 import { GearsRig } from './hero-props/mechanics';
 import { SignalWire } from './mechanisms/composed-rigs';
@@ -288,6 +293,19 @@ function DeskLabels({
 /** One real clay stage. The source-checked request remains the same physical paper throughout. */
 export function AgentWorkflowScene({ scene }: { scene: Scene }): React.ReactElement {
   const { t } = useSceneTime();
+  if (scene.preset === 'approval-gate' && scene.visualMode) {
+    return (
+      <HybridStage
+        scene={{
+          ...scene,
+          visualMode: scene.visualMode,
+          evidence: scene.condition ? 'illustrative' : 'source-stated',
+        }}
+        model={<ApprovalGateModelParts scene={scene} seconds={t} />}
+        diagram={<ApprovalGateDiagramParts scene={scene} seconds={t} />}
+      />
+    );
+  }
   const pose = agentWorkflowPose(scene, t);
   const timing = agentWorkflowTiming(scene);
   const firstTurn = phaseProgress(t, scene.actionAt, scene.responseAt);

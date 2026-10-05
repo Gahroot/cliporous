@@ -28,11 +28,11 @@ const custom: Palette = {
   name: 'Studio',
   builtin: false,
 };
-function plan(style: 'ink' | 'polish' = 'ink'): SceneFirstLongformPlan {
+function plan(style: 'ink' | 'polish' = 'ink', parserVersion: 2 | 3 = 2): SceneFirstLongformPlan {
   return {
     schemaVersion: 2,
     mode: 'scene-first',
-    parserVersion: 2,
+    parserVersion,
     storyboardStyle: style,
     sourceDuration: 60,
     sourceFingerprint: longformSourceFingerprint(words, 60),
@@ -126,11 +126,13 @@ describe('long-form request ownership and appearance', () => {
       storyboardStyle: 'ink',
     });
     await act(async () => {
-      pending.resolve(plan());
+      pending.resolve(plan('ink', 3));
       await done;
     });
     const saved = useStore.getState().longformPlans[source.id];
     expect(saved && isSceneFirstLongformPlan(saved.plan) && saved.plan.storyboardStyle).toBe('ink');
+    expect(saved?.plan).toEqual(plan('ink', 3));
+    expect(saved?.versions?.at(-1)?.plan).toEqual(plan('ink', 3));
     expect(saved?.palette).toEqual(custom);
     expect(saved?.paletteId).toBe(custom.id);
     expect(useStore.getState().pipeline.stage).toBe('ready');
@@ -169,6 +171,28 @@ describe('long-form request ownership and appearance', () => {
     expect(window.api.cancelLongformEditPlan).toHaveBeenCalled();
   });
 
+  it.each([
+    2, 3,
+  ] as const)('rejects parser-%s style mismatch without replacing the saved draft or preparing rendering', async (parserVersion) => {
+    const savedPlan = plan('ink', parserVersion);
+    useStore.getState().setLongformPlan(source.id, {
+      plan: savedPlan,
+      skin: 'editorial',
+      paletteId: custom.id,
+      palette: custom,
+    });
+    const before = structuredClone(useStore.getState().longformPlans[source.id]);
+    window.api.generateLongformEditPlan = vi.fn(async () => plan('polish', parserVersion));
+    const { result } = renderHook(useLongformPipeline);
+    await act(async () => {
+      await result.current.processLongform(source);
+    });
+    expect(useStore.getState().longformPlans[source.id]).toEqual(before);
+    expect(useStore.getState().pipeline.stage).toBe('error');
+    expect(useStore.getState().renderProgress).toEqual([]);
+    expect(window.api.startBatchRender).not.toHaveBeenCalled();
+  });
+
   it('blocks missing palettes before media processing or AI', async () => {
     useStore.setState((state) => ({ settings: { ...state.settings, customPalettes: [] } }));
     const { result } = renderHook(useLongformPipeline);
@@ -180,8 +204,10 @@ describe('long-form request ownership and appearance', () => {
     expect(useStore.getState().pipeline.message).toContain('palette is unavailable');
   });
 
-  it('does not save a parser-2 response with missing style', async () => {
-    const invalid = plan();
+  it.each([
+    2, 3,
+  ] as const)('does not save a parser-%s response with missing style', async (parserVersion) => {
+    const invalid = plan('ink', parserVersion);
     delete invalid.storyboardStyle;
     window.api.generateLongformEditPlan = vi.fn(async () => invalid);
     const { result } = renderHook(useLongformPipeline);

@@ -639,7 +639,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
         );
       if (
         isSceneFirstPlanEnvelope(generated) &&
-        generated.parserVersion === 2 &&
+        (generated.parserVersion === 2 || generated.parserVersion === 3) &&
         generated.storyboardStyle !== appearance.storyboardStyle
       )
         throw new Error(
@@ -1058,7 +1058,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
                   <summary className="cursor-pointer rounded-md px-2 py-2 text-xs font-medium text-primary outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     Change style and palette
                   </summary>
-                  {scenePlan?.parserVersion === 2 ? (
+                  {scenePlan?.parserVersion === 2 || scenePlan?.parserVersion === 3 ? (
                     <div className="mt-3 border-t border-border pt-4">
                       <LongformAppearancePicker
                         style={scenePlan.storyboardStyle}

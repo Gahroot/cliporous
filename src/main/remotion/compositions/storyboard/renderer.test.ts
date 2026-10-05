@@ -10,7 +10,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BUILTIN_PALETTES } from '../../../../shared/palettes';
 import { resolveStoryboardPalette } from '../../../../shared/storyboard-palette';
-import { STORYBOARD_MODELS, type StoryboardPanel } from '../../../../shared/storyboards';
+import { type LegacyStoryboardPanel, STORYBOARD_MODELS } from '../../../../shared/storyboards';
 import { BOARD_MODELS } from '../../../ai/storyboards/catalog';
 import { compileStoryboard } from '../../../ai/storyboards/compiler';
 import { HERO_PROP_DEFS } from '../explainer/HeroProps';
@@ -283,7 +283,7 @@ describe('production React composition', () => {
       revealWord: 0,
       moveWord: 0,
     };
-    const panels: StoryboardPanel[] = [
+    const panels: LegacyStoryboardPanel[] = [
       { ...common, kind: 'statement', body: label('A source statement') },
       {
         ...common,

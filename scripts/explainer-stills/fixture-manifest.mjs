@@ -1,6 +1,7 @@
 /** Approved deliverable matrix, not a list of implemented renderers. */
 import { HERO_CATALOG } from '../../src/main/remotion/compositions/explainer/hero-catalog.ts';
 import { stageCanvasFor } from '../../src/main/remotion/compositions/explainer/types.ts';
+import { BUSINESS_MANIFEST, businessTargetMatches } from './business-manifest.mjs';
 import { createRenderPlan, normalizeFixtures } from './fixture-schema.mjs';
 import { digest } from './harness-runtime.mjs';
 export const FIXTURE_MANIFEST = {
@@ -198,14 +199,14 @@ export const FIXTURE_MANIFEST = {
 export const REQUIRED_TARGET_COUNT = Object.values(FIXTURE_MANIFEST).flat().length;
 
 /** Fixture declarations are coverage intentions; only render reports prove execution. */
-export function fixtureCoverage(fixtures) {
+export function fixtureCoverage(fixtures, manifest = FIXTURE_MANIFEST) {
   const found = new Map();
   for (const fixture of fixtures) {
     for (const entry of fixture.covers ?? []) {
       if (
         !entry ||
-        !Object.hasOwn(FIXTURE_MANIFEST, entry.category) ||
-        !FIXTURE_MANIFEST[entry.category].includes(entry.id)
+        !Object.hasOwn(manifest, entry.category) ||
+        !manifest[entry.category].includes(entry.id)
       ) {
         throw new Error(`${fixture.name}: unknown coverage target ${JSON.stringify(entry)}`);
       }
@@ -215,7 +216,7 @@ export function fixtureCoverage(fixtures) {
       found.set(key, names);
     }
   }
-  return Object.entries(FIXTURE_MANIFEST).flatMap(([category, ids]) =>
+  return Object.entries(manifest).flatMap(([category, ids]) =>
     ids.map((id) => ({
       category,
       id,
@@ -303,6 +304,8 @@ export function criticalFrames(fixture) {
 }
 
 export function targetMatchesScene(target, scene) {
+  if (Object.hasOwn(BUSINESS_MANIFEST, target.category))
+    return businessTargetMatches(target, scene);
   if (
     !Object.hasOwn(FIXTURE_MANIFEST, target.category) ||
     !FIXTURE_MANIFEST[target.category].includes(target.id)
@@ -341,10 +344,19 @@ export function targetMatchesScene(target, scene) {
   }
 }
 
-/** Matrix expansion belongs to the verifier, not agents' authored fixtures. Native dimensions only. */
-export function verificationPlan(fixtures, { matrix = true } = {}) {
+/** Matrix expansion belongs to the verifier, not agents' authored fixtures. Native dimensions only.
+ * @param {any[]} fixtures
+ * @param {{matrix?: boolean, scope?: string}} options
+ */
+export function verificationPlan(fixtures, { matrix = true, scope } = {}) {
   const normalized = normalizeFixtures(fixtures);
-  fixtureCoverage(normalized); // Reject unknown declarations, never silently accept misspelled IDs.
+  const business =
+    scope === 'business' ||
+    normalized.some((f) => f.covers?.some((t) => Object.hasOwn(BUSINESS_MANIFEST, t.category)));
+  fixtureCoverage(
+    normalized,
+    business ? { ...FIXTURE_MANIFEST, ...BUSINESS_MANIFEST } : FIXTURE_MANIFEST,
+  ); // Reject unknown declarations, never silently accept misspelled IDs.
   return normalized.flatMap((fx) => {
     for (const target of fx.covers ?? []) {
       if (!targetMatchesScene(target, fx.scene))

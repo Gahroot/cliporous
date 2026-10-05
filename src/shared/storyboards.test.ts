@@ -22,16 +22,21 @@ const envelope = (parserVersion: number): Record<string, unknown> => ({
 });
 
 describe('storyboard version and budget boundary', () => {
-  it('retains parser-1 meaning and requires explicit valid parser-2 style', () => {
+  it('retains parser-1 meaning and requires explicit valid parser-2/3 style', () => {
     expect(sceneFirstPlanProblem(envelope(1))).toBeNull();
-    expect(sceneFirstPlanProblem(envelope(2))).toContain('style');
-    for (const style of ['ink', 'polish']) {
-      expect(sceneFirstPlanProblem({ ...envelope(2), storyboardStyle: style })).toBeNull();
+    for (const version of [2, 3]) {
+      expect(sceneFirstPlanProblem(envelope(version))).toContain('style');
+      for (const style of ['ink', 'polish']) {
+        expect(sceneFirstPlanProblem({ ...envelope(version), storyboardStyle: style })).toBeNull();
+      }
+      expect(
+        sceneFirstPlanProblem({ ...envelope(version), storyboardStyle: 'editorial' }),
+      ).toContain('style');
     }
     expect(sceneFirstPlanProblem({ ...envelope(2), storyboardStyle: 'editorial' })).toContain(
       'style',
     );
-    expect(sceneFirstPlanProblem(envelope(3))).toContain('Unsupported');
+    expect(sceneFirstPlanProblem(envelope(4))).toContain('Unsupported');
   });
   it('normalizes settings only, not saved plans', () => {
     expect(normalizeStoryboardStyle(undefined)).toBe('polish');

@@ -466,21 +466,26 @@ describe('CutPlanReviewScreen', () => {
     expect(window.api.generateLongformEditPlan).not.toHaveBeenCalled();
   });
 
-  it('changes board style and palette into new unapproved drafts without AI and restores original appearance', () => {
+  it.each([
+    2, 3,
+  ] as const)('parser-%s changes board style and palette into new unapproved drafts without AI and restores original appearance', (parserVersion) => {
+    const plan = { ...makeStoryboardPlan(), parserVersion };
     useStore.getState().setLongformPlan(SOURCE.id, {
-      plan: makeStoryboardPlan(),
+      plan,
       skin: 'editorial',
       paletteId: 'brand',
     });
     useStore.getState().acceptLongformPlan(SOURCE.id, 'editorial', 'brand');
     const initial = useStore.getState().longformPlans[SOURCE.id];
     const originalVersion = initial?.activeVersionId;
+    const approvedHistory = structuredClone(initial?.versions);
     render(<CutPlanReviewScreen />);
     openPlanDetails();
     fireEvent.click(screen.getByText('Change style and palette'));
     fireEvent.click(screen.getByRole('button', { name: 'Ink' }));
     let revised = useStore.getState().longformPlans[SOURCE.id];
-    expect(revised?.plan).toMatchObject({ storyboardStyle: 'ink' });
+    expect(revised?.plan).toEqual({ ...plan, storyboardStyle: 'ink' });
+    expect(revised?.versions?.slice(0, -1)).toEqual(approvedHistory);
     expect(revised?.status).toBe('draft');
     expect(revised?.approvedVersionId).toBeNull();
     expect(revised?.versions).toHaveLength((initial?.versions?.length ?? 0) + 1);
@@ -490,6 +495,7 @@ describe('CutPlanReviewScreen', () => {
     revised = useStore.getState().longformPlans[SOURCE.id];
     expect(revised?.paletteId).toBe(alternative.id);
     expect(revised?.versions).toHaveLength((initial?.versions?.length ?? 0) + 2);
+    expect(revised?.versions?.slice(0, approvedHistory?.length)).toEqual(approvedHistory);
     expect(window.api.generateLongformEditPlan).not.toHaveBeenCalled();
     if (!originalVersion) throw new Error('Missing original version');
     act(() => useStore.getState().restoreLongformPlanVersion(SOURCE.id, originalVersion));
@@ -501,7 +507,9 @@ describe('CutPlanReviewScreen', () => {
     });
   });
 
-  it('regeneration keeps request-start style and full palette despite settings/library changes before and during AI', async () => {
+  it.each([
+    2, 3,
+  ] as const)('parser-%s regeneration keeps request-start style and full palette despite settings/library changes before and during AI', async (parserVersion) => {
     const palette = {
       ...getPaletteById('brand'),
       id: 'custom-snapshot',
@@ -543,14 +551,63 @@ describe('CutPlanReviewScreen', () => {
         state.settings.customPalettes = [];
       }),
     );
-    await act(async () => generated.resolve(makeStoryboardPlan()));
+    const response = { ...makeStoryboardPlan(), parserVersion };
+    await act(async () => generated.resolve(response));
     const record = useStore.getState().longformPlans[SOURCE.id];
     expect(record?.versions).toHaveLength(2);
     expect(record?.palette).toEqual(palette);
     expect(record?.versions?.at(-1)?.palette).toEqual(palette);
-    expect(record?.plan).toMatchObject({ storyboardStyle: 'polish' });
+    expect(record?.plan).toEqual(response);
+    expect(record?.versions?.at(-1)?.plan).toEqual(response);
     expect(record?.status).toBe('draft');
     expect(window.api.cancelLongformEditPlan).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    2, 3,
+  ] as const)('rejects parser-%s regeneration with mismatched style without replacing history or rendering', async (parserVersion) => {
+    const plan = { ...makeStoryboardPlan(), parserVersion };
+    useStore.getState().setLongformPlan(SOURCE.id, { plan, skin: 'editorial', paletteId: 'brand' });
+    const before = structuredClone(useStore.getState().longformPlans[SOURCE.id]);
+    window.api.generateLongformEditPlan = vi.fn(async () => ({
+      ...plan,
+      storyboardStyle: 'ink' as const,
+    }));
+    render(<CutPlanReviewScreen />);
+    openPlanDetails();
+    fireEvent.click(screen.getByRole('button', { name: 'Regenerate plan' }));
+    await waitFor(() => expect(toast.error).toHaveBeenCalled());
+    expect(useStore.getState().longformPlans[SOURCE.id]).toEqual(before);
+    expect(useStore.getState().renderProgress).toEqual([]);
+    expect(window.api.renderLongformScenePreview).not.toHaveBeenCalled();
+    expect(window.api.startBatchRender).not.toHaveBeenCalled();
+  });
+
+  it('retains unknown future saved versions and payload while blocking approval, preview and style editing', () => {
+    const plan = {
+      ...makeStoryboardPlan(),
+      parserVersion: 99,
+      futurePayload: { panels: ['keep'] },
+    };
+    useStore.getState().setLongformPlan(SOURCE.id, {
+      plan: plan as unknown as LongformEditPlan,
+      skin: 'editorial',
+      paletteId: 'brand',
+      preservedPlanData: plan,
+    });
+    const before = structuredClone(useStore.getState().longformPlans[SOURCE.id]);
+    render(<CutPlanReviewScreen />);
+    expect(screen.getByRole('button', { name: 'Approve plan and prepare export' })).toBeDisabled();
+    const preview = screen.queryByRole('button', { name: 'Render draft preview' });
+    if (preview) expect(preview).toBeDisabled();
+    openPlanDetails();
+    expect(screen.queryByRole('button', { name: 'Ink' })).not.toBeInTheDocument();
+    expect(useStore.getState().longformPlans[SOURCE.id]).toEqual(before);
+    expect(before?.plan).toEqual(plan);
+    expect(before?.versions?.[0]?.plan).toEqual(plan);
+    expect(before?.preservedPlanData).toEqual(plan);
+    expect(window.api.renderLongformScenePreview).not.toHaveBeenCalled();
+    expect(window.api.startBatchRender).not.toHaveBeenCalled();
   });
 
   it('retries only failed sections with request-scoped progress, previous plan and preserved scene IDs', async () => {

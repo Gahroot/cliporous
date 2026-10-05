@@ -72,6 +72,7 @@ export const StoryBoard: React.FC<ProductionStoryBoardProps> = ({ spec, style, p
             <BoardProps3D
               props={spec.props}
               elements={spec.elements}
+              businessPanels={spec.businessPanels}
               cam={cam}
               t={t}
               width={width}

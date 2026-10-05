@@ -32,11 +32,11 @@ export function artifactValid(entry) {
 }
 
 /** A declaration is not evidence. Each required case/frame must have a still with the same props hash. */
-export function executionCoverage(plans, reports = []) {
+export function executionCoverage(plans, reports = [], manifest = FIXTURE_MANIFEST) {
   const entries = reports
     .flatMap((r) => r.entries ?? [])
     .filter((e) => e.operation === 'still' && artifactValid(e));
-  return Object.entries(FIXTURE_MANIFEST).flatMap(([category, ids]) =>
+  return Object.entries(manifest).flatMap(([category, ids]) =>
     ids.map((id) => {
       const relevant = plans.filter((p) =>
         p.covers.some((t) => t.category === category && t.id === id),

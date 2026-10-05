@@ -1,3 +1,4 @@
+import type { BusinessAlternativesLens } from '../../business/decisions/alternative-types';
 import type { TechnologyStory } from '../../technology/types';
 
 /** Pack E is illustrative, never telemetry, probability geometry or measured scale. */
@@ -45,6 +46,8 @@ export interface PossibleFuturesScene extends TechnologyStory {
   alternatives: PerspectiveAlternative[];
   /** Exact source phrase explicitly retaining uncertainty/no selected winner. */
   uncertainty: string;
+  /** Opt-in source-bound snapshot; absence preserves the historical scene unchanged. */
+  businessAlternatives?: BusinessAlternativesLens;
 }
 
 export interface DigitalTwinScene extends TechnologyStory {

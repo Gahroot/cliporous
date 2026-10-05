@@ -13,3 +13,12 @@
 - **Storyboard style** — Ink or Polish, a material and typography treatment independent of color palette, legacy block skin and app theme.
 - **Appearance snapshot** — The style and resolved palette saved with an edit-plan version. Later changes to defaults or a custom palette do not change that version.
 - **Overview hold** — An optional readable pause showing the accumulated board; it is only used when the source window has enough time.
+- **Business recipe** — A bounded source-grounded explanation of one operating or financial relationship. A recipe chooses an authored grammar and preset; it is not a simulation or an arbitrary diagram.
+- **Task ownership** — The explicit assignment of who performs a task, who may approve it and who remains accountable for the result. Performing, approving and accountability are separate roles even when one person fills more than one.
+- **Delegation scope** — The source-stated actions, limits, conditions and expiry a delegate is allowed to act within. Being capable of an action does not grant permission to take it.
+- **Quantity basis** — The subject or population, unit, period and denominator that give a quantity meaning. Quantities are comparable only when their bases are compatible.
+- **Evidence state** — Whether a displayed fact is source-stated, illustrative, unknown or explicitly a scenario. An illustration does not establish a measured outcome or probability.
+- **Versioned identity** — A stable subject identity paired with an explicit revision and its source evidence. An approved later revision does not rewrite earlier facts or imply model retraining.
+- **Capital state** — The distinction between a commitment, requested contribution, paid cash, deployment, reserve and distribution. A promise does not become available cash until contribution is supported.
+- **Economic right** — A stated claim on an asset or payout, distinct from ownership percentage, control and available cash. Transferability does not establish liquidity or a guaranteed payout.
+- **Explanation panel** — A storyboard panel whose source choices and identity links reconstruct one allowlisted authored explanation. It shares the board's camera and model layer rather than embedding an independent scene stage.

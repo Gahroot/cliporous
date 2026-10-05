@@ -14,6 +14,7 @@ import type {
   StoryboardStyle,
 } from '../../../../shared/storyboards';
 import type { HeroProp } from '../explainer/types';
+import type { BoardBusinessPanel } from './business-types';
 
 /** `ink` = paper + hand-drawn ink + clay; `polish` = current dark editorial stage. */
 export type BoardSkin = 'ink' | 'polish';
@@ -166,6 +167,8 @@ export interface StoryBoardSpec {
   shots: CameraShot[];
   elements: BoardElement[];
   props: BoardProp[];
+  /** Reconstructed native facts for source-validated business panels, never planner geometry. */
+  businessPanels?: BoardBusinessPanel[];
   /** Board dissolves in over the source footage here … */
   boardIn: { at: number; dur: number };
   /** … and back out to the footage here. */

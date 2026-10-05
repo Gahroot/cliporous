@@ -7,6 +7,9 @@ import { Freeze, useVideoConfig } from 'remotion';
 import { HERO_PROP_DEFS, LightbulbRig } from '../explainer/HeroProps';
 import { StudioEnvironment } from '../explainer/StudioEnvironment';
 import { ExplainerProvider, useStage } from '../explainer/stage';
+import { type BusinessModelRail, visibleBusinessPanels } from './business-panel-state';
+import { BoardBusinessModels } from './business-panels';
+import type { BoardBusinessPanel } from './business-types';
 import { type CameraPose, worldToScreen } from './camera';
 import { assertModelBudget } from './model-resources';
 import {
@@ -59,16 +62,22 @@ const PropModel: React.FC<{ entry: VisibleProp; t: number; fps: number }> = ({
 export const BoardProps3D: React.FC<{
   props: readonly BoardProp[];
   elements: readonly BoardElement[];
+  businessPanels?: readonly BoardBusinessPanel[];
   cam: CameraPose;
   t: number;
   width: number;
   height: number;
-}> = ({ props, elements, cam, t, width, height }) => {
+}> = ({ props, elements, businessPanels = [], cam, t, width, height }) => {
   const palette = useStage();
   const { fps } = useVideoConfig();
-  assertModelBudget(props);
+  assertModelBudget(props, businessPanels);
   const visible = visibleBoardProps(props, elements, cam, t, width, height);
-  if (boardCanvasCount(visible) === 0) return null;
+  const rails: Record<string, BusinessModelRail> = {};
+  for (const panel of businessPanels) {
+    if (panel.modelRail) rails[panel.id] = panel.modelRail;
+  }
+  const businessVisible = visibleBusinessPanels(businessPanels, rails, cam, t, width, height);
+  if (boardCanvasCount(visible) === 0 && businessVisible.length === 0) return null;
   return (
     <ThreeCanvas
       width={width}
@@ -104,6 +113,14 @@ export const BoardProps3D: React.FC<{
             </group>
           );
         })}
+        <BoardBusinessModels
+          panels={businessPanels}
+          rails={rails}
+          camera={cam}
+          seconds={t}
+          width={width}
+          height={height}
+        />
       </ExplainerProvider>
     </ThreeCanvas>
   );

@@ -14,6 +14,7 @@ import { dirname, join } from 'node:path';
 import { openBrowser, renderStill, selectComposition } from '@remotion/renderer';
 import { disableGpuEncoderForSession, setupFFmpeg } from '../../src/main/ffmpeg';
 import { deriveExplainerPalette } from '../../src/main/remotion/compositions/explainer/palette';
+import { businessPanelVisualMode } from '../../src/main/remotion/compositions/storyboard/business-panel-state';
 import type { ProductionStoryBoardProps } from '../../src/main/remotion/compositions/storyboard/types';
 import {
   renderLongformScenePreview,
@@ -21,6 +22,7 @@ import {
 } from '../../src/main/render/longform-scene-render';
 import { buildLongformStoryboardProps } from '../../src/main/render/longform-storyboard-props';
 import type { LongformSceneRenderResult } from '../../src/shared/longform-scenes';
+import { digest } from '../explainer-stills/harness-runtime.mjs';
 import {
   assertAudioSample,
   assertVideoProbe,
@@ -29,7 +31,17 @@ import {
   sourceFileDigest,
 } from '../explainer-stills/longform-scenes-media.mjs';
 import { runBounded } from '../explainer-stills/verify-systems-e2e.mjs';
-import { fixtures, materialize, mixedFixture, PALETTES, STYLES } from './fixtures';
+import {
+  businessFixtures,
+  fixtures,
+  materialize,
+  maximumSourceFixture,
+  mixedFixture,
+  movingFixture,
+  PALETTES,
+  STYLES,
+} from './fixtures';
+import { resourceComparisonPlan } from './resource-controls.mjs';
 import { array, jsonRecord, type MediaContext, record, required } from './support';
 
 interface CommandEvidence {
@@ -231,6 +243,7 @@ export async function runMedia({ out, report, boundary }: MediaContext): Promise
     name: string,
     enabled = false,
     signal?: AbortSignal,
+    selectedPalette = palette,
   ) => {
     const path = join(scratch, `${name}.mp4`);
     const plan = structuredClone({ ...f.plan, storyboardStyle: style });
@@ -241,7 +254,7 @@ export async function runMedia({ out, report, boundary }: MediaContext): Promise
       sourceVideoPath: sourcePath,
       outputPath: path,
       palette: deriveExplainerPalette(),
-      storyboardPalette: { ...palette },
+      storyboardPalette: { ...selectedPalette },
       qualityParams,
       sceneSfxEnabled: enabled,
       signal,
@@ -280,6 +293,149 @@ export async function runMedia({ out, report, boundary }: MediaContext): Promise
       rmSync(dirname(path), { recursive: true, force: true });
     }
   };
+  if (process.env.STORYBOARD_PROOF_RESOURCE_CYCLE) {
+    const cycle = Number(process.env.STORYBOARD_PROOF_RESOURCE_CYCLE);
+    assert.ok(Number.isInteger(cycle) && cycle >= 1 && cycle <= 5);
+    const businesses = businessFixtures();
+    const maximum = businesses.reduce((a, b) =>
+      JSON.stringify(a.spec).length >= JSON.stringify(b.spec).length ? a : b,
+    );
+    const controls = new Map([
+      ['historical-moving', materialize(movingFixture())],
+      ['historical-max-source', materialize(maximumSourceFixture())],
+      ['business-representative', materialize(businesses[0])],
+      ['business-max-source', materialize(maximum)],
+    ]);
+    const schedule = resourceComparisonPlan();
+    json('resource-plan.json', schedule);
+    const results = [];
+    for (const control of schedule.controls) {
+      const f = required(controls.get(control), control);
+      const sourcePath = join(out, `${control}-source.mp4`);
+      const sourceIdentity = await source(sourcePath, f.duration);
+      for (const phase of ['cold', 'warm']) {
+        const name = `resource-${cycle}-${control}-${phase}`;
+        const evidence = await report.measure(name, async () => {
+          const result = await encode(f, sourcePath, 'ink', name, true);
+          assert.equal(result.result.fallbacks.length, 0);
+          const nativeProbe = await probe(result.path, f.duration, name);
+          await ff(['-v', 'error', '-xerror', '-i', result.path, '-f', 'null', '-']);
+          for (const path of boundary.paths) assert.equal(existsSync(path), false);
+          return {
+            cycle,
+            control,
+            phase,
+            source: sourceIdentity,
+            path: result.path,
+            sha256: await sourceFileDigest(result.path),
+            probe: nativeProbe,
+            fullDecodeVerified: true,
+            reconciliation: result.result,
+          };
+        });
+        results.push(evidence);
+      }
+      assert.equal(await sourceFileDigest(sourcePath), sourceIdentity.sha256);
+    }
+    json('resource-comparisons.json', { cycle, results, limitations: schedule.limitation });
+    return;
+  }
+  // Sequence records exist only after real saved production preview/export and native probes.
+  const businessSequences: unknown[] = [];
+  for (const raw of businessFixtures()) {
+    const saved = materialize(raw);
+    const selected = saved.timeline.segments.find((s) => s.kind === 'scene');
+    assert.ok(selected?.kind === 'scene' && selected.compiled.kind === 'storyboard');
+    const sourcePath = join(out, `${raw.name}-source.mp4`);
+    const sourceIdentity = await source(sourcePath, saved.duration);
+    json(`${raw.name}-approved-source.json`, {
+      spec: raw.spec,
+      words: raw.words,
+      duration: raw.duration,
+    });
+    const approvedSourceSha256 = digest(raw.spec);
+    const approvedSourceFileSha256 = await sourceFileDigest(
+      join(out, `${raw.name}-approved-source.json`),
+    );
+    for (const style of STYLES)
+      for (const selectedPalette of PALETTES) {
+        const name = `${raw.name}-${style}-${selectedPalette.id}`;
+        await report.measure(`business-saved-preview-export-${name}`, async () => {
+          const plan = structuredClone({ ...saved.plan, storyboardStyle: style });
+          const savedPlanPath = join(out, `${name}-saved-plan.json`);
+          json(`${name}-saved-plan.json`, plan);
+          const exported = await encode(
+            saved,
+            sourcePath,
+            style,
+            name,
+            true,
+            undefined,
+            selectedPalette,
+          );
+          assert.equal(exported.result.scenes?.rendered, 1);
+          assert.equal(exported.result.fallbacks.length, 0);
+          const exportProbe = await probe(exported.path, saved.duration, name);
+          const temporary = await renderLongformScenePreview({
+            requestId: name,
+            sourceVideoPath: sourcePath,
+            wordTimestamps: saved.words,
+            plan,
+            sceneId: selected.compiled.placement.id,
+            paletteId: selectedPalette.id,
+            customPalettes: selectedPalette.builtin ? [] : [selectedPalette],
+            sceneSfxEnabled: true,
+          });
+          const previewPath = join(previewDir, `${name}.mp4`);
+          try {
+            copyFileSync(temporary, previewPath);
+          } finally {
+            rmSync(dirname(temporary), { recursive: true, force: true });
+          }
+          const previewProbe = await probe(
+            previewPath,
+            selected.endTime - selected.startTime,
+            `${name}-preview`,
+          );
+          await ff(['-v', 'error', '-xerror', '-i', previewPath, '-f', 'null', '-']);
+          await ff(['-v', 'error', '-xerror', '-i', exported.path, '-f', 'null', '-']);
+          const entry = {
+            id: raw.name,
+            style,
+            palette: selectedPalette.id,
+            approvedSourceSha256,
+            approvedSourceFileSha256,
+            approvedSourcePath: join(out, `${raw.name}-approved-source.json`),
+            previewWindow: { startFrame: selected.startFrame, endFrame: selected.endFrame },
+            savedPlanPath,
+            savedPlanSha256: await sourceFileDigest(savedPlanPath),
+            parserVersion: plan.parserVersion,
+            specVersion: raw.spec.specVersion,
+            source: sourceIdentity,
+            preview: {
+              route: 'renderLongformScenePreview',
+              expectedFrames: selected.endFrame - selected.startFrame,
+              path: previewPath,
+              sha256: await sourceFileDigest(previewPath),
+              probe: previewProbe,
+              fullDecodeVerified: true,
+            },
+            export: {
+              route: 'renderSceneFirstLongform',
+              expectedFrames: Math.round(saved.duration * 30),
+              path: exported.path,
+              sha256: await sourceFileDigest(exported.path),
+              probe: exportProbe,
+              fullDecodeVerified: true,
+              reconciliation: exported.result,
+            },
+          };
+          businessSequences.push(entry);
+          return entry;
+        });
+      }
+    assert.equal(await sourceFileDigest(sourcePath), sourceIdentity.sha256);
+  }
   const offPreviews = new Map<string, string>();
   const tolerance = {
     meanAbsoluteRGB255: 5,
@@ -415,9 +571,28 @@ export async function runMedia({ out, report, boundary }: MediaContext): Promise
       const mean = sum / (1920 * 1080);
       if (label === 'opaque') assert.ok(min >= 254, `Board did not cover full frame: ${min}`);
       else assert.ok(mean <= 40, `Board alpha bookend not transparent enough: ${mean}`);
+      if (process.env.STORYBOARD_PROOF_SCOPE === 'business')
+        await ff([
+          '-ss',
+          String(time),
+          '-i',
+          path,
+          '-frames:v',
+          '1',
+          '-pix_fmt',
+          'rgba',
+          join(out, `alpha-${label}.png`),
+        ]);
       stats.push({ label, time, min, max, mean });
     }
-    return { stream, stats, scope: 'Full-resolution alpha samples, not every frame' };
+    const intermediateRemoved = process.env.STORYBOARD_PROOF_SCOPE === 'business';
+    if (intermediateRemoved) rmSync(path);
+    return {
+      stream,
+      stats,
+      intermediateRemoved,
+      scope: 'Full-resolution alpha samples, not every frame',
+    };
   });
   await report.measure('real-SFX-on-preview-single-cue-list', async () => {
     const before = boundary.mixes.length;
@@ -547,7 +722,14 @@ export async function runMedia({ out, report, boundary }: MediaContext): Promise
         chromiumOptions,
         onBrowserDownload,
       };
-      canvasPhase = { name, hasProps: props.spec.props.length > 0 };
+      canvasPhase = {
+        name,
+        hasProps:
+          props.spec.props.length > 0 ||
+          (props.spec.businessPanels ?? []).some(
+            (panel) => businessPanelVisualMode(panel) === 'hybrid',
+          ),
+      };
       try {
         await renderStill(config);
         if (repeat) {
@@ -600,7 +782,13 @@ export async function runMedia({ out, report, boundary }: MediaContext): Promise
           await still(`matrix-${style}-${selected.id}`, props, frame, selected.id === palette.id);
         }
       // Every authored kind, longest labels, maximum 45 elements/5 props and 210-node source.
-      for (const f of fixtures())
+      for (const f of process.env.STORYBOARD_PROOF_SCOPE === 'business'
+        ? [
+            ...businessFixtures(),
+            { name: 'moving-recurring', ...movingFixture() },
+            { name: 'maximum-source-210-nodes', ...maximumSourceFixture() },
+          ]
+        : fixtures())
         for (const style of STYLES) {
           const saved = materialize(f);
           const seg = saved.timeline.segments.find((s) => s.kind === 'scene');
@@ -831,6 +1019,7 @@ export async function runMedia({ out, report, boundary }: MediaContext): Promise
   assert.equal(await sourceFileDigest(src), sourceEvidence.sha256, 'Proof mutated original source');
   for (const path of boundary.paths)
     assert.equal(existsSync(path), false, 'Production alpha temp survived');
+  json('business-sequences.json', businessSequences);
   json('media-dispatch.json', {
     renders: boundary.renders.map((r) => ({
       compositionId: r.compositionId,

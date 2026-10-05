@@ -7,6 +7,7 @@ import {
 } from '../../remotion/compositions/explainer/concepts/perspective/types';
 import type { TechnologyStory } from '../../remotion/compositions/explainer/technology/types';
 import type { SceneCue } from '../../remotion/compositions/explainer/types';
+import { parseBusinessAlternatives } from './business-futures-contract';
 import {
   containsActor,
   escaped,
@@ -115,7 +116,15 @@ const CHANGE = {
 export function parsePossibleFutures(raw: Rec, ctx: ParseContext): PossibleFuturesScene | null {
   if (raw.preset !== 'branching-scenarios' && raw.preset !== 'forecast-range')
     return mechanismIssue(ctx, 'unknown possible-futures preset');
-  const story = perspectiveStory(raw, ctx, ['alternatives', 'uncertainty']);
+  const optedIn = Object.hasOwn(raw, 'businessAlternatives');
+  const legacyRaw = optedIn
+    ? Object.fromEntries(
+        Object.entries(raw).filter(
+          ([key]) => key !== 'businessAlternatives' && key !== 'visualMode',
+        ),
+      )
+    : raw;
+  const story = perspectiveStory(legacyRaw, ctx, ['alternatives', 'uncertainty']);
   if (!story || !/\b(?:line|factory|plant|workshop|production)\b/i.test(story.subject))
     return mechanismIssue(
       ctx,
@@ -228,7 +237,16 @@ export function parsePossibleFutures(raw: Rec, ctx: ParseContext): PossibleFutur
       ctx,
       'do not present a resolved or guaranteed source outcome as uncertain alternatives',
     );
-  return { kind: 'possible-futures', preset: raw.preset, ...story, alternatives, uncertainty };
+  const legacy: PossibleFuturesScene = {
+    kind: 'possible-futures',
+    preset: raw.preset,
+    ...story,
+    alternatives,
+    uncertainty,
+  };
+  if (!optedIn) return legacy;
+  const lens = parseBusinessAlternatives(raw, ctx, legacy);
+  return lens ? { ...legacy, businessAlternatives: lens } : null;
 }
 
 function gateState(source: string, actor: string, part: string, state: 'open' | 'closed'): boolean {
@@ -389,7 +407,7 @@ const FUTURES: KindSpec<'possible-futures'> = {
     'Illustrative production-line alternatives diverge from one present. Branches retain equal visual weight and no winner; forecast-range shows explicitly qualitative lower/higher capacity endpoints, never odds or measured probability geometry.',
   schema:
     '{"kind":"possible-futures","preset":"branching-scenarios|forecast-range","label":"source","subject":"named production line","alternatives":[{"label":"lower capacity","change":"reduced|steady|expanded","qualifier":"could have lower capacity","evidenceStartWord":N,"evidenceEndWord":N}],"uncertainty":"source unresolved phrase","outcome":"source","condition":"complete source condition if present","setupWord":N,"actionWord":N,"responseWord":N,"checkWord":N,"resolveWord":N}',
-  limits: `${LIMITS} 2–3 separate source sentences attach could/may/might have/retain/reach/show/see to the SAME subject and a distinct qualitative capacity/output label≤22; qualifier≤40 quotes the modal and label. range: exactly reduced then expanded; check sentence names both endpoints as a range. Final sentence identifies subject and uncertainty≤40. No numeric ranges in this qualitative preset.`,
+  limits: `${LIMITS} 2–3 separate source sentences attach could/may/might have/retain/reach/show/see to the SAME subject and a distinct qualitative capacity/output label≤22; qualifier≤40 quotes the modal and label. range: exactly reduced then expanded; check sentence names both endpoints as a range. Final sentence identifies subject and uncertainty≤40. No numeric ranges in this qualitative preset. Optional OP-75 snapshot only for fully accepted branching-scenarios: add visualMode:"diagram"|"hybrid" AND businessAlternatives:{version:1,evidence:{state:"illustrative",label,source:{fromWord,toWord}},baseline:{identity:{id,label,source},subject:{id,label,source},period,revision,source},records:[{alternativeId:"alternative-0",baselineId,subjectId,period,revision,identity:{id,label,source},source}],native:null|{assembly:"A-03",baselineId,subjectId,period,revision,source}}. Exactly one record per existing alternative, same actual baseline/subject/period/revision, complete positive local setup/action clauses retain each existing possibility qualifier and describe illustrative alternative records, not achieved output. Hybrid requires independent source-backed A-03 record assembly; diagram may explicitly use native:null. Equal area/exposure, no winner, numbers or probability; complete fixed-font pages must fit. Neither optional field is permitted alone; absent opt-in preserves the historical renderer.`,
   triggers: [
     /\b(?:possible futures|branching scenarios|forecast range)\b/,
     /\b(?:line|production|factory|plant)\b.{0,100}\b(?:could|might|may|uncertain)\b/,

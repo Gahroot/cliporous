@@ -7,6 +7,7 @@ import {
   parsePlanWithDiagnostics,
   sceneCues,
 } from '../ai/explainer-scenes';
+import { businessSourceFixtures } from '../remotion/compositions/explainer/business/source-fixtures';
 import { conceptFixtureWords } from '../remotion/compositions/explainer/concepts/fixture-words';
 import { deriveExplainerPalette } from '../remotion/compositions/explainer/palette';
 import {
@@ -92,30 +93,39 @@ const explanationBodies: ExplainerScene[] = [
     preset: 'maintenance',
     stageLabels: ['Inspection', 'Repair'],
   },
-  { ...technologyBeats, kind: 'agent-team', preset: 'handoff', roles: ['Writer', 'Reviewer'] },
-  { ...technologyBeats, kind: 'agent-plan', preset: 'sequence', steps: ['Inspect', 'Test'] },
+  {
+    ...technologyBeats,
+    kind: 'agent-team',
+    preset: 'parallel-specialists',
+    roles: ['Writer', 'Reviewer'],
+  },
+  {
+    ...technologyBeats,
+    kind: 'agent-plan',
+    preset: 'replan',
+    obstacleLabel: 'Failed test',
+    revisedLabel: 'Inspect then repair',
+  },
   {
     ...technologyBeats,
     kind: 'agent-budget',
-    preset: 'approval-limit',
-    limitLabel: 'Approval limit',
-    requestLabel: 'Extra search',
+    preset: 'request-more',
+    resourceLabel: 'Search budget',
+    actionLabel: 'Request another search',
   },
   {
     ...technologyBeats,
     kind: 'model-training',
-    preset: 'training-cycle',
+    preset: 'train-then-use',
     exampleLabel: 'Examples',
-    modelLabel: 'Model',
-    feedbackLabel: 'Feedback',
+    inputLabel: 'New input',
   },
   {
     ...technologyBeats,
     kind: 'model-evaluation',
-    preset: 'regression',
-    leftLabel: 'Baseline',
-    rightLabel: 'Candidate',
-    caseLabels: ['Case A', 'Case B'],
+    preset: 'same-tests',
+    approaches: ['Baseline', 'Candidate'],
+    criteria: ['Case A', 'Case B'],
   },
   {
     ...technologyBeats,
@@ -184,7 +194,7 @@ function hybridBodies(): ExplainerScene[] {
   return [...found.values()];
 }
 
-const bodies: ExplainerScene[] = [
+const legacyBodies: ExplainerScene[] = [
   {
     kind: 'bottleneck',
     label: 'Approval gate',
@@ -264,6 +274,37 @@ const bodies: ExplainerScene[] = [
   ...conceptBodies(),
   ...hybridBodies(),
 ];
+
+// Keep the exact registry guard: new kinds must exercise the same real production glue.
+function businessBodies(): ExplainerScene[] {
+  const found = new Map<string, ExplainerScene>(legacyBodies.map((scene) => [scene.kind, scene]));
+  const added: ExplainerScene[] = [];
+  for (const fixture of businessSourceFixtures()) {
+    const kind = fixture.raw.kind;
+    if (typeof kind !== 'string') throw new Error(`Invalid business kind: ${fixture.fixtureId}`);
+    if (found.has(kind)) continue;
+    const parsed = parsePlanWithDiagnostics(
+      { scenes: [{ ...fixture.raw, layout: 'stack' }] },
+      fixture.words,
+      { minStart: 0, maxEnd: 90 },
+    );
+    const plan = parsed.accepted[0];
+    if (!plan || parsed.rejected.length || parsed.omitted.length || parsed.accepted.length !== 1)
+      throw new Error(`Business fixture did not parse: ${fixture.fixtureId}`);
+    // Isolate clock plumbing in the existing six-second test window; raw source
+    // parsing, full native duration and both production routes have separate coverage.
+    const duration = plan.endTime - plan.startTime;
+    if (!(duration > 0)) throw new Error(`Invalid business fixture duration: ${fixture.fixtureId}`);
+    const scene = mapSceneTimes(
+      plan.scene,
+      (time) => Math.round(((time - plan.startTime) / duration) * 6000) / 1000,
+    );
+    found.set(scene.kind, scene);
+    added.push(scene);
+  }
+  return added;
+}
+const bodies: ExplainerScene[] = [...legacyBodies, ...businessBodies()];
 
 function planned(scene: ExplainerScene, startTime = 20): PlannedExplainerScene {
   return {

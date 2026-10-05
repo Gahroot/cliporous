@@ -5,10 +5,11 @@ import {
 } from '../../../shared/longform-scenes';
 import { storyboardDefinitionFixture } from '../../../shared/storyboard-fixtures';
 import type {
+  LegacyStoryboardPanelKind,
+  LegacyStoryboardSourceSpec,
   StoryboardAction,
   StoryboardLabel,
   StoryboardModel,
-  StoryboardPanelKind,
   StoryboardSourceSpec,
 } from '../../../shared/storyboards';
 import type { WordTimestamp } from '../../../shared/types';
@@ -28,7 +29,7 @@ export function sourceLabel(
   return { text, startWord, endWord: startWord + tokens.length - 1 };
 }
 export function boardFixture(
-  kind: StoryboardPanelKind = 'statement',
+  kind: LegacyStoryboardPanelKind = 'statement',
   model: StoryboardModel = 'battery',
   action: StoryboardAction = 'reveal',
   offset = 17,
@@ -52,7 +53,7 @@ export function boardFixture(
   };
   const actionText =
     action === 'deactivate' ? (model === 'battery' ? 'drains' : 'turns off') : actions[model];
-  const sentences: Record<Exclude<StoryboardPanelKind, 'statement'>, string> = {
+  const sentences: Record<Exclude<LegacyStoryboardPanelKind, 'statement'>, string> = {
     comparison: 'System compares intake versus delivery while both retain their own source context',
     process: 'System intake then review then delivery then archive follows this source sequence',
     notes: 'System notes intake review delivery archive within this source explanation',
@@ -107,7 +108,7 @@ export function boardFixture(
 
 export function multiPanelFixture(count = 5, overview = false) {
   const words: WordTimestamp[] = [];
-  const panels: StoryboardSourceSpec['panels'] = [];
+  const panels: LegacyStoryboardSourceSpec['panels'] = [];
   for (let p = 0; p < count; p++) {
     const startWord = words.length;
     'System notes intake review delivery archive battery remains visible while more source context continues'
