@@ -1,6 +1,7 @@
 import type { Palette } from '@shared/palettes';
 import type { StoryboardStyle } from '@shared/storyboards';
 import { LANDSCAPE_FPS } from '../aspect-ratios';
+import { mapSceneTimes } from '../remotion/compositions/explainer/types';
 import type {
   ProductionStoryBoardProps,
   StoryBoardSpec,
@@ -46,6 +47,17 @@ export function mapStoryboardTimes(
           return { ...element, at: map(element.at) };
       }
     }),
+    ...(spec.businessPanels
+      ? {
+          businessPanels: spec.businessPanels.map((panel) => ({
+            ...panel,
+            startAt: map(panel.startAt),
+            endAt: map(panel.endAt),
+            scene: mapSceneTimes(panel.scene, map),
+            identityLinks: panel.identityLinks.map((link) => ({ ...link })),
+          })),
+        }
+      : {}),
     props: spec.props.map((prop) => ({
       ...prop,
       at: map(prop.at),

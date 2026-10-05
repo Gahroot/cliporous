@@ -89,7 +89,9 @@ it('zero canvas diagram + Chrome; one hybrid stage with null diagram and persist
   expect(route).toContain('diagram={null}');
   expect(route).toContain('<DiagramSurface>{diagram}</DiagramSurface>');
   const diagram = readFileSync(`${root}diagrams/DiagramStage.tsx`, 'utf8');
-  expect(diagram).toContain('<DiagramChrome scene={scene} />');
+  expect(diagram).toMatch(
+    /<DiagramChrome scene=\{scene\}(?: settledOutcome=\{settledOutcome\})? \/>/,
+  );
   expect(diagram).not.toMatch(/import[^;]*Stage3D|<Canvas\b|<ThreeCanvas\b/);
   const hybrid = readFileSync(`${root}diagrams/HybridStage.tsx`, 'utf8');
   expect([...hybrid.matchAll(/<Stage3D\b/g)]).toHaveLength(1);

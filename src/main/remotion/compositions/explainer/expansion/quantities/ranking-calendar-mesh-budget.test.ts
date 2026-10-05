@@ -107,7 +107,7 @@ describe('ranking/calendar composed CPU geometry and source ownership (not nativ
       'src/main/remotion/compositions/explainer/expansion/quantities/ranking-calendar-Scene.tsx',
       'utf8',
     );
-    expect(route).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(route).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(route.match(/<HybridStage\b/g)).toHaveLength(1);
     expect(route).toContain('diagram={null}');
     expect(route.match(/<DiagramSurface\b/g)).toHaveLength(1);

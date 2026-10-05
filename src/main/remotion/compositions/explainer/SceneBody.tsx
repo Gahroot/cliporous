@@ -10,6 +10,17 @@ import { TokenAttentionScene } from './ai-systems/TokenAttentionScene';
 import { BalanceScene } from './BalanceScene';
 import { BeforeAfterScene } from './BeforeAfterScene';
 import { BottleneckScene } from './BottleneckScene';
+import { BusinessAuthoritySceneView } from './business/authority/Scene';
+import { CapitalSceneView } from './business/capital/Scene';
+import { CommercialSceneView } from './business/commercial/Scene';
+import { BusinessAlternativeSceneView } from './business/decisions/alternative-Scene';
+import { DecisionsSceneView } from './business/decisions/Scene';
+import { EconomicsSceneView } from './business/economics/Scene';
+import { FundsSceneView } from './business/funds/Scene';
+import { InfrastructureSceneView } from './business/infrastructure/Scene';
+import { MarketsSceneView } from './business/markets/Scene';
+import { OrganizationSceneView } from './business/organization/Scene';
+import { BusinessWorkSceneView } from './business/work/Scene';
 import { CashTimingScene } from './business-systems/CashTimingScene';
 import { ChartScene } from './ChartScene';
 import { ChatScene } from './ChatScene';
@@ -85,6 +96,42 @@ export const SceneBody: React.FC<{ scene: ExplainerScene }> = ({ scene }) => {
   }
   if (route) return null;
   switch (scene.kind) {
+    case 'task-map':
+    case 'coordination-map':
+    case 'work-redesign':
+      return <BusinessWorkSceneView scene={scene} />;
+    case 'delegation-scope':
+    case 'authority-handoff':
+    case 'constraint-check':
+      return <BusinessAuthoritySceneView scene={scene} />;
+    case 'business-blueprint':
+    case 'business-replication':
+      return <CommercialSceneView scene={scene} />;
+    case 'organization-map':
+    case 'system-reconciliation':
+      return <OrganizationSceneView scene={scene} />;
+    case 'operating-cost':
+    case 'scale-economics':
+    case 'value-capture':
+      return <EconomicsSceneView scene={scene} />;
+    case 'market-dependency':
+    case 'procurement-commitment':
+      return <MarketsSceneView scene={scene} />;
+    case 'fund-lifecycle':
+    case 'distribution-waterfall':
+    case 'fund-liquidity':
+      return <FundsSceneView scene={scene} />;
+    case 'economic-rights':
+    case 'capital-structure':
+    case 'investment-outcomes':
+      return <CapitalSceneView scene={scene} />;
+    case 'capacity-map':
+    case 'operating-lineage':
+      return <InfrastructureSceneView scene={scene} />;
+    case 'staged-decision':
+    case 'measurement-frame':
+    case 'uncertainty-album':
+      return <DecisionsSceneView scene={scene} />;
     case 'detroit-place':
       return <DetroitPlaceScene scene={scene} />;
     case 'fund-flow':
@@ -116,9 +163,14 @@ export const SceneBody: React.FC<{ scene: ExplainerScene }> = ({ scene }) => {
     case 'inventory-demand':
       return <BusinessPopulationsSceneView scene={scene} />;
     case 'scale-hierarchy':
-    case 'possible-futures':
     case 'digital-twin':
       return <PerspectiveSceneView scene={scene} />;
+    case 'possible-futures':
+      return scene.businessAlternatives ? (
+        <BusinessAlternativeSceneView scene={scene} lens={scene.businessAlternatives} />
+      ) : (
+        <PerspectiveSceneView scene={scene} />
+      );
     case 'collective-pattern':
     case 'robot-perception':
     case 'modular-machine':

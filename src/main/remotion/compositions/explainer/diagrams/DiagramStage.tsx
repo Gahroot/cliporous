@@ -47,9 +47,18 @@ function StageText({
   );
 }
 
-export function DiagramChrome({ scene }: { scene: DiagramStory }): React.ReactElement {
+export function DiagramChrome({
+  scene,
+  settledOutcome = false,
+}: {
+  scene: DiagramStory;
+  settledOutcome?: boolean;
+}): React.ReactElement {
   const { t } = useSceneTime();
   const pose = diagramPose(t, scene);
+  // Opt-in source stories reserve resolveAt onward as a fully settled reading hold.
+  // The default preserves historical appearances; no source beat is moved.
+  const outcomeOpacity = settledOutcome ? (t >= scene.resolveAt ? 1 : 0) : pose.resolve;
   const wide = useWideStage();
   // New bounded stories may contain 96-character conditions. Preserve all characters
   // at the existing 24px size and within the unchanged 80px reservation. Legacy
@@ -71,7 +80,7 @@ export function DiagramChrome({ scene }: { scene: DiagramStory }): React.ReactEl
           text={scene.evidence === 'illustrative' ? 'Illustrative example' : 'Source-stated'}
           size={28}
         />
-        <WideStageText slot="outcome" text={scene.outcome} size={36} opacity={pose.resolve} />
+        <WideStageText slot="outcome" text={scene.outcome} size={36} opacity={outcomeOpacity} />
       </>
     );
   return (
@@ -99,7 +108,7 @@ export function DiagramChrome({ scene }: { scene: DiagramStory }): React.ReactEl
         size={34}
         columns={27}
         strong
-        opacity={pose.resolve}
+        opacity={outcomeOpacity}
       />
     </>
   );
@@ -109,14 +118,16 @@ export function DiagramChrome({ scene }: { scene: DiagramStory }): React.ReactEl
 export function DiagramStage({
   scene,
   children,
+  settledOutcome = false,
 }: {
   scene: DiagramStory;
   children: React.ReactNode;
+  settledOutcome?: boolean;
 }): React.ReactElement {
   return (
     <>
       <DiagramSurface>{children}</DiagramSurface>
-      <DiagramChrome scene={scene} />
+      <DiagramChrome scene={scene} settledOutcome={settledOutcome} />
     </>
   );
 }

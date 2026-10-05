@@ -91,8 +91,14 @@ export function validateSceneFirstLongformPlan(
       };
     }
     if (placement.kind === 'storyboard') {
-      if (input.parserVersion !== 2 || placement.presentation !== 'full-frame')
-        return { ok: false, error: 'Storyboards require parser 2 and full-frame presentation.' };
+      if (
+        (input.parserVersion !== 2 && input.parserVersion !== 3) ||
+        placement.presentation !== 'full-frame'
+      )
+        return {
+          ok: false,
+          error: 'Storyboards require parser 2 or 3 and full-frame presentation.',
+        };
       const result = compileStoryboardSpec(placement.sourceSpec, words, {
         clipStart: 0,
         clipEnd: duration,

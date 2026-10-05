@@ -3,6 +3,8 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
+import { boundedJson } from './business-artifacts.mjs';
+import { businessExecutionCoverage, freshBusinessExpectations } from './business-coverage.mjs';
 import { fixtureCoverage, REQUIRED_TARGET_COUNT, verificationPlan } from './fixture-manifest.mjs';
 import { bundleDigest, localBundle, outputDirectory } from './harness-runtime.mjs';
 import { executionCoverage } from './verification-evidence.mjs';
@@ -12,16 +14,38 @@ try {
   const { values } = parseArgs({
     options: {
       complete: { type: 'boolean', default: false },
+      scope: { type: 'string' },
       report: { type: 'string', multiple: true, default: [] },
       bundle: { type: 'string' },
       out: { type: 'string' },
       help: { type: 'boolean' },
     },
   });
+  if (values.scope && values.scope !== 'business')
+    throw new Error('Only --scope business is supported');
   if (values.help) {
     console.log(
       `coverage.mjs [--complete] [--report report.json ... --bundle out/remotion] [--out fresh-directory]\nWithout reports this audits declarations only; --complete requires all critical frames for all ${REQUIRED_TARGET_COUNT} targets.`,
     );
+  } else if (values.scope === 'business') {
+    if (!values.bundle) throw new Error('--scope business requires --bundle');
+    if (values.report.length > 256) throw new Error('At most 256 reports');
+    const reports = values.report.map((file) => ({
+      path: path.resolve(file),
+      data: boundedJson(file),
+    }));
+    const result = businessExecutionCoverage(
+      freshBusinessExpectations(),
+      reports,
+      localBundle(values.bundle),
+    );
+    const out = outputDirectory(values.out, 'batchclip-business-coverage-');
+    const output = path.join(out, 'report.json');
+    writeFileSync(output, `${JSON.stringify(result, null, 2)}\n`);
+    console.log(
+      `Business coverage: ${result.complete ? 'complete' : 'incomplete'}; report: ${output}`,
+    );
+    if (values.complete && !result.complete) process.exitCode = 1;
   } else {
     if (values.report.length && !values.bundle)
       throw new Error(

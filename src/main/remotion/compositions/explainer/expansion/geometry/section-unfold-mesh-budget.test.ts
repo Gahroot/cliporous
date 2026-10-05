@@ -100,8 +100,12 @@ it('actual production route: zero diagram WebGL, one hybrid canvas, same persist
   const diagram = readFileSync(`${root}diagrams/DiagramStage.tsx`, 'utf8');
   const hybrid = readFileSync(`${root}diagrams/HybridStage.tsx`, 'utf8');
   expect(diagram).not.toMatch(/import[^;]*Stage3D|<Canvas\b/);
-  expect(diagram).toContain('<DiagramChrome scene={scene} />');
-  expect(hybrid).toContain('<DiagramChrome scene={scene} />');
+  expect(diagram).toMatch(
+    /<DiagramChrome scene=\{scene\}(?: settledOutcome=\{settledOutcome\})? \/>/,
+  );
+  expect(hybrid).toMatch(
+    /<DiagramChrome scene=\{scene\}(?: settledOutcome=\{settledOutcome\})? \/>/,
+  );
   expect([...hybrid.matchAll(/<Stage3D\b/g)]).toHaveLength(1);
   const stage = readFileSync(`${root}Stage3D.tsx`, 'utf8');
   for (const tag of ['ThreeCanvas', 'StudioEnvironment', 'ContactShadows'])

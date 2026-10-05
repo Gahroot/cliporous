@@ -1,3 +1,4 @@
+import type { CapitalDependencyLens } from '../business/capital/dependency-types';
 import type { DiagramStory } from '../diagrams/types';
 
 export const FINANCE_PRESETS = {
@@ -50,5 +51,7 @@ export interface PortfolioExposureScene extends DiagramStory {
   funds: FinanceActor[];
   exposure: FinanceActor;
   holdings: { fundId: string; holding: FinanceActor }[];
+  /** Opt-in source-bound holding → firm → driver lens. Absent keeps the historical scene. */
+  dependencyLens?: CapitalDependencyLens;
 }
 export type FinanceScene = FundFlowScene | OwnershipChangeScene | PortfolioExposureScene;

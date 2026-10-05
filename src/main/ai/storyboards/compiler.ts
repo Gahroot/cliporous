@@ -5,7 +5,14 @@ import {
 } from '../../../shared/storyboards';
 import type { WordTimestamp } from '../../../shared/types';
 import type { SceneCue } from '../../remotion/compositions/explainer/types';
+import {
+  businessModelRail,
+  BUSINESS_HYBRID_LAYOUT as H,
+} from '../../remotion/compositions/storyboard/business-panel-layout';
+import { businessPanelResources } from '../../remotion/compositions/storyboard/business-panel-state';
 import type { BoardElement, StoryBoardSpec } from '../../remotion/compositions/storyboard/types';
+import { compileBusinessDiagramLayout } from './business-board-layout';
+import { isBusinessStoryboardScene } from './business-diagrams';
 import { BOARD_MODELS, BOARD_LAYOUT as G } from './catalog';
 import {
   type ParsedStoryboard,
@@ -58,9 +65,28 @@ export function compileStoryboard(parsed: ParsedStoryboard): StoryboardResult<Co
   const panels: NonNullable<StoryBoardSpec['panels']> = [];
   const shots: StoryBoardSpec['shots'] = [];
   const cues: SceneCue[] = [];
+  const businessPanels: NonNullable<StoryBoardSpec['businessPanels']> = [];
   const diagnostics: Extract<StoryboardResult<never>, { ok: false }>['diagnostics'] = [];
-  const width = spec.panels.length * G.panelWidth + (spec.panels.length - 1) * G.panelGap;
-  const worldBounds = { x: 0, y: 0, width, height: G.panelHeight };
+  const layouts = spec.panels.map((panel) => {
+    const native =
+      panel.kind === 'explanation'
+        ? parsed.businessPanels?.get(panel.id)?.reconstruction.planned.scene
+        : undefined;
+    const hybrid =
+      native && isBusinessStoryboardScene(native)
+        ? (native.kind === 'possible-futures'
+            ? native.businessAlternatives?.visualMode
+            : (native.visualMode ?? 'hybrid')) === 'hybrid'
+        : false;
+    return hybrid
+      ? { width: H.width, height: H.height, hybrid: true, zoom: H.focusZoom }
+      : { width: G.panelWidth, height: G.panelHeight, hybrid: false, zoom: 1.1 };
+  });
+  const width =
+    layouts.reduce((sum, layout) => sum + layout.width, 0) + (spec.panels.length - 1) * G.panelGap;
+  const height = Math.max(...layouts.map((layout) => layout.height));
+  const worldBounds = { x: 0, y: 0, width, height };
+  let panelX = 0;
   const text = (
     id: string,
     value: string,
@@ -85,7 +111,9 @@ export function compileStoryboard(parsed: ParsedStoryboard): StoryboardResult<Co
   };
   spec.panels.forEach((panel, index) => {
     const clock = clocks[index];
-    const x = index * (G.panelWidth + G.panelGap);
+    const layout = layouts[index];
+    const x = panelX;
+    panelX += layout.width + G.panelGap;
     const id = (part: string) => `${panel.id}:${part}`;
     panels.push({
       id: panel.id,
@@ -93,18 +121,19 @@ export function compileStoryboard(parsed: ParsedStoryboard): StoryboardResult<Co
       title: panel.title.text,
       x,
       y: 0,
-      width: G.panelWidth,
-      height: G.panelHeight,
+      width: layout.width,
+      height: layout.height,
       at: clock.revealAt,
     });
     shots.push({
       at: index ? clock.moveAt : startTime,
       dur: index ? G.panSec : 0,
-      x: x + G.panelWidth / 2,
-      y: G.panelHeight / 2,
-      zoom: 1.1,
+      x: x + layout.width / 2,
+      y: layout.height / 2,
+      zoom: layout.zoom,
     });
-    cues.push({ kind: index ? 'slide' : 'tick', at: clock.revealAt, gain: 0.35 });
+    if (panel.kind !== 'explanation')
+      cues.push({ kind: index ? 'slide' : 'tick', at: clock.revealAt, gain: 0.35 });
     // Notes already have cards; omit the redundant outer frame to keep five full panels <=48 elements.
     if (panel.kind !== 'notes')
       elements.push({
@@ -113,8 +142,8 @@ export function compileStoryboard(parsed: ParsedStoryboard): StoryboardResult<Co
         at: clock.revealAt,
         x,
         y: 0,
-        w: G.panelWidth,
-        h: G.panelHeight,
+        w: layout.width,
+        h: layout.height,
       });
     text(
       id('title'),
@@ -129,6 +158,50 @@ export function compileStoryboard(parsed: ParsedStoryboard): StoryboardResult<Co
     const contentWidth = panel.prop ? 830 : G.panelWidth - G.inset * 2;
     const left = x + G.inset;
     switch (panel.kind) {
+      case 'explanation': {
+        const business = parsed.businessPanels?.get(panel.id);
+        if (!business || !isBusinessStoryboardScene(business.reconstruction.planned.scene)) {
+          diagnostics.push({
+            code: 'evidence',
+            message:
+              'Business panel requires concrete source reconstruction, never an approved blob.',
+            panelId: panel.id,
+            repairable: false,
+          });
+          break;
+        }
+        const drawing = compileBusinessDiagramLayout({
+          panelId: panel.id,
+          panelX: x,
+          revealAt: clock.revealAt,
+          projection: business.projection,
+          hybrid: layout.hybrid,
+        });
+        if (!drawing.ok) {
+          diagnostics.push(...drawing.diagnostics);
+          break;
+        }
+        elements.push(...drawing.value.elements);
+        const native = business.reconstruction.planned;
+        businessPanels.push({
+          id: panel.id,
+          recipe: panel.explanation.recipe,
+          scene: business.reconstruction.planned.scene,
+          x,
+          y: 0,
+          width: layout.width,
+          height: layout.height,
+          ...(layout.hybrid ? { modelRail: businessModelRail(x, 0) } : {}),
+          paragraphs: drawing.value.elements.flatMap((element) =>
+            element.kind === 'text' ? [{ id: element.id, text: element.text }] : [],
+          ),
+          startAt: native.startTime,
+          endAt: native.endTime,
+          identityLinks: structuredClone(panel.explanation.identityLinks),
+        });
+        cues.push(...native.cues);
+        break;
+      }
       case 'statement':
         text(id('body'), panel.body.text, left, 350, contentWidth, 350, clock.labelsAt[1], 56);
         break;
@@ -278,7 +351,7 @@ export function compileStoryboard(parsed: ParsedStoryboard): StoryboardResult<Co
     }
   });
   if (overviewAt !== undefined) {
-    const zoom = Math.min(1.1, 1_720 / width, 900 / G.panelHeight);
+    const zoom = Math.min(1.1, 1_720 / width, 900 / height);
     const unreadable = elements.find(
       (element) =>
         (element.kind === 'text' || element.kind === 'counter') &&
@@ -294,7 +367,7 @@ export function compileStoryboard(parsed: ParsedStoryboard): StoryboardResult<Co
         repairable: true,
       });
     } else {
-      shots.push({ at: overviewAt, dur: G.panSec, x: width / 2, y: G.panelHeight / 2, zoom });
+      shots.push({ at: overviewAt, dur: G.panSec, x: width / 2, y: height / 2, zoom });
       cues.push({ kind: 'whoosh', at: overviewAt, gain: 0.25 });
     }
   }
@@ -302,13 +375,16 @@ export function compileStoryboard(parsed: ParsedStoryboard): StoryboardResult<Co
     (sum, panel) => sum + (panel.prop ? BOARD_MODELS[panel.prop.model].meshes : 0),
     0,
   );
+  const nativeResources = businessPanels.map((panel) => businessPanelResources(panel).ceiling);
   if (
     elements.length > L.maxElements ||
-    props.length > L.maxProps ||
-    meshes > L.maxModelMeshes ||
+    props.length + nativeResources.reduce((sum, resource) => sum + resource.modelInstances, 0) >
+      L.maxProps ||
+    meshes + nativeResources.reduce((sum, resource) => sum + resource.meshes, 0) >
+      L.maxModelMeshes ||
     width > L.maxWorldWidth ||
-    G.panelHeight > L.maxWorldHeight ||
-    width * G.panelHeight > L.maxWorldArea ||
+    height > L.maxWorldHeight ||
+    width * height > L.maxWorldArea ||
     shots.some((shot) => shot.zoom < L.minZoom || shot.zoom > L.maxZoom) ||
     cues.length > L.maxCues
   ) {
@@ -332,6 +408,7 @@ export function compileStoryboard(parsed: ParsedStoryboard): StoryboardResult<Co
         shots,
         elements,
         props,
+        ...(businessPanels.length ? { businessPanels } : {}),
         boardIn: { at: startTime, dur: G.fadeSec },
         boardOut: { at: endTime - G.fadeSec, dur: G.fadeSec },
       },

@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { verificationPlan } from './fixture-manifest.mjs';
@@ -101,8 +101,11 @@ export function loadFixtures(files = []) {
         .sort()
         .map((f) => path.join(FIXTURES, f));
   const fixtures = paths.flatMap((file) => {
+    if (statSync(file).size > 16 * 1024 * 1024)
+      throw new Error(`${file}: fixture file exceeds 16 MiB`);
     const rows = JSON.parse(readFileSync(file, 'utf8'));
-    if (!Array.isArray(rows)) throw new Error(`${file}: expected array`);
+    if (!Array.isArray(rows) || rows.length > 256)
+      throw new Error(`${file}: expected bounded array`);
     return rows;
   });
   return { fixtures, paths };

@@ -430,7 +430,7 @@ export const createLongformSlice: StateCreator<
         !record ||
         !isStoryboardStyle(style) ||
         !isSceneFirstPlanEnvelope(record.plan) ||
-        record.plan.parserVersion !== 2 ||
+        (record.plan.parserVersion !== 2 && record.plan.parserVersion !== 3) ||
         record.plan.storyboardStyle === style
       )
         return;

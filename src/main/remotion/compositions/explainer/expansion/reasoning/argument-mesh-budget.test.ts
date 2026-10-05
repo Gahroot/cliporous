@@ -117,7 +117,7 @@ describe('real argument assemblies (CPU SSR, not GPU/RSS)', () => {
       'utf8',
     );
     expect(view.match(/<HybridStage\b/g)).toHaveLength(1);
-    expect(hybrid).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(hybrid).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(hybrid.match(/<Stage3D\b/g)).toHaveLength(1);
     expect(stage.match(/<ThreeCanvas\b/g)).toHaveLength(1);
     expect(diagram).not.toMatch(/import .*Stage3D|<ThreeCanvas|<canvas/);

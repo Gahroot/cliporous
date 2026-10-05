@@ -79,6 +79,36 @@ function story(preset: Preset, changes: Partial<Record<Phase, string>> = {}): Fi
 }
 
 describe('agent-workflow source contracts and render fixtures', () => {
+  it.each([
+    'diagram',
+    'hybrid',
+  ] as const)('approval-gate %s is opt-in without changing grant or completion evidence', (visualMode) => {
+    const original = fixture('approval-gate');
+    const opted = parse({ ...original, raw: { ...original.raw, visualMode } });
+    expect(opted.ctx.issues).toEqual([]);
+    expect(opted.scene).toEqual({ ...original.scene, visualMode });
+    for (const change of [
+      { check: 'Human approval is pending.' },
+      { check: 'The agent approved the task.' },
+      { resolve: 'The agent might complete the task.' },
+    ]) {
+      const unsupported = story('approval-gate', change);
+      const result = parse({ ...unsupported, raw: { ...unsupported.raw, visualMode } });
+      expect(result.scene).toBeNull();
+      expect(result.ctx.issues.length).toBeGreaterThan(0);
+    }
+  });
+  it('keeps all historical omission defaults and rejects unsupported mode/preset combinations', () => {
+    for (const item of fixtures) expect(parse(item).scene).toEqual(item.scene);
+    for (const preset of ['tool-success', 'tool-retry'] as const) {
+      const original = fixture(preset);
+      expect(
+        parse({ ...original, raw: { ...original.raw, visualMode: 'diagram' } }).scene,
+      ).toBeNull();
+    }
+    const gate = fixture('approval-gate');
+    expect(parse({ ...gate, raw: { ...gate.raw, visualMode: 'arbitrary' } }).scene).toBeNull();
+  });
   it.each(fixtures)('$name is the real indexed parser result', (value) => {
     const { scene, ctx } = parse(value);
     expect(ctx.issues).toEqual([]);

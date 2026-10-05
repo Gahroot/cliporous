@@ -1,3 +1,4 @@
+import { SHARED_DEPENDENCY_SOURCE_FIXTURES } from '../../remotion/compositions/explainer/business/capital/dependency-fixtures';
 import { DIAGRAM_LAYOUTS } from '../../remotion/compositions/explainer/diagrams/types';
 import type {
   FinanceActor,
@@ -7,6 +8,7 @@ import type {
   PortfolioExposureScene,
 } from '../../remotion/compositions/explainer/finance/types';
 import type { SceneCue } from '../../remotion/compositions/explainer/types';
+import { parseCapitalDependencyLens } from './business-capital-dependency-contract';
 import { escaped } from './concept-business-operations-contract';
 import {
   actorPattern,
@@ -321,7 +323,7 @@ export function parseOwnershipChange(raw: Rec, ctx: ParseContext): OwnershipChan
 }
 
 export function parsePortfolioExposure(raw: Rec, ctx: ParseContext): PortfolioExposureScene | null {
-  const parsed = hybridStory(raw, ctx, ['funds', 'exposure', 'holdings']);
+  const parsed = hybridStory(raw, ctx, ['funds', 'exposure', 'holdings', 'dependencyLens']);
   if (!parsed) return null;
   const preset = raw.preset;
   if (preset !== 'shared-holdings' && preset !== 'shared-driver')
@@ -339,6 +341,11 @@ export function parsePortfolioExposure(raw: Rec, ctx: ParseContext): PortfolioEx
       ctx,
       'two distinct source-introduced funds and a named exposure required',
     );
+  const dependencyLens =
+    raw.dependencyLens === undefined
+      ? undefined
+      : parseCapitalDependencyLens(raw, ctx, funds, exposure, parsed.story);
+  if (raw.dependencyLens !== undefined && !dependencyLens) return null;
   if (!Array.isArray(raw.holdings) || raw.holdings.length > 6)
     return mechanismIssue(ctx, 'holdings are bounded to six explicit entries');
   const holdings: PortfolioExposureScene['holdings'] = [];
@@ -392,15 +399,16 @@ export function parsePortfolioExposure(raw: Rec, ctx: ParseContext): PortfolioEx
         'shared holding must be explicitly present in both funds with one stable identity; at most three per fund',
       );
   } else if (
-    holdings.length ||
-    funds.some(
-      (fund) =>
-        !financeClaim(
-          parsed.spans.action,
-          `${actorPattern(fund)} (?:is exposed to|depends on|is affected by) ${actorPattern(exposure)}`,
-          parsed.story.condition,
-        ),
-    )
+    !dependencyLens &&
+    (holdings.length ||
+      funds.some(
+        (fund) =>
+          !financeClaim(
+            parsed.spans.action,
+            `${actorPattern(fund)} (?:is exposed to|depends on|is affected by) ${actorPattern(exposure)}`,
+            parsed.story.condition,
+          ),
+      ))
   )
     return mechanismIssue(
       ctx,
@@ -421,7 +429,15 @@ export function parsePortfolioExposure(raw: Rec, ctx: ParseContext): PortfolioEx
       Number(b.holding.id === exposure.id) - Number(a.holding.id === exposure.id) ||
       a.holding.id.localeCompare(b.holding.id),
   );
-  return { kind: 'portfolio-exposure', preset, ...parsed.story, funds, exposure, holdings };
+  return {
+    kind: 'portfolio-exposure',
+    preset,
+    ...parsed.story,
+    funds,
+    exposure,
+    holdings,
+    ...(dependencyLens ? { dependencyLens } : {}),
+  };
 }
 
 const COMMON = {
@@ -437,9 +453,10 @@ export const portfolioExposureSpec = {
   kind: 'portfolio-exposure',
   family: 'framework',
   describe:
-    'Two funds share a source-stated holding or common driver despite different names. Preserve company identity; other exposures remain unknown.',
-  schema: `{"kind":"portfolio-exposure","preset":"shared-holdings|shared-driver",${STORY},"funds":[{"id":"a","label":"Fund A"},{"id":"b","label":"Fund B"}],"exposure":{"id":"company","label":"ExampleCo"},"holdings":[{"fundId":"a","holding":{"id":"company","label":"ExampleCo"}},{"fundId":"b","holding":{"id":"company","label":"ExampleCo"}}]}`,
-  limits: `${COMMON.limits} Exactly two named funds; 2–6 holdings, up to 3 per fund, with shared identity first. For shared-driver holdings=[] and exposure is the named driver. Setup names both funds. Action each fund holds/owns COMPANY or is exposed to/depends on DRIVER. Response explicitly names shared exposure. Outcome: Shared exposure. No weights or correlation coefficients.`,
+    'Two funds share a source-stated holding or common driver despite different names. Optional dependencyLens v1 exposes their distinct source-held firms and supported common driver; not measured correlation. Preserve company identity; other exposures remain unknown.',
+  schema: `{"kind":"portfolio-exposure","preset":"shared-holdings|shared-driver",${STORY},"funds":[{"id":"a","label":"Fund A"},{"id":"b","label":"Fund B"}],"exposure":{"id":"company","label":"ExampleCo"},"holdings":[{"fundId":"a","holding":{"id":"company","label":"ExampleCo"}},{"fundId":"b","holding":{"id":"company","label":"ExampleCo"}}]}
+OP-58 opt-in source example: ${SHARED_DEPENDENCY_SOURCE_FIXTURES.map((fixture) => JSON.stringify(fixture.raw)).join('\n')}`,
+  limits: `${COMMON.limits} Exactly two named funds; 2–6 holdings, up to 3 per fund, with shared identity first. For historical shared-driver holdings=[] and exposure is the named driver. Setup names both funds. Action each fund holds/owns COMPANY or is exposed to/depends on DRIVER. Response explicitly names shared exposure. Outcome: Shared exposure. No weights or correlation coefficients. Optional OP-58 shared-driver dependencyLens:{version:1,firms:[{fundId,identity:{id,label,source:{fromWord,toWord}},holdingSource:{fromWord,toWord},driverSource:{fromWord,toWord}}],modelSource:{fromWord,toWord}} retains holdings=[] and has exactly two distinct firms, one per fund. Setup complete clauses: FUND is a fund; FIRM is a company; DRIVER is a common/shared driver. Action each FUND holds FIRM; response each FIRM depends on DRIVER with explicit shared exposure. Independent action modelSource: FUND_A and FUND_B maintain asset ownership and economic claim records. All edges use full local positive clauses, no conditions/swaps/cropped qualifiers. Model layers inspect records only, no payout/control/rights inference. Five entities/four edges, >=1.5s fixed-font full fact reading after handoff; no invented other exposures, numeric risk, geometry, assets, future versions or render functions. Absent lens preserves historical scene; invalid lens rejects, never downgrades to direct exposure.`,
   triggers: [
     /\b(?:portfolio|funds?|etfs?)\b.{0,100}\b(?:overlap|same holding|shared|exposure)\b/i,
     /\bshared (?:holdings?|driver|exposure)\b/i,

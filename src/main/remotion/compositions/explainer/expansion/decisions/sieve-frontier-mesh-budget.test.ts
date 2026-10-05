@@ -125,7 +125,7 @@ describe('sieve/frontier actual composed geometry ledger (not native/GPU)', () =
       'src/main/remotion/compositions/explainer/expansion/decisions/sieve-frontier-Scene.tsx',
       'utf8',
     );
-    expect(route).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(route).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(route.match(/<HybridStage\b/g)).toHaveLength(1);
     expect(route).toContain('diagram={null}');
     expect(route.match(/<DiagramSurface\b/g)).toHaveLength(1);

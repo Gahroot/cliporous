@@ -296,7 +296,7 @@ describe('information actual composed CPU trees (not GPU proof)', () => {
       'src/main/remotion/compositions/explainer/diagrams/HybridStage.tsx',
       'utf8',
     );
-    expect(hybrid).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(hybrid).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(hybrid.match(/<Stage3D\b/g)).toHaveLength(1);
     const diagram = readFileSync(
       'src/main/remotion/compositions/explainer/diagrams/DiagramStage.tsx',

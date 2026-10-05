@@ -109,14 +109,14 @@ describe('scope actual composed CPU costs (not native/GPU proof)', () => {
       'src/main/remotion/compositions/explainer/expansion/reasoning/scope-Scene.tsx',
       'utf8',
     );
-    expect(route).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(route).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(route.match(/<HybridStage\b/g)).toHaveLength(1);
     expect(route).not.toMatch(/<Stage3D\b|<ThreeCanvas\b|<canvas\b/);
     const hybrid = readFileSync(
       'src/main/remotion/compositions/explainer/diagrams/HybridStage.tsx',
       'utf8',
     );
-    expect(hybrid).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(hybrid).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(hybrid.match(/<Stage3D\b/g)).toHaveLength(1);
     expect(hybrid).toContain('driftDeg={0}');
     expect(hybrid).toContain('pushAmount={0}');

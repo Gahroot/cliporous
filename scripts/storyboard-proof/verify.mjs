@@ -20,12 +20,21 @@ import { pathToFileURL } from 'node:url';
 import { bundleDigest, digest } from '../explainer-stills/harness-runtime.mjs';
 import { snapshotBundle } from '../explainer-stills/snapshot-bundle.mjs';
 import { runBounded, VITEST } from '../explainer-stills/verify-systems-e2e.mjs';
+import { validateBusinessRecords } from './business-records.mjs';
 import { localPath, ROOT, sourceEvidence, verifyPin } from './gates.mjs';
 import { startProcessMetrics } from './process-metrics.mjs';
+import { resourceComparisonPlan } from './resource-controls.mjs';
 
 const require = createRequire(import.meta.url);
 export function parseArgs(args) {
-  const parsed = { unit: false, bundle: undefined, help: false };
+  const parsed = {
+    unit: false,
+    bundle: undefined,
+    help: false,
+    scope: 'full',
+    resourcePlan: false,
+    resourceCycle: undefined,
+  };
   const seen = new Set();
   for (let i = 0; i < args.length; i++) {
     const flag = args[i];
@@ -34,10 +43,21 @@ export function parseArgs(args) {
     if (flag === '--unit') parsed.unit = true;
     else if (flag === '--help') parsed.help = true;
     else if (flag === '--bundle') parsed.bundle = localPath(args[++i]);
-    else throw new Error(`Unknown option: ${flag}`);
+    else if (flag === '--scope') {
+      parsed.scope = args[++i];
+      if (!['full', 'business'].includes(parsed.scope))
+        throw new Error('--scope must be full or business');
+    } else if (flag === '--resource-plan') parsed.resourcePlan = true;
+    else if (flag === '--resource-cycle') {
+      const value = args[++i];
+      if (!/^[1-5]$/u.test(value ?? '')) throw new Error('--resource-cycle must be 1..5');
+      parsed.resourceCycle = Number(value);
+    } else throw new Error(`Unknown option: ${flag}`);
   }
   if (parsed.unit && parsed.bundle) throw new Error('--unit and --bundle are mutually exclusive');
-  if (!parsed.help && !parsed.unit && !parsed.bundle)
+  if (parsed.resourceCycle && (parsed.unit || parsed.resourcePlan))
+    throw new Error('Resource cycles require native media');
+  if (!parsed.help && !parsed.resourcePlan && !parsed.unit && !parsed.bundle)
     throw new Error('Media requires --bundle <pinned-production-bundle>; no lazy build permitted');
   return parsed;
 }
@@ -120,9 +140,13 @@ export function generatedConfig(out, unit) {
 }
 export async function runProof(args) {
   const options = parseArgs(args);
+  if (options.resourcePlan) {
+    console.log(JSON.stringify(resourceComparisonPlan(), null, 2));
+    return;
+  }
   if (options.help) {
     console.log(
-      'Usage: node scripts/storyboard-proof/verify.mjs --unit\n       node scripts/storyboard-proof/verify.mjs --bundle <pin.mjs snapshot>\nSerial bounded media only after coordinator build/pin. No builds, downloads, installs or live AI. See README.md.',
+      'Usage: node scripts/storyboard-proof/verify.mjs --unit\n       node scripts/storyboard-proof/verify.mjs --bundle <pin.mjs snapshot>\nOptions: --scope business (eight sequences + historical/fault controls); --resource-plan (unexecuted schedule); --resource-cycle 1..5 with --bundle (separate fresh-worker controls).\nSerial bounded media only after coordinator build/pin. No builds, downloads, installs or live AI. See README.md.',
     );
     return;
   }
@@ -130,7 +154,9 @@ export async function runProof(args) {
   const owner = randomUUID();
   writeFileSync(join(out, '.owner'), owner, { flag: 'wx' });
   const report = {
+    schemaVersion: 1,
     status: 'running',
+    scope: options.scope,
     mode: options.unit ? 'unit' : 'media',
     out,
     invocation: [process.execPath, 'scripts/storyboard-proof/verify.mjs', ...args],
@@ -172,6 +198,7 @@ export async function runProof(args) {
     const pin = options.unit ? null : verifyPin(options.bundle);
     if (pin) {
       report.pin = pin;
+      report.bundle = pin.bundle;
       media = resourcesForProof(out, pin);
       report.media = media;
     }
@@ -200,6 +227,10 @@ export async function runProof(args) {
           STORYBOARD_PROOF_OUT: out,
           STORYBOARD_PROOF_OWNER: owner,
           STORYBOARD_PROOF_MODE: options.unit ? 'unit' : 'media',
+          STORYBOARD_PROOF_SCOPE: options.scope,
+          STORYBOARD_PROOF_RESOURCE_CYCLE: options.resourceCycle
+            ? String(options.resourceCycle)
+            : '',
           STORYBOARD_PROOF_RESOURCES: media?.resources ?? '',
           STORYBOARD_PROOF_BROWSER: media?.browser ?? '',
           TMP: scratch,
@@ -235,9 +266,23 @@ export async function runProof(args) {
     const result = JSON.parse(readFileSync(join(out, 'report.json'), 'utf8'));
     assert.equal(result.status, 'passed');
     report.proof = join(out, 'report.json');
+    if (!options.unit && !options.resourceCycle) {
+      report.businessSequences = validateBusinessRecords(
+        JSON.parse(readFileSync(join(out, 'business-sequences.json'), 'utf8')),
+        out,
+        { mode: 'media', status: result.status },
+      );
+    }
+    if (options.resourceCycle)
+      report.resourceComparisons = JSON.parse(
+        readFileSync(join(out, 'resource-comparisons.json'), 'utf8'),
+      );
     report.status = 'passed';
   } catch (error) {
     report.status = 'failed';
+    delete report.businessSequences;
+    delete report.resourceComparisons;
+    rmSync(join(out, 'business-sequences.json'), { force: true });
     report.error = String(error);
     throw error;
   } finally {

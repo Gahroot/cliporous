@@ -1,4 +1,5 @@
 import type React from 'react';
+import { CapitalDependencyView } from '../business/capital/DependencyLensParts';
 import { OwnershipTray } from '../concepts/business-operations/models';
 import { HybridStage } from '../diagrams/HybridStage';
 import { reveal } from '../diagrams/motion';
@@ -14,6 +15,8 @@ export function PortfolioExposureScene({ scene }: { scene: Scene }): React.React
   const show = reveal(t, scene.actionAt),
     link = reveal(t, scene.responseAt);
   const driver = scene.preset === 'shared-driver';
+  if (scene.dependencyLens)
+    return <CapitalDependencyView scene={scene} lens={scene.dependencyLens} />;
   return (
     <HybridStage
       scene={scene}

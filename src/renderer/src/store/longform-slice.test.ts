@@ -1,16 +1,25 @@
+import { compactBusinessSourceChoices } from '@shared/business-source-choices';
 import type { SceneFirstLongformPlan } from '@shared/longform-scenes';
 import { getPaletteById } from '@shared/palettes';
 import type { StoryboardStyle } from '@shared/storyboards';
+import type { LongformEditPlan, WordTimestamp } from '@shared/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { makeScenePlan, SCENE_WORDS } from '@/components/__tests__/longform-scene-fixture';
+import {
+  makeScenePlan,
+  makeStoryboardPlan,
+  SCENE_WORDS,
+} from '@/components/__tests__/longform-scene-fixture';
 import { installApiStub, resetStore } from '@/components/__tests__/test-utils';
 import { longformApprovalProblem } from '@/lib/longform-approval';
 import { snapshotLongformPlanItem, updateLongformPlanItem } from '@/lib/longform-plan';
 import { useStore } from '@/store';
 
 const SOURCE_ID = 'source-review';
-function currentParserPlan(style: StoryboardStyle = 'polish'): SceneFirstLongformPlan {
-  return { ...makeScenePlan(), parserVersion: 2, storyboardStyle: style };
+function currentParserPlan(
+  style: StoryboardStyle = 'polish',
+  parserVersion: 2 | 3 = 2,
+): SceneFirstLongformPlan {
+  return { ...makeScenePlan(), parserVersion, storyboardStyle: style };
 }
 function record() {
   return useStore.getState().longformPlans[SOURCE_ID];
@@ -227,11 +236,13 @@ describe('longform review store', () => {
     }
   });
 
-  it('creates immutable style revisions without AI, preserving content, colors and approved history', () => {
+  it.each([
+    2, 3,
+  ] as const)('parser-%s creates immutable style revisions without AI, preserving content, colors and approved history', (parserVersion) => {
     const store = useStore.getState();
     const ai = vi.spyOn(window.api, 'generateLongformEditPlan');
     const palette = { ...getPaletteById('brand'), id: 'custom-captured', builtin: false };
-    const plan = currentParserPlan();
+    const plan = currentParserPlan('polish', parserVersion);
     store.setLongformPlan(SOURCE_ID, { plan, skin: 'editorial', paletteId: palette.id, palette });
     store.acceptLongformPlan(SOURCE_ID, 'editorial', palette.id);
     const approved = structuredClone(record());
@@ -265,6 +276,81 @@ describe('longform review store', () => {
     if (divergent.plan.mode === 'scene-first') divergent.plan.storyboardStyle = 'ink';
     expect(longformApprovalProblem(divergent)).toMatch(/differs/);
     ai.mockRestore();
+  });
+
+  it('preserves source-2 explanation choices and identity links across parser-3 Ink/Polish revisions', async () => {
+    // Load the raw DTO helper at test runtime, outside the renderer TS project.
+    const { businessSourceFixture } = await vi.importActual<{
+      businessSourceFixture: (
+        id: string,
+        mode: string,
+      ) => { id: string; raw: Record<string, unknown>; words: WordTimestamp[] } | null;
+    }>('../../../main/remotion/compositions/explainer/business/source-fixtures');
+    const source = businessSourceFixture('OP-01', 'diagram');
+    if (!source) throw new Error('Missing OP-01 source fixture');
+    const compact = compactBusinessSourceChoices(source.raw);
+    if (!compact.ok) throw new Error(compact.message);
+    const plan = {
+      ...makeScenePlan(source.words),
+      parserVersion: 3 as const,
+      storyboardStyle: 'polish' as const,
+    };
+    plan.scenes.splice(1);
+    const lastWord = source.words.length - 1;
+    useStore.setState((state) => {
+      state.transcriptions[SOURCE_ID].words = source.words;
+    });
+    const scene = plan.scenes[0];
+    if (!scene) throw new Error('Missing board');
+    scene.kind = 'storyboard';
+    scene.presentation = 'full-frame';
+    scene.startWord = 0;
+    scene.endWord = lastWord;
+    scene.startTime = 0.25;
+    scene.endTime = 12;
+    scene.sourceSpec = {
+      kind: 'storyboard',
+      startWord: 0,
+      endWord: lastWord,
+      subject: { text: source.words[0].text, startWord: 0, endWord: 0 },
+      specVersion: 2,
+      panels: [
+        {
+          id: 'business',
+          kind: 'explanation',
+          startWord: 0,
+          endWord: lastWord,
+          revealWord: 0,
+          moveWord: 1,
+          title: { text: source.words[0].text, startWord: 0, endWord: 0 },
+          explanation: {
+            sourceVersion: 2,
+            recipe: source.id,
+            sourceChoices: compact.choices,
+            identityLinks: [],
+          },
+        },
+      ],
+    };
+    const savedSpec = structuredClone(scene.sourceSpec);
+    const store = useStore.getState();
+    store.setLongformPlan(SOURCE_ID, { plan, skin: 'editorial', paletteId: 'brand' });
+    store.acceptLongformPlan(SOURCE_ID, 'editorial', 'brand');
+    expect(record()?.status).toBe('accepted');
+    const approved = structuredClone(record()?.versions);
+    for (const style of ['ink', 'polish'] as const) {
+      store.setLongformPlanStoryboardStyle(SOURCE_ID, style);
+      expect(record()?.plan).toEqual({ ...plan, storyboardStyle: style });
+      const latest = record()?.versions?.at(-1)?.plan;
+      expect(
+        latest?.mode === 'scene-first' && (latest as SceneFirstLongformPlan).scenes[0]?.sourceSpec,
+      ).toEqual(savedSpec);
+      expect(record()?.versions?.slice(0, approved?.length)).toEqual(approved);
+      expect(record()).toMatchObject({ status: 'draft', approvedVersionId: null });
+    }
+    expect(record()?.versions).toHaveLength((approved?.length ?? 0) + 2);
+    expect(window.api.generateLongformEditPlan).not.toHaveBeenCalled();
+    expect(window.api.startBatchRender).not.toHaveBeenCalled();
   });
 
   it('uses captured appearance for generation and regeneration, not globals at completion', () => {
@@ -364,6 +450,33 @@ describe('longform review store', () => {
     expect(record()?.plan).toEqual(currentParserPlan('ink'));
     store.addLongformPlanVersion(SOURCE_ID, currentParserPlan('ink'), 'accepted');
     expect(record()?.approvedVersionId).toBeNull();
+  });
+
+  it('retains unsupported saved plan payload and history without allowing style edits or approval', () => {
+    const store = useStore.getState();
+    const future = {
+      ...makeStoryboardPlan(),
+      parserVersion: 99,
+      futurePayload: { panels: ['keep'] },
+    };
+    store.setLongformPlan(SOURCE_ID, {
+      plan: future as unknown as LongformEditPlan,
+      skin: 'editorial',
+      paletteId: 'brand',
+      preservedPlanData: future,
+    });
+    const saved = structuredClone(record());
+    store.setLongformPlanStoryboardStyle(SOURCE_ID, 'ink');
+    expect(record()).toEqual(saved);
+    store.acceptLongformPlan(SOURCE_ID, 'editorial', 'brand');
+    expect(record()).toMatchObject({
+      status: 'draft',
+      approvedVersionId: null,
+      preservedPlanData: future,
+    });
+    expect(record()?.plan).toEqual(future);
+    expect(record()?.versions).toEqual(saved?.versions);
+    expect(record()?.validationProblem).toBeTruthy();
   });
 
   it('blocks approval after a source fingerprint change', () => {

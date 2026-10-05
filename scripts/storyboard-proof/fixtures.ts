@@ -5,6 +5,10 @@ import {
   type CompiledLongformScene,
   validateSceneFirstLongformPlan,
 } from '../../src/main/ai/longform-scene-contract';
+import {
+  BUSINESS_SEQUENCE_FIXTURES,
+  createBusinessSequenceFixture,
+} from '../../src/main/ai/storyboards/business-sequences';
 import { compileStoryboardSpec } from '../../src/main/ai/storyboards/compiler';
 import {
   boardFixture,
@@ -102,6 +106,13 @@ export function maximumSourceFixture(): RawFixture {
   });
   return f;
 }
+export function businessFixtures(): (RawFixture & { name: string })[] {
+  assert.equal(BUSINESS_SEQUENCE_FIXTURES.length, 8);
+  return BUSINESS_SEQUENCE_FIXTURES.map(({ id }) => ({
+    name: id,
+    ...createBusinessSequenceFixture(id),
+  }));
+}
 export function fixtures(): (RawFixture & { name: string })[] {
   const long = nearStart(boardFixture());
   const panel = long.spec.panels[0];
@@ -126,10 +137,13 @@ export function fixtures(): (RawFixture & { name: string })[] {
     { name: 'maximum-five-panels', ...nearStart(multiPanelFixture(5)) },
     { name: 'maximum-source-210-nodes', ...maximumSourceFixture() },
     { name: 'long-punctuated-label', ...long },
+    ...businessFixtures(),
   ];
 }
 export function materialize(f: RawFixture): SavedFixture & { spec: StoryboardSourceSpec } {
-  const plan: unknown = JSON.parse(JSON.stringify(savedBoardFixture(f)));
+  const savedPlan = savedBoardFixture(f);
+  if (f.spec.specVersion === 2) savedPlan.parserVersion = 3;
+  const plan: unknown = JSON.parse(JSON.stringify(savedPlan));
   const parsed = validateSceneFirstLongformPlan(plan, f.words, f.duration);
   assert.ok(parsed.ok, parsed.ok ? '' : parsed.error);
   return {

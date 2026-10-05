@@ -260,7 +260,7 @@ export function useLongformPipeline(): {
           if (problem) throw new Error(problem);
           if (
             isSceneFirstLongformPlan(plan) &&
-            plan.parserVersion === 2 &&
+            (plan.parserVersion === 2 || plan.parserVersion === 3) &&
             plan.storyboardStyle !== appearance.storyboardStyle
           )
             throw new Error(

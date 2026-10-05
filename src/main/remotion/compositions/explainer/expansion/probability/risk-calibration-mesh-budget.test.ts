@@ -86,7 +86,7 @@ describe('risk/calibration composed CPU geometry ceilings (not native/GPU proof)
       'src/main/remotion/compositions/explainer/expansion/probability/risk-calibration-Scene.tsx',
       'utf8',
     );
-    expect(route).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(route).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(route.match(/<HybridStage\b/g)).toHaveLength(1);
     expect(route).not.toMatch(/<Stage3D\b|<ThreeCanvas\b|<canvas\b/);
     const hybrid = readFileSync(

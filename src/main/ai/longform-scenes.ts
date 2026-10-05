@@ -386,7 +386,7 @@ export async function generateSceneFirstLongformPlan(
   return {
     schemaVersion: 2,
     mode: 'scene-first',
-    parserVersion: 2,
+    parserVersion: 3,
     storyboardStyle,
     sourceFingerprint,
     sourceDuration: videoDuration,

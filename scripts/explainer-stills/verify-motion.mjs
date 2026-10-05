@@ -8,6 +8,10 @@ import { pathToFileURL } from 'node:url';
 import ffprobe from '@ffprobe-installer/ffprobe';
 import { makeCancelSignal, renderMedia, renderStill, selectComposition } from '@remotion/renderer';
 import ffmpeg from 'ffmpeg-static';
+import {
+  assertBusinessSourceUnchanged,
+  captureBusinessLineage,
+} from './business-source-lineage.mjs';
 import { REQUIRED_TARGET_COUNT } from './fixture-manifest.mjs';
 import {
   bundleDigest,
@@ -124,12 +128,14 @@ export async function runVerification(args = process.argv.slice(2), mode = 'moti
   }
   const { plan, fixtureFiles } = selectVerificationPlan(options, mode);
   const serveUrl = localBundle(options.bundle);
+  const lineage = captureBusinessLineage(plan, serveUrl);
   const out = outputDirectory(options.out, `batchclip-${mode}-check-`);
   const configuration = rendererConfiguration({ softwareRaster: options['software-raster'] });
   const configurationHash = digest(configuration);
   const stats = startReport(out, mode, {
     command: [process.execPath, `scripts/explainer-stills/verify-${mode}.mjs`, ...args],
-    bundle: { path: serveUrl, sha256: bundleDigest(serveUrl) },
+    bundle: lineage?.bundle ?? { path: serveUrl, sha256: bundleDigest(serveUrl) },
+    ...(lineage ? { source: lineage.source } : {}),
     fixtureFiles,
     rendererConfiguration: configuration,
     rendererConfigurationHash: configurationHash,
@@ -622,6 +628,7 @@ export async function runVerification(args = process.argv.slice(2), mode = 'moti
     }
     if (options['dry-run']) stats.report.execution = 'not-started';
     try {
+      assertBusinessSourceUnchanged(lineage);
       stats.report.coverage = executionCoverage(plan, [stats.report]);
       stats.report.coverageScope = `Selected fixture plans only. Run coverage.mjs against ALL fixture plans for a ${REQUIRED_TARGET_COUNT}-item audit.`;
     } catch (error) {

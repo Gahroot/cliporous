@@ -28,16 +28,23 @@ export function HybridStage({
   diagram,
   camera = EXPLANATION_CAMERA,
   handoffBeat = 'response',
+  settledOutcome = false,
 }: {
   scene: DiagramStory;
   model: React.ReactNode;
   diagram: React.ReactNode;
   camera?: CameraSpec;
   handoffBeat?: 'action' | 'response';
+  settledOutcome?: boolean;
 }): React.ReactElement {
   const { t } = useSceneTime();
   const pose = diagramPose(t, scene, handoffBeat);
-  if (scene.visualMode === 'diagram') return <DiagramStage scene={scene}>{diagram}</DiagramStage>;
+  if (scene.visualMode === 'diagram')
+    return (
+      <DiagramStage scene={scene} settledOutcome={settledOutcome}>
+        {diagram}
+      </DiagramStage>
+    );
   return (
     <>
       <div style={{ position: 'absolute', inset: 0, opacity: pose.modelOpacity * pose.setup }}>
@@ -53,7 +60,7 @@ export function HybridStage({
         </Stage3D>
       </div>
       {hybridDiagramLayer(diagram, pose.diagramOpacity)}
-      <DiagramChrome scene={scene} />
+      <DiagramChrome scene={scene} settledOutcome={settledOutcome} />
     </>
   );
 }

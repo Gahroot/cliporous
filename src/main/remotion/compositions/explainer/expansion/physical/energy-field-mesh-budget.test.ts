@@ -275,7 +275,9 @@ it('audits production zero/one WebGL dispatch, persistent exact diagram/Chrome a
     stage = readFileSync(`${root}Stage3D.tsx`, 'utf8');
   expect(diagram).not.toMatch(/import[^;]*Stage3D|<Canvas\b/);
   for (const source of [diagram, hybrid])
-    expect(source).toContain('<DiagramChrome scene={scene} />');
+    expect(source).toMatch(
+      /<DiagramChrome scene=\{scene\}(?: settledOutcome=\{settledOutcome\})? \/>/,
+    );
   expect(hybrid.match(/<Stage3D\b/g)).toHaveLength(1);
   expect(hybrid).toContain('groundY={-1.4}');
   for (const tag of ['ThreeCanvas', 'StudioEnvironment', 'ContactShadows'])

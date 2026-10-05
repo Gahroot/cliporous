@@ -60,6 +60,13 @@ const TIME_KEYS = new Set([
   'glowAt',
   'shakeAt',
   'actionEndAt',
+  'startAt',
+  'endAt',
+  'setupAt',
+  'actionAt',
+  'responseAt',
+  'checkAt',
+  'resolveAt',
 ]);
 /** Only authored absolute timestamps tolerate arithmetic round-off; every other leaf is exact. */
 export function assertTimeRoundTrip(

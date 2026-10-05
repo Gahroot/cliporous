@@ -211,7 +211,7 @@ describe('strict storyboard source boundary', () => {
   });
   it('separates source spec, parser and plan versions; verifies metadata even on omitted boards', () => {
     const f = boardFixture();
-    rejected(f, 'version', { ...f.spec, specVersion: 2 });
+    rejected(f, 'version', { ...f.spec, specVersion: 999 });
     for (const mutation of [
       (p: ReturnType<typeof savedBoardFixture>) => {
         p.parserVersion = 1;

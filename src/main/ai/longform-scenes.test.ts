@@ -40,7 +40,7 @@ vi.mock('@google/genai', () => ({
   GoogleGenAI: class {
     models = {
       generateContent: (request: { contents: string; config?: { abortSignal?: AbortSignal } }) =>
-        request.contents.startsWith('STORYBOARD_PROPOSAL_V1')
+        request.contents.startsWith('STORYBOARD_PROPOSAL_V2')
           ? generateBoardContent(request)
           : generateContent(request),
     };
@@ -142,7 +142,7 @@ describe('scene-first long-form coordinator at the model boundary', () => {
     expect(plan.cards).toEqual([]);
     expect(generateContent).toHaveBeenCalledTimes(6); // three ordinary drafts + reviews
     expect(generateBoardContent).toHaveBeenCalledTimes(3); // exactly one explicit null per section
-    expect(plan.parserVersion).toBe(2);
+    expect(plan.parserVersion).toBe(3);
     expect(plan.storyboardStyle).toBe('polish');
     for (const scene of plan.scenes) {
       expect(scene.sourceSpec).toEqual({

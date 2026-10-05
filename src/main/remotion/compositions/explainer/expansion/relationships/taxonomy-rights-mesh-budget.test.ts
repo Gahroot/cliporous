@@ -110,7 +110,7 @@ describe('actual composed CPU model/SVG budgets, including mounted hidden geomet
       'src/main/remotion/compositions/explainer/expansion/relationships/taxonomy-rights-Scene.tsx',
       'utf8',
     );
-    expect(route).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(route).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(route.match(/<HybridStage\b/g)).toHaveLength(1);
     expect(route.match(/<DiagramSurface\b/g)).toHaveLength(1);
     expect(route).toContain('diagram={null}');

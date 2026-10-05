@@ -141,7 +141,7 @@ describe('units/equivalence actual composed CPU mesh and SVG budgets, not native
       'src/main/remotion/compositions/explainer/expansion/representations/units-equivalence-Scene.tsx',
       'utf8',
     );
-    expect(route).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(route).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(route.match(/<HybridStage\b/g)).toHaveLength(1);
     expect(route).toContain('diagram={null}');
     expect(route.match(/<DiagramSurface\b/g)).toHaveLength(1);

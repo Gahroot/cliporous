@@ -15,6 +15,16 @@
 
 import type { LongformPresentation } from '../../../../shared/longform-scenes';
 import type { AiDiagramScene } from './ai-systems/types';
+import type { AuthorityBusinessScene } from './business/authority/types';
+import type { CapitalScene } from './business/capital/types';
+import type { CommercialScene } from './business/commercial/types';
+import type { DecisionsScene } from './business/decisions/types';
+import type { EconomicsScene } from './business/economics/types';
+import type { FundsScene } from './business/funds/types';
+import type { InfrastructureScene } from './business/infrastructure/types';
+import type { MarketsScene } from './business/markets/types';
+import type { OrganizationScene } from './business/organization/types';
+import type { BusinessWorkScene } from './business/work/types';
 import type { CashTimingScene } from './business-systems/types';
 import type { CognitionScene } from './cognition/types';
 import type { AdaptiveScene } from './concepts/adaptive/types';
@@ -344,6 +354,35 @@ export const CONCEPT_SCENE_KINDS = [
 ] as const;
 
 /** Complete 2D/hybrid explanations share full-window and no-automatic-extras protection. */
+export const BUSINESS_SCENE_KINDS = [
+  'task-map',
+  'coordination-map',
+  'work-redesign',
+  'delegation-scope',
+  'authority-handoff',
+  'constraint-check',
+  'business-blueprint',
+  'business-replication',
+  'organization-map',
+  'system-reconciliation',
+  'operating-cost',
+  'scale-economics',
+  'value-capture',
+  'market-dependency',
+  'procurement-commitment',
+  'fund-lifecycle',
+  'distribution-waterfall',
+  'fund-liquidity',
+  'economic-rights',
+  'capital-structure',
+  'investment-outcomes',
+  'capacity-map',
+  'operating-lineage',
+  'staged-decision',
+  'measurement-frame',
+  'uncertainty-album',
+] as const;
+
 export const HYBRID_SCENE_KINDS = [
   'detroit-place',
   'fund-flow',
@@ -387,6 +426,7 @@ export const CAUSAL_SCENE_KINDS = [
   'evidence-conflict',
   ...CONCEPT_SCENE_KINDS,
   ...HYBRID_SCENE_KINDS,
+  ...BUSINESS_SCENE_KINDS,
 ] as const;
 
 export function isCausalSceneKind(kind: string): boolean {
@@ -1037,7 +1077,17 @@ export type LegacyExplainerSceneBody =
   | DetroitPlaceScene
   | FinanceScene
   | CashTimingScene
-  | AiDiagramScene;
+  | AiDiagramScene
+  | BusinessWorkScene
+  | AuthorityBusinessScene
+  | CommercialScene
+  | OrganizationScene
+  | EconomicsScene
+  | MarketsScene
+  | FundsScene
+  | CapitalScene
+  | InfrastructureScene
+  | DecisionsScene;
 
 export type ExplainerSceneBody = LegacyExplainerSceneBody | ExpansionScene;
 

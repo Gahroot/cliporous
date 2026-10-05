@@ -16,6 +16,7 @@ import { disableGpuEncoderForSession } from '../../src/main/ffmpeg';
 import { buildArchetypeLayout } from '../../src/main/layouts/segment-layouts';
 import { deriveExplainerPalette } from '../../src/main/remotion/compositions/explainer/palette';
 import {
+  BUSINESS_SCENE_KINDS,
   CONCEPT_SCENE_KINDS,
   collectSceneTimes,
   type ExplainerAspect,
@@ -34,6 +35,7 @@ import { buildASSFilter } from '../../src/main/render/helpers';
 import { compositePhraseOverlays } from '../../src/main/render/longform-encode';
 import { buildSfxMixArgs, planSceneSfx } from '../../src/main/render/scene-sfx';
 import type { ResolvedSegment } from '../../src/main/render/segment-render';
+import { businessChainFixture } from './business-e2e.fixture';
 import {
   conceptChainFixture,
   conceptFixtures,
@@ -461,6 +463,40 @@ function conceptPlanningProof() {
   return { portrait: representative, landscape: representative };
 }
 
+function businessPlanningProof() {
+  const chain = businessChainFixture();
+  const examples = chain.examples.map(({ fixture, planned }) => ({
+    name: fixture.fixtureId,
+    inputHash: digest(fixture),
+    ...conceptPathProof(
+      [offsetConceptPlan(planned, 30)],
+      fixture.words.map((word) => ({ ...word, start: word.start + 30, end: word.end + 30 })),
+    ),
+  }));
+  const parsed = parsePlanWithDiagnostics(chain.raw, chain.words, chain.bounds);
+  expect(parsed.rejected).toEqual([]);
+  expect(parsed.omitted).toEqual([]);
+  expect(parsed.accepted).toHaveLength(7);
+  const groups = groupPlannedScenes(parsed.accepted);
+  expect(groups).toHaveLength(7);
+  const scenarios = Object.fromEntries(
+    groups.map((group, i) => {
+      const localWords = chain.words.filter(
+        (word) => word.start >= group.startTime && word.end <= group.endTime,
+      );
+      const proof = conceptPathProof(group.scenes, localWords, group.layout);
+      return [`business-${i}`, { portrait: proof, landscape: proof }];
+    }),
+  );
+  json(join(outputDir, 'business-planning.json'), {
+    examples,
+    chain,
+    planned: parsed.accepted,
+    groups,
+  });
+  return { scenarios, chain, groups };
+}
+
 function hybridPlanningProof() {
   const fixtures = hybridFixtures();
   const examples = fixtures.map((fixture) => {
@@ -647,6 +683,8 @@ it.skipIf(mode === 'composite')('local systems pipeline smoke', async () => {
     if (process.env.SYSTEMS_E2E_CONCEPTS === '1') scenarios.concepts = conceptPlanningProof();
     const hybrid = process.env.SYSTEMS_E2E_HYBRID === '1' ? hybridPlanningProof() : null;
     if (hybrid) Object.assign(scenarios, hybrid.scenarios);
+    const business = process.env.SYSTEMS_E2E_BUSINESS === '1' ? businessPlanningProof() : null;
+    if (business) Object.assign(scenarios, business.scenarios);
     if (Object.keys(scenarios).length === 0)
       scenarios.systems = { portrait: fixture, landscape: fixture };
     const describe = (value: { portrait: typeof fixture; landscape: typeof fixture }) =>
@@ -683,6 +721,8 @@ it.skipIf(mode === 'composite')('local systems pipeline smoke', async () => {
           entries.length === 1 ? outputDir : join(outputDir, name),
         );
     if (mode === 'render' && hybrid) report.hybridExports = await assembleHybridExports(hybrid);
+    if (mode === 'render' && business)
+      report.businessExports = await assembleHybridExports(business, 'business');
     report.status = 'passed';
   } catch (error) {
     report.status = 'failed';
@@ -696,6 +736,7 @@ it.skipIf(mode === 'composite')('local systems pipeline smoke', async () => {
 
 async function assembleHybridExports(
   proof: ReturnType<typeof hybridPlanningProof>,
+  prefix = 'hybrid',
 ): Promise<unknown[]> {
   const results: unknown[] = [];
   for (const aspect of ['9:16', '16:9'] as const) {
@@ -703,8 +744,8 @@ async function assembleHybridExports(
       leaf = portrait ? 'portrait' : 'landscape';
     const width = portrait ? 1080 : 1920,
       height = portrait ? 1920 : 1080;
-    const source = join(outputDir, 'hybrid-1', leaf, 'synthetic-speaker.mp4');
-    const dir = join(outputDir, `hybrid-complete-${leaf}`);
+    const source = join(outputDir, `${prefix}-1`, leaf, 'synthetic-speaker.mp4');
+    const dir = join(outputDir, `${prefix}-complete-${leaf}`);
     mkdirSync(dir, { recursive: true });
     const segments: { path: string; start: number; end: number; speakerOnly: boolean }[] = [];
     const addGap = async (start: number, end: number): Promise<void> => {
@@ -757,7 +798,7 @@ async function assembleHybridExports(
     for (const [i, group] of proof.groups.entries()) {
       await addGap(cursor, group.startTime);
       segments.push({
-        path: join(outputDir, `hybrid-${i}`, leaf, 'final.mp4'),
+        path: join(outputDir, `${prefix}-${i}`, leaf, 'final.mp4'),
         start: group.startTime,
         end: group.endTime,
         speakerOnly: false,
@@ -776,7 +817,7 @@ async function assembleHybridExports(
         })
         .join('\n'),
     );
-    const output = join(dir, 'hybrid-production-proof.mp4');
+    const output = join(dir, `${prefix}-production-proof.mp4`);
     await ff([
       '-f',
       'concat',
@@ -922,7 +963,10 @@ async function renderAspect(
   const hybrid = fixture.planned.every((p) =>
     HYBRID_SCENE_KINDS.some((kind) => kind === p.scene.kind),
   );
-  const authored = concepts || hybrid;
+  const business = fixture.planned.every((p) =>
+    (BUSINESS_SCENE_KINDS as readonly string[]).includes(p.scene.kind),
+  );
+  const authored = concepts || hybrid || business;
   const dir = join(artifactRoot, portrait ? 'portrait' : 'landscape');
   mkdirSync(dir, { recursive: true });
   const group = portrait ? fixture.group : fixture.landscape;

@@ -9,6 +9,36 @@ import { OBJECT_KIND_SPECS } from './kinds-3d-objects';
 import { AGENT_WORKFLOW_SPEC } from './kinds-agent-workflow';
 import { inferenceTradeoffSpec, tokenAttentionSpec } from './kinds-ai-diagrams';
 import { ASSEMBLY_KIND_SPECS } from './kinds-assemblies';
+import {
+  authorityHandoffSpec,
+  constraintCheckSpec,
+  delegationScopeSpec,
+} from './kinds-business-authority';
+import {
+  CAPITAL_STRUCTURE_SPEC,
+  ECONOMIC_RIGHTS_SPEC,
+  INVESTMENT_OUTCOMES_SPEC,
+} from './kinds-business-capital';
+import { BUSINESS_BLUEPRINT_SPEC, BUSINESS_REPLICATION_SPEC } from './kinds-business-commercial';
+import {
+  MEASUREMENT_FRAME_SPEC,
+  STAGED_DECISION_SPEC,
+  UNCERTAINTY_ALBUM_SPEC,
+} from './kinds-business-decisions';
+import {
+  OPERATING_COST_SPEC,
+  SCALE_ECONOMICS_SPEC,
+  VALUE_CAPTURE_SPEC,
+} from './kinds-business-economics';
+import {
+  DISTRIBUTION_WATERFALL_SPEC,
+  FUND_LIFECYCLE_SPEC,
+  FUND_LIQUIDITY_SPEC,
+} from './kinds-business-funds';
+import { CAPACITY_MAP_SPEC, OPERATING_LINEAGE_SPEC } from './kinds-business-infrastructure';
+import { MARKET_DEPENDENCY_SPEC, PROCUREMENT_COMMITMENT_SPEC } from './kinds-business-markets';
+import { ORGANIZATION_MAP_SPEC, SYSTEM_RECONCILIATION_SPEC } from './kinds-business-organization';
+import { COORDINATION_MAP_SPEC, TASK_MAP_SPEC, WORK_REDESIGN_SPEC } from './kinds-business-work';
 import { cashTimingSpec } from './kinds-cash-timing';
 import { COGNITION_KIND_SPECS } from './kinds-cognition';
 import { COMPOSED_KIND_SPECS } from './kinds-composed';
@@ -65,6 +95,32 @@ export const ALL_KIND_SPECS: readonly AnyKindSpec[] = [
   cashTimingSpec,
   tokenAttentionSpec,
   inferenceTradeoffSpec,
+  TASK_MAP_SPEC,
+  COORDINATION_MAP_SPEC,
+  WORK_REDESIGN_SPEC,
+  delegationScopeSpec,
+  authorityHandoffSpec,
+  constraintCheckSpec,
+  BUSINESS_BLUEPRINT_SPEC,
+  BUSINESS_REPLICATION_SPEC,
+  ORGANIZATION_MAP_SPEC,
+  SYSTEM_RECONCILIATION_SPEC,
+  OPERATING_COST_SPEC,
+  SCALE_ECONOMICS_SPEC,
+  VALUE_CAPTURE_SPEC,
+  MARKET_DEPENDENCY_SPEC,
+  PROCUREMENT_COMMITMENT_SPEC,
+  FUND_LIFECYCLE_SPEC,
+  DISTRIBUTION_WATERFALL_SPEC,
+  FUND_LIQUIDITY_SPEC,
+  ECONOMIC_RIGHTS_SPEC,
+  CAPITAL_STRUCTURE_SPEC,
+  INVESTMENT_OUTCOMES_SPEC,
+  CAPACITY_MAP_SPEC,
+  OPERATING_LINEAGE_SPEC,
+  STAGED_DECISION_SPEC,
+  MEASUREMENT_FRAME_SPEC,
+  UNCERTAINTY_ALBUM_SPEC,
 ];
 
 const BY_KIND = new Map<ExplainerSceneKind, AnyKindSpec>(ALL_KIND_SPECS.map((s) => [s.kind, s]));

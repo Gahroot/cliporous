@@ -1,5 +1,8 @@
+import type { BusinessExplanationSource } from './business-explanation-source';
+
 /** Saved source vocabulary only. Authored geometry belongs to the deterministic compiler. */
-export const STORYBOARD_SPEC_VERSION = 1 as const;
+export const STORYBOARD_SPEC_VERSION = 2 as const;
+export type StoryboardSpecVersion = 1 | 2;
 export const STORYBOARD_STYLES = ['polish', 'ink'] as const;
 export type StoryboardStyle = (typeof STORYBOARD_STYLES)[number];
 export const DEFAULT_STORYBOARD_STYLE: StoryboardStyle = 'polish';
@@ -11,7 +14,8 @@ export const STORYBOARD_PANEL_KINDS = [
   'quantity',
   'hero',
 ] as const;
-export type StoryboardPanelKind = (typeof STORYBOARD_PANEL_KINDS)[number];
+export type LegacyStoryboardPanelKind = (typeof STORYBOARD_PANEL_KINDS)[number];
+export type StoryboardPanelKind = LegacyStoryboardPanelKind | 'explanation';
 export const STORYBOARD_MODELS = [
   'lightbulb',
   'clapperboard',
@@ -98,7 +102,7 @@ interface StoryboardPanelBase extends StoryboardSourceSpan {
   moveWord: number;
   prop?: StoryboardPropSource;
 }
-export type StoryboardPanel =
+export type LegacyStoryboardPanel =
   | (StoryboardPanelBase & { kind: 'statement'; body: StoryboardLabel })
   | (StoryboardPanelBase & {
       kind: 'comparison';
@@ -121,13 +125,33 @@ export type StoryboardPanel =
     })
   | (StoryboardPanelBase & { kind: 'hero'; caption: StoryboardLabel; prop: StoryboardPropSource });
 
-export interface StoryboardSourceSpec extends StoryboardSourceSpan {
+interface StoryboardSourceBase extends StoryboardSourceSpan {
   kind: 'storyboard';
-  specVersion: typeof STORYBOARD_SPEC_VERSION;
   subject: StoryboardLabel;
-  panels: StoryboardPanel[];
   overview?: { atWord: number };
 }
+export interface LegacyStoryboardSourceSpec extends StoryboardSourceBase {
+  specVersion: StoryboardSpecVersion;
+  panels: LegacyStoryboardPanel[];
+}
+/** Version-2 source vocabulary; the adapter/compiler validates these choices before rendering. */
+export interface StoryboardExplanationPanel extends StoryboardSourceSpan {
+  kind: 'explanation';
+  id: string;
+  title: StoryboardLabel;
+  revealWord: number;
+  moveWord: number;
+  explanation: BusinessExplanationSource;
+  /** Literal hero contracts remain separate; explanation panels cannot attach raw prop choices. */
+  prop?: never;
+}
+export type StoryboardPanel = LegacyStoryboardPanel | StoryboardExplanationPanel;
+export interface BusinessStoryboardSourceSpec extends StoryboardSourceBase {
+  specVersion: 2;
+  panels: StoryboardPanel[];
+}
+export type StoryboardSourceSpec = LegacyStoryboardSourceSpec | BusinessStoryboardSourceSpec;
+
 export interface StoryboardDiagnostic {
   code:
     | 'shape'
@@ -148,6 +172,44 @@ export interface StoryboardDiagnostic {
 export type StoryboardResult<T> =
   | { ok: true; value: T }
   | { ok: false; diagnostics: StoryboardDiagnostic[] };
+
+/** Inspect descriptors before serialization: reject getters, cycles and non-JSON instances. */
+export function storyboardSourceInputBudget(input: unknown): boolean {
+  const plain = (value: unknown): value is Record<string, unknown> =>
+    !!value &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
+  let nodes = 0;
+  const seen = new Set<object>();
+  const visit = (value: unknown, depth: number): boolean => {
+    if (++nodes > STORYBOARD_LIMITS.maxSpecNodes || depth > STORYBOARD_LIMITS.maxSpecDepth)
+      return false;
+    if (value === null || typeof value === 'boolean') return true;
+    if (typeof value === 'number') return Number.isFinite(value);
+    if (typeof value === 'string') return value.length <= STORYBOARD_LIMITS.maxLabelChars;
+    if (typeof value !== 'object' || seen.has(value)) return false;
+    if (!Array.isArray(value) && !plain(value)) return false;
+    seen.add(value);
+    const entries = Object.getOwnPropertyDescriptors(value);
+    const ok =
+      Object.keys(entries).length <= 64 &&
+      Object.entries(entries).every(
+        ([key, descriptor]) =>
+          !['__proto__', 'constructor', 'prototype'].includes(key) &&
+          key.length <= 64 &&
+          'value' in descriptor &&
+          visit(descriptor.value, depth + 1),
+      );
+    seen.delete(value);
+    return ok;
+  };
+  return (
+    plain(input) &&
+    visit(input, 0) &&
+    new TextEncoder().encode(JSON.stringify(input)).byteLength <= STORYBOARD_LIMITS.maxSpecBytes
+  );
+}
 
 export function isStoryboardStyle(value: unknown): value is StoryboardStyle {
   return value === 'polish' || value === 'ink';

@@ -66,8 +66,11 @@ function savedBoard(): {
 }
 
 describe('raw storyboard to approved production props', () => {
-  it('reconstructs offline from saved raw JSON with exact bookends and both styles', () => {
+  it.each([
+    2, 3,
+  ] as const)('reconstructs parser-%i saved raw JSON with exact bookends and both styles', (parserVersion) => {
     const { fixture, plan } = savedBoard();
+    plan.parserVersion = parserVersion;
     const original = JSON.stringify(plan);
     const restored: unknown = JSON.parse(original);
     const compiled = validateSceneFirstLongformPlan(restored, fixture.words, fixture.duration);
@@ -94,6 +97,15 @@ describe('raw storyboard to approved production props', () => {
     expect(validateSceneFirstLongformPlan(restored, fixture.words, fixture.duration)).toEqual(
       compiled,
     );
+  });
+  it('rejects a future parser without coercing or mutating its saved payload', () => {
+    const { fixture, plan } = savedBoard();
+    const restored: unknown = { ...JSON.parse(JSON.stringify(plan)), parserVersion: 4 };
+    const original = JSON.stringify(restored);
+    expect(validateSceneFirstLongformPlan(restored, fixture.words, fixture.duration).ok).toBe(
+      false,
+    );
+    expect(JSON.stringify(restored)).toBe(original);
   });
   it.each([
     'timing',

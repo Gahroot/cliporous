@@ -11,6 +11,7 @@ import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { delimiter, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { sourceEvidence } from '../storyboard-proof/gates.mjs';
 import { bundleDigest, digest, localBundle } from './harness-runtime.mjs';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -179,11 +180,13 @@ export function parseE2EArgs(args) {
         throw new Error('--bundle must be a local directory, not a URL or network share.');
       }
       bundle = localBundle(directory);
-    } else if (['--unit', '--technology', '--concepts', '--hybrid', '--help'].includes(arg)) {
+    } else if (
+      ['--unit', '--technology', '--concepts', '--hybrid', '--business', '--help'].includes(arg)
+    ) {
       flags.push(arg);
     } else {
       throw new Error(
-        'Only --unit, --technology, --concepts, --hybrid, --bundle or --help is supported.',
+        'Only --unit, --technology, --concepts, --hybrid, --business, --bundle or --help is supported.',
       );
     }
   }
@@ -192,6 +195,7 @@ export function parseE2EArgs(args) {
     technology: flags.includes('--technology'),
     concepts: flags.includes('--concepts'),
     hybrid: flags.includes('--hybrid'),
+    business: flags.includes('--business'),
     help: flags.includes('--help'),
     ...(bundle ? { bundle } : {}),
   };
@@ -203,13 +207,15 @@ export function currentBundleEvidence(
   technology = false,
   concepts = false,
   hybrid = false,
+  business = false,
 ) {
   const bundle = localBundle(directory);
   const sources = new Map();
   for (const file of readdirSync(bundle).filter((name) => name.endsWith('.js.map'))) {
     const map = JSON.parse(readFileSync(join(bundle, file), 'utf8'));
     map.sources.forEach((source, index) => {
-      const match = source.match(/(?:^|\/)(src\/main\/remotion\/[^?]+\.tsx?)(?:\?.*)?$/);
+      if (/(?:^|\/)node_modules\//.test(source)) return;
+      const match = source.match(/(?:^|\/)(src\/(?:main|shared)\/[^?]+\.tsx?)(?:\?.*)?$/);
       if (!match) return;
       const relative = match[1];
       if (relative.split('/').includes('..')) throw new Error('Unsafe source-map path');
@@ -234,6 +240,22 @@ export function currentBundleEvidence(
       for (const file of ['Scene.tsx', 'poses.ts', 'models.tsx'])
         required.push(`src/main/remotion/compositions/explainer/concepts/${pack}/${file}`);
   if (hybrid) required.push(...HYBRID_BUNDLE_FILES);
+  if (business) {
+    for (const pack of [
+      'work',
+      'authority',
+      'commercial',
+      'organization',
+      'economics',
+      'markets',
+      'funds',
+      'capital',
+      'infrastructure',
+      'decisions',
+    ])
+      required.push(`src/main/remotion/compositions/explainer/business/${pack}/Scene.tsx`);
+    required.push('src/main/remotion/compositions/explainer/business/catalog.ts');
+  }
   for (const file of required)
     if (!sources.has(file)) throw new Error(`Current bundle source-map evidence missing: ${file}`);
   return {
@@ -245,13 +267,22 @@ export function currentBundleEvidence(
 
 async function main() {
   const args = process.argv.slice(2);
-  const { mode, technology, concepts, hybrid, help, bundle: pinnedBundle } = parseE2EArgs(args);
+  const {
+    mode,
+    technology,
+    concepts,
+    hybrid,
+    business,
+    help,
+    bundle: pinnedBundle,
+  } = parseE2EArgs(args);
   if (help) {
     console.log(
-      'Usage: node scripts/explainer-stills/verify-systems-e2e.mjs [--unit] [--technology] [--concepts] [--hybrid] [--bundle DIRECTORY]\n' +
+      'Usage: node scripts/explainer-stills/verify-systems-e2e.mjs [--unit] [--technology] [--concepts] [--hybrid] [--business] [--bundle DIRECTORY]\n' +
         '  --unit: planning/child-lifecycle checks only; omit for local native media.\n' +
         '  --concepts: all 42 presets plus a mixed AI/business/concept export chain in both aspects.\n' +
         '  --hybrid: all 15 presets / both modes and seven enabled landmarks, plus seven mixed chapters in both production aspects.\n' +
+        '  --business: all 80 raw recipes and seven mixed business chapters in both production aspects.\n' +
         '  --bundle: use an immutable local snapshot; current-source and hash checks still apply.\n' +
         '  Catalog flags may be combined; missing fixtures fail, never skip.',
     );
@@ -267,6 +298,7 @@ async function main() {
     technology,
     concepts,
     hybrid,
+    business,
     out,
     startedAt: new Date().toISOString(),
     status: 'running',
@@ -286,9 +318,10 @@ async function main() {
         'Installed ffmpeg-static and ffprobe-installer binaries are required; no installs performed.',
       );
     }
+    report.source = sourceEvidence(ROOT, mode === 'render');
     const bundle = pinnedBundle ?? join(ROOT, 'out/remotion');
     if (mode === 'render')
-      report.bundle = currentBundleEvidence(bundle, technology, concepts, hybrid);
+      report.bundle = currentBundleEvidence(bundle, technology, concepts, hybrid, business);
     await runBounded(process.execPath, [VITEST, 'run', '--config', CONFIG], {
       ownProcessGroup: true,
       timeoutMs: mode === 'unit' ? 120_000 : 3_600_000,
@@ -300,6 +333,7 @@ async function main() {
         SYSTEMS_E2E_TECHNOLOGY: technology ? '1' : '0',
         SYSTEMS_E2E_CONCEPTS: concepts ? '1' : '0',
         SYSTEMS_E2E_HYBRID: hybrid ? '1' : '0',
+        SYSTEMS_E2E_BUSINESS: business ? '1' : '0',
         SYSTEMS_E2E_OUT: out,
         SYSTEMS_E2E_OWNER: owner,
         SYSTEMS_E2E_BUNDLE: bundle,
@@ -307,6 +341,14 @@ async function main() {
       onStdout: (chunk) => process.stdout.write(chunk),
       onStderr: (chunk) => process.stderr.write(chunk),
     });
+    if (sourceEvidence(ROOT, mode === 'render').sha256 !== report.source.sha256)
+      throw new Error('Production source changed during proof.');
+    if (
+      mode === 'render' &&
+      currentBundleEvidence(bundle, technology, concepts, hybrid, business).sha256 !==
+        report.bundle.sha256
+    )
+      throw new Error('Production bundle changed during proof.');
     const smoke = JSON.parse(readFileSync(join(out, 'report.json'), 'utf8'));
     if (smoke.status !== 'passed') throw new Error('Smoke did not write a passing report.');
     report.status = 'passed';

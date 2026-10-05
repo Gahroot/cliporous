@@ -24,6 +24,7 @@ test('catalog flags are additive and opt-in, unit never requests renders, unknow
     technology: false,
     concepts: false,
     hybrid: false,
+    business: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--technology', '--unit']), {
@@ -31,6 +32,7 @@ test('catalog flags are additive and opt-in, unit never requests renders, unknow
     technology: true,
     concepts: false,
     hybrid: false,
+    business: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--concepts']), {
@@ -38,6 +40,7 @@ test('catalog flags are additive and opt-in, unit never requests renders, unknow
     technology: false,
     concepts: true,
     hybrid: false,
+    business: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--concepts', '--unit']), {
@@ -45,6 +48,7 @@ test('catalog flags are additive and opt-in, unit never requests renders, unknow
     technology: false,
     concepts: true,
     hybrid: false,
+    business: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--technology', '--concepts', '--unit']), {
@@ -52,6 +56,7 @@ test('catalog flags are additive and opt-in, unit never requests renders, unknow
     technology: true,
     concepts: true,
     hybrid: false,
+    business: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--hybrid', '--unit']), {
@@ -59,6 +64,7 @@ test('catalog flags are additive and opt-in, unit never requests renders, unknow
     technology: false,
     concepts: false,
     hybrid: true,
+    business: false,
     help: false,
   });
   assert.deepEqual(parseE2EArgs(['--technology', '--concepts', '--hybrid']), {
@@ -66,9 +72,22 @@ test('catalog flags are additive and opt-in, unit never requests renders, unknow
     technology: true,
     concepts: true,
     hybrid: true,
+    business: false,
     help: false,
   });
   assert.equal(parseE2EArgs(['--concepts', '--help']).help, true);
+  assert.deepEqual(parseE2EArgs(['--business', '--unit']), {
+    mode: 'unit',
+    technology: false,
+    concepts: false,
+    hybrid: false,
+    business: true,
+    help: false,
+  });
+  assert.equal(
+    parseE2EArgs(['--technology', '--concepts', '--hybrid', '--business']).business,
+    true,
+  );
   assert.throws(() => parseE2EArgs(['--software-raster']), /Only/);
   assert.throws(() => parseE2EArgs(['--unknown']), /Only/);
 });
@@ -106,6 +125,50 @@ test('an explicit local snapshot survives replacement of a different live bundle
   assert.throws(() => parseE2EArgs(['--bundle', 'https://example.invalid/bundle']), /local/i);
   assert.throws(() => parseE2EArgs(['--bundle', '//server/share']), /local/i);
   assert.throws(() => parseE2EArgs(['--bundle', path.join(pinned, 'missing')]), /index.html/);
+});
+
+test('business freshness requires every pack and also checks bundled shared sources', (t) => {
+  const dir = temporary(t);
+  writeFileSync(path.join(dir, 'index.html'), 'test-only bundle');
+  const files = [
+    'src/main/remotion/Root.tsx',
+    ...[
+      'work',
+      'authority',
+      'commercial',
+      'organization',
+      'economics',
+      'markets',
+      'funds',
+      'capital',
+      'infrastructure',
+      'decisions',
+    ].map((pack) => `src/main/remotion/compositions/explainer/business/${pack}/Scene.tsx`),
+    'src/main/remotion/compositions/explainer/business/catalog.ts',
+    'src/shared/storyboards.ts',
+  ];
+  const map = {
+    sources: files,
+    sourcesContent: files.map((file) => readFileSync(path.join(ROOT, file), 'utf8')),
+  };
+  const save = () => writeFileSync(path.join(dir, 'bundle.js.map'), JSON.stringify(map));
+  save();
+  assert.equal(
+    Object.keys(currentBundleEvidence(dir, false, false, false, true).sources).length,
+    files.length,
+  );
+  map.sourcesContent[map.sources.length - 1] += '\n// stale shared source';
+  save();
+  assert.throws(() => currentBundleEvidence(dir, false, false, false, true), /Stale.*shared/);
+  map.sources.pop();
+  map.sourcesContent.pop();
+  map.sources.splice(1, 1);
+  map.sourcesContent.splice(1, 1);
+  save();
+  assert.throws(
+    () => currentBundleEvidence(dir, false, false, false, true),
+    /missing.*business\/work/,
+  );
 });
 
 test('bundle gate rejects missing maps, absent technology and changed current source contents', (t) => {

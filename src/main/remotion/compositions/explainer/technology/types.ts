@@ -61,6 +61,8 @@ export interface AgentWorkflowScene extends TechnologyStory {
   kind: 'agent-workflow';
   preset: (typeof TECHNOLOGY_PRESETS)['agent-workflow'][number];
   toolLabel: string;
+  /** Opt-in only for approval-gate; omission retains historical clay appearance. */
+  visualMode?: 'diagram' | 'hybrid';
 }
 
 export interface RetrievalGroundingScene extends TechnologyStory {

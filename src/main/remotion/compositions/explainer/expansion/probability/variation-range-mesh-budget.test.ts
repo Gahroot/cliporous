@@ -164,7 +164,7 @@ describe('variation/range actual hidden authored composition costs (CPU/SSR, not
     );
     expect(view.match(/<HybridStage\b/g)).toHaveLength(1);
     expect(view).not.toMatch(/<ThreeCanvas|<Stage3D/);
-    expect(stage).toContain("if (scene.visualMode === 'diagram') return <DiagramStage");
+    expect(stage).toMatch(/if \(scene\.visualMode === 'diagram'\)\s*return \(?\s*<DiagramStage/);
     expect(stage.match(/<Stage3D\b/g)).toHaveLength(1);
     expect(stage).toContain('driftDeg={0}');
     expect(stage).toContain('pushAmount={0}');

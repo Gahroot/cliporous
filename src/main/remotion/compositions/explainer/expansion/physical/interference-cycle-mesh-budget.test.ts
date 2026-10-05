@@ -133,11 +133,15 @@ it('actual RoomEnvironment, attached ClayBlock, hidden ContactShadows and zero/o
   expect(route).not.toMatch(/<Canvas|<ThreeCanvas|Date\.|Math\.random|fetch\(/);
   const hybrid = readFileSync(`${root}diagrams/HybridStage.tsx`, 'utf8');
   expect(hybrid.match(/<Stage3D\b/g)).toHaveLength(1);
-  expect(hybrid).toContain('<DiagramChrome scene={scene} />');
+  expect(hybrid).toMatch(
+    /<DiagramChrome scene=\{scene\}(?: settledOutcome=\{settledOutcome\})? \/>/,
+  );
   expect(hybrid).toContain('groundY={-1.4}');
   const diagram = readFileSync(`${root}diagrams/DiagramStage.tsx`, 'utf8');
   expect(diagram).not.toMatch(/import[^;]*Stage3D|<Canvas\b/);
-  expect(diagram).toContain('<DiagramChrome scene={scene} />');
+  expect(diagram).toMatch(
+    /<DiagramChrome scene=\{scene\}(?: settledOutcome=\{settledOutcome\})? \/>/,
+  );
   const stage = readFileSync(`${root}Stage3D.tsx`, 'utf8');
   for (const tag of ['ThreeCanvas', 'StudioEnvironment', 'ContactShadows'])
     expect(stage.match(new RegExp(`<${tag}\\b`, 'g'))).toHaveLength(1);
