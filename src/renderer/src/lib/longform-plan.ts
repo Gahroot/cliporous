@@ -10,9 +10,13 @@ import {
   isLongformPresentation,
   isSceneFirstLongformPlan,
   isSceneFirstPlanEnvelope,
+  LONGFORM_PHRASE_LIMITS,
   type LongformPresentation,
   type LongformScenePlacement,
+  longformPhraseFrameWindow,
+  longformPhraseProblem,
   longformSourceFingerprint,
+  partitionLongformPhrases,
   sceneFirstPlanProblem,
   scheduleLongformScenes,
 } from '@shared/longform-scenes';
@@ -173,6 +177,48 @@ export function isScenePlanForReview(plan: LongformEditPlan): boolean {
   );
 }
 
+function phraseItemViews(
+  phrases: readonly PhraseEmphasis[],
+  words: readonly WordTimestamp[],
+): LongformPlanItemView[] {
+  return phrases.map<LongformPlanItemView>((item, index) => ({
+    type: 'phrase',
+    index,
+    key: longformItemKey('phrase', item),
+    startTime: item.startTime,
+    endTime: item.endTime,
+    title: item.text,
+    detail: 'Spoken phrase emphasized over the speaker',
+    kind: 'Phrase overlay',
+    sourceText: transcriptExcerpt(words, item.startTime, item.endTime),
+  }));
+}
+
+/**
+ * Text overlays on a scene-first plan. Kept apart from the scene list, whose counts,
+ * workspace and approval copy mean explanation scenes only. Legacy plans return [] here
+ * because their phrases are already part of `buildLongformPlanItems`.
+ */
+export function buildLongformPhraseItems(
+  plan: LongformEditPlan,
+  words: readonly WordTimestamp[],
+): LongformPlanItemView[] {
+  if (!isSceneFirstPlanEnvelope(plan)) return [];
+  return phraseItemViews(plan.phrases, words).sort(
+    (left, right) => left.startTime - right.startTime || left.endTime - right.endTime,
+  );
+}
+
+/** Phrases the export will skip, keyed by item key: they overlap an included scene or phrase. */
+export function longformPhraseIssues(plan: LongformEditPlan): Map<string, string> {
+  if (!isSceneFirstPlanEnvelope(plan)) return new Map();
+  return new Map(
+    partitionLongformPhrases(plan.phrases, plan.scenes, plan.sourceDuration).dropped.map(
+      ({ phrase, reason }) => [longformItemKey('phrase', phrase), reason],
+    ),
+  );
+}
+
 export function buildLongformPlanItems(
   plan: LongformEditPlan,
   words: readonly WordTimestamp[],
@@ -200,17 +246,7 @@ export function buildLongformPlanItems(
       )
       .sort((left, right) => left.startTime - right.startTime || left.key.localeCompare(right.key));
   }
-  const phrases = plan.phrases.map<LongformPlanItemView>((item, index) => ({
-    type: 'phrase',
-    index,
-    key: longformItemKey('phrase', item),
-    startTime: item.startTime,
-    endTime: item.endTime,
-    title: item.text,
-    detail: 'Spoken phrase emphasized over the speaker',
-    kind: 'Phrase overlay',
-    sourceText: transcriptExcerpt(words, item.startTime, item.endTime),
-  }));
+  const phrases = phraseItemViews(plan.phrases, words);
   const blocks = plan.blocks.map<LongformPlanItemView>((item, index) => ({
     type: 'block',
     index,
@@ -366,7 +402,7 @@ export function longformSceneScheduleIssues(plan: LongformEditPlan): Map<string,
 export function estimateLongformRenderSeconds(plan: LongformEditPlan, duration: number): number {
   if (isScenePlanForReview(plan) && !isSceneFirstPlanEnvelope(plan)) return 0;
   const visualComplexity = isSceneFirstLongformPlan(plan)
-    ? plan.scenes.filter((scene) => !scene.omitted).length * 18
+    ? plan.scenes.filter((scene) => !scene.omitted).length * 18 + plan.phrases.length * 3
     : plan.blocks.length * 12 + plan.phrases.length * 3 + (plan.cards?.length ?? 0) * 4;
   return Math.max(30, Math.round(duration * 1.25 + visualComplexity));
 }
@@ -375,10 +411,48 @@ function clonePlan(plan: LongformEditPlan): LongformEditPlan {
   return structuredClone(plan);
 }
 
-export function longformItemEditProblem(
+function scenePlanPhraseEditProblem(
+  plan: LongformEditPlan,
   item: LongformPlanItemView,
   update: LongformPlanItemUpdate,
 ): string | null {
+  if (!isSceneFirstPlanEnvelope(plan) || item.type !== 'phrase') return null;
+  const edited: PhraseEmphasis = {
+    ...(plan.phrases[item.index] ?? { text: item.title }),
+    text: (update.title ?? item.title).trim(),
+    startTime: update.startTime ?? item.startTime,
+    endTime: update.endTime ?? item.endTime,
+  };
+  const problem = longformPhraseProblem(edited, plan.sourceDuration);
+  if (problem)
+    return `${problem} Phrases are up to ${LONGFORM_PHRASE_LIMITS.maxTextLength} characters and ${LONGFORM_PHRASE_LIMITS.maxSeconds} seconds, inside the source.`;
+  const frames = longformPhraseFrameWindow(edited);
+  const scene = plan.scenes.find(
+    (candidate) =>
+      !candidate.omitted &&
+      frames.startFrame < Math.ceil(candidate.endTime * 30 - 1e-6) &&
+      Math.floor(candidate.startTime * 30 + 1e-6) < frames.endFrame,
+  );
+  if (scene)
+    return 'Phrase text appears only over the full-screen speaker. Move it outside the scene, or omit the scene first.';
+  const other = plan.phrases.find((candidate, index) => {
+    if (index === item.index) return false;
+    const window = longformPhraseFrameWindow(candidate);
+    return frames.startFrame < window.endFrame && window.startFrame < frames.endFrame;
+  });
+  if (other) return `Overlaps the phrase "${other.text}". Move or remove one of them.`;
+  return null;
+}
+
+export function longformItemEditProblem(
+  item: LongformPlanItemView,
+  update: LongformPlanItemUpdate,
+  plan?: LongformEditPlan,
+): string | null {
+  if (plan) {
+    const phraseProblem = scenePlanPhraseEditProblem(plan, item, update);
+    if (phraseProblem) return phraseProblem;
+  }
   if (item.scene?.kind !== 'storyboard') return null;
   if (
     (update.startTime !== undefined && update.startTime !== item.startTime) ||
@@ -442,6 +516,30 @@ export function updateLongformPlanItem(
 ): LongformEditPlan {
   if (isScenePlanForReview(plan) && !isSceneFirstPlanEnvelope(plan)) return plan;
   if (isSceneFirstLongformPlan(plan)) {
+    if (ref.type === 'phrase') {
+      const original = ref.index === undefined ? undefined : plan.phrases[ref.index];
+      if (
+        !original ||
+        ref.index === undefined ||
+        update.title === undefined ||
+        update.startTime === undefined ||
+        update.endTime === undefined
+      )
+        return plan;
+      const view = phraseItemViews([original], [])[0];
+      if (!view || scenePlanPhraseEditProblem(plan, { ...view, index: ref.index }, update))
+        return plan;
+      const next = clonePlan(plan);
+      if (!isSceneFirstLongformPlan(next)) return plan;
+      next.phrases[ref.index] = {
+        ...original,
+        text: update.title.trim(),
+        startTime: update.startTime,
+        endTime: update.endTime,
+      };
+      next.generatedAt = Date.now();
+      return next;
+    }
     if (ref.type !== 'scene' || !plan.scenes.some((scene) => scene.id === ref.id)) return plan;
     const original = buildLongformPlanItems(plan, []).find((item) => item.key === ref.id);
     if (original && longformItemEditProblem(original, update)) return plan;
@@ -505,6 +603,13 @@ export function removeLongformPlanItem(
   ref: LongformPlanItemRef,
 ): LongformEditPlan {
   if (ref.type === 'scene') return updateLongformPlanItem(plan, ref, { omitted: true });
+  if (isSceneFirstLongformPlan(plan) && ref.type === 'phrase' && ref.index !== undefined) {
+    if (!plan.phrases[ref.index]) return plan;
+    const next = clonePlan(plan);
+    next.phrases.splice(ref.index, 1);
+    next.generatedAt = Date.now();
+    return next;
+  }
   if (isScenePlanForReview(plan) || ref.index === undefined) return plan;
   const next = clonePlan(plan);
   if (ref.type === 'phrase') next.phrases.splice(ref.index, 1);
@@ -528,6 +633,15 @@ export function mergePreservedLongformItems(
   if (isScenePlanForReview(generated) && !isSceneFirstPlanEnvelope(generated)) return generated;
   if (isSceneFirstLongformPlan(generated)) {
     const next = structuredClone(generated);
+    // Preserved phrase text wins its slot; the scene schedule below decides what may show.
+    for (const saved of preservedItems) {
+      if (saved.type !== 'phrase') continue;
+      const phrase = structuredClone(saved.item as PhraseEmphasis);
+      next.phrases = next.phrases.filter(
+        (candidate) => !longformRangesOverlap(candidate, phrase) && candidate.text !== phrase.text,
+      );
+      next.phrases.push(phrase);
+    }
     for (const saved of preservedItems) {
       if (saved.type !== 'scene') continue;
       const scene = structuredClone(saved.item);
@@ -538,6 +652,7 @@ export function mergePreservedLongformItems(
     next.scenes.sort(
       (left, right) => left.startTime - right.startTime || left.id.localeCompare(right.id),
     );
+    next.phrases = partitionLongformPhrases(next.phrases, next.scenes, next.sourceDuration).kept;
     return next;
   }
   let next = resolveLongformPlanOverlaps(clonePlan(generated));
@@ -590,8 +705,8 @@ export function compareLongformPlans(
   left: LongformEditPlan,
   right: LongformEditPlan,
 ): LongformPlanDiff {
-  const leftItems = buildLongformPlanItems(left, []);
-  const rightItems = buildLongformPlanItems(right, []);
+  const leftItems = [...buildLongformPlanItems(left, []), ...buildLongformPhraseItems(left, [])];
+  const rightItems = [...buildLongformPlanItems(right, []), ...buildLongformPhraseItems(right, [])];
   const leftMap = new Map(leftItems.map((item) => [comparableKey(item), item]));
   const rightMap = new Map(rightItems.map((item) => [comparableKey(item), item]));
   let unchanged = 0;
@@ -642,6 +757,7 @@ export function planItemFromRef(
 ): PhraseEmphasis | BlockPlacement | DelosCardPlacement | LongformScenePlacement | null {
   if (isScenePlanForReview(plan) && !isSceneFirstPlanEnvelope(plan)) return null;
   if (isSceneFirstLongformPlan(plan)) {
+    if (ref.type === 'phrase' && ref.index !== undefined) return plan.phrases[ref.index] ?? null;
     return ref.type === 'scene' ? (plan.scenes.find((scene) => scene.id === ref.id) ?? null) : null;
   }
   if (ref.type === 'scene' || ref.index === undefined) return null;

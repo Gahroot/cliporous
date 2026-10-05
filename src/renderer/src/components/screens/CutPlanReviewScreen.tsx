@@ -52,6 +52,7 @@ import {
 } from '@/components/ui/dialog';
 import { MISSING_GEMINI_KEY_MESSAGE, resolveGeminiKey } from '@/lib/gemini-key';
 import {
+  buildLongformPhraseItems,
   buildLongformPlanItems,
   buildLongformSections,
   captureLongformAppearance,
@@ -63,6 +64,7 @@ import {
   type LongformPlanItemUpdate,
   type LongformPlanItemView,
   longformItemEditProblem,
+  longformPhraseIssues,
   longformSceneReviewProblem,
   longformSceneScheduleIssues,
   mergePreservedLongformItems,
@@ -112,7 +114,7 @@ function PlanTimeline({
           <h2 className="text-sm font-semibold">Editorial timeline</h2>
           <p className="mt-1 text-xs text-muted-foreground">
             {sceneFirst
-              ? 'Complete scene windows use absolute source time. Speaker footage continues between explanations.'
+              ? 'Complete scene windows use absolute source time. Speaker footage continues between explanations, with phrase text over it.'
               : 'Every marker uses absolute source time. Full-frame blocks replace the speaker; phrases and cards overlay it.'}
           </p>
         </div>
@@ -144,7 +146,7 @@ function PlanTimeline({
           })}
       </div>
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-        {(sceneFirst ? (['scene'] as const) : (['phrase', 'block', 'card'] as const)).map(
+        {(sceneFirst ? (['scene', 'phrase'] as const) : (['phrase', 'block', 'card'] as const)).map(
           (type) => (
             <span key={type} className="flex items-center gap-1.5">
               <span className={cn('h-2 w-2 rounded-sm', colors[type])} aria-hidden />
@@ -231,7 +233,9 @@ function BeatCard({
         )}
         {issue && (
           <p className="mt-1 text-xs text-warning">
-            {issue} Omit this scene or request a new draft; timing is never shortened.
+            {item.scene
+              ? `${issue} Omit this scene or request a new draft; timing is never shortened.`
+              : `Not shown in export: ${issue}`}
           </p>
         )}
         <blockquote className="mt-2 border-l-2 border-border pl-2 text-xs leading-relaxed text-muted-foreground">
@@ -350,6 +354,14 @@ export function CutPlanReviewScreen(): React.JSX.Element {
   const plan = record?.plan;
   const versions = useMemo(() => (record ? getLongformVersions(record) : []), [record]);
   const items = useMemo(() => (plan ? buildLongformPlanItems(plan, words) : []), [plan, words]);
+  const phraseItems = useMemo(
+    () => (plan ? buildLongformPhraseItems(plan, words) : []),
+    [plan, words],
+  );
+  const phraseIssues = useMemo(
+    () => (plan ? longformPhraseIssues(plan) : new Map<string, string>()),
+    [plan],
+  );
   const sections = useMemo(
     () => (plan && source ? buildLongformSections(plan, words, source.duration) : []),
     [plan, source, words],
@@ -450,7 +462,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
   };
 
   const saveItemEdit = (item: LongformPlanItemView, update: LongformPlanItemUpdate): void => {
-    const problem = longformItemEditProblem(item, update);
+    const problem = longformItemEditProblem(item, update, plan);
     if (problem) {
       toast.error(problem);
       return;
@@ -891,6 +903,45 @@ export function CutPlanReviewScreen(): React.JSX.Element {
               </div>
             )}
 
+            {scenePlan && (
+              <details className="min-w-0 rounded-lg border border-border p-3">
+                <summary className="cursor-pointer rounded text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  Text overlays ({phraseItems.length - phraseIssues.size} shown
+                  {phraseIssues.size > 0 ? ` · ${phraseIssues.size} hidden` : ''})
+                </summary>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Short spoken phrases shown as large text while you are on screen full-size. They
+                  never appear during explanation scenes.
+                </p>
+                {phraseItems.length > 0 ? (
+                  <ul className="mt-3">
+                    {phraseItems.map((item) => (
+                      <BeatCard
+                        key={item.key}
+                        item={item}
+                        preserved={preservedKeys.has(item.key)}
+                        onEdit={(trigger) => {
+                          editorTriggerRef.current = trigger;
+                          setEditingItem(item);
+                        }}
+                        onFeedback={() => setFeedbackTarget(item)}
+                        onTogglePreserve={() => togglePreserve(item)}
+                        onPreview={() => {}}
+                        onToggleOmit={() => removeItem(item)}
+                        previewSelected={false}
+                        disabled={regenerating || Boolean(validationProblem)}
+                        issue={phraseIssues.get(item.key)}
+                      />
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    No text overlays in this plan. Regenerate to add them.
+                  </p>
+                )}
+              </details>
+            )}
+
             <details open={!sceneReview} className="min-w-0 rounded-lg border border-border p-3">
               <summary className="cursor-pointer rounded text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 Planning sections ({sections.length}){!sceneReview ? ' · Legacy plan' : ''}
@@ -1017,7 +1068,11 @@ export function CutPlanReviewScreen(): React.JSX.Element {
               words. {plan.reasoning || 'No model reasoning was saved with this version.'}
             </p>
             <div className="mt-4">
-              <PlanTimeline duration={source.duration} items={items} sceneFirst={sceneReview} />
+              <PlanTimeline
+                duration={source.duration}
+                items={[...items, ...phraseItems]}
+                sceneFirst={sceneReview}
+              />
             </div>
             <aside
               className="mt-4 grid min-w-0 gap-4 md:grid-cols-2"

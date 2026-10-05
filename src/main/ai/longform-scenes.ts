@@ -9,15 +9,23 @@ import {
   type LongformScenePlacement,
   longformSceneId,
   longformSourceFingerprint,
+  partitionLongformPhrases,
   type SceneFirstLongformPlan,
   sceneFirstPlanProblem,
   scheduleLongformScenes,
   validLongformWords,
 } from '@shared/longform-scenes';
 import { DEFAULT_STORYBOARD_STYLE, isStoryboardStyle } from '../../shared/storyboards';
+import type { PhraseEmphasis, WordTimestamp } from '../../shared/types';
+import { log } from '../logger';
 import { LONGFORM_PLANNER_PROFILE } from './explainer/planner-profiles';
 import { clipIdentity, summarizeUsage, type UsageRecord } from './explainer/recent-usage';
 import { parseLongformSceneSpec, planExplainerEditPlan } from './explainer-scenes';
+import {
+  addPacingPhraseFallbacks,
+  generateLongformPhrases,
+  type LongformPhraseGeneration,
+} from './longform-edit-plan';
 import { validateSceneFirstLongformPlan } from './longform-scene-contract';
 import {
   LONGFORM_SECTION_POLICY,
@@ -31,6 +39,54 @@ export type SceneFirstLongformGenerationOptions = LongformGenerationRequest & {
   signal?: AbortSignal;
   onProgress?: (progress: LongformPlanningProgress) => void;
 };
+
+function formatRange(scene: Pick<LongformScenePlacement, 'startTime' | 'endTime'>): string {
+  return `${scene.startTime.toFixed(2)}s-${scene.endTime.toFixed(2)}s`;
+}
+
+/** Every storyboard removed after planning is logged so real exports show why boards vanish. */
+function logDroppedStoryboard(board: LongformScenePlacement, code: string, reason: string): void {
+  log('warn', 'longform-storyboard', 'storyboard dropped', {
+    id: board.id,
+    sectionId: board.sectionId,
+    code,
+    reason,
+    range: formatRange(board),
+    startTime: board.startTime,
+    endTime: board.endTime,
+  });
+}
+
+interface PhraseOverlayInput {
+  words: readonly WordTimestamp[];
+  duration: number;
+  scenes: readonly LongformScenePlacement[];
+  attemptedRanges: readonly { startTime: number; endTime: number }[];
+  previous: readonly PhraseEmphasis[];
+  generated: readonly PhraseEmphasis[];
+}
+
+/**
+ * Legacy phrase emphasis, restricted to the full-screen speaker. Untouched sections keep
+ * their saved phrases; attempted sections get model phrases plus the legacy pacing beats.
+ */
+export function buildLongformPhraseOverlays(input: PhraseOverlayInput): PhraseEmphasis[] {
+  const inAttempted = (phrase: PhraseEmphasis): boolean =>
+    input.attemptedRanges.some(
+      (range) => phrase.startTime >= range.startTime && phrase.startTime < range.endTime,
+    );
+  const kept = input.previous.filter((phrase) => !inAttempted(phrase));
+  const authored = partitionLongformPhrases(
+    [...kept, ...input.generated.filter(inAttempted)],
+    input.scenes,
+    input.duration,
+  ).kept;
+  const sceneBeats = input.scenes.filter((scene) => !scene.omitted);
+  const paced = addPacingPhraseFallbacks(authored, sceneBeats, input.words, input.duration).filter(
+    (phrase) => authored.includes(phrase) || inAttempted(phrase),
+  );
+  return partitionLongformPhrases(paced, input.scenes, input.duration).kept;
+}
 
 function note(section: LongformPlanningSection, message: string): void {
   if (section.diagnostics.length < 100) section.diagnostics.push(message.slice(0, 1_000));
@@ -132,270 +188,337 @@ export async function generateSceneFirstLongformPlan(
     .filter((scene) => !attempted.has(scene.sectionId) || preserved.has(scene.id) || scene.omitted)
     .map((scene) => structuredClone(scene));
   const proposals: LongformScenePlacement[] = [];
-  let recent: UsageRecord[] = [];
-  let completed = 0;
-  let successes = 0;
-
-  const planSection = async (section: LongformSection): Promise<LongformScenePlacement[]> => {
-    const output = sectionResults.get(section.id);
-    if (!output) throw new Error('Missing planning section.');
-    const started = Date.now();
+  const attemptedRanges = sections
+    .filter((section) => attempted.has(section.id))
+    .map(({ startTime, endTime }) => ({ startTime, endTime }));
+  // Runs alongside section planning. A phrase failure never sinks the scene plan, and a
+  // scene-plan failure stops any phrase requests still in flight.
+  const phraseAbort = new AbortController();
+  const phraseSignal = signal ? AbortSignal.any([signal, phraseAbort.signal]) : phraseAbort.signal;
+  const phraseGeneration = (async (): Promise<LongformPhraseGeneration> => {
     try {
-      signal?.throwIfAborted();
-      const result = await planExplainerEditPlan(
-        options.apiKey,
-        words,
-        { minStart: 0, maxEnd: videoDuration },
-        {
-          profile: LONGFORM_PLANNER_PROFILE,
-          aspect: '16:9',
-          longformSection: { ...section, feedback: options.feedback },
-          signal,
-          recentUse: recent,
-          onDiagnostic: (event) => {
-            if (['rejected', 'removed', 'repaired', 'fallback'].includes(event.action))
-              note(
-                output,
-                `${event.phase ?? 'draft'}:${event.reason}${event.index === undefined ? '' : `:${event.index}`}`,
-              );
-          },
-        },
-      );
-      signal?.throwIfAborted();
-      if (!result.ok) {
-        output.status = 'failed';
-        note(output, 'generation-failed');
-        return [];
-      }
-      const placements: LongformScenePlacement[] = [];
-      for (const raw of result.value.sourceSpecs ?? []) {
-        if (
-          !isLongformSourceSpec(raw) ||
-          typeof raw.kind !== 'string' ||
-          typeof raw.startWord !== 'number' ||
-          typeof raw.endWord !== 'number' ||
-          raw.startWord < section.startWord ||
-          raw.startWord > section.endWord ||
-          raw.endWord > section.contextEndWord
-        ) {
-          note(output, 'source-spec-rejected');
-          continue;
-        }
-        // Deliberately identical bounds/API to saved-plan validation, not section-time bounds.
-        const parsed = parseLongformSceneSpec(raw, words, { clipStart: 0, clipEnd: videoDuration });
-        if (!parsed) {
-          note(output, 'source-spec-reconstruction-failed');
-          continue;
-        }
-        const excerpt = words
-          .slice(raw.startWord, raw.endWord + 1)
-          .map((word) => word.text)
-          .join(' ');
-        if (raw.presentation !== undefined && !isLongformPresentation(raw.presentation)) {
-          note(output, 'invalid-presentation');
-          continue;
-        }
-        placements.push({
-          id: longformSceneId(raw.kind, raw.startWord, raw.endWord),
-          kind: raw.kind,
-          startWord: raw.startWord,
-          endWord: raw.endWord,
-          startTime: parsed.startTime,
-          endTime: parsed.endTime,
-          sectionId: section.id,
-          presentation: isLongformPresentation(raw.presentation)
-            ? raw.presentation
-            : 'speaker-side',
-          sourceSpec: structuredClone(raw),
-          label: excerpt.slice(0, 160),
-          purpose: `Explain the source passage: ${excerpt}`.slice(0, 1_000),
-        });
-      }
-      if (!placements.length && result.value.scenes.length) {
-        output.status = 'failed';
-        note(output, 'all-source-specs-rejected');
-        return [];
-      }
-      // Sequential within this section: ordinary + storyboard requests together never exceed TWO.
-      const proposal = await planStoryboardSection({
+      return await generateLongformPhrases({
         apiKey: options.apiKey,
         words,
-        duration: videoDuration,
-        section,
-        style: storyboardStyle,
+        videoDuration,
+        ranges: attemptedRanges,
         feedback: options.feedback,
-        signal,
+        signal: phraseSignal,
       });
-      signal?.throwIfAborted();
-      const diagnostics = proposal.ok ? proposal.value.diagnostics : proposal.diagnostics;
-      for (const diagnostic of diagnostics)
-        note(output, `storyboard:${diagnostic.code}:${diagnostic.message}`);
-      if (!proposal.ok) {
-        note(output, 'storyboard-generation-failed');
-        // A valid ordinary proposal remains usable, including on regeneration.
-        // Without one, do not erase an old explanation or claim empty success on failure.
-        if (!placements.length) {
-          output.status = 'failed';
-          return [];
-        }
-      } else if (proposal.value.board) {
-        const board = proposal.value.board;
-        const raw = board.sourceSpec;
-        if (!isLongformSourceSpec(raw))
-          throw new Error('Storyboard exceeds saved source envelope.');
-        placements.push({
-          id: longformSceneId('storyboard', raw.startWord, raw.endWord),
-          kind: 'storyboard',
-          startWord: raw.startWord,
-          endWord: raw.endWord,
-          startTime: board.startTime,
-          endTime: board.endTime,
-          sectionId: section.id,
-          presentation: 'full-frame',
-          sourceSpec: structuredClone(raw),
-          label: raw.subject.text,
-          purpose: `Explain the source passage: ${raw.subject.text}`,
+    } catch (error) {
+      if (!phraseSignal.aborted)
+        log('warn', 'longform-phrases', 'phrase planning failed; pacing phrases only', {
+          error: error instanceof Error ? error.message.slice(0, 300) : 'unknown',
         });
-      }
-      output.status = placements.length ? 'planned' : 'empty';
-      successes++;
-      return placements;
-    } catch {
-      signal?.throwIfAborted();
-      output.status = 'failed';
-      // Provider exceptions may contain prompt text or credentials. Persist only authored codes.
-      note(output, 'provider-failed');
-      return [];
-    } finally {
-      note(output, `elapsed-ms:${Math.max(0, Date.now() - started)}`);
+      return { phrases: [], attemptedWindows: 0, failedWindows: 0 };
     }
-  };
+  })();
+  try {
+    let recent: UsageRecord[] = [];
+    let completed = 0;
+    let successes = 0;
 
-  // Fixed batches make history and output independent of which provider call finishes first.
-  // Partners see the same prior history; only completed earlier batches enter the next prompt.
-  for (let offset = 0; offset < windows.length; offset += LONGFORM_SECTION_POLICY.concurrency) {
-    signal?.throwIfAborted();
-    const batch = windows.slice(offset, offset + LONGFORM_SECTION_POLICY.concurrency);
-    const results = await Promise.all(
-      batch.map((section) => (attempted.has(section.id) ? planSection(section) : [])),
-    );
-    signal?.throwIfAborted();
-    for (let index = 0; index < batch.length; index++) {
-      const section = batch[index];
+    const planSection = async (section: LongformSection): Promise<LongformScenePlacement[]> => {
       const output = sectionResults.get(section.id);
       if (!output) throw new Error('Missing planning section.');
-      if (attempted.has(section.id)) {
-        if (output.status === 'failed') {
-          // Failure cannot erase last-known decisions, even when they weren't explicitly pinned.
-          const existing = new Set(retained.map((scene) => scene.id));
-          retained.push(
-            ...(previous?.scenes ?? [])
-              .filter((scene) => scene.sectionId === section.id && !existing.has(scene.id))
-              .map((scene) => structuredClone(scene)),
-          );
-        } else proposals.push(...results[index]);
-        completed++;
-        options.onProgress?.({
-          requestId: options.requestId,
-          window: completed,
-          total: attempted.size,
-          sectionId: section.id,
-          outcome: output.status,
+      const started = Date.now();
+      try {
+        signal?.throwIfAborted();
+        const result = await planExplainerEditPlan(
+          options.apiKey,
+          words,
+          { minStart: 0, maxEnd: videoDuration },
+          {
+            profile: LONGFORM_PLANNER_PROFILE,
+            aspect: '16:9',
+            longformSection: { ...section, feedback: options.feedback },
+            signal,
+            recentUse: recent,
+            onDiagnostic: (event) => {
+              if (['rejected', 'removed', 'repaired', 'fallback'].includes(event.action))
+                note(
+                  output,
+                  `${event.phase ?? 'draft'}:${event.reason}${event.index === undefined ? '' : `:${event.index}`}`,
+                );
+            },
+          },
+        );
+        signal?.throwIfAborted();
+        if (!result.ok) {
+          output.status = 'failed';
+          note(output, 'generation-failed');
+          return [];
+        }
+        const placements: LongformScenePlacement[] = [];
+        for (const raw of result.value.sourceSpecs ?? []) {
+          if (
+            !isLongformSourceSpec(raw) ||
+            typeof raw.kind !== 'string' ||
+            typeof raw.startWord !== 'number' ||
+            typeof raw.endWord !== 'number' ||
+            raw.startWord < section.startWord ||
+            raw.startWord > section.endWord ||
+            raw.endWord > section.contextEndWord
+          ) {
+            note(output, 'source-spec-rejected');
+            continue;
+          }
+          // Deliberately identical bounds/API to saved-plan validation, not section-time bounds.
+          const parsed = parseLongformSceneSpec(raw, words, {
+            clipStart: 0,
+            clipEnd: videoDuration,
+          });
+          if (!parsed) {
+            note(output, 'source-spec-reconstruction-failed');
+            continue;
+          }
+          const excerpt = words
+            .slice(raw.startWord, raw.endWord + 1)
+            .map((word) => word.text)
+            .join(' ');
+          if (raw.presentation !== undefined && !isLongformPresentation(raw.presentation)) {
+            note(output, 'invalid-presentation');
+            continue;
+          }
+          placements.push({
+            id: longformSceneId(raw.kind, raw.startWord, raw.endWord),
+            kind: raw.kind,
+            startWord: raw.startWord,
+            endWord: raw.endWord,
+            startTime: parsed.startTime,
+            endTime: parsed.endTime,
+            sectionId: section.id,
+            presentation: isLongformPresentation(raw.presentation)
+              ? raw.presentation
+              : 'speaker-side',
+            sourceSpec: structuredClone(raw),
+            label: excerpt.slice(0, 160),
+            purpose: `Explain the source passage: ${excerpt}`.slice(0, 1_000),
+          });
+        }
+        if (!placements.length && result.value.scenes.length) {
+          output.status = 'failed';
+          note(output, 'all-source-specs-rejected');
+          return [];
+        }
+        // Sequential within this section: ordinary + storyboard requests together never exceed TWO.
+        const proposal = await planStoryboardSection({
+          apiKey: options.apiKey,
+          words,
+          duration: videoDuration,
+          section,
+          style: storyboardStyle,
+          feedback: options.feedback,
+          occupied: placements.map(({ startWord, endWord }) => ({ startWord, endWord })),
+          signal,
         });
+        signal?.throwIfAborted();
+        const diagnostics = proposal.ok ? proposal.value.diagnostics : proposal.diagnostics;
+        for (const diagnostic of diagnostics)
+          note(output, `storyboard:${diagnostic.code}:${diagnostic.message}`);
+        if (!proposal.ok) {
+          note(output, 'storyboard-generation-failed');
+          // A valid ordinary proposal remains usable, including on regeneration.
+          // Without one, do not erase an old explanation or claim empty success on failure.
+          if (!placements.length) {
+            output.status = 'failed';
+            return [];
+          }
+        } else if (proposal.value.board) {
+          const board = proposal.value.board;
+          const raw = board.sourceSpec;
+          if (!isLongformSourceSpec(raw))
+            throw new Error('Storyboard exceeds saved source envelope.');
+          placements.push({
+            id: longformSceneId('storyboard', raw.startWord, raw.endWord),
+            kind: 'storyboard',
+            startWord: raw.startWord,
+            endWord: raw.endWord,
+            startTime: board.startTime,
+            endTime: board.endTime,
+            sectionId: section.id,
+            presentation: 'full-frame',
+            sourceSpec: structuredClone(raw),
+            label: raw.subject.text,
+            purpose: `Explain the source passage: ${raw.subject.text}`,
+          });
+        }
+        output.status = placements.length ? 'planned' : 'empty';
+        successes++;
+        return placements;
+      } catch {
+        signal?.throwIfAborted();
+        output.status = 'failed';
+        // Provider exceptions may contain prompt text or credentials. Persist only authored codes.
+        note(output, 'provider-failed');
+        return [];
+      } finally {
+        note(output, `elapsed-ms:${Math.max(0, Date.now() - started)}`);
       }
-      const usageScenes = [
-        ...retained.filter((scene) => scene.sectionId === section.id && !scene.omitted),
-        ...results[index],
-      ];
-      const compiled = usageScenes.flatMap((scene) => {
-        if (scene.kind === 'storyboard') return [];
-        const parsed = parseLongformSceneSpec(scene.sourceSpec, words, {
-          clipStart: 0,
-          clipEnd: videoDuration,
+    };
+
+    // Fixed batches make history and output independent of which provider call finishes first.
+    // Partners see the same prior history; only completed earlier batches enter the next prompt.
+    for (let offset = 0; offset < windows.length; offset += LONGFORM_SECTION_POLICY.concurrency) {
+      signal?.throwIfAborted();
+      const batch = windows.slice(offset, offset + LONGFORM_SECTION_POLICY.concurrency);
+      const results = await Promise.all(
+        batch.map((section) => (attempted.has(section.id) ? planSection(section) : [])),
+      );
+      signal?.throwIfAborted();
+      for (let index = 0; index < batch.length; index++) {
+        const section = batch[index];
+        const output = sectionResults.get(section.id);
+        if (!output) throw new Error('Missing planning section.');
+        if (attempted.has(section.id)) {
+          if (output.status === 'failed') {
+            // Failure cannot erase last-known decisions, even when they weren't explicitly pinned.
+            const existing = new Set(retained.map((scene) => scene.id));
+            retained.push(
+              ...(previous?.scenes ?? [])
+                .filter((scene) => scene.sectionId === section.id && !existing.has(scene.id))
+                .map((scene) => structuredClone(scene)),
+            );
+          } else proposals.push(...results[index]);
+          completed++;
+          options.onProgress?.({
+            requestId: options.requestId,
+            window: completed,
+            total: attempted.size,
+            sectionId: section.id,
+            outcome: output.status,
+          });
+        }
+        const usageScenes = [
+          ...retained.filter((scene) => scene.sectionId === section.id && !scene.omitted),
+          ...results[index],
+        ];
+        const compiled = usageScenes.flatMap((scene) => {
+          if (scene.kind === 'storyboard') return [];
+          const parsed = parseLongformSceneSpec(scene.sourceSpec, words, {
+            clipStart: 0,
+            clipEnd: videoDuration,
+          });
+          return parsed ? [parsed] : [];
         });
-        return parsed ? [parsed] : [];
-      });
-      recent = [
-        ...recent,
-        {
-          clipHash: clipIdentity(sourceFingerprint, section.startTime, section.endTime),
-          order: offset + index,
-          choices: summarizeUsage(compiled),
-        },
-      ].slice(-LONGFORM_SECTION_POLICY.recentSections);
+        recent = [
+          ...recent,
+          {
+            clipHash: clipIdentity(sourceFingerprint, section.startTime, section.endTime),
+            order: offset + index,
+            choices: summarizeUsage(compiled),
+          },
+        ].slice(-LONGFORM_SECTION_POLICY.recentSections);
+      }
     }
-  }
-  signal?.throwIfAborted();
-  if (attempted.size && successes === 0)
-    throw new Error(
-      'Every attempted long-form section failed. The previous plan was not replaced.',
+    signal?.throwIfAborted();
+    if (attempted.size && successes === 0)
+      throw new Error(
+        'Every attempted long-form section failed. The previous plan was not replaced.',
+      );
+    if (scheduleLongformScenes(retained, videoDuration).rejected.length)
+      throw new Error(
+        'Preserved scene windows conflict; review the previous plan before retrying.',
+      );
+    const occupiedIds = new Set(retained.map((scene) => scene.id));
+    const candidates: LongformScenePlacement[] = [];
+    for (const scene of proposals) {
+      const section = sectionResults.get(scene.sectionId);
+      if (!section) throw new Error('Missing planning section.');
+      if (occupiedIds.has(scene.id)) {
+        note(section, `duplicate-or-preserved:${scene.id}`);
+        if (scene.kind === 'storyboard')
+          logDroppedStoryboard(scene, 'duplicate', 'Duplicate or preserved scene identity.');
+        continue;
+      }
+      if (retained.some((other) => overlaps(scene, other))) {
+        note(section, `preserved-window-conflict:${scene.id}`);
+        if (scene.kind === 'storyboard')
+          logDroppedStoryboard(
+            scene,
+            'preserved-window-conflict',
+            'Overlaps a preserved scene from the previous plan.',
+          );
+        continue;
+      }
+      occupiedIds.add(scene.id);
+      candidates.push(scene);
+    }
+    const protectedProblem = storyboardPolicyProblem(retained, videoDuration);
+    if (protectedProblem) throw new Error(protectedProblem);
+    const scheduled = scheduleLongformScenes(
+      candidates.filter((s) => s.kind !== 'storyboard'),
+      videoDuration,
     );
-  if (scheduleLongformScenes(retained, videoDuration).rejected.length)
-    throw new Error('Preserved scene windows conflict; review the previous plan before retrying.');
-  const occupiedIds = new Set(retained.map((scene) => scene.id));
-  const candidates: LongformScenePlacement[] = [];
-  for (const scene of proposals) {
-    const section = sectionResults.get(scene.sectionId);
-    if (!section) throw new Error('Missing planning section.');
-    if (occupiedIds.has(scene.id)) {
-      note(section, `duplicate-or-preserved:${scene.id}`);
-      continue;
+    for (const rejection of scheduled.rejected) {
+      const scene = candidates.find((candidate) => candidate.id === rejection.id);
+      const section = scene && sectionResults.get(scene.sectionId);
+      if (section) note(section, `schedule-rejected:${rejection.id}:${rejection.reason}`);
     }
-    if (retained.some((other) => overlaps(scene, other))) {
-      note(section, `preserved-window-conflict:${scene.id}`);
-      continue;
+    const arbitration = arbitrateStoryboards({
+      ordinary: scheduled.scenes,
+      proposals: candidates.filter((s) => s.kind === 'storyboard'),
+      protectedScenes: retained,
+      duration: videoDuration,
+    });
+    for (const diagnostic of arbitration.diagnostics) {
+      const candidate = candidates.find((s) => s.id === diagnostic.sourceId);
+      const section = candidate && sectionResults.get(candidate.sectionId);
+      if (section)
+        note(section, `storyboard:${diagnostic.code}:${diagnostic.sourceId}:${diagnostic.message}`);
+      if (candidate) logDroppedStoryboard(candidate, diagnostic.code, diagnostic.message);
     }
-    occupiedIds.add(scene.id);
-    candidates.push(scene);
+    for (const board of arbitration.scenes.filter((s) => s.kind === 'storyboard' && !s.omitted))
+      log('info', 'longform-storyboard', 'storyboard accepted', {
+        id: board.id,
+        range: formatRange(board),
+      });
+    for (const replacement of arbitration.replacements) {
+      const section = sectionResults.get(replacement.sectionId);
+      if (section)
+        note(section, `storyboard-replaced:${replacement.boardId}:${replacement.sceneId}`);
+    }
+    const scenes = arbitration.scenes;
+    if (scenes.length > LONGFORM_SCENE_LIMITS.maxScenes)
+      throw new Error('Too many scene placements.');
+    for (const section of sections) {
+      if (attempted.has(section.id) && section.status !== 'failed')
+        section.status = scenes.some((scene) => scene.sectionId === section.id)
+          ? 'planned'
+          : 'empty';
+    }
+    const failed = sections.filter((section) => section.status === 'failed').length;
+    const phraseResult = await phraseGeneration;
+    signal?.throwIfAborted();
+    const phrases = buildLongformPhraseOverlays({
+      words,
+      duration: videoDuration,
+      scenes,
+      attemptedRanges,
+      previous: previous?.phrases ?? [],
+      generated: phraseResult.phrases,
+    });
+    const phraseNote = phraseResult.failedWindows
+      ? ` ${phraseResult.failedWindows} of ${phraseResult.attemptedWindows} phrase windows failed.`
+      : '';
+    return {
+      schemaVersion: 2,
+      mode: 'scene-first',
+      parserVersion: 3,
+      storyboardStyle,
+      sourceFingerprint,
+      sourceDuration: videoDuration,
+      scenes,
+      sections,
+      blocks: [],
+      phrases,
+      cards: [],
+      reasoning: `${scenes.length} source-grounded explanations; ${failed} failed sections; ${phrases.length} phrase overlays over the full-screen speaker.${phraseNote}`,
+      generatedAt: Date.now(),
+    };
+  } finally {
+    // No-op after success; on any thrown scene-plan error, stop phrase requests in flight.
+    phraseAbort.abort();
+    await phraseGeneration;
   }
-  const protectedProblem = storyboardPolicyProblem(retained, videoDuration);
-  if (protectedProblem) throw new Error(protectedProblem);
-  const scheduled = scheduleLongformScenes(
-    candidates.filter((s) => s.kind !== 'storyboard'),
-    videoDuration,
-  );
-  for (const rejection of scheduled.rejected) {
-    const scene = candidates.find((candidate) => candidate.id === rejection.id);
-    const section = scene && sectionResults.get(scene.sectionId);
-    if (section) note(section, `schedule-rejected:${rejection.id}:${rejection.reason}`);
-  }
-  const arbitration = arbitrateStoryboards({
-    ordinary: scheduled.scenes,
-    proposals: candidates.filter((s) => s.kind === 'storyboard'),
-    protectedScenes: retained,
-    duration: videoDuration,
-  });
-  for (const diagnostic of arbitration.diagnostics) {
-    const candidate = candidates.find((s) => s.id === diagnostic.sourceId);
-    const section = candidate && sectionResults.get(candidate.sectionId);
-    if (section)
-      note(section, `storyboard:${diagnostic.code}:${diagnostic.sourceId}:${diagnostic.message}`);
-  }
-  for (const replacement of arbitration.replacements) {
-    const section = sectionResults.get(replacement.sectionId);
-    if (section) note(section, `storyboard-replaced:${replacement.boardId}:${replacement.sceneId}`);
-  }
-  const scenes = arbitration.scenes;
-  if (scenes.length > LONGFORM_SCENE_LIMITS.maxScenes)
-    throw new Error('Too many scene placements.');
-  for (const section of sections) {
-    if (attempted.has(section.id) && section.status !== 'failed')
-      section.status = scenes.some((scene) => scene.sectionId === section.id) ? 'planned' : 'empty';
-  }
-  const failed = sections.filter((section) => section.status === 'failed').length;
-  return {
-    schemaVersion: 2,
-    mode: 'scene-first',
-    parserVersion: 3,
-    storyboardStyle,
-    sourceFingerprint,
-    sourceDuration: videoDuration,
-    scenes,
-    sections,
-    blocks: [],
-    phrases: [],
-    cards: [],
-    reasoning: `${scenes.length} source-grounded explanations; ${failed} failed sections. Speaker video remains in all other intervals.`,
-    generatedAt: Date.now(),
-  };
 }

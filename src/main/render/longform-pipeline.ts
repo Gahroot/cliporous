@@ -338,6 +338,8 @@ export async function renderLongformVideo(
         storyboardPalette: selectedPalette,
         qualityParams,
         sceneSfxEnabled: options.sceneSfxEnabled,
+        // Same axis as the legacy path: phrase text follows the selected palette accent.
+        phraseColor: selectedPalette.accent,
         signal,
         onProgress: (message, fraction) =>
           window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {

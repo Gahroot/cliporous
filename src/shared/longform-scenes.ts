@@ -1,6 +1,6 @@
 import type { Palette } from './palettes';
 import { isStoryboardStyle, STORYBOARD_LIMITS, type StoryboardStyle } from './storyboards';
-import type { LongformEditPlan, WordTimestamp } from './types';
+import type { LongformEditPlan, PhraseEmphasis, WordTimestamp } from './types';
 
 export const LONGFORM_SCENE_SCHEMA_VERSION = 2 as const;
 export const LONGFORM_SCENE_PARSER_VERSION = 3 as const;
@@ -111,6 +111,114 @@ export const LONGFORM_SCENE_LIMITS = {
   maxSpecBytes: 32_768,
   maxDuration: 86_400,
 } as const;
+
+/** Phrase text overlays shown over the uninterrupted full-screen speaker between scenes. */
+export const LONGFORM_PHRASE_LIMITS = {
+  maxPhrases: 2_000,
+  maxTextLength: 80,
+  /** The overlay composition never renders shorter than this (see phrase-emphasis feature). */
+  minVisibleSeconds: 0.4,
+  maxSeconds: 8,
+} as const;
+
+const FPS = 30;
+
+/** Validates one stored phrase overlay; scene-first plans persist only this shape. */
+export function longformPhraseProblem(value: unknown, duration: number): string | null {
+  if (!isRecord(value)) return 'Phrase overlay must be an object.';
+  const { text, startTime, endTime, accentColor } = value;
+  if (
+    typeof text !== 'string' ||
+    !text.trim() ||
+    text.length > LONGFORM_PHRASE_LIMITS.maxTextLength
+  )
+    return 'Phrase overlay text is empty or too long.';
+  if (
+    typeof startTime !== 'number' ||
+    typeof endTime !== 'number' ||
+    !Number.isFinite(startTime) ||
+    !Number.isFinite(endTime) ||
+    startTime < 0 ||
+    endTime <= startTime ||
+    endTime > duration ||
+    endTime - startTime > LONGFORM_PHRASE_LIMITS.maxSeconds
+  )
+    return 'Phrase overlay timing is outside the source window.';
+  if (
+    accentColor !== undefined &&
+    (typeof accentColor !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(accentColor))
+  )
+    return 'Phrase overlay colour is invalid.';
+  return null;
+}
+
+/** Exact frames a phrase occupies on screen, including the overlay's minimum duration. */
+export function longformPhraseFrameWindow(phrase: Pick<PhraseEmphasis, 'startTime' | 'endTime'>): {
+  startFrame: number;
+  endFrame: number;
+} {
+  const visibleEnd = Math.max(
+    phrase.endTime,
+    phrase.startTime + LONGFORM_PHRASE_LIMITS.minVisibleSeconds,
+  );
+  return {
+    startFrame: Math.floor(phrase.startTime * FPS + 1e-6),
+    endFrame: Math.ceil(visibleEnd * FPS - 1e-6),
+  };
+}
+
+export interface LongformPhrasePartition {
+  kept: PhraseEmphasis[];
+  dropped: { phrase: PhraseEmphasis; reason: string }[];
+}
+
+/**
+ * Phrase text belongs only on the full-screen speaker: every non-omitted scene window
+ * (side-by-side, inset, full-frame and storyboards alike) is off limits, and phrases never
+ * stack on each other. Same outward 30fps quantization as the scene scheduler/timeline.
+ */
+export function partitionLongformPhrases(
+  phrases: readonly PhraseEmphasis[],
+  scenes: readonly LongformScenePlacement[],
+  duration: number,
+): LongformPhrasePartition {
+  const sceneFrames = scenes
+    .filter((scene) => !scene.omitted)
+    .map((scene) => ({
+      id: scene.id,
+      startFrame: Math.floor(scene.startTime * FPS + 1e-6),
+      endFrame: Math.ceil(scene.endTime * FPS - 1e-6),
+    }));
+  const totalFrames = Math.ceil(duration * FPS - 1e-6);
+  const kept: PhraseEmphasis[] = [];
+  const dropped: LongformPhrasePartition['dropped'] = [];
+  let previousEnd = -1;
+  const ordered = [...phrases].sort(
+    (a, b) => a.startTime - b.startTime || a.endTime - b.endTime || a.text.localeCompare(b.text),
+  );
+  for (const phrase of ordered) {
+    const problem = longformPhraseProblem(phrase, duration);
+    const frames = longformPhraseFrameWindow(phrase);
+    const scene = sceneFrames.find(
+      (window) => frames.startFrame < window.endFrame && window.startFrame < frames.endFrame,
+    );
+    const reason =
+      problem ??
+      (frames.endFrame > totalFrames
+        ? 'Phrase overlay runs past the end of the source.'
+        : scene
+          ? `Overlaps scene ${scene.id}; phrase text appears only over the full-screen speaker.`
+          : frames.startFrame < previousEnd
+            ? 'Overlaps an earlier phrase overlay.'
+            : null);
+    if (reason) dropped.push({ phrase, reason });
+    else {
+      kept.push(phrase);
+      previousEnd = frames.endFrame;
+    }
+  }
+  return { kept, dropped };
+}
 
 export function isSceneFirstLongformPlan(plan: LongformEditPlan): plan is SceneFirstLongformPlan {
   return plan.mode === 'scene-first' && plan.schemaVersion === LONGFORM_SCENE_SCHEMA_VERSION;
@@ -242,11 +350,16 @@ export function sceneFirstPlanProblem(value: unknown): string | null {
   if (
     !Array.isArray(value.blocks) ||
     value.blocks.length !== 0 ||
-    !Array.isArray(value.phrases) ||
-    value.phrases.length !== 0 ||
     (value.cards !== undefined && (!Array.isArray(value.cards) || value.cards.length !== 0))
   )
-    return 'Scene-first plans cannot contain legacy blocks, cards or phrases.';
+    return 'Scene-first plans cannot contain legacy blocks or cards.';
+  // Older scene plans saved `phrases: []`; plans without overlays keep loading unchanged.
+  if (!Array.isArray(value.phrases) || value.phrases.length > LONGFORM_PHRASE_LIMITS.maxPhrases)
+    return 'Invalid phrase overlay list.';
+  for (const phrase of value.phrases) {
+    const problem = longformPhraseProblem(phrase, value.sourceDuration);
+    if (problem) return problem;
+  }
   if (
     typeof value.reasoning !== 'string' ||
     value.reasoning.length > 16_384 ||

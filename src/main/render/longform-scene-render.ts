@@ -2,10 +2,11 @@ import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { isLongformPalette } from '@shared/longform-palette';
-import type {
-  LongformScenePreviewRequest,
-  LongformSceneRenderResult,
-  SceneFirstLongformPlan,
+import {
+  type LongformScenePreviewRequest,
+  type LongformSceneRenderResult,
+  partitionLongformPhrases,
+  type SceneFirstLongformPlan,
 } from '@shared/longform-scenes';
 import { getPaletteById, type Palette } from '@shared/palettes';
 import { resolveStoryboardPalette } from '@shared/storyboard-palette';
@@ -14,6 +15,7 @@ import type { LongformRenderReconciliation, WordTimestamp } from '@shared/types'
 import { validateSceneFirstLongformPlan } from '../ai/longform-scene-contract';
 import { LANDSCAPE_FPS, LANDSCAPE_HEIGHT, LANDSCAPE_WIDTH } from '../aspect-ratios';
 import { getVideoMetadata, type QualityParams } from '../ffmpeg';
+import { log } from '../logger';
 import { deriveExplainerPalette } from '../remotion/compositions/explainer/palette';
 import {
   type ExplainerPalette,
@@ -21,6 +23,10 @@ import {
   mapSceneTimes,
   type SceneCue,
 } from '../remotion/compositions/explainer/types';
+import {
+  applyPhraseOverlays,
+  cleanupPhraseOverlayTempFiles,
+} from './features/phrase-emphasis.feature';
 import { concatLongformSceneSegments, encodeLongformSceneSegment } from './longform-encode';
 import { buildLongformSceneTimeline, type LongformSceneSegment } from './longform-scene-timeline';
 import { buildLongformStoryboardProps } from './longform-storyboard-props';
@@ -142,6 +148,8 @@ export interface SceneFirstLongformRenderOptions {
   storyboardPalette?: Palette;
   qualityParams: QualityParams;
   sceneSfxEnabled?: boolean | undefined;
+  /** Phrase overlay text colour; the composition's own accent is used when absent. */
+  phraseColor?: string | undefined;
   signal?: AbortSignal | undefined;
   onProgress?: ((message: string, fraction: number) => void) | undefined;
 }
@@ -236,6 +244,43 @@ export async function renderSceneFirstLongform(
         ),
     });
     opts.signal?.throwIfAborted();
+    // Phrase text over the full-screen speaker only. A scene that fell back to the speaker
+    // keeps its window phrase-free: the approved plan never placed text there.
+    const phrasePartition = partitionLongformPhrases(
+      validated.value.plan.phrases,
+      validated.value.plan.scenes,
+      meta.duration,
+    );
+    for (const { phrase, reason } of phrasePartition.dropped)
+      log('warn', 'longform-phrases', 'phrase overlay skipped at export', {
+        text: phrase.text.slice(0, 80),
+        startTime: phrase.startTime,
+        endTime: phrase.endTime,
+        reason,
+      });
+    let visualPath = finalPath;
+    let phraseStats = { rendered: 0, dropped: phrasePartition.dropped.length };
+    if (phrasePartition.kept.length > 0) {
+      opts.onProgress?.('Adding phrase overlays…', 0.95);
+      const phraseTarget = join(workDirectory, 'phrases.mp4');
+      const result = await applyPhraseOverlays({
+        inputPath: finalPath,
+        outputPath: phraseTarget,
+        phrases: phrasePartition.kept,
+        width: LANDSCAPE_WIDTH,
+        height: LANDSCAPE_HEIGHT,
+        fps: LANDSCAPE_FPS,
+        qualityParams: opts.qualityParams,
+        ...(opts.phraseColor ? { phraseColor: opts.phraseColor } : {}),
+      });
+      cleanupPhraseOverlayTempFiles(result.tempFiles);
+      visualPath = result.outputPath;
+      phraseStats = {
+        rendered: result.stats.rendered,
+        dropped: phraseStats.dropped + result.stats.dropped,
+      };
+      opts.signal?.throwIfAborted();
+    }
     const byId = new Map(sceneResults.map((result) => [result.id, result]));
     const results = validated.value.plan.scenes.map((scene) => {
       const result = byId.get(scene.id);
@@ -243,7 +288,7 @@ export async function renderSceneFirstLongform(
       return result;
     });
     const mixedPath = await mixSceneAudio(
-      finalPath,
+      visualPath,
       cues,
       join(workDirectory, 'mixed.mp4'),
       meta.duration,
@@ -260,7 +305,12 @@ export async function renderSceneFirstLongform(
     return {
       renderedAt: Date.now(),
       outputPath: opts.outputPath,
-      phrases: zero(),
+      phrases: {
+        planned: validated.value.plan.phrases.length,
+        eligible: phrasePartition.kept.length,
+        rendered: phraseStats.rendered,
+        dropped: phraseStats.dropped,
+      },
       blocks: zero(),
       cards: zero(),
       scenes: {

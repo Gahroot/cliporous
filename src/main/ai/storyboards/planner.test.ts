@@ -67,6 +67,26 @@ describe('bounded storyboard proposals through the real Gemini transport', () =>
       response,
     );
   });
+  it('shows the model the ordinary scene windows it must contain or avoid', async () => {
+    const { options, response } = fixture();
+    generateContent.mockResolvedValue(response);
+    await planStoryboardSection({
+      ...options,
+      occupied: [
+        { startWord: 30, endWord: 41 },
+        { startWord: 4, endWord: 12 },
+      ],
+    });
+    const prompt = String(generateContent.mock.calls[0][0].contents);
+    expect(prompt).toContain('word ranges): 4..12, 30..41.');
+    expect(prompt).toContain('Never cut through a range.');
+  });
+  it('omits the occupied-window guide when the section has no ordinary scenes', async () => {
+    const { options, response } = fixture();
+    generateContent.mockResolvedValue(response);
+    await planStoryboardSection(options);
+    expect(String(generateContent.mock.calls[0][0].contents)).not.toContain('already planned');
+  });
   it('makes one useful semantic repair and retains rejection diagnostics', async () => {
     const { options, response, invalid } = fixture();
     generateContent.mockResolvedValueOnce(invalid).mockResolvedValueOnce(response);

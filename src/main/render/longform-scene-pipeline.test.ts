@@ -778,6 +778,47 @@ describe('scene-first export is the approved plan, not an export-time planner', 
     expect(send).not.toHaveBeenCalledWith(Ch.Send.RENDER_CLIP_ERROR, expect.anything());
   });
 
+  it('composites saved phrase overlays on speaker ranges only, after the scene timeline', async () => {
+    const opts = options();
+    const saved = opts.longformEditPlan as SceneFirstLongformPlan;
+    saved.phrases = [
+      { text: 'ON CAMERA', startTime: 10, endTime: 11.5 },
+      // Inside the speaker-side scene (2s-6s): never composited over an explanation.
+      { text: 'DURING SCENE', startTime: 3, endTime: 4 },
+    ];
+    mocks.phrases.mockImplementation(async (phraseOpts) => {
+      writeFileSync(phraseOpts.outputPath, 'with phrases');
+      return {
+        outputPath: phraseOpts.outputPath,
+        tempFiles: [],
+        stats: { rendered: phraseOpts.phrases.length, dropped: 0 },
+      };
+    });
+    const { send, window } = windowStub();
+    await renderLongformVideo(opts, window);
+
+    expect(mocks.phrases).toHaveBeenCalledTimes(1);
+    const phraseCall = mocks.phrases.mock.calls[0]?.[0];
+    expect(phraseCall).toMatchObject({
+      phrases: [{ text: 'ON CAMERA', startTime: 10, endTime: 11.5 }],
+      width: 1920,
+      height: 1080,
+      fps: 30,
+      phraseColor: expect.stringMatching(/^#[0-9a-fA-F]{6}$/),
+    });
+    // The concatenated scene timeline is the overlay input; the overlaid video gets the SFX mix.
+    expect(mocks.concat.mock.calls.at(-1)?.[0].outputPath).toBe(phraseCall.inputPath);
+    expect(mocks.mix.mock.calls[0]?.[0]).toBe(phraseCall.outputPath);
+    expect(send).toHaveBeenCalledWith(
+      Ch.Send.RENDER_CLIP_DONE,
+      expect.objectContaining({
+        reconciliation: expect.objectContaining({
+          phrases: { planned: 2, eligible: 1, rendered: 1, dropped: 1 },
+        }),
+      }),
+    );
+  });
+
   it('renders the saved scene with no AI or legacy gap fill and reconciles its ID', async () => {
     const { send, window } = windowStub();
     await renderLongformVideo(options(), window);

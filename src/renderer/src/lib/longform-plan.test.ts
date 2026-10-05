@@ -8,10 +8,12 @@ import {
   SCENE_WORDS,
 } from '@/components/__tests__/longform-scene-fixture';
 import {
+  buildLongformPhraseItems,
   buildLongformPlanItems,
   buildLongformSections,
   compareLongformPlans,
   longformItemEditProblem,
+  longformPhraseIssues,
   longformSceneReviewProblem,
   longformSceneScheduleIssues,
   mergePreservedLongformItems,
@@ -169,6 +171,70 @@ describe('scene-first review helpers', () => {
     const before = structuredClone(plan);
     expect(longformSceneScheduleIssues(plan).get(second.id)).toMatch(/overlaps/);
     expect(plan).toEqual(before);
+  });
+});
+
+describe('scene-first phrase overlays in review', () => {
+  function withPhrases(): ReturnType<typeof makeScenePlan> {
+    const plan = makeScenePlan();
+    plan.phrases = [
+      { text: 'ON CAMERA', startTime: 20, endTime: 21.5 },
+      { text: 'INSIDE SCENE', startTime: 4, endTime: 5 },
+    ];
+    return plan;
+  }
+
+  it('loads saved scene plans with and without phrase overlays', () => {
+    const legacySaved = makeScenePlan();
+    expect(legacySaved.phrases).toEqual([]);
+    expect(isSceneFirstPlanEnvelope(legacySaved)).toBe(true);
+    expect(buildLongformPhraseItems(legacySaved, SCENE_WORDS)).toEqual([]);
+    expect(isSceneFirstPlanEnvelope(withPhrases())).toBe(true);
+    const bad = { ...withPhrases(), phrases: [{ text: '', startTime: 1, endTime: 2 }] };
+    expect(isSceneFirstPlanEnvelope(bad)).toBe(false);
+  });
+
+  it('lists phrases apart from scenes and flags the ones export will hide', () => {
+    const plan = withPhrases();
+    expect(buildLongformPlanItems(plan, SCENE_WORDS).map((item) => item.type)).toEqual([
+      'scene',
+      'scene',
+    ]);
+    const phrases = buildLongformPhraseItems(plan, SCENE_WORDS);
+    expect(phrases.map((item) => item.title)).toEqual(['INSIDE SCENE', 'ON CAMERA']);
+    const issues = longformPhraseIssues(plan);
+    expect(issues.size).toBe(1);
+    expect(issues.get(phrases[0]?.key ?? '')).toMatch(/full-screen speaker/);
+  });
+
+  it('edits and removes phrases, refusing moves into a scene', () => {
+    const plan = withPhrases();
+    const item = buildLongformPhraseItems(plan, SCENE_WORDS).find((p) => p.title === 'ON CAMERA');
+    if (!item) throw new Error('missing phrase');
+    const intoScene = { title: 'ON CAMERA', startTime: 4, endTime: 5 };
+    expect(longformItemEditProblem(item, intoScene, plan)).toMatch(/full-screen speaker/);
+    expect(updateLongformPlanItem(plan, item, intoScene)).toBe(plan);
+
+    const update = { title: 'PROVE IT', startTime: 30, endTime: 31 };
+    expect(longformItemEditProblem(item, update, plan)).toBeNull();
+    const edited = updateLongformPlanItem(plan, item, update);
+    expect(edited.phrases[0]).toEqual({ text: 'PROVE IT', startTime: 30, endTime: 31 });
+    expect(plan.phrases[0]?.text).toBe('ON CAMERA');
+
+    const removed = removeLongformPlanItem(edited, item);
+    expect(removed.phrases.map((phrase) => phrase.text)).toEqual(['INSIDE SCENE']);
+  });
+
+  it('keeps preserved phrases across scene-first regeneration', () => {
+    const plan = withPhrases();
+    const item = buildLongformPhraseItems(plan, SCENE_WORDS).find((p) => p.title === 'ON CAMERA');
+    if (!item) throw new Error('missing phrase');
+    const saved = snapshotLongformPlanItem(plan, item);
+    if (!saved) throw new Error('missing snapshot');
+    const generated = makeScenePlan();
+    generated.phrases = [{ text: 'REPLACEMENT', startTime: 20.5, endTime: 21 }];
+    const merged = mergePreservedLongformItems(generated, [saved]);
+    expect(merged.phrases).toEqual([{ text: 'ON CAMERA', startTime: 20, endTime: 21.5 }]);
   });
 });
 

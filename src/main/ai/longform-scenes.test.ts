@@ -20,7 +20,14 @@ import { compileStoryboardSpec } from './storyboards/compiler';
 
 // Only the paid SDK boundary is replaced. Transport/retries, prompts, review, kind
 // parsers, coordinator, scheduler and saved-plan validator are production code.
-const { generateContent, generateBoardContent } = vi.hoisted(() => ({
+const { generateContent, generateBoardContent, generatePhraseContent } = vi.hoisted(() => ({
+  generatePhraseContent:
+    vi.fn<
+      (request: {
+        contents: string;
+        config?: { abortSignal?: AbortSignal };
+      }) => Promise<{ text: string }>
+    >(),
   generateBoardContent:
     vi.fn<
       (request: {
@@ -36,13 +43,19 @@ const { generateContent, generateBoardContent } = vi.hoisted(() => ({
       }) => Promise<{ text: string }>
     >(),
 }));
+const { logSpy } = vi.hoisted(() => ({
+  logSpy: vi.fn<(level: string, source: string, message: string, data?: unknown) => void>(),
+}));
+vi.mock('../logger', () => ({ log: logSpy }));
 vi.mock('@google/genai', () => ({
   GoogleGenAI: class {
     models = {
       generateContent: (request: { contents: string; config?: { abortSignal?: AbortSignal } }) =>
         request.contents.startsWith('STORYBOARD_PROPOSAL_V2')
           ? generateBoardContent(request)
-          : generateContent(request),
+          : request.contents.startsWith('LONGFORM_PHRASES_V1')
+            ? generatePhraseContent(request)
+            : generateContent(request),
     };
   },
   ThinkingLevel: { LOW: 'LOW', MEDIUM: 'MEDIUM', HIGH: 'HIGH' },
@@ -114,6 +127,9 @@ function verifyReconstruction(plan: SceneFirstLongformPlan, input: LongformGener
 }
 
 beforeEach(() => {
+  logSpy.mockReset();
+  generatePhraseContent.mockReset();
+  generatePhraseContent.mockResolvedValue({ text: JSON.stringify({ phrases: [], blocks: [] }) });
   generateBoardContent.mockReset();
   generateBoardContent.mockResolvedValue({ text: JSON.stringify({ board: null }) });
   generateContent.mockReset();
@@ -138,7 +154,6 @@ describe('scene-first long-form coordinator at the model boundary', () => {
       'planned',
     ]);
     expect(plan.blocks).toEqual([]);
-    expect(plan.phrases).toEqual([]);
     expect(plan.cards).toEqual([]);
     expect(generateContent).toHaveBeenCalledTimes(6); // three ordinary drafts + reviews
     expect(generateBoardContent).toHaveBeenCalledTimes(3); // exactly one explicit null per section
@@ -644,6 +659,127 @@ describe('storyboards in real scene-first regeneration', () => {
     await pending;
     expect(maximum).toBe(2);
     expect(generateBoardContent).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('phrase text overlays in scene-first planning', () => {
+  function sceneFrames(plan: SceneFirstLongformPlan) {
+    return plan.scenes
+      .filter((scene) => !scene.omitted)
+      .map((scene) => [Math.floor(scene.startTime * 30), Math.ceil(scene.endTime * 30)] as const);
+  }
+  function expectSpeakerOnly(plan: SceneFirstLongformPlan) {
+    for (const phrase of plan.phrases) {
+      const start = Math.floor(phrase.startTime * 30);
+      const end = Math.ceil(Math.max(phrase.endTime, phrase.startTime + 0.4) * 30);
+      for (const [sceneStart, sceneEnd] of sceneFrames(plan))
+        expect(start < sceneEnd && sceneStart < end).toBe(false);
+    }
+  }
+
+  it('keeps model phrases on full-screen speaker ranges and drops those inside scenes', async () => {
+    const input = request();
+    generatePhraseContent.mockResolvedValue({
+      text: JSON.stringify({
+        phrases: [
+          // Inside the first hero scene (words 4..22, 2s-11s+): must never render.
+          { text: 'INSIDE THE SCENE', start: 4, end: 5 },
+          { text: 'SPOKEN ON CAMERA', start: 40, end: 41.4 },
+        ],
+        blocks: [{ kind: 'stat', startTime: 50, endTime: 55, heading: 'ignored' }],
+      }),
+    });
+    const plan = await generateSceneFirstLongformPlan(input);
+
+    expect(generatePhraseContent).toHaveBeenCalledTimes(1);
+    expect(String(generatePhraseContent.mock.calls[0]?.[0].contents)).toContain('PHRASE EMPHASIS');
+    expect(plan.phrases).toContainEqual({
+      text: 'SPOKEN ON CAMERA',
+      startTime: 40,
+      endTime: 41.4,
+    });
+    expect(plan.phrases.map((phrase) => phrase.text)).not.toContain('INSIDE THE SCENE');
+    expect(plan.blocks).toEqual([]);
+    expectSpeakerOnly(plan);
+    // Legacy pacing beats fill long speaker-only stretches, still outside every scene.
+    expect(plan.phrases.length).toBeGreaterThan(1);
+    verifyReconstruction(JSON.parse(JSON.stringify(plan)), input);
+  });
+
+  it('never lets a phrase failure sink the scene plan', async () => {
+    const input = request();
+    generatePhraseContent.mockRejectedValue(new Error('bad request'));
+    const plan = await generateSceneFirstLongformPlan(input);
+    expect(plan.scenes).toHaveLength(3);
+    expectSpeakerOnly(plan);
+    expect(plan.reasoning).toContain('1 of 1 phrase windows failed');
+    expect(logSpy).toHaveBeenCalledWith(
+      'warn',
+      'longform-phrases',
+      'window failed, skipping',
+      expect.objectContaining({ error: 'bad request' }),
+    );
+  });
+
+  it('keeps saved phrases in sections that were not regenerated', async () => {
+    const input = request();
+    const prior = await generateSceneFirstLongformPlan(input);
+    const saved = { text: 'KEEP THIS LINE', startTime: 120, endTime: 121.5 };
+    const previousPlan = {
+      ...structuredClone(prior),
+      phrases: [...prior.phrases.filter((phrase) => phrase.startTime < 90), saved],
+    };
+    const next = await generateSceneFirstLongformPlan({
+      ...input,
+      previousPlan,
+      sectionIds: [prior.sections[0]?.id ?? ''],
+    });
+    expect(next.phrases).toContainEqual(saved);
+  });
+});
+
+describe('dropped storyboard logging', () => {
+  it('logs each storyboard removed by arbitration with its reason and time range', async () => {
+    const input = request(360);
+    const board: StoryboardSourceSpec = {
+      kind: 'storyboard',
+      specVersion: 1,
+      startWord: 4,
+      endWord: 28,
+      subject: { text: 'word5', startWord: 5, endWord: 5 },
+      panels: [
+        {
+          id: 'definition',
+          kind: 'statement',
+          startWord: 4,
+          endWord: 28,
+          title: { text: 'word4 word5', startWord: 4, endWord: 5 },
+          body: { text: 'word6 word7 word8', startWord: 6, endWord: 8 },
+          revealWord: 4,
+          moveWord: 4,
+        },
+      ],
+    };
+    // The ordinary scene starts inside the board and ends after it: a partial overlap.
+    generateContent.mockImplementation(async ({ contents }) =>
+      response([hero(owner(contents) + 20)]),
+    );
+    generateBoardContent.mockImplementation(async ({ contents }) => ({
+      text: JSON.stringify({ board: owner(contents) === 0 ? board : null }),
+    }));
+    const plan = await generateSceneFirstLongformPlan(input);
+
+    expect(plan.scenes.some((scene) => scene.kind === 'storyboard')).toBe(false);
+    const dropped = logSpy.mock.calls.filter(
+      ([, source, message]) => source === 'longform-storyboard' && message === 'storyboard dropped',
+    );
+    expect(dropped).toHaveLength(1);
+    expect(dropped[0]?.[0]).toBe('warn');
+    expect(dropped[0]?.[3]).toMatchObject({
+      code: 'conflict',
+      reason: 'Partial overlap with a complete explanation; ordinary plan retained.',
+      range: expect.stringMatching(/^\d+\.\d{2}s-\d+\.\d{2}s$/),
+    });
   });
 });
 

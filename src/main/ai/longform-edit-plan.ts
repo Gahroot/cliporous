@@ -814,7 +814,7 @@ function buildTranscriptPhrase(
  */
 export function addPacingPhraseFallbacks(
   phrases: PhraseEmphasis[],
-  blocks: BlockPlacement[],
+  blocks: readonly TimedBeat[],
   words: readonly WordTimestamp[],
   videoDuration: number,
 ): PhraseEmphasis[] {
@@ -1055,6 +1055,87 @@ export interface GenerateLongformEditPlanOptions {
    * "window N/total" granularity instead of freezing across the whole batch.
    */
   onProgress?: (progress: { window: number; total: number }) => void;
+}
+
+export interface LongformPhraseGenerationOptions {
+  apiKey: string;
+  words: readonly WordTimestamp[];
+  videoDuration: number;
+  /** Only speech starting inside these source-time ranges is sent to the model. */
+  ranges: readonly { startTime: number; endTime: number }[];
+  feedback?: readonly string[] | undefined;
+  signal?: AbortSignal | undefined;
+  windowSeconds?: number;
+}
+
+export interface LongformPhraseGeneration {
+  phrases: PhraseEmphasis[];
+  attemptedWindows: number;
+  failedWindows: number;
+}
+
+/** Prompt marker; also lets offline tests route this request at the SDK boundary. */
+export const LONGFORM_PHRASES_PROMPT_MARKER = 'LONGFORM_PHRASES_V1';
+
+/**
+ * Phrase emphasis selection from the legacy long-form planner, reused by the scene-first
+ * planner. Same windows, prompt, model chain and parser; graphics are planned elsewhere, so
+ * any returned blocks are discarded. Failed windows are skipped, never fatal.
+ */
+export async function generateLongformPhrases(
+  options: LongformPhraseGenerationOptions,
+): Promise<LongformPhraseGeneration> {
+  const { words, videoDuration, signal } = options;
+  const windowSeconds = options.windowSeconds ?? WINDOW_SECONDS;
+  const inRanges = (time: number): boolean =>
+    options.ranges.some((range) => time >= range.startTime && time < range.endTime);
+  const ai = new GoogleGenAI({ apiKey: options.apiKey });
+  const call: GeminiCall = {
+    model: MODELS.BALANCED[0],
+    fallbacks: MODELS.BALANCED.slice(1),
+    config: { responseMimeType: 'application/json' },
+    thinking: 'high',
+  };
+  const phrases: PhraseEmphasis[] = [];
+  let attemptedWindows = 0;
+  let failedWindows = 0;
+  for (let windowStart = 0; windowStart < videoDuration; windowStart += windowSeconds) {
+    signal?.throwIfAborted();
+    const windowEnd = Math.min(windowStart + windowSeconds, videoDuration);
+    const windowWords = words.filter(
+      (word) => word.start >= windowStart && word.start < windowEnd && inRanges(word.start),
+    );
+    if (windowWords.length === 0) continue;
+    attemptedWindows += 1;
+    const prompt = `${LONGFORM_PHRASES_PROMPT_MARKER}\nOnly PHRASE EMPHASIS is needed for this pass. Return "blocks": [] — animated graphics for this video are planned separately.\n${buildLongformPrompt(
+      formatWindow(windowWords),
+      windowEnd - windowStart,
+      windowStart,
+      [...(options.feedback ?? [])],
+    )}`;
+    const started = Date.now();
+    try {
+      const raw = await callGeminiWithRetry(ai, call, prompt, 'longform-phrases', signal);
+      const parsed = parseWindowResponse(raw, windowStart, windowEnd).phrases;
+      phrases.push(...parsed);
+      log('info', 'longform-phrases', 'window planned', {
+        windowStart,
+        windowEnd,
+        phrases: parsed.length,
+        elapsedMs: Date.now() - started,
+      });
+    } catch (err) {
+      signal?.throwIfAborted();
+      failedWindows += 1;
+      log('warn', 'longform-phrases', 'window failed, skipping', {
+        windowStart,
+        windowEnd,
+        error: err instanceof Error ? err.message.slice(0, 300) : 'unknown',
+        elapsedMs: Date.now() - started,
+      });
+    }
+  }
+  return { phrases, attemptedWindows, failedWindows };
 }
 
 /**
