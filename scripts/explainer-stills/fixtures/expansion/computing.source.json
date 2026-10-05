@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "pack": "computing",
+  "sourceFiles": [
+    { "stories": ["65", "66"], "file": "computing/cache-stream.source.json" },
+    { "stories": ["67", "68"], "file": "computing/retry-product.source.json" },
+    { "stories": ["69", "70"], "file": "computing/versions-permissions.source.json" },
+    { "stories": ["71", "72"], "file": "computing/generalization-drift.source.json" }
+  ]
+}

@@ -1,0 +1,3210 @@
+{
+  "version": 1,
+  "pack": "temporal",
+  "negativeFormat": "explicit-path-edits-and-complete-clause-replacements",
+  "stories": [
+    {
+      "id": "41",
+      "name": "canonical",
+      "sourceText": "Rowan lists Design and Build as tasks for Harbor during May. Rowan Design duration is 2 hours during May for Harbor. Rowan Build duration is 3 hours during May for Harbor. Rowan states Design runs concurrently with Build for Harbor during May. Rowan reports task result is unresolved for Harbor during May.",
+      "words": [
+        {
+          "text": "Rowan",
+          "start": 0.25,
+          "end": 0.363636364
+        },
+        {
+          "text": "lists",
+          "start": 0.363636364,
+          "end": 0.477272727
+        },
+        {
+          "text": "Design",
+          "start": 0.477272727,
+          "end": 0.590909091
+        },
+        {
+          "text": "and",
+          "start": 0.590909091,
+          "end": 0.704545455
+        },
+        {
+          "text": "Build",
+          "start": 0.704545455,
+          "end": 0.818181818
+        },
+        {
+          "text": "as",
+          "start": 0.818181818,
+          "end": 0.931818182
+        },
+        {
+          "text": "tasks",
+          "start": 0.931818182,
+          "end": 1.045454545
+        },
+        {
+          "text": "for",
+          "start": 1.045454545,
+          "end": 1.159090909
+        },
+        {
+          "text": "Harbor",
+          "start": 1.159090909,
+          "end": 1.272727273
+        },
+        {
+          "text": "during",
+          "start": 1.272727273,
+          "end": 1.386363636
+        },
+        {
+          "text": "May.",
+          "start": 1.386363636,
+          "end": 1.5
+        },
+        {
+          "text": "Rowan",
+          "start": 2,
+          "end": 2.14
+        },
+        {
+          "text": "Design",
+          "start": 2.14,
+          "end": 2.28
+        },
+        {
+          "text": "duration",
+          "start": 2.28,
+          "end": 2.42
+        },
+        {
+          "text": "is",
+          "start": 2.42,
+          "end": 2.56
+        },
+        {
+          "text": "2",
+          "start": 2.56,
+          "end": 2.7
+        },
+        {
+          "text": "hours",
+          "start": 2.7,
+          "end": 2.84
+        },
+        {
+          "text": "during",
+          "start": 2.84,
+          "end": 2.98
+        },
+        {
+          "text": "May",
+          "start": 2.98,
+          "end": 3.12
+        },
+        {
+          "text": "for",
+          "start": 3.12,
+          "end": 3.26
+        },
+        {
+          "text": "Harbor.",
+          "start": 3.26,
+          "end": 3.4
+        },
+        {
+          "text": "Rowan",
+          "start": 4,
+          "end": 4.14
+        },
+        {
+          "text": "Build",
+          "start": 4.14,
+          "end": 4.28
+        },
+        {
+          "text": "duration",
+          "start": 4.28,
+          "end": 4.42
+        },
+        {
+          "text": "is",
+          "start": 4.42,
+          "end": 4.56
+        },
+        {
+          "text": "3",
+          "start": 4.56,
+          "end": 4.7
+        },
+        {
+          "text": "hours",
+          "start": 4.7,
+          "end": 4.84
+        },
+        {
+          "text": "during",
+          "start": 4.84,
+          "end": 4.98
+        },
+        {
+          "text": "May",
+          "start": 4.98,
+          "end": 5.12
+        },
+        {
+          "text": "for",
+          "start": 5.12,
+          "end": 5.26
+        },
+        {
+          "text": "Harbor.",
+          "start": 5.26,
+          "end": 5.4
+        },
+        {
+          "text": "Rowan",
+          "start": 6,
+          "end": 6.136363636
+        },
+        {
+          "text": "states",
+          "start": 6.136363636,
+          "end": 6.272727273
+        },
+        {
+          "text": "Design",
+          "start": 6.272727273,
+          "end": 6.409090909
+        },
+        {
+          "text": "runs",
+          "start": 6.409090909,
+          "end": 6.545454545
+        },
+        {
+          "text": "concurrently",
+          "start": 6.545454545,
+          "end": 6.681818182
+        },
+        {
+          "text": "with",
+          "start": 6.681818182,
+          "end": 6.818181818
+        },
+        {
+          "text": "Build",
+          "start": 6.818181818,
+          "end": 6.954545455
+        },
+        {
+          "text": "for",
+          "start": 6.954545455,
+          "end": 7.090909091
+        },
+        {
+          "text": "Harbor",
+          "start": 7.090909091,
+          "end": 7.227272727
+        },
+        {
+          "text": "during",
+          "start": 7.227272727,
+          "end": 7.363636364
+        },
+        {
+          "text": "May.",
+          "start": 7.363636364,
+          "end": 7.5
+        },
+        {
+          "text": "Rowan",
+          "start": 9.5,
+          "end": 9.715
+        },
+        {
+          "text": "reports",
+          "start": 9.715,
+          "end": 9.93
+        },
+        {
+          "text": "task",
+          "start": 9.93,
+          "end": 10.145
+        },
+        {
+          "text": "result",
+          "start": 10.145,
+          "end": 10.36
+        },
+        {
+          "text": "is",
+          "start": 10.36,
+          "end": 10.575
+        },
+        {
+          "text": "unresolved",
+          "start": 10.575,
+          "end": 10.79
+        },
+        {
+          "text": "for",
+          "start": 10.79,
+          "end": 11.005
+        },
+        {
+          "text": "Harbor",
+          "start": 11.005,
+          "end": 11.22
+        },
+        {
+          "text": "during",
+          "start": 11.22,
+          "end": 11.435
+        },
+        {
+          "text": "May.",
+          "start": 11.435,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 51,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "temporal-structure",
+        "preset": "parallel-lanes",
+        "visualMode": "diagram",
+        "template": "task-lanes",
+        "label": "tasks",
+        "subject": "Rowan",
+        "outcome": "unresolved",
+        "evidence": "source-stated",
+        "actor": "Rowan",
+        "scope": "Harbor",
+        "period": "May",
+        "entities": [
+          {
+            "label": "Rowan",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 10
+            }
+          },
+          {
+            "label": "Design",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 10
+            }
+          },
+          {
+            "label": "Build",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 10
+            }
+          }
+        ],
+        "startWord": 0,
+        "endWord": 51,
+        "setupWord": 0,
+        "actionWord": 11,
+        "responseWord": 21,
+        "checkWord": 31,
+        "resolveWord": 42,
+        "tasks": [
+          {
+            "task": "Design",
+            "duration": {
+              "actor": "Rowan",
+              "claim": "Design duration",
+              "basis": {
+                "unit": "hour",
+                "period": "May",
+                "population": "Harbor"
+              },
+              "state": "known",
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                }
+              },
+              "evidence": {
+                "fromWord": 11,
+                "toWord": 20
+              }
+            }
+          },
+          {
+            "task": "Build",
+            "duration": {
+              "actor": "Rowan",
+              "claim": "Build duration",
+              "basis": {
+                "unit": "hour",
+                "period": "May",
+                "population": "Harbor"
+              },
+              "state": "known",
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 3,
+                  "denominator": 1
+                }
+              },
+              "evidence": {
+                "fromWord": 21,
+                "toWord": 30
+              }
+            }
+          }
+        ],
+        "relations": [
+          {
+            "actor": "Rowan",
+            "claim": "runs concurrently with",
+            "scope": "Harbor",
+            "period": "May",
+            "evidence": {
+              "fromWord": 31,
+              "toWord": 41
+            },
+            "type": "concurrent",
+            "from": "Design",
+            "to": "Build",
+            "state": "known"
+          }
+        ],
+        "result": {
+          "actor": "Rowan",
+          "claim": "task result",
+          "scope": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 42,
+            "toWord": 51
+          },
+          "state": "unresolved"
+        }
+      },
+      "negatives": [
+        {
+          "name": "actor steals another task value",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "actor"],
+              "value": "Build"
+            }
+          ]
+        },
+        {
+          "name": "wrong population",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "basis", "population"],
+              "value": "Atlas"
+            }
+          ]
+        },
+        {
+          "name": "wrong period",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "basis", "period"],
+              "value": "June"
+            }
+          ]
+        },
+        {
+          "name": "invented duration",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "amount", "value", "numerator"],
+              "value": 9
+            }
+          ]
+        },
+        {
+          "name": "negative source duration",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "amount", "value", "numerator"],
+              "value": -2
+            }
+          ],
+          "clauses": {
+            "1": "Rowan Design duration is -2 hours during May for Harbor."
+          }
+        },
+        {
+          "name": "negated concurrency",
+          "edits": [],
+          "clauses": {
+            "3": "Rowan states Design does not run concurrently with Build for Harbor during May."
+          }
+        },
+        {
+          "name": "invented task identity",
+          "edits": [
+            {
+              "path": ["tasks", 0, "task"],
+              "value": "Ship"
+            }
+          ]
+        },
+        {
+          "name": "fabricated completion",
+          "edits": [
+            {
+              "path": ["result", "state"],
+              "value": "complete"
+            },
+            {
+              "path": ["outcome"],
+              "value": "complete"
+            }
+          ]
+        },
+        {
+          "name": "incompatible unsourced unit",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "basis", "unit"],
+              "value": "day"
+            }
+          ]
+        },
+        {
+          "name": "unauthorized derived basis",
+          "edits": [
+            {
+              "path": ["basis"],
+              "value": {
+                "origin": "project start"
+              }
+            }
+          ]
+        },
+        {
+          "name": "nine entities",
+          "edits": [
+            {
+              "path": ["entities"],
+              "value": [
+                {
+                  "label": "Design",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 10
+                  }
+                },
+                {
+                  "label": "Design",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 10
+                  }
+                },
+                {
+                  "label": "Design",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 10
+                  }
+                },
+                {
+                  "label": "Design",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 10
+                  }
+                },
+                {
+                  "label": "Design",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 10
+                  }
+                },
+                {
+                  "label": "Design",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 10
+                  }
+                },
+                {
+                  "label": "Design",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 10
+                  }
+                },
+                {
+                  "label": "Design",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 10
+                  }
+                },
+                {
+                  "label": "Design",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 10
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "thirteen records",
+          "edits": [
+            {
+              "path": ["tasks"],
+              "value": [
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                },
+                {
+                  "task": "Design"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "seventeen relations",
+          "edits": [
+            {
+              "path": ["relations"],
+              "value": [
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                },
+                {
+                  "actor": "Rowan",
+                  "claim": "runs concurrently with",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 31,
+                    "toWord": 41
+                  },
+                  "type": "concurrent",
+                  "from": "Design",
+                  "to": "Build",
+                  "state": "known"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "compressed beat gap",
+          "edits": [],
+          "intervals": [[0.25, 1.1], [1.25, 3.4], [4, 5.4], [6, 7.5], [9.5, 11.65]]
+        },
+        {
+          "name": "unsupported mode",
+          "edits": [
+            {
+              "path": ["visualMode"],
+              "value": "camera"
+            }
+          ]
+        },
+        {
+          "name": "unsupported template",
+          "edits": [
+            {
+              "path": ["template"],
+              "value": "freeform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "41",
+      "name": "paraphrase",
+      "sourceText": "Within Atlas in June, Selene records Render and Upload as tasks. During June, Selene Render duration is unknown hours for Atlas. If access opens, within Atlas in June, Selene reports Render runs concurrently with Upload. Within Atlas in June, Selene reports order from Render to Upload is missing. Within Atlas in June, Selene reports task result is unresolved.",
+      "words": [
+        {
+          "text": "Within",
+          "start": 0.25,
+          "end": 0.363636364
+        },
+        {
+          "text": "Atlas",
+          "start": 0.363636364,
+          "end": 0.477272727
+        },
+        {
+          "text": "in",
+          "start": 0.477272727,
+          "end": 0.590909091
+        },
+        {
+          "text": "June,",
+          "start": 0.590909091,
+          "end": 0.704545455
+        },
+        {
+          "text": "Selene",
+          "start": 0.704545455,
+          "end": 0.818181818
+        },
+        {
+          "text": "records",
+          "start": 0.818181818,
+          "end": 0.931818182
+        },
+        {
+          "text": "Render",
+          "start": 0.931818182,
+          "end": 1.045454545
+        },
+        {
+          "text": "and",
+          "start": 1.045454545,
+          "end": 1.159090909
+        },
+        {
+          "text": "Upload",
+          "start": 1.159090909,
+          "end": 1.272727273
+        },
+        {
+          "text": "as",
+          "start": 1.272727273,
+          "end": 1.386363636
+        },
+        {
+          "text": "tasks.",
+          "start": 1.386363636,
+          "end": 1.5
+        },
+        {
+          "text": "During",
+          "start": 2,
+          "end": 2.14
+        },
+        {
+          "text": "June,",
+          "start": 2.14,
+          "end": 2.28
+        },
+        {
+          "text": "Selene",
+          "start": 2.28,
+          "end": 2.42
+        },
+        {
+          "text": "Render",
+          "start": 2.42,
+          "end": 2.56
+        },
+        {
+          "text": "duration",
+          "start": 2.56,
+          "end": 2.7
+        },
+        {
+          "text": "is",
+          "start": 2.7,
+          "end": 2.84
+        },
+        {
+          "text": "unknown",
+          "start": 2.84,
+          "end": 2.98
+        },
+        {
+          "text": "hours",
+          "start": 2.98,
+          "end": 3.12
+        },
+        {
+          "text": "for",
+          "start": 3.12,
+          "end": 3.26
+        },
+        {
+          "text": "Atlas.",
+          "start": 3.26,
+          "end": 3.4
+        },
+        {
+          "text": "If",
+          "start": 4,
+          "end": 4.117857143
+        },
+        {
+          "text": "access",
+          "start": 4.117857143,
+          "end": 4.235714286
+        },
+        {
+          "text": "opens,",
+          "start": 4.235714286,
+          "end": 4.353571429
+        },
+        {
+          "text": "within",
+          "start": 4.353571429,
+          "end": 4.471428571
+        },
+        {
+          "text": "Atlas",
+          "start": 4.471428571,
+          "end": 4.589285714
+        },
+        {
+          "text": "in",
+          "start": 4.589285714,
+          "end": 4.707142857
+        },
+        {
+          "text": "June,",
+          "start": 4.707142857,
+          "end": 4.825
+        },
+        {
+          "text": "Selene",
+          "start": 4.825,
+          "end": 4.942857143
+        },
+        {
+          "text": "reports",
+          "start": 4.942857143,
+          "end": 5.060714286
+        },
+        {
+          "text": "Render",
+          "start": 5.060714286,
+          "end": 5.178571429
+        },
+        {
+          "text": "runs",
+          "start": 5.178571429,
+          "end": 5.296428571
+        },
+        {
+          "text": "concurrently",
+          "start": 5.296428571,
+          "end": 5.414285714
+        },
+        {
+          "text": "with",
+          "start": 5.414285714,
+          "end": 5.532142857
+        },
+        {
+          "text": "Upload.",
+          "start": 5.532142857,
+          "end": 5.65
+        },
+        {
+          "text": "Within",
+          "start": 6,
+          "end": 6.126923077
+        },
+        {
+          "text": "Atlas",
+          "start": 6.126923077,
+          "end": 6.253846154
+        },
+        {
+          "text": "in",
+          "start": 6.253846154,
+          "end": 6.380769231
+        },
+        {
+          "text": "June,",
+          "start": 6.380769231,
+          "end": 6.507692308
+        },
+        {
+          "text": "Selene",
+          "start": 6.507692308,
+          "end": 6.634615385
+        },
+        {
+          "text": "reports",
+          "start": 6.634615385,
+          "end": 6.761538462
+        },
+        {
+          "text": "order",
+          "start": 6.761538462,
+          "end": 6.888461538
+        },
+        {
+          "text": "from",
+          "start": 6.888461538,
+          "end": 7.015384615
+        },
+        {
+          "text": "Render",
+          "start": 7.015384615,
+          "end": 7.142307692
+        },
+        {
+          "text": "to",
+          "start": 7.142307692,
+          "end": 7.269230769
+        },
+        {
+          "text": "Upload",
+          "start": 7.269230769,
+          "end": 7.396153846
+        },
+        {
+          "text": "is",
+          "start": 7.396153846,
+          "end": 7.523076923
+        },
+        {
+          "text": "missing.",
+          "start": 7.523076923,
+          "end": 7.65
+        },
+        {
+          "text": "Within",
+          "start": 9.5,
+          "end": 9.715
+        },
+        {
+          "text": "Atlas",
+          "start": 9.715,
+          "end": 9.93
+        },
+        {
+          "text": "in",
+          "start": 9.93,
+          "end": 10.145
+        },
+        {
+          "text": "June,",
+          "start": 10.145,
+          "end": 10.36
+        },
+        {
+          "text": "Selene",
+          "start": 10.36,
+          "end": 10.575
+        },
+        {
+          "text": "reports",
+          "start": 10.575,
+          "end": 10.79
+        },
+        {
+          "text": "task",
+          "start": 10.79,
+          "end": 11.005
+        },
+        {
+          "text": "result",
+          "start": 11.005,
+          "end": 11.22
+        },
+        {
+          "text": "is",
+          "start": 11.22,
+          "end": 11.435
+        },
+        {
+          "text": "unresolved.",
+          "start": 11.435,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 57,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "temporal-structure",
+        "preset": "parallel-lanes",
+        "visualMode": "diagram",
+        "template": "task-lanes",
+        "label": "tasks",
+        "subject": "Selene",
+        "outcome": "unresolved",
+        "evidence": "source-stated",
+        "actor": "Selene",
+        "scope": "Atlas",
+        "period": "June",
+        "entities": [
+          {
+            "label": "Selene",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 10
+            }
+          },
+          {
+            "label": "Render",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 10
+            }
+          },
+          {
+            "label": "Upload",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 10
+            }
+          }
+        ],
+        "startWord": 0,
+        "endWord": 57,
+        "setupWord": 0,
+        "actionWord": 11,
+        "responseWord": 21,
+        "checkWord": 35,
+        "resolveWord": 48,
+        "tasks": [
+          {
+            "task": "Render",
+            "duration": {
+              "actor": "Selene",
+              "claim": "Render duration",
+              "basis": {
+                "unit": "hour",
+                "period": "June",
+                "population": "Atlas"
+              },
+              "state": "unknown",
+              "qualifier": "unknown",
+              "evidence": {
+                "fromWord": 11,
+                "toWord": 20
+              }
+            }
+          },
+          {
+            "task": "Upload"
+          }
+        ],
+        "relations": [
+          {
+            "actor": "Selene",
+            "claim": "runs concurrently with",
+            "scope": "Atlas",
+            "period": "June",
+            "evidence": {
+              "fromWord": 21,
+              "toWord": 34
+            },
+            "type": "concurrent",
+            "from": "Render",
+            "to": "Upload",
+            "state": "conditional",
+            "condition": "If access opens"
+          },
+          {
+            "actor": "Selene",
+            "claim": "order",
+            "scope": "Atlas",
+            "period": "June",
+            "evidence": {
+              "fromWord": 35,
+              "toWord": 47
+            },
+            "type": "before",
+            "from": "Render",
+            "to": "Upload",
+            "state": "missing"
+          }
+        ],
+        "result": {
+          "actor": "Selene",
+          "claim": "task result",
+          "scope": "Atlas",
+          "period": "June",
+          "evidence": {
+            "fromWord": 48,
+            "toWord": 57
+          },
+          "state": "unresolved"
+        }
+      },
+      "negatives": [
+        {
+          "name": "dropped concurrency condition",
+          "edits": [
+            {
+              "path": ["relations", 0, "condition"],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "invented concurrency condition",
+          "edits": [
+            {
+              "path": ["relations", 0, "condition"],
+              "value": "If payment clears"
+            }
+          ]
+        },
+        {
+          "name": "conditional promoted to known",
+          "edits": [
+            {
+              "path": ["relations", 0, "state"],
+              "value": "known"
+            },
+            {
+              "path": ["relations", 0, "condition"],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "unknown duration promoted to zero",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "state"],
+              "value": "known"
+            },
+            {
+              "path": ["tasks", 0, "duration", "qualifier"],
+              "remove": true
+            },
+            {
+              "path": ["tasks", 0, "duration", "amount"],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "missing order promoted to known",
+          "edits": [
+            {
+              "path": ["relations", 1, "state"],
+              "value": "known"
+            },
+            {
+              "path": ["relations", 1, "claim"],
+              "value": "runs before"
+            }
+          ]
+        },
+        {
+          "name": "wrong relation actor",
+          "edits": [
+            {
+              "path": ["relations", 0, "actor"],
+              "value": "Render"
+            }
+          ]
+        },
+        {
+          "name": "wrong relation scope",
+          "edits": [
+            {
+              "path": ["relations", 0, "scope"],
+              "value": "Harbor"
+            }
+          ]
+        },
+        {
+          "name": "HTML label",
+          "edits": [
+            {
+              "path": ["label"],
+              "value": "<b>tasks</b>"
+            }
+          ]
+        },
+        {
+          "name": "caller entity ID",
+          "edits": [
+            {
+              "path": ["entities", 0, "id"],
+              "value": "caller"
+            }
+          ]
+        },
+        {
+          "name": "zero denominator",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "state"],
+              "value": "known"
+            },
+            {
+              "path": ["tasks", 0, "duration", "qualifier"],
+              "remove": true
+            },
+            {
+              "path": ["tasks", 0, "duration", "amount"],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 0
+                }
+              }
+            }
+          ],
+          "clauses": {
+            "1": "During June, Selene Render duration is 1/2 hours for Atlas."
+          }
+        },
+        {
+          "name": "absent relations",
+          "edits": [
+            {
+              "path": ["relations"],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "zero word interval",
+          "edits": [
+            {
+              "path": ["words", 0, "end"],
+              "value": 0.25
+            }
+          ]
+        },
+        {
+          "name": "overlong window",
+          "edits": [
+            {
+              "path": ["window", "endTime"],
+              "value": 13
+            }
+          ]
+        },
+        {
+          "name": "same clause used for two beats",
+          "edits": [
+            {
+              "path": ["checkWord"],
+              "value": 21
+            }
+          ]
+        },
+        {
+          "name": "arbitrary function",
+          "edits": [
+            {
+              "path": ["function"],
+              "value": "x => x"
+            }
+          ]
+        },
+        {
+          "name": "forged result state",
+          "edits": [
+            {
+              "path": ["result", "state"],
+              "value": "known"
+            },
+            {
+              "path": ["outcome"],
+              "value": "known"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "42",
+      "name": "canonical",
+      "sourceText": "Mira lists Draft and Publish as all tasks for Orion during June. Mira Draft duration is 2 hours during June for Orion. Mira Publish duration is 3 hours during June for Orion. Mira states Draft prerequisites are none for Orion during June. Mira states Publish prerequisites are Draft for Orion during June. Mira states schedule basis is earliest starts from project start with independent resources for Orion during June. Mira requests critical path calculation for Orion during June.",
+      "words": [
+        {
+          "text": "Mira",
+          "start": 0.25,
+          "end": 0.35
+        },
+        {
+          "text": "lists",
+          "start": 0.35,
+          "end": 0.45
+        },
+        {
+          "text": "Draft",
+          "start": 0.45,
+          "end": 0.55
+        },
+        {
+          "text": "and",
+          "start": 0.55,
+          "end": 0.65
+        },
+        {
+          "text": "Publish",
+          "start": 0.65,
+          "end": 0.75
+        },
+        {
+          "text": "as",
+          "start": 0.75,
+          "end": 0.85
+        },
+        {
+          "text": "all",
+          "start": 0.85,
+          "end": 0.95
+        },
+        {
+          "text": "tasks",
+          "start": 0.95,
+          "end": 1.05
+        },
+        {
+          "text": "for",
+          "start": 1.05,
+          "end": 1.15
+        },
+        {
+          "text": "Orion",
+          "start": 1.15,
+          "end": 1.25
+        },
+        {
+          "text": "during",
+          "start": 1.25,
+          "end": 1.35
+        },
+        {
+          "text": "June.",
+          "start": 1.35,
+          "end": 1.45
+        },
+        {
+          "text": "Mira",
+          "start": 1.7,
+          "end": 1.8
+        },
+        {
+          "text": "Draft",
+          "start": 1.8,
+          "end": 1.9
+        },
+        {
+          "text": "duration",
+          "start": 1.9,
+          "end": 2
+        },
+        {
+          "text": "is",
+          "start": 2,
+          "end": 2.1
+        },
+        {
+          "text": "2",
+          "start": 2.1,
+          "end": 2.2
+        },
+        {
+          "text": "hours",
+          "start": 2.2,
+          "end": 2.3
+        },
+        {
+          "text": "during",
+          "start": 2.3,
+          "end": 2.4
+        },
+        {
+          "text": "June",
+          "start": 2.4,
+          "end": 2.5
+        },
+        {
+          "text": "for",
+          "start": 2.5,
+          "end": 2.6
+        },
+        {
+          "text": "Orion.",
+          "start": 2.6,
+          "end": 2.7
+        },
+        {
+          "text": "Mira",
+          "start": 3.15,
+          "end": 3.25
+        },
+        {
+          "text": "Publish",
+          "start": 3.25,
+          "end": 3.35
+        },
+        {
+          "text": "duration",
+          "start": 3.35,
+          "end": 3.45
+        },
+        {
+          "text": "is",
+          "start": 3.45,
+          "end": 3.55
+        },
+        {
+          "text": "3",
+          "start": 3.55,
+          "end": 3.65
+        },
+        {
+          "text": "hours",
+          "start": 3.65,
+          "end": 3.75
+        },
+        {
+          "text": "during",
+          "start": 3.75,
+          "end": 3.85
+        },
+        {
+          "text": "June",
+          "start": 3.85,
+          "end": 3.95
+        },
+        {
+          "text": "for",
+          "start": 3.95,
+          "end": 4.05
+        },
+        {
+          "text": "Orion.",
+          "start": 4.05,
+          "end": 4.15
+        },
+        {
+          "text": "Mira",
+          "start": 4.6,
+          "end": 4.7
+        },
+        {
+          "text": "states",
+          "start": 4.7,
+          "end": 4.8
+        },
+        {
+          "text": "Draft",
+          "start": 4.8,
+          "end": 4.9
+        },
+        {
+          "text": "prerequisites",
+          "start": 4.9,
+          "end": 5
+        },
+        {
+          "text": "are",
+          "start": 5,
+          "end": 5.1
+        },
+        {
+          "text": "none",
+          "start": 5.1,
+          "end": 5.2
+        },
+        {
+          "text": "for",
+          "start": 5.2,
+          "end": 5.3
+        },
+        {
+          "text": "Orion",
+          "start": 5.3,
+          "end": 5.4
+        },
+        {
+          "text": "during",
+          "start": 5.4,
+          "end": 5.5
+        },
+        {
+          "text": "June.",
+          "start": 5.5,
+          "end": 5.6
+        },
+        {
+          "text": "Mira",
+          "start": 6.05,
+          "end": 6.15
+        },
+        {
+          "text": "states",
+          "start": 6.15,
+          "end": 6.25
+        },
+        {
+          "text": "Publish",
+          "start": 6.25,
+          "end": 6.35
+        },
+        {
+          "text": "prerequisites",
+          "start": 6.35,
+          "end": 6.45
+        },
+        {
+          "text": "are",
+          "start": 6.45,
+          "end": 6.55
+        },
+        {
+          "text": "Draft",
+          "start": 6.55,
+          "end": 6.65
+        },
+        {
+          "text": "for",
+          "start": 6.65,
+          "end": 6.75
+        },
+        {
+          "text": "Orion",
+          "start": 6.75,
+          "end": 6.85
+        },
+        {
+          "text": "during",
+          "start": 6.85,
+          "end": 6.95
+        },
+        {
+          "text": "June.",
+          "start": 6.95,
+          "end": 7.05
+        },
+        {
+          "text": "Mira",
+          "start": 7.5,
+          "end": 7.62
+        },
+        {
+          "text": "states",
+          "start": 7.62,
+          "end": 7.74
+        },
+        {
+          "text": "schedule",
+          "start": 7.74,
+          "end": 7.86
+        },
+        {
+          "text": "basis",
+          "start": 7.86,
+          "end": 7.98
+        },
+        {
+          "text": "is",
+          "start": 7.98,
+          "end": 8.1
+        },
+        {
+          "text": "earliest",
+          "start": 8.1,
+          "end": 8.22
+        },
+        {
+          "text": "starts",
+          "start": 8.22,
+          "end": 8.34
+        },
+        {
+          "text": "from",
+          "start": 8.34,
+          "end": 8.46
+        },
+        {
+          "text": "project",
+          "start": 8.46,
+          "end": 8.58
+        },
+        {
+          "text": "start",
+          "start": 8.58,
+          "end": 8.7
+        },
+        {
+          "text": "with",
+          "start": 8.7,
+          "end": 8.82
+        },
+        {
+          "text": "independent",
+          "start": 8.82,
+          "end": 8.94
+        },
+        {
+          "text": "resources",
+          "start": 8.94,
+          "end": 9.06
+        },
+        {
+          "text": "for",
+          "start": 9.06,
+          "end": 9.18
+        },
+        {
+          "text": "Orion",
+          "start": 9.18,
+          "end": 9.3
+        },
+        {
+          "text": "during",
+          "start": 9.3,
+          "end": 9.42
+        },
+        {
+          "text": "June.",
+          "start": 9.42,
+          "end": 9.54
+        },
+        {
+          "text": "Mira",
+          "start": 10.3,
+          "end": 10.45
+        },
+        {
+          "text": "requests",
+          "start": 10.45,
+          "end": 10.6
+        },
+        {
+          "text": "critical",
+          "start": 10.6,
+          "end": 10.75
+        },
+        {
+          "text": "path",
+          "start": 10.75,
+          "end": 10.9
+        },
+        {
+          "text": "calculation",
+          "start": 10.9,
+          "end": 11.05
+        },
+        {
+          "text": "for",
+          "start": 11.05,
+          "end": 11.2
+        },
+        {
+          "text": "Orion",
+          "start": 11.2,
+          "end": 11.35
+        },
+        {
+          "text": "during",
+          "start": 11.35,
+          "end": 11.5
+        },
+        {
+          "text": "June.",
+          "start": 11.5,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 77,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "temporal-structure",
+        "preset": "critical-path",
+        "visualMode": "diagram",
+        "template": "dependency-schedule",
+        "label": "tasks",
+        "subject": "Mira",
+        "outcome": "critical path calculation",
+        "evidence": "source-stated",
+        "actor": "Mira",
+        "scope": "Orion",
+        "period": "June",
+        "entities": [
+          {
+            "label": "Mira",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 11
+            }
+          },
+          {
+            "label": "Draft",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 11
+            }
+          },
+          {
+            "label": "Publish",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 11
+            }
+          }
+        ],
+        "startWord": 0,
+        "endWord": 77,
+        "setupWord": 0,
+        "actionWord": 12,
+        "responseWord": 32,
+        "checkWord": 52,
+        "resolveWord": 69,
+        "tasks": [
+          {
+            "task": "Draft",
+            "duration": {
+              "actor": "Mira",
+              "claim": "Draft duration",
+              "basis": {
+                "unit": "hour",
+                "period": "June",
+                "population": "Orion"
+              },
+              "state": "known",
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                }
+              },
+              "evidence": {
+                "fromWord": 12,
+                "toWord": 21
+              }
+            },
+            "prerequisites": {
+              "actor": "Mira",
+              "claim": "prerequisites",
+              "scope": "Orion",
+              "period": "June",
+              "evidence": {
+                "fromWord": 32,
+                "toWord": 41
+              },
+              "state": "known",
+              "prerequisites": []
+            }
+          },
+          {
+            "task": "Publish",
+            "duration": {
+              "actor": "Mira",
+              "claim": "Publish duration",
+              "basis": {
+                "unit": "hour",
+                "period": "June",
+                "population": "Orion"
+              },
+              "state": "known",
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 3,
+                  "denominator": 1
+                }
+              },
+              "evidence": {
+                "fromWord": 22,
+                "toWord": 31
+              }
+            },
+            "prerequisites": {
+              "actor": "Mira",
+              "claim": "prerequisites",
+              "scope": "Orion",
+              "period": "June",
+              "evidence": {
+                "fromWord": 42,
+                "toWord": 51
+              },
+              "state": "known",
+              "prerequisites": ["Draft"]
+            }
+          }
+        ],
+        "basis": {
+          "actor": "Mira",
+          "claim": "schedule basis",
+          "scope": "Orion",
+          "period": "June",
+          "evidence": {
+            "fromWord": 52,
+            "toWord": 68
+          },
+          "state": "known",
+          "origin": "project start",
+          "policy": "earliest-start",
+          "resourceModel": "independent"
+        },
+        "result": {
+          "actor": "Mira",
+          "claim": "critical path calculation",
+          "scope": "Orion",
+          "period": "June",
+          "evidence": {
+            "fromWord": 69,
+            "toWord": 77
+          },
+          "state": "requested",
+          "operation": "critical-path"
+        }
+      },
+      "negatives": [
+        {
+          "name": "incomplete duration",
+          "edits": [
+            {
+              "path": ["tasks", 1, "duration"],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "conditional duration",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "state"],
+              "value": "conditional"
+            },
+            {
+              "path": ["tasks", 0, "duration", "condition"],
+              "value": "if access opens"
+            }
+          ],
+          "clauses": {
+            "1": "Mira Draft duration is 2 hours during June for Orion if access opens."
+          }
+        },
+        {
+          "name": "disputed duration",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "state"],
+              "value": "disputed"
+            },
+            {
+              "path": ["tasks", 0, "duration", "qualifier"],
+              "value": "disputed"
+            },
+            {
+              "path": ["tasks", 0, "duration", "amount"],
+              "remove": true
+            },
+            {
+              "path": ["tasks", 0, "duration", "alternatives"],
+              "value": [
+                {
+                  "kind": "rational",
+                  "value": {
+                    "numerator": 2,
+                    "denominator": 1
+                  }
+                },
+                {
+                  "kind": "rational",
+                  "value": {
+                    "numerator": 3,
+                    "denominator": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "clauses": {
+            "1": "Mira Draft duration is disputed between 2 and 3 hours during June for Orion."
+          }
+        },
+        {
+          "name": "known but incompatible units",
+          "edits": [
+            {
+              "path": ["tasks", 1, "duration", "basis", "unit"],
+              "value": "day"
+            }
+          ],
+          "clauses": {
+            "2": "Mira Publish duration is 3 days during June for Orion."
+          }
+        },
+        {
+          "name": "explicit dependency cycle",
+          "edits": [
+            {
+              "path": ["tasks", 0, "prerequisites", "prerequisites"],
+              "value": ["Publish"]
+            }
+          ],
+          "clauses": {
+            "3": "Mira states Draft prerequisites are Publish for Orion during June."
+          }
+        },
+        {
+          "name": "omitted dependency interpreted as none",
+          "edits": [
+            {
+              "path": ["tasks", 1, "prerequisites", "prerequisites"],
+              "value": []
+            }
+          ]
+        },
+        {
+          "name": "incomplete task universe",
+          "edits": [],
+          "clauses": {
+            "0": "Mira lists Draft and Publish as tasks for Orion during June."
+          }
+        },
+        {
+          "name": "fabricated derived result",
+          "edits": [
+            {
+              "path": ["result", "duration"],
+              "value": {
+                "numerator": 5,
+                "denominator": 1
+              }
+            }
+          ]
+        },
+        {
+          "name": "unknown schedule basis",
+          "edits": [
+            {
+              "path": ["basis", "state"],
+              "value": "unknown"
+            }
+          ]
+        },
+        {
+          "name": "shared resource invention",
+          "edits": [
+            {
+              "path": ["basis", "resourceModel"],
+              "value": "shared"
+            }
+          ]
+        },
+        {
+          "name": "schedule sum overflow",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "amount"],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 1000000000,
+                  "denominator": 1
+                }
+              }
+            },
+            {
+              "path": ["tasks", 1, "duration", "amount"],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 1000000000,
+                  "denominator": 1
+                }
+              }
+            }
+          ],
+          "clauses": {
+            "1": "Mira Draft duration is 1000000000 hours during June for Orion.",
+            "2": "Mira Publish duration is 1000000000 hours during June for Orion."
+          }
+        },
+        {
+          "name": "zero denominator",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "amount", "value", "denominator"],
+              "value": 0
+            }
+          ]
+        },
+        {
+          "name": "nine entities",
+          "edits": [
+            {
+              "path": ["entities"],
+              "value": [
+                {
+                  "label": "Draft",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Draft",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Draft",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Draft",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Draft",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Draft",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Draft",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Draft",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Draft",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "word interval overlap",
+          "edits": [
+            {
+              "path": ["words", 1, "start"],
+              "value": 0.25
+            }
+          ]
+        },
+        {
+          "name": "unsupported mode",
+          "edits": [
+            {
+              "path": ["visualMode"],
+              "value": "volumetric"
+            }
+          ]
+        },
+        {
+          "name": "unsupported preset",
+          "edits": [
+            {
+              "path": ["preset"],
+              "value": "expiry"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "42",
+      "name": "paraphrase",
+      "sourceText": "For Cedar during July, Inez records Scan, Index and Merge as all tasks. During July, Inez recorded Scan duration of 1/2 hours among Cedar. During July, Inez recorded Index duration of 1/2 hours among Cedar. During July, Inez recorded Merge duration of 1/4 hours among Cedar. For Cedar during July, Inez reports Scan prerequisites are none. For Cedar during July, Inez reports Index prerequisites are none. For Cedar during July, Inez reports Merge prerequisites are Scan and Index. For Cedar during July, Inez records schedule basis as earliest starts from project start with independent resources. For Cedar during July, Inez requests critical path calculation.",
+      "words": [
+        {
+          "text": "For",
+          "start": 0.25,
+          "end": 0.33
+        },
+        {
+          "text": "Cedar",
+          "start": 0.33,
+          "end": 0.41
+        },
+        {
+          "text": "during",
+          "start": 0.41,
+          "end": 0.49
+        },
+        {
+          "text": "July,",
+          "start": 0.49,
+          "end": 0.57
+        },
+        {
+          "text": "Inez",
+          "start": 0.57,
+          "end": 0.65
+        },
+        {
+          "text": "records",
+          "start": 0.65,
+          "end": 0.73
+        },
+        {
+          "text": "Scan,",
+          "start": 0.73,
+          "end": 0.81
+        },
+        {
+          "text": "Index",
+          "start": 0.81,
+          "end": 0.89
+        },
+        {
+          "text": "and",
+          "start": 0.89,
+          "end": 0.97
+        },
+        {
+          "text": "Merge",
+          "start": 0.97,
+          "end": 1.05
+        },
+        {
+          "text": "as",
+          "start": 1.05,
+          "end": 1.13
+        },
+        {
+          "text": "all",
+          "start": 1.13,
+          "end": 1.21
+        },
+        {
+          "text": "tasks.",
+          "start": 1.21,
+          "end": 1.29
+        },
+        {
+          "text": "During",
+          "start": 1.6,
+          "end": 1.68
+        },
+        {
+          "text": "July,",
+          "start": 1.68,
+          "end": 1.76
+        },
+        {
+          "text": "Inez",
+          "start": 1.76,
+          "end": 1.84
+        },
+        {
+          "text": "recorded",
+          "start": 1.84,
+          "end": 1.92
+        },
+        {
+          "text": "Scan",
+          "start": 1.92,
+          "end": 2
+        },
+        {
+          "text": "duration",
+          "start": 2,
+          "end": 2.08
+        },
+        {
+          "text": "of",
+          "start": 2.08,
+          "end": 2.16
+        },
+        {
+          "text": "1/2",
+          "start": 2.16,
+          "end": 2.24
+        },
+        {
+          "text": "hours",
+          "start": 2.24,
+          "end": 2.32
+        },
+        {
+          "text": "among",
+          "start": 2.32,
+          "end": 2.4
+        },
+        {
+          "text": "Cedar.",
+          "start": 2.4,
+          "end": 2.48
+        },
+        {
+          "text": "During",
+          "start": 2.9,
+          "end": 2.98
+        },
+        {
+          "text": "July,",
+          "start": 2.98,
+          "end": 3.06
+        },
+        {
+          "text": "Inez",
+          "start": 3.06,
+          "end": 3.14
+        },
+        {
+          "text": "recorded",
+          "start": 3.14,
+          "end": 3.22
+        },
+        {
+          "text": "Index",
+          "start": 3.22,
+          "end": 3.3
+        },
+        {
+          "text": "duration",
+          "start": 3.3,
+          "end": 3.38
+        },
+        {
+          "text": "of",
+          "start": 3.38,
+          "end": 3.46
+        },
+        {
+          "text": "1/2",
+          "start": 3.46,
+          "end": 3.54
+        },
+        {
+          "text": "hours",
+          "start": 3.54,
+          "end": 3.62
+        },
+        {
+          "text": "among",
+          "start": 3.62,
+          "end": 3.7
+        },
+        {
+          "text": "Cedar.",
+          "start": 3.7,
+          "end": 3.78
+        },
+        {
+          "text": "During",
+          "start": 4.2,
+          "end": 4.28
+        },
+        {
+          "text": "July,",
+          "start": 4.28,
+          "end": 4.36
+        },
+        {
+          "text": "Inez",
+          "start": 4.36,
+          "end": 4.44
+        },
+        {
+          "text": "recorded",
+          "start": 4.44,
+          "end": 4.52
+        },
+        {
+          "text": "Merge",
+          "start": 4.52,
+          "end": 4.6
+        },
+        {
+          "text": "duration",
+          "start": 4.6,
+          "end": 4.68
+        },
+        {
+          "text": "of",
+          "start": 4.68,
+          "end": 4.76
+        },
+        {
+          "text": "1/4",
+          "start": 4.76,
+          "end": 4.84
+        },
+        {
+          "text": "hours",
+          "start": 4.84,
+          "end": 4.92
+        },
+        {
+          "text": "among",
+          "start": 4.92,
+          "end": 5
+        },
+        {
+          "text": "Cedar.",
+          "start": 5,
+          "end": 5.08
+        },
+        {
+          "text": "For",
+          "start": 5.5,
+          "end": 5.58
+        },
+        {
+          "text": "Cedar",
+          "start": 5.58,
+          "end": 5.66
+        },
+        {
+          "text": "during",
+          "start": 5.66,
+          "end": 5.74
+        },
+        {
+          "text": "July,",
+          "start": 5.74,
+          "end": 5.82
+        },
+        {
+          "text": "Inez",
+          "start": 5.82,
+          "end": 5.9
+        },
+        {
+          "text": "reports",
+          "start": 5.9,
+          "end": 5.98
+        },
+        {
+          "text": "Scan",
+          "start": 5.98,
+          "end": 6.06
+        },
+        {
+          "text": "prerequisites",
+          "start": 6.06,
+          "end": 6.14
+        },
+        {
+          "text": "are",
+          "start": 6.14,
+          "end": 6.22
+        },
+        {
+          "text": "none.",
+          "start": 6.22,
+          "end": 6.3
+        },
+        {
+          "text": "For",
+          "start": 6.8,
+          "end": 6.88
+        },
+        {
+          "text": "Cedar",
+          "start": 6.88,
+          "end": 6.96
+        },
+        {
+          "text": "during",
+          "start": 6.96,
+          "end": 7.04
+        },
+        {
+          "text": "July,",
+          "start": 7.04,
+          "end": 7.12
+        },
+        {
+          "text": "Inez",
+          "start": 7.12,
+          "end": 7.2
+        },
+        {
+          "text": "reports",
+          "start": 7.2,
+          "end": 7.28
+        },
+        {
+          "text": "Index",
+          "start": 7.28,
+          "end": 7.36
+        },
+        {
+          "text": "prerequisites",
+          "start": 7.36,
+          "end": 7.44
+        },
+        {
+          "text": "are",
+          "start": 7.44,
+          "end": 7.52
+        },
+        {
+          "text": "none.",
+          "start": 7.52,
+          "end": 7.6
+        },
+        {
+          "text": "For",
+          "start": 8.1,
+          "end": 8.18
+        },
+        {
+          "text": "Cedar",
+          "start": 8.18,
+          "end": 8.26
+        },
+        {
+          "text": "during",
+          "start": 8.26,
+          "end": 8.34
+        },
+        {
+          "text": "July,",
+          "start": 8.34,
+          "end": 8.42
+        },
+        {
+          "text": "Inez",
+          "start": 8.42,
+          "end": 8.5
+        },
+        {
+          "text": "reports",
+          "start": 8.5,
+          "end": 8.58
+        },
+        {
+          "text": "Merge",
+          "start": 8.58,
+          "end": 8.66
+        },
+        {
+          "text": "prerequisites",
+          "start": 8.66,
+          "end": 8.74
+        },
+        {
+          "text": "are",
+          "start": 8.74,
+          "end": 8.82
+        },
+        {
+          "text": "Scan",
+          "start": 8.82,
+          "end": 8.9
+        },
+        {
+          "text": "and",
+          "start": 8.9,
+          "end": 8.98
+        },
+        {
+          "text": "Index.",
+          "start": 8.98,
+          "end": 9.06
+        },
+        {
+          "text": "For",
+          "start": 9.4,
+          "end": 9.465
+        },
+        {
+          "text": "Cedar",
+          "start": 9.465,
+          "end": 9.53
+        },
+        {
+          "text": "during",
+          "start": 9.53,
+          "end": 9.595
+        },
+        {
+          "text": "July,",
+          "start": 9.595,
+          "end": 9.66
+        },
+        {
+          "text": "Inez",
+          "start": 9.66,
+          "end": 9.725
+        },
+        {
+          "text": "records",
+          "start": 9.725,
+          "end": 9.79
+        },
+        {
+          "text": "schedule",
+          "start": 9.79,
+          "end": 9.855
+        },
+        {
+          "text": "basis",
+          "start": 9.855,
+          "end": 9.92
+        },
+        {
+          "text": "as",
+          "start": 9.92,
+          "end": 9.985
+        },
+        {
+          "text": "earliest",
+          "start": 9.985,
+          "end": 10.05
+        },
+        {
+          "text": "starts",
+          "start": 10.05,
+          "end": 10.115
+        },
+        {
+          "text": "from",
+          "start": 10.115,
+          "end": 10.18
+        },
+        {
+          "text": "project",
+          "start": 10.18,
+          "end": 10.245
+        },
+        {
+          "text": "start",
+          "start": 10.245,
+          "end": 10.31
+        },
+        {
+          "text": "with",
+          "start": 10.31,
+          "end": 10.375
+        },
+        {
+          "text": "independent",
+          "start": 10.375,
+          "end": 10.44
+        },
+        {
+          "text": "resources.",
+          "start": 10.44,
+          "end": 10.505
+        },
+        {
+          "text": "For",
+          "start": 10.7,
+          "end": 10.805555556
+        },
+        {
+          "text": "Cedar",
+          "start": 10.805555556,
+          "end": 10.911111111
+        },
+        {
+          "text": "during",
+          "start": 10.911111111,
+          "end": 11.016666667
+        },
+        {
+          "text": "July,",
+          "start": 11.016666667,
+          "end": 11.122222222
+        },
+        {
+          "text": "Inez",
+          "start": 11.122222222,
+          "end": 11.227777778
+        },
+        {
+          "text": "requests",
+          "start": 11.227777778,
+          "end": 11.333333333
+        },
+        {
+          "text": "critical",
+          "start": 11.333333333,
+          "end": 11.438888889
+        },
+        {
+          "text": "path",
+          "start": 11.438888889,
+          "end": 11.544444444
+        },
+        {
+          "text": "calculation.",
+          "start": 11.544444444,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 103,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "temporal-structure",
+        "preset": "critical-path",
+        "visualMode": "diagram",
+        "template": "dependency-schedule",
+        "label": "tasks",
+        "subject": "Inez",
+        "outcome": "critical path calculation",
+        "evidence": "source-stated",
+        "actor": "Inez",
+        "scope": "Cedar",
+        "period": "July",
+        "entities": [
+          {
+            "label": "Inez",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 12
+            }
+          },
+          {
+            "label": "Scan",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 12
+            }
+          },
+          {
+            "label": "Index",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 12
+            }
+          },
+          {
+            "label": "Merge",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 12
+            }
+          }
+        ],
+        "startWord": 0,
+        "endWord": 103,
+        "setupWord": 0,
+        "actionWord": 13,
+        "responseWord": 35,
+        "checkWord": 78,
+        "resolveWord": 95,
+        "tasks": [
+          {
+            "task": "Scan",
+            "duration": {
+              "actor": "Inez",
+              "claim": "Scan duration",
+              "basis": {
+                "unit": "hour",
+                "period": "July",
+                "population": "Cedar"
+              },
+              "state": "known",
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 2
+                }
+              },
+              "evidence": {
+                "fromWord": 13,
+                "toWord": 23
+              }
+            },
+            "prerequisites": {
+              "actor": "Inez",
+              "claim": "prerequisites",
+              "scope": "Cedar",
+              "period": "July",
+              "evidence": {
+                "fromWord": 46,
+                "toWord": 55
+              },
+              "state": "known",
+              "prerequisites": []
+            }
+          },
+          {
+            "task": "Index",
+            "duration": {
+              "actor": "Inez",
+              "claim": "Index duration",
+              "basis": {
+                "unit": "hour",
+                "period": "July",
+                "population": "Cedar"
+              },
+              "state": "known",
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 2
+                }
+              },
+              "evidence": {
+                "fromWord": 24,
+                "toWord": 34
+              }
+            },
+            "prerequisites": {
+              "actor": "Inez",
+              "claim": "prerequisites",
+              "scope": "Cedar",
+              "period": "July",
+              "evidence": {
+                "fromWord": 56,
+                "toWord": 65
+              },
+              "state": "known",
+              "prerequisites": []
+            }
+          },
+          {
+            "task": "Merge",
+            "duration": {
+              "actor": "Inez",
+              "claim": "Merge duration",
+              "basis": {
+                "unit": "hour",
+                "period": "July",
+                "population": "Cedar"
+              },
+              "state": "known",
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 4
+                }
+              },
+              "evidence": {
+                "fromWord": 35,
+                "toWord": 45
+              }
+            },
+            "prerequisites": {
+              "actor": "Inez",
+              "claim": "prerequisites",
+              "scope": "Cedar",
+              "period": "July",
+              "evidence": {
+                "fromWord": 66,
+                "toWord": 77
+              },
+              "state": "known",
+              "prerequisites": ["Scan", "Index"]
+            }
+          }
+        ],
+        "basis": {
+          "actor": "Inez",
+          "claim": "schedule basis",
+          "scope": "Cedar",
+          "period": "July",
+          "evidence": {
+            "fromWord": 78,
+            "toWord": 94
+          },
+          "state": "known",
+          "origin": "project start",
+          "policy": "earliest-start",
+          "resourceModel": "independent"
+        },
+        "result": {
+          "actor": "Inez",
+          "claim": "critical path calculation",
+          "scope": "Cedar",
+          "period": "July",
+          "evidence": {
+            "fromWord": 95,
+            "toWord": 103
+          },
+          "state": "requested",
+          "operation": "critical-path"
+        }
+      },
+      "negatives": [
+        {
+          "name": "wrong source actor",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "actor"],
+              "value": "Scan"
+            }
+          ]
+        },
+        {
+          "name": "wrong duration population",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "basis", "population"],
+              "value": "Orion"
+            }
+          ]
+        },
+        {
+          "name": "wrong duration period",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "basis", "period"],
+              "value": "June"
+            }
+          ]
+        },
+        {
+          "name": "another task claim",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "claim"],
+              "value": "Index duration"
+            }
+          ]
+        },
+        {
+          "name": "conditional dependency",
+          "edits": [
+            {
+              "path": ["tasks", 2, "prerequisites", "state"],
+              "value": "conditional"
+            },
+            {
+              "path": ["tasks", 2, "prerequisites", "condition"],
+              "value": "if access opens"
+            }
+          ],
+          "clauses": {
+            "6": "If access opens, for Cedar during July, Inez reports Merge prerequisites are Scan and Index."
+          }
+        },
+        {
+          "name": "unknown duration",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "state"],
+              "value": "unknown"
+            },
+            {
+              "path": ["tasks", 0, "duration", "qualifier"],
+              "value": "unknown"
+            },
+            {
+              "path": ["tasks", 0, "duration", "amount"],
+              "remove": true
+            }
+          ],
+          "clauses": {
+            "1": "During July, Inez recorded Scan duration of unknown hours among Cedar."
+          }
+        },
+        {
+          "name": "simulated duration",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "state"],
+              "value": "simulated"
+            },
+            {
+              "path": ["tasks", 0, "duration", "qualifier"],
+              "value": "simulation"
+            }
+          ],
+          "clauses": {
+            "1": "In this simulation, during July, Inez recorded Scan duration of 1/2 hours among Cedar."
+          }
+        },
+        {
+          "name": "duplicate dependency identity",
+          "edits": [
+            {
+              "path": ["tasks", 2, "prerequisites", "prerequisites"],
+              "value": ["Scan", "Scan"]
+            }
+          ]
+        },
+        {
+          "name": "fabricated unique winner",
+          "edits": [
+            {
+              "path": ["result", "criticalPathCount"],
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "invented schedule origin",
+          "edits": [
+            {
+              "path": ["basis", "origin"],
+              "value": "today"
+            }
+          ]
+        },
+        {
+          "name": "non-time unit",
+          "edits": [
+            {
+              "path": ["tasks", 0, "duration", "basis", "unit"],
+              "value": "count"
+            }
+          ],
+          "clauses": {
+            "1": "During July, Inez recorded Scan duration of 1/2 count among Cedar."
+          }
+        },
+        {
+          "name": "negative rational duration",
+          "edits": [
+            {
+              "path": ["tasks", 2, "duration", "amount"],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": -1,
+                  "denominator": 4
+                }
+              }
+            }
+          ],
+          "clauses": {
+            "3": "During July, Inez recorded Merge duration of -1/4 hours among Cedar."
+          }
+        },
+        {
+          "name": "unretained result condition",
+          "edits": [],
+          "clauses": {
+            "8": "If access opens, for Cedar during July, Inez requests critical path calculation."
+          }
+        },
+        {
+          "name": "unretained dependency condition",
+          "edits": [],
+          "clauses": {
+            "6": "If access opens, for Cedar during July, Inez reports Merge prerequisites are Scan and Index."
+          }
+        },
+        {
+          "name": "caller task ID",
+          "edits": [
+            {
+              "path": ["tasks", 0, "id"],
+              "value": "caller"
+            }
+          ]
+        },
+        {
+          "name": "no schedule basis",
+          "edits": [
+            {
+              "path": ["basis"],
+              "remove": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

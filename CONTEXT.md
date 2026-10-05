@@ -22,3 +22,6 @@
 - **Capital state** — The distinction between a commitment, requested contribution, paid cash, deployment, reserve and distribution. A promise does not become available cash until contribution is supported.
 - **Economic right** — A stated claim on an asset or payout, distinct from ownership percentage, control and available cash. Transferability does not establish liquidity or a guaranteed payout.
 - **Explanation panel** — A storyboard panel whose source choices and identity links reconstruct one allowlisted authored explanation. It shares the board's camera and model layer rather than embedding an independent scene stage.
+- **Scene kind** — An explanation family. A kind alone does not identify every story variant in that family.
+- **Scene preset** — One named story variant within a scene kind. The kind and preset together identify its source-grounded story, not its visual treatment.
+- **Story identity** — The stable identity of one approved animation-library story. It follows from the recognized kind and preset, not from an arbitrary caller-supplied name.

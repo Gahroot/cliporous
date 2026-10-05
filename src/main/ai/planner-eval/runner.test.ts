@@ -1,4 +1,14 @@
-import { mkdtemp, readdir, readFile, rm, stat, symlink, utimes, writeFile } from 'node:fs/promises';
+import {
+  mkdtemp,
+  readdir,
+  readFile,
+  realpath,
+  rm,
+  stat,
+  symlink,
+  utimes,
+  writeFile,
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -102,7 +112,7 @@ beforeEach(async () => {
       authMode: 'chatgpt',
     },
   }));
-  directory = await mkdtemp(join(tmpdir(), 'planner-eval-runner-test-'));
+  directory = await realpath(await mkdtemp(join(tmpdir(), 'planner-eval-runner-test-')));
   await writeFile(join(directory, '.planner-eval-owner'), 'planner-eval-v1');
   options = {
     mode: 'dry-run',

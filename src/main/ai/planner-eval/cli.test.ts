@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
@@ -299,7 +299,7 @@ describe('planner evaluation CLI', () => {
       ).toThrow();
   });
   it('creates an outside-repository owned directory and refuses unrelated output directories', () => {
-    const dir = prepareRunDirectory();
+    const dir = realpathSync(prepareRunDirectory());
     try {
       expect(readFileSync(join(dir, '.planner-eval-owner'), 'utf8')).toBe('planner-eval-v1');
       expect(prepareRunDirectory(dir)).toBe(dir);

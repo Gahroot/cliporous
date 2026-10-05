@@ -18,9 +18,9 @@ import {
   EXPLAINER_ICONS,
   type ExplainerIcon,
   type ExplainerLayout,
-  type ExplainerSceneBody,
   type ExplainerSceneKind,
   type HeroProp,
+  type LegacyExplainerSceneBody,
   type SceneCue,
 } from '../../remotion/compositions/explainer/types';
 
@@ -100,8 +100,8 @@ export interface KindSpec<K extends ExplainerSceneKind = ExplainerSceneKind> {
   avoid?: string;
   /** Per-run prompt text (e.g. hero lists only the shortlisted props). */
   prompt?: (offer: PromptOffer) => { describe: string; schema: string };
-  parse: (raw: Rec, ctx: ParseContext) => Extract<ExplainerSceneBody, { kind: K }> | null;
-  cues: (scene: Extract<ExplainerSceneBody, { kind: K }>) => SceneCue[];
+  parse: (raw: Rec, ctx: ParseContext) => Extract<LegacyExplainerSceneBody, { kind: K }> | null;
+  cues: (scene: Extract<LegacyExplainerSceneBody, { kind: K }>) => SceneCue[];
 }
 
 /** A spec for any kind (distributive, so each member keeps its own K). */

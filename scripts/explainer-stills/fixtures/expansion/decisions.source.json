@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "pack": "decisions",
+  "sourceFiles": [
+    { "stories": ["25", "26"], "file": "decisions/sieve-frontier.source.json" },
+    { "stories": ["27", "28"], "file": "decisions/priority-tree.source.json" },
+    { "stories": ["29", "30"], "file": "decisions/search-landscape.source.json" },
+    { "stories": ["31", "32"], "file": "decisions/explore-evidence.source.json" }
+  ]
+}

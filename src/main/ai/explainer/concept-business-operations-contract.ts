@@ -24,7 +24,12 @@ export function businessClaims(text: string): string[] {
 }
 
 export function assertedBusinessClaim(claim: string): boolean {
-  return !NON_ASSERTED.test(claim);
+  // A source date is not the modal verb; actual may/negation elsewhere still rejects.
+  const grammar = claim.replace(
+    /\b(?:during|in|for)\s+May(?=\s+(?:among|for)\b|\s+\d{4}\b|\s*$)/gi,
+    'source period',
+  );
+  return !NON_ASSERTED.test(grammar);
 }
 
 export function hasClaim(text: string, relationship: RegExp, unresolved = false): boolean {

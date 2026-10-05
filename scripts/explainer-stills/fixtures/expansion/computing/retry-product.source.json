@@ -1,0 +1,114 @@
+{
+  "version": 1, "pack": "computing", "stories": [
+    {
+      "id": "67",
+      "sourceText": "Worker identifies request on Request as same with stated state for Trial during Today. Worker attempts retry on Request as second with stated state for Trial during Today. Worker reports effect on Request as unresolved with stated state for Trial during Today. Worker requires idempotency on Request as preserved with conditional state for Trial during Today if key retained. Worker reports result on Request as pending with stated state for Trial during Today.",
+      "window": {"startWord":0,"endWord":72,"startTime":0,"endTime":10},
+      "words": [
+        {"text":"Worker","start":0.25,"end":0.33},{"text":"identifies","start":0.33,"end":0.41},{"text":"request","start":0.41,"end":0.49},{"text":"on","start":0.49,"end":0.57},{"text":"Request","start":0.57,"end":0.65},{"text":"as","start":0.65,"end":0.73},{"text":"same","start":0.73,"end":0.81},{"text":"with","start":0.81,"end":0.89},{"text":"stated","start":0.89,"end":0.97},{"text":"state","start":0.97,"end":1.05},{"text":"for","start":1.05,"end":1.13},{"text":"Trial","start":1.13,"end":1.21},{"text":"during","start":1.21,"end":1.29},{"text":"Today.","start":1.29,"end":1.37},
+        {"text":"Worker","start":2.25,"end":2.33},{"text":"attempts","start":2.33,"end":2.41},{"text":"retry","start":2.41,"end":2.49},{"text":"on","start":2.49,"end":2.57},{"text":"Request","start":2.57,"end":2.65},{"text":"as","start":2.65,"end":2.73},{"text":"second","start":2.73,"end":2.81},{"text":"with","start":2.81,"end":2.89},{"text":"stated","start":2.89,"end":2.97},{"text":"state","start":2.97,"end":3.05},{"text":"for","start":3.05,"end":3.13},{"text":"Trial","start":3.13,"end":3.21},{"text":"during","start":3.21,"end":3.29},{"text":"Today.","start":3.29,"end":3.37},
+        {"text":"Worker","start":4.25,"end":4.33},{"text":"reports","start":4.33,"end":4.41},{"text":"effect","start":4.41,"end":4.49},{"text":"on","start":4.49,"end":4.57},{"text":"Request","start":4.57,"end":4.65},{"text":"as","start":4.65,"end":4.73},{"text":"unresolved","start":4.73,"end":4.81},{"text":"with","start":4.81,"end":4.89},{"text":"stated","start":4.89,"end":4.97},{"text":"state","start":4.97,"end":5.05},{"text":"for","start":5.05,"end":5.13},{"text":"Trial","start":5.13,"end":5.21},{"text":"during","start":5.21,"end":5.29},{"text":"Today.","start":5.29,"end":5.37},
+        {"text":"Worker","start":6.25,"end":6.33},{"text":"requires","start":6.33,"end":6.41},{"text":"idempotency","start":6.41,"end":6.49},{"text":"on","start":6.49,"end":6.57},{"text":"Request","start":6.57,"end":6.65},{"text":"as","start":6.65,"end":6.73},{"text":"preserved","start":6.73,"end":6.81},{"text":"with","start":6.81,"end":6.89},{"text":"conditional","start":6.89,"end":6.97},{"text":"state","start":6.97,"end":7.05},{"text":"for","start":7.05,"end":7.13},{"text":"Trial","start":7.13,"end":7.21},{"text":"during","start":7.21,"end":7.29},{"text":"Today","start":7.29,"end":7.37},{"text":"if","start":7.37,"end":7.45},{"text":"key","start":7.45,"end":7.53},{"text":"retained.","start":7.53,"end":7.61},
+        {"text":"Worker","start":8.25,"end":8.33},{"text":"reports","start":8.33,"end":8.41},{"text":"result","start":8.41,"end":8.49},{"text":"on","start":8.49,"end":8.57},{"text":"Request","start":8.57,"end":8.65},{"text":"as","start":8.65,"end":8.73},{"text":"pending","start":8.73,"end":8.81},{"text":"with","start":8.81,"end":8.89},{"text":"stated","start":8.89,"end":8.97},{"text":"state","start":8.97,"end":9.05},{"text":"for","start":9.05,"end":9.13},{"text":"Trial","start":9.13,"end":9.21},{"text":"during","start":9.21,"end":9.29},{"text":"Today.","start":9.29,"end":9.37}
+      ],
+      "proposal": {
+        "kind":"agent-workflow","preset":"idempotent-retry","template":"request-attempts","visualMode":"diagram","evidence":"source-stated","label":"request","subject":"Request","outcome":"pending","actor":"Worker","identity":"Request","scope":"Trial","period":"Today",
+        "setupWord":0,"actionWord":14,"responseWord":28,"checkWord":42,"resolveWord":59,
+        "entities":[{"label":"Worker","evidence":{"fromWord":0,"toWord":13}},{"label":"Request","evidence":{"fromWord":0,"toWord":13}}],
+        "records":[
+          {"actor":"Worker","identity":"Request","role":"request","claim":"request","value":"same","state":"stated","scope":"Trial","period":"Today","evidence":{"fromWord":0,"toWord":13}},
+          {"actor":"Worker","identity":"Request","role":"attempt","claim":"retry","value":"second","state":"stated","scope":"Trial","period":"Today","evidence":{"fromWord":14,"toWord":27}},
+          {"actor":"Worker","identity":"Request","role":"effect","claim":"effect","value":"unresolved","state":"stated","scope":"Trial","period":"Today","evidence":{"fromWord":28,"toWord":41}},
+          {"actor":"Worker","identity":"Request","role":"condition","claim":"idempotency","value":"preserved","state":"conditional","condition":"if key retained","scope":"Trial","period":"Today","evidence":{"fromWord":42,"toWord":58}},
+          {"actor":"Worker","identity":"Request","role":"result","claim":"result","value":"pending","state":"stated","scope":"Trial","period":"Today","evidence":{"fromWord":59,"toWord":72}}
+        ],
+        "relations":[{"from":"Worker","to":"Request","role":"provenance","evidence":{"fromWord":0,"toWord":13}}],"quantities":[]
+      },
+      "paraphrases":[{"name":"independent retry paraphrase","clauses":["Worker names request on Request as same with stated state for Trial during Today.","Worker tries retry on Request as second with stated state for Trial during Today.","Worker describes effect on Request as unresolved with stated state for Trial during Today.","Worker specifies idempotency on Request as preserved with conditional state for Trial during Today if key retained.","Worker describes result on Request as pending with stated state for Trial during Today."],"outcome":"pending"}],
+      "negatives":[
+        {"name":"changed request identity","path":"records.1.identity","value":"Other"},
+        {"name":"wrong actor","path":"records.2.actor","value":"Visitor"},
+        {"name":"invented effect success","path":"records.2.value","value":"success"},
+        {"name":"invented attempt count","path":"records.1.value","value":"three charges"},
+        {"name":"condition erased","edits":[{"path":["records",3,"condition"],"remove":true}]},
+        {"name":"invented result","path":"records.4.value","value":"deduplicated"},
+        {"name":"promoted unknown state","path":"records.2.state","value":"unknown"},
+        {"name":"invalid preset","path":"preset","value":"form-result"},
+        {"name":"invalid mode","path":"visualMode","value":"live"},
+        {"name":"arbitrary template","path":"template","value":"code"},
+        {"name":"actor cap","path":"entities","value":[]},
+        {"name":"record cap","path":"records","value":[]},
+        {"name":"relation cap","path":"relations","value":[{},{},{},{},{},{}]},
+        {"name":"collapsed beat","path":"actionWord","value":0},
+        {"name":"unit injection","path":"unit","value":"USD"},
+        {"name":"arbitrary ID","path":"entities.0.id","value":"user-id"},
+        {"name":"unsafe code","path":"code","value":"eval()"},
+        {"name":"scope changed","path":"records.0.scope","value":"All"},
+        {"name":"period changed","path":"records.0.period","value":"Always"},
+        {"name":"truncated evidence","path":"records.0.evidence.toWord","value":12},
+        {"name":"source negation","edits":[],"clauses":{"2":"Worker never reports effect on Request as unresolved with stated state for Trial during Today."}},
+        {"name":"short gap","edits":[],"intervals":[[0.25,0.9],[1.1,2],[4.25,5.37],[6.25,7.61],[8.25,9.37]]},
+        {"name":"zero word","edits":[{"path":["words",0,"end"],"value":0.25}]},
+        {"name":"word overlap","edits":[{"path":["words",1,"start"],"value":0.32}]},
+        {"name":"tail padding","edits":[{"path":["words",72,"end"],"value":9.8}]},
+        {"name":"final hold","edits":[],"intervals":[[0.25,1.37],[2.25,3.37],[4.25,5.37],[6.25,7.61],[9.3,9.65]]}
+      ]
+    },
+    {
+      "id":"68",
+      "sourceText":"Visitor presents form on Form on a form as neutral with stated state for Trial during Today. Visitor supplies field on Form on a table as topic with stated state for Trial during Today. Visitor performs action on Form on a task as submit with stated state for Trial during Today. Visitor requires condition on Form on a form as review with stated state for Trial during Today. Visitor reports result on Form on a result as pending with stated state for Trial during Today.",
+      "window":{"startWord":0,"endWord":84,"startTime":0,"endTime":10},
+      "words":[
+        {"text":"Visitor","start":0.25,"end":0.32},{"text":"presents","start":0.32,"end":0.39},{"text":"form","start":0.39,"end":0.46},{"text":"on","start":0.46,"end":0.53},{"text":"Form","start":0.53,"end":0.6},{"text":"on","start":0.6,"end":0.67},{"text":"a","start":0.67,"end":0.74},{"text":"form","start":0.74,"end":0.81},{"text":"as","start":0.81,"end":0.88},{"text":"neutral","start":0.88,"end":0.95},{"text":"with","start":0.95,"end":1.02},{"text":"stated","start":1.02,"end":1.09},{"text":"state","start":1.09,"end":1.16},{"text":"for","start":1.16,"end":1.23},{"text":"Trial","start":1.23,"end":1.3},{"text":"during","start":1.3,"end":1.37},{"text":"Today.","start":1.37,"end":1.44},
+        {"text":"Visitor","start":2.25,"end":2.32},{"text":"supplies","start":2.32,"end":2.39},{"text":"field","start":2.39,"end":2.46},{"text":"on","start":2.46,"end":2.53},{"text":"Form","start":2.53,"end":2.6},{"text":"on","start":2.6,"end":2.67},{"text":"a","start":2.67,"end":2.74},{"text":"table","start":2.74,"end":2.81},{"text":"as","start":2.81,"end":2.88},{"text":"topic","start":2.88,"end":2.95},{"text":"with","start":2.95,"end":3.02},{"text":"stated","start":3.02,"end":3.09},{"text":"state","start":3.09,"end":3.16},{"text":"for","start":3.16,"end":3.23},{"text":"Trial","start":3.23,"end":3.3},{"text":"during","start":3.3,"end":3.37},{"text":"Today.","start":3.37,"end":3.44},
+        {"text":"Visitor","start":4.25,"end":4.32},{"text":"performs","start":4.32,"end":4.39},{"text":"action","start":4.39,"end":4.46},{"text":"on","start":4.46,"end":4.53},{"text":"Form","start":4.53,"end":4.6},{"text":"on","start":4.6,"end":4.67},{"text":"a","start":4.67,"end":4.74},{"text":"task","start":4.74,"end":4.81},{"text":"as","start":4.81,"end":4.88},{"text":"submit","start":4.88,"end":4.95},{"text":"with","start":4.95,"end":5.02},{"text":"stated","start":5.02,"end":5.09},{"text":"state","start":5.09,"end":5.16},{"text":"for","start":5.16,"end":5.23},{"text":"Trial","start":5.23,"end":5.3},{"text":"during","start":5.3,"end":5.37},{"text":"Today.","start":5.37,"end":5.44},
+        {"text":"Visitor","start":6.25,"end":6.32},{"text":"requires","start":6.32,"end":6.39},{"text":"condition","start":6.39,"end":6.46},{"text":"on","start":6.46,"end":6.53},{"text":"Form","start":6.53,"end":6.6},{"text":"on","start":6.6,"end":6.67},{"text":"a","start":6.67,"end":6.74},{"text":"form","start":6.74,"end":6.81},{"text":"as","start":6.81,"end":6.88},{"text":"review","start":6.88,"end":6.95},{"text":"with","start":6.95,"end":7.02},{"text":"stated","start":7.02,"end":7.09},{"text":"state","start":7.09,"end":7.16},{"text":"for","start":7.16,"end":7.23},{"text":"Trial","start":7.23,"end":7.3},{"text":"during","start":7.3,"end":7.37},{"text":"Today.","start":7.37,"end":7.44},
+        {"text":"Visitor","start":8.25,"end":8.32},{"text":"reports","start":8.32,"end":8.39},{"text":"result","start":8.39,"end":8.46},{"text":"on","start":8.46,"end":8.53},{"text":"Form","start":8.53,"end":8.6},{"text":"on","start":8.6,"end":8.67},{"text":"a","start":8.67,"end":8.74},{"text":"result","start":8.74,"end":8.81},{"text":"as","start":8.81,"end":8.88},{"text":"pending","start":8.88,"end":8.95},{"text":"with","start":8.95,"end":9.02},{"text":"stated","start":9.02,"end":9.09},{"text":"state","start":9.09,"end":9.16},{"text":"for","start":9.16,"end":9.23},{"text":"Trial","start":9.23,"end":9.3},{"text":"during","start":9.3,"end":9.37},{"text":"Today.","start":9.37,"end":9.44}
+      ],
+      "proposal":{
+        "kind":"product-walkthrough","preset":"form-result","template":"neutral-form","visualMode":"diagram","evidence":"source-stated","label":"form","subject":"Form","outcome":"pending","actor":"Visitor","identity":"Form","scope":"Trial","period":"Today","setupWord":0,"actionWord":17,"responseWord":34,"checkWord":51,"resolveWord":68,
+        "entities":[{"label":"Visitor","evidence":{"fromWord":0,"toWord":16}},{"label":"Form","evidence":{"fromWord":0,"toWord":16}}],
+        "records":[
+          {"actor":"Visitor","identity":"Form","role":"form","claim":"form","value":"neutral","state":"stated","shape":"form","scope":"Trial","period":"Today","evidence":{"fromWord":0,"toWord":16}},
+          {"actor":"Visitor","identity":"Form","role":"field","claim":"field","value":"topic","state":"stated","shape":"table","scope":"Trial","period":"Today","evidence":{"fromWord":17,"toWord":33}},
+          {"actor":"Visitor","identity":"Form","role":"action","claim":"action","value":"submit","state":"stated","shape":"task","scope":"Trial","period":"Today","evidence":{"fromWord":34,"toWord":50}},
+          {"actor":"Visitor","identity":"Form","role":"condition","claim":"condition","value":"review","state":"stated","shape":"form","scope":"Trial","period":"Today","evidence":{"fromWord":51,"toWord":67}},
+          {"actor":"Visitor","identity":"Form","role":"result","claim":"result","value":"pending","state":"stated","shape":"result","scope":"Trial","period":"Today","evidence":{"fromWord":68,"toWord":84}}
+        ],"relations":[{"from":"Visitor","to":"Form","role":"provenance","evidence":{"fromWord":0,"toWord":16}}],"quantities":[]
+      },
+      "paraphrases":[{"name":"independent neutral UI paraphrase","clauses":["Visitor shows form on Form on a form as neutral with stated state for Trial during Today.","Visitor provides field on Form on a table as topic with stated state for Trial during Today.","Visitor carries out action on Form on a task as submit with stated state for Trial during Today.","Visitor specifies condition on Form on a form as review with stated state for Trial during Today.","Visitor describes result on Form on a result as pending with stated state for Trial during Today."],"outcome":"pending"}],
+      "negatives":[
+        {"name":"invented action","path":"records.2.value","value":"purchase"},
+        {"name":"invented field","path":"records.1.value","value":"password"},
+        {"name":"field identity changed","path":"records.1.identity","value":"Account"},
+        {"name":"invented result","path":"records.4.value","value":"approved"},
+        {"name":"condition promotion","path":"records.3.state","value":"conditional"},
+        {"name":"state promotion","path":"records.2.state","value":"simulated"},
+        {"name":"brand clone","path":"brand","value":"Google"},
+        {"name":"live URL","path":"url","value":"https://example.com"},
+        {"name":"arbitrary HTML","path":"html","value":"<form/>"},
+        {"name":"arbitrary SVG","path":"svg","value":"<svg/>"},
+        {"name":"geometry","path":"position","value":[1,2,3]},
+        {"name":"camera","path":"camera","value":"orbit"},
+        {"name":"file","path":"file","value":"/tmp/data"},
+        {"name":"treatment","path":"treatment","value":"hero"},
+        {"name":"unsafe source secret","edits":[],"clauses":{"1":"Visitor supplies field on Form on a table as password with stated state for Trial during Today."}},
+        {"name":"wrong actor","path":"records.0.actor","value":"Worker"},
+        {"name":"invalid shape","path":"records.0.shape","value":"browser"},
+        {"name":"unsupported preset","path":"preset","value":"clone"},
+        {"name":"invalid mode","path":"visualMode","value":"web"},
+        {"name":"template injection","path":"template","value":"custom"},
+        {"name":"record cap","path":"records","value":[]},
+        {"name":"actor cap","path":"entities","value":[]},
+        {"name":"relation cap","path":"relations","value":[{},{},{},{},{},{}]},
+        {"name":"quantity unit injection","path":"quantities","value":[{"actor":"Visitor","claim":"result","state":"known","unit":"USD"}]},
+        {"name":"basis injection","path":"basis","value":{"population":"All"}},
+        {"name":"beat midclause","path":"actionWord","value":18},
+        {"name":"missing result","edits":[{"path":["records",4,"value"],"remove":true}]},
+        {"name":"lead padding","edits":[{"path":["words",0,"start"],"value":0.1}]},
+        {"name":"negative word duration","edits":[{"path":["words",0,"end"],"value":0.2}]},
+        {"name":"window duration","edits":[{"path":["window","endTime"],"value":13}]}
+      ]
+    }
+  ]
+}

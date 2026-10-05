@@ -33,10 +33,6 @@ vi.mock('@/hooks', () => ({
     cancelProcessing: () => {},
     isProcessing: () => false,
   }),
-  useLongformPipeline: () => ({
-    processLongform: processLongformMock,
-    cancelLongform: () => {},
-  }),
   usePythonSetup: () => ({
     refresh: vi.fn(async () => undefined),
     start: vi.fn(async () => undefined),
@@ -118,7 +114,7 @@ describe('DropScreen', () => {
     // Short-form scoring is gated on a Gemini key — seed one so the happy path runs.
     useStore.setState((s) => ({ settings: { ...s.settings, geminiApiKey: 'test-key' } }));
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
 
     const dropZone = screen.getByRole('button', {
       name: /choose a video file or drop it here/i,
@@ -155,7 +151,7 @@ describe('DropScreen', () => {
   it('accepts a URL paste + Enter and dispatches the YouTube action', async () => {
     useStore.setState((s) => ({ settings: { ...s.settings, geminiApiKey: 'test-key' } }));
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
 
     const input = screen.getByLabelText(/^youtube url$/i);
     const url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
@@ -186,7 +182,7 @@ describe('DropScreen', () => {
       pythonStatus: 'checking',
     }));
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
 
     const dropZone = screen.getByRole('button', {
       name: /choose a video file or drop it here/i,
@@ -228,7 +224,7 @@ describe('DropScreen', () => {
     // No Gemini key in store and secrets.get returns null — the gate must fire.
     useStore.setState((s) => ({ settings: { ...s.settings, geminiApiKey: '' } }));
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
 
     const dropZone = screen.getByRole('button', {
       name: /choose a video file or drop it here/i,
@@ -258,7 +254,7 @@ describe('DropScreen', () => {
       processingConfig: { ...state.processingConfig, promoMode: true },
     }));
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
 
     const dropZone = screen.getByRole('button', {
       name: /choose a video file or drop it here/i,
@@ -278,7 +274,7 @@ describe('DropScreen', () => {
     installApiStub({ openFiles: vi.fn(async () => ['/virtual/creator-interview.mp4']) });
 
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
 
     fireEvent.click(screen.getByRole('button', { name: /new project/i }));
     fireEvent.change(screen.getByLabelText(/project name/i), {
@@ -315,7 +311,7 @@ describe('DropScreen', () => {
     const projectId = useStore.getState().currentProject.id;
     installApiStub({ openFiles: vi.fn(async () => ['/virtual/new.mp4']) });
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     fireEvent.click(screen.getByRole('button', { name: /^import video$/i }));
     expect(await screen.findByText('/virtual/new.mp4')).toBeInTheDocument();
     expect(screen.getByText(/Existing sources and work are kept/)).toBeInTheDocument();
@@ -331,7 +327,7 @@ describe('DropScreen', () => {
   it('returns keyboard focus after cancelling and retains the selected file', async () => {
     installApiStub({ openFiles: vi.fn(async () => ['/virtual/kept.mp4']) });
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     const importButton = screen.getByRole('button', { name: /^import video$/i });
     importButton.focus();
     fireEvent.click(importButton);
@@ -352,7 +348,7 @@ describe('DropScreen', () => {
     const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
     installApiStub({ openFiles: vi.fn(async () => ['/virtual/new.mp4']) });
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     fireEvent.click(screen.getAllByRole('button', { name: /^new project$/i })[0]);
     fireEvent.click(screen.getByRole('button', { name: /choose video/i }));
     await screen.findByText('/virtual/new.mp4');
@@ -379,7 +375,7 @@ describe('DropScreen', () => {
       .mockResolvedValue({ duration: 60, width: 1920, height: 1080 });
     installApiStub({ getMetadata, openFiles: vi.fn(async () => ['/virtual/new.mp4']) });
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     fireEvent.click(screen.getAllByRole('button', { name: /^new project$/i })[0]);
     fireEvent.click(screen.getByRole('button', { name: /choose video/i }));
     await screen.findByText('/virtual/new.mp4');
@@ -398,7 +394,7 @@ describe('DropScreen', () => {
     useStore.getState().setCreativeBrief({ notes: 'Keep these instructions' });
     const brief = useStore.getState().creativeBrief;
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     fireEvent.drop(screen.getByRole('button', { name: /choose a video file or drop/i }), {
       dataTransfer: makeDataTransfer([makeVideoFile()]),
     });
@@ -417,7 +413,7 @@ describe('DropScreen', () => {
     'not a url',
   ])('rejects invalid URL %s without generating', async (value) => {
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     await screen.findByText('No saved projects yet');
     fireEvent.change(screen.getByLabelText(/^youtube url$/i), { target: { value } });
     fireEvent.click(screen.getByRole('button', { name: /import youtube url/i }));
@@ -428,7 +424,7 @@ describe('DropScreen', () => {
 
   it('ignores a cancelled file chooser and rejects unsupported drops', async () => {
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     fireEvent.click(screen.getByRole('button', { name: /^import video$/i }));
     await waitFor(() => expect(window.api.openFiles).toHaveBeenCalledTimes(1));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -442,7 +438,7 @@ describe('DropScreen', () => {
   it('does not replace a project while work is active', async () => {
     useStore.setState((state) => ({ pipeline: { ...state.pipeline, stage: 'transcribing' } }));
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     await screen.findByText('No saved projects yet');
     fireEvent.drop(screen.getByRole('button', { name: /choose a video file or drop/i }), {
       dataTransfer: makeDataTransfer([makeVideoFile('saved.batchclip')]),
@@ -454,7 +450,7 @@ describe('DropScreen', () => {
 
   it('preserves a new URL project through a missing key without resetting until reconfirmed', async () => {
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     fireEvent.click(screen.getAllByRole('button', { name: /^new project$/i })[0]);
     fireEvent.change(screen.getByLabelText('Project name'), { target: { value: 'URL project' } });
     fireEvent.change(within(screen.getByRole('dialog')).getByLabelText('YouTube URL'), {
@@ -500,7 +496,7 @@ describe('DropScreen', () => {
     });
     vi.mocked(loadProjectFromPath).mockResolvedValue(true);
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
     await screen.findByText('Saved cut');
     fireEvent.click(screen.getByRole('button', { name: new RegExp(`Saved cut.*${action}`) }));
     await waitFor(() => expect(loadProjectFromPath).toHaveBeenCalledWith('/saved.batchclip'));
@@ -529,7 +525,7 @@ describe('DropScreen', () => {
     });
 
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
 
     expect(await screen.findByText('Alpha')).toBeInTheDocument();
     expect(await screen.findByText('Beta')).toBeInTheDocument();
@@ -551,7 +547,7 @@ describe('DropScreen', () => {
 
   it('shows a useful empty state when no recent projects exist', async () => {
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
 
     expect(await screen.findByText('No saved projects yet')).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /new project/i }).length).toBeGreaterThan(0);
@@ -582,7 +578,7 @@ describe('DropScreen', () => {
     installApiStub({ getRecentProjects });
 
     const { DropScreen } = await import('@/components/screens/DropScreen');
-    render(<DropScreen />);
+    render(<DropScreen processLongform={processLongformMock} />);
 
     expect(await screen.findByText('Recent projects could not load')).toBeInTheDocument();
     expect(screen.getByText('Recent index unavailable')).toBeInTheDocument();

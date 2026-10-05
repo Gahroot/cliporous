@@ -11,6 +11,8 @@ function StageText({
   columns,
   opacity = 1,
   strong = false,
+  leading = 1.15,
+  lines,
 }: {
   region: DiagramRect;
   text: string;
@@ -18,6 +20,8 @@ function StageText({
   columns: number;
   opacity?: number;
   strong?: boolean;
+  leading?: number;
+  lines?: readonly string[];
 }): React.ReactElement {
   const S = useStage();
   return (
@@ -31,12 +35,12 @@ function StageText({
         fontFamily: S.font,
         fontSize: size,
         fontWeight: strong ? 750 : 550,
-        lineHeight: 1.15,
+        lineHeight: leading,
         textAlign: 'center',
         opacity,
       }}
     >
-      {labelLines(text, columns).map((line, i) => (
+      {(lines ?? labelLines(text, columns)).map((line, i) => (
         <div key={`${i}-${line}`}>{line}</div>
       ))}
     </div>
@@ -56,6 +60,16 @@ export function DiagramChrome({
   // The default preserves historical appearances; no source beat is moved.
   const outcomeOpacity = settledOutcome ? (t >= scene.resolveAt ? 1 : 0) : pose.resolve;
   const wide = useWideStage();
+  // New bounded stories may contain 96-character conditions. Preserve all characters
+  // at the existing 24px size and within the unchanged 80px reservation. Legacy
+  // scenes keep their existing word wrapping and spacing.
+  const compactCondition = 'storyId' in scene && labelLines(scene.condition ?? '', 38).length > 2;
+  const conditionChars = compactCondition ? Array.from(scene.condition ?? '') : [];
+  const conditionLines = compactCondition
+    ? Array.from({ length: Math.ceil(conditionChars.length / 38) }, (_, index) =>
+        conditionChars.slice(index * 38, (index + 1) * 38).join(''),
+      )
+    : undefined;
   if (wide)
     return (
       <>
@@ -78,6 +92,8 @@ export function DiagramChrome({
           text={scene.condition}
           size={24}
           columns={38}
+          leading={compactCondition ? 1.1 : 1.15}
+          lines={conditionLines}
         />
       )}
       <StageText
@@ -120,7 +136,9 @@ export function DiagramSurface({
   children,
   opacity = 1,
 }: {
-  children: React.ReactNode;
+  // Optional so createElement callers can pass children positionally (which
+  // noChildrenProp requires) without needing a props-object `children` key.
+  children?: React.ReactNode;
   opacity?: number;
 }): React.ReactElement {
   const wide = useWideStage();

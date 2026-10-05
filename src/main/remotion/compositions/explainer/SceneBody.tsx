@@ -40,6 +40,8 @@ import { DominoesScene } from './DominoesScene';
 import { DetroitPlaceScene } from './detroit/DetroitPlaceScene';
 import { EquationScene } from './EquationScene';
 import { ExplodedViewScene } from './ExplodedViewScene';
+import { expansionEntry } from './expansion/catalog';
+import { ExpansionSceneView } from './expansion/Scene';
 import { FeedbackControlScene } from './FeedbackControlScene';
 import { FlowScene } from './FlowScene';
 import { FunnelScene } from './FunnelScene';
@@ -87,6 +89,12 @@ import { VennScene } from './VennScene';
 import { VersusScene } from './VersusScene';
 
 export const SceneBody: React.FC<{ scene: ExplainerScene }> = ({ scene }) => {
+  const route = expansionEntry(scene.kind, 'preset' in scene ? scene.preset : undefined);
+  if ('storyId' in scene) {
+    if (!route || route.id !== scene.storyId) return null;
+    return <ExpansionSceneView scene={scene} />;
+  }
+  if (route) return null;
   switch (scene.kind) {
     case 'task-map':
     case 'coordination-map':

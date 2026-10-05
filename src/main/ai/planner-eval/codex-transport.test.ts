@@ -2,7 +2,7 @@ import type { ChildProcess, SpawnOptions } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { existsSync, readdirSync } from 'node:fs';
 import { PassThrough } from 'node:stream';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MAX_COMPLETION_BYTES } from '../explainer/planner-generation';
 import { runCodexProcess } from './codex-process';
 import {
@@ -40,7 +40,7 @@ function fake(script: (child: FakeChild, args: string[], options: SpawnOptions) 
   });
   return { spawn, children };
 }
-const executable = process.execPath;
+const executable = 'C:\\Program Files\\nodejs\\node.exe';
 const base = {
   live: true,
   model: 'test-model',
@@ -87,7 +87,13 @@ const completed = {
   usage: { input_tokens: 20, cached_input_tokens: 10, output_tokens: 5, reasoning_tokens: 2 },
 };
 const saved = () => events([...start, message, completed]);
-afterEach(() => vi.useRealTimers());
+// Match the fixed Node executable to the Windows platform simulated below.
+// Spawning remains mocked; production executable validation is unchanged.
+beforeEach(() => vi.stubGlobal('process', { ...process, execPath: executable }));
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
 
 describe('Codex fail-closed capability policy', () => {
   it('reports blockers without spawning unless metadata probing is explicitly live', async () => {

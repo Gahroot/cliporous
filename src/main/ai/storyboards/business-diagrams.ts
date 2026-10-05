@@ -36,8 +36,13 @@ import { businessParagraphGroups } from './business-paragraph-groups';
 import { projectEconomicRights } from './business-rights-projection';
 import { BOARD_LAYOUT } from './catalog';
 
-export type BusinessStoryboardScene = Extract<ExplainerScene, { kind: BusinessExplanationKind }>;
+// The idempotent-retry agent-workflow preset is a computing story, not a business panel.
+export type BusinessStoryboardScene = Exclude<
+  Extract<ExplainerScene, { kind: BusinessExplanationKind }>,
+  { preset: 'idempotent-retry' }
+>;
 export function isBusinessStoryboardScene(scene: ExplainerScene): scene is BusinessStoryboardScene {
+  if (scene.kind === 'agent-workflow' && scene.preset === 'idempotent-retry') return false;
   return BUSINESS_EXPLANATION_KINDS.some((kind) => kind === scene.kind);
 }
 export interface BusinessPanelIdentity {

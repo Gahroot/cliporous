@@ -101,6 +101,8 @@ function sampleBusinessPanelNativePose(panel: BoardBusinessPanel, seconds: numbe
     case 'uncertainty-album':
       return { pack: 'decisions' as const, scene, pose: decisionsPose(scene, t * 30, 30) };
     case 'agent-workflow': {
+      if (scene.preset === 'idempotent-retry')
+        throw new Error('OP-10 requires native approval-gate');
       const pose = sampleApprovalGate(scene, t);
       if (panel.recipe !== 'OP-10' || !pose) throw new Error('OP-10 requires native approval-gate');
       return { pack: 'approval' as const, scene, pose };

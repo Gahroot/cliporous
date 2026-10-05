@@ -512,6 +512,8 @@ export function businessExplanationIdentities(
       }
       break;
     case 'agent-workflow':
+      if (scene.preset === 'idempotent-retry')
+        throw new Error('Unsupported concrete business vocabulary');
       // Code-owned semantic slots, not selected person IDs or label-based equivalence.
       if (!source)
         throw new Error('Approval role slots require their authoritative raw source words');
