@@ -30,6 +30,8 @@ import type {
   SemanticTextTreatment,
   StampFinish,
 } from './editorial/types';
+import { EXPANSION_CATALOG } from './expansion/catalog';
+import type { ExpansionScene } from './expansion/types';
 import type { FinanceScene } from './finance/types';
 import type {
   ExplodedViewScene,
@@ -391,7 +393,7 @@ export function isCausalSceneKind(kind: string): boolean {
   return CAUSAL_SCENE_KINDS.some((candidate) => candidate === kind);
 }
 
-export const EXPLAINER_SCENE_KINDS = [
+export const LEGACY_EXPLAINER_SCENE_KINDS = [
   // v1
   'checklist',
   'versus',
@@ -439,6 +441,13 @@ export const EXPLAINER_SCENE_KINDS = [
   'dominoes',
   'stairs',
   ...CAUSAL_SCENE_KINDS,
+] as const;
+const legacyKindNames: ReadonlySet<string> = new Set(LEGACY_EXPLAINER_SCENE_KINDS);
+export const EXPLAINER_SCENE_KINDS = [
+  ...LEGACY_EXPLAINER_SCENE_KINDS,
+  ...[...new Set(EXPANSION_CATALOG.map((entry) => entry.kind))]
+    .filter((kind) => !legacyKindNames.has(kind))
+    .sort(),
 ] as const;
 export type ExplainerSceneKind = (typeof EXPLAINER_SCENE_KINDS)[number];
 
@@ -966,7 +975,7 @@ export interface SwitchyardScene {
   arriveAt: number;
 }
 
-export type ExplainerSceneBody =
+export type LegacyExplainerSceneBody =
   | ChecklistScene
   | VersusScene
   | StampScene
@@ -1029,6 +1038,8 @@ export type ExplainerSceneBody =
   | FinanceScene
   | CashTimingScene
   | AiDiagramScene;
+
+export type ExplainerSceneBody = LegacyExplainerSceneBody | ExpansionScene;
 
 // ---------------------------------------------------------------------------
 // Cross-kind extras: continuation beats + emphasis reactions

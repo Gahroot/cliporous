@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "pack": "computing",
+  "stories": [
+    {
+      "id": "65",
+      "sourceText": "Cache lists Ada and Cache at Lab during Today. Ada reports Cache version as v2 at Lab during Today. Ada reports Cache freshness as stale at Lab during Today. If approved, Ada reports Cache cache-action as refresh at Lab during Today. Ada reports Cache result as pending at Lab during Today.",
+      "words": [
+        {"text":"Cache","start":0.25,"end":0.4},{"text":"lists","start":0.4,"end":0.55},{"text":"Ada","start":0.55,"end":0.7},{"text":"and","start":0.7,"end":0.85},{"text":"Cache","start":0.85,"end":1},{"text":"at","start":1,"end":1.15},{"text":"Lab","start":1.15,"end":1.3},{"text":"during","start":1.3,"end":1.45},{"text":"Today.","start":1.45,"end":1.6},
+        {"text":"Ada","start":2.25,"end":2.4},{"text":"reports","start":2.4,"end":2.55},{"text":"Cache","start":2.55,"end":2.7},{"text":"version","start":2.7,"end":2.85},{"text":"as","start":2.85,"end":3},{"text":"v2","start":3,"end":3.15},{"text":"at","start":3.15,"end":3.3},{"text":"Lab","start":3.3,"end":3.45},{"text":"during","start":3.45,"end":3.6},{"text":"Today.","start":3.6,"end":3.75},
+        {"text":"Ada","start":4.25,"end":4.4},{"text":"reports","start":4.4,"end":4.55},{"text":"Cache","start":4.55,"end":4.7},{"text":"freshness","start":4.7,"end":4.85},{"text":"as","start":4.85,"end":5},{"text":"stale","start":5,"end":5.15},{"text":"at","start":5.15,"end":5.3},{"text":"Lab","start":5.3,"end":5.45},{"text":"during","start":5.45,"end":5.6},{"text":"Today.","start":5.6,"end":5.75},
+        {"text":"If","start":6.25,"end":6.375},{"text":"approved,","start":6.375,"end":6.5},{"text":"Ada","start":6.5,"end":6.625},{"text":"reports","start":6.625,"end":6.75},{"text":"Cache","start":6.75,"end":6.875},{"text":"cache-action","start":6.875,"end":7},{"text":"as","start":7,"end":7.125},{"text":"refresh","start":7.125,"end":7.25},{"text":"at","start":7.25,"end":7.375},{"text":"Lab","start":7.375,"end":7.5},{"text":"during","start":7.5,"end":7.625},{"text":"Today.","start":7.625,"end":7.75},
+        {"text":"Ada","start":8.25,"end":8.39},{"text":"reports","start":8.39,"end":8.53},{"text":"Cache","start":8.53,"end":8.67},{"text":"result","start":8.67,"end":8.81},{"text":"as","start":8.81,"end":8.95},{"text":"pending","start":8.95,"end":9.09},{"text":"at","start":9.09,"end":9.23},{"text":"Lab","start":9.23,"end":9.37},{"text":"during","start":9.37,"end":9.51},{"text":"Today.","start":9.51,"end":9.65}
+      ],
+      "window": {"startWord":0,"endWord":50,"startTime":0,"endTime":10},
+      "proposal": {
+        "kind":"request-routing","preset":"cache-freshness","visualMode":"diagram","evidence":"source-stated","template":"cache-board","label":"Cache","subject":"Cache","outcome":"pending","condition":"if approved","scope":"Lab","period":"Today","setupWord":0,"actionWord":9,"responseWord":19,"checkWord":29,"resolveWord":41,
+        "entities":[{"label":"Ada","evidence":{"fromWord":0,"toWord":8}},{"label":"Cache","evidence":{"fromWord":0,"toWord":8}}],
+        "records":[
+          {"actor":"Ada","targets":["Cache"],"role":"version","scope":"Lab","period":"Today","state":"known","value":"v2","evidence":{"fromWord":9,"toWord":18}},
+          {"actor":"Ada","targets":["Cache"],"role":"freshness","scope":"Lab","period":"Today","state":"known","value":"stale","evidence":{"fromWord":19,"toWord":28}},
+          {"actor":"Ada","targets":["Cache"],"role":"cache-action","scope":"Lab","period":"Today","state":"conditional","value":"refresh","condition":"if approved","evidence":{"fromWord":29,"toWord":40}}
+        ],
+        "relations":[{"actor":"Ada","targets":["Cache"],"role":"result","scope":"Lab","period":"Today","state":"known","value":"pending","evidence":{"fromWord":41,"toWord":50}}]
+      },
+      "paraphrases":[{"name":"fronted scoped cache paraphrase","clauses":["At Lab during Today, Cache names Ada and Cache.","At Lab during Today, Ada records Cache version as v2.","At Lab during Today, Ada records Cache freshness as stale.","At Lab during Today, Ada records Cache cache-action as refresh if approved.","At Lab during Today, Ada records Cache result as pending."],"outcome":"pending"}],
+      "negatives":[
+        {"name":"wrong actor","path":"records.0.actor","value":"Cache"},
+        {"name":"wrong version","path":"records.0.value","value":"v3"},
+        {"name":"wrong freshness","path":"records.1.value","value":"fresh"},
+        {"name":"wrong identity","path":"records.0.targets","value":["Other"]},
+        {"name":"wrong order","path":"actionWord","value":19},
+        {"name":"invented group","path":"records.0.group","value":"G"},
+        {"name":"wrong condition","path":"records.2.condition","value":"if rejected"},
+        {"name":"wrong result","path":"relations.0.value","value":"refreshed"},
+        {"name":"erased state","path":"records.2.state","value":"known"},
+        {"name":"invented TTL unit","path":"records.1.unit","value":"second"},
+        {"name":"wrong template","path":"template","value":"input-buffer"},
+        {"name":"wrong preset","path":"preset","value":"batch-stream"},
+        {"name":"wrong mode","path":"visualMode","value":"webgl"},
+        {"name":"lower record cap","path":"records","value":[]},
+        {"name":"reused beats","path":"checkWord","value":19},
+        {"name":"negated version","edits":[],"clauses":{"1":"Ada does not report Cache version as v2 at Lab during Today."}},
+        {"name":"inferred version winner","edits":[],"clauses":{"1":"Ada reports Cache version as v2 and newest at Lab during Today."}},
+        {"name":"invented network","path":"url","value":"https://example.invalid"},
+        {"name":"arbitrary ID","path":"entities.0.id","value":"ada"},
+        {"name":"wrong scope","path":"records.0.scope","value":"Elsewhere"},
+        {"name":"wrong period","path":"records.0.period","value":"Yesterday"},
+        {"name":"invented denominator","path":"records.0.denominator","value":2},
+        {"name":"treatment","path":"treatment","value":"highlight"}
+      ]
+    },
+    {
+      "id":"66",
+      "sourceText":"Flow lists Ada and A and B and Group at Lab during Today. Ada reports A and B grouping as Group at Lab during Today. Ada reports A and B arrival as together at Lab during Today. Ada reports A and B processing as batch at Lab during Today. Ada reports A and B result as unknown at Lab during Today.",
+      "words":[
+        {"text":"Flow","start":0.25,"end":0.35},{"text":"lists","start":0.35,"end":0.45},{"text":"Ada","start":0.45,"end":0.55},{"text":"and","start":0.55,"end":0.65},{"text":"A","start":0.65,"end":0.75},{"text":"and","start":0.75,"end":0.85},{"text":"B","start":0.85,"end":0.95},{"text":"and","start":0.95,"end":1.05},{"text":"Group","start":1.05,"end":1.15},{"text":"at","start":1.15,"end":1.25},{"text":"Lab","start":1.25,"end":1.35},{"text":"during","start":1.35,"end":1.45},{"text":"Today.","start":1.45,"end":1.55},
+        {"text":"Ada","start":2.25,"end":2.35},{"text":"reports","start":2.35,"end":2.45},{"text":"A","start":2.45,"end":2.55},{"text":"and","start":2.55,"end":2.65},{"text":"B","start":2.65,"end":2.75},{"text":"grouping","start":2.75,"end":2.85},{"text":"as","start":2.85,"end":2.95},{"text":"Group","start":2.95,"end":3.05},{"text":"at","start":3.05,"end":3.15},{"text":"Lab","start":3.15,"end":3.25},{"text":"during","start":3.25,"end":3.35},{"text":"Today.","start":3.35,"end":3.45},
+        {"text":"Ada","start":4.25,"end":4.35},{"text":"reports","start":4.35,"end":4.45},{"text":"A","start":4.45,"end":4.55},{"text":"and","start":4.55,"end":4.65},{"text":"B","start":4.65,"end":4.75},{"text":"arrival","start":4.75,"end":4.85},{"text":"as","start":4.85,"end":4.95},{"text":"together","start":4.95,"end":5.05},{"text":"at","start":5.05,"end":5.15},{"text":"Lab","start":5.15,"end":5.25},{"text":"during","start":5.25,"end":5.35},{"text":"Today.","start":5.35,"end":5.45},
+        {"text":"Ada","start":6.25,"end":6.35},{"text":"reports","start":6.35,"end":6.45},{"text":"A","start":6.45,"end":6.55},{"text":"and","start":6.55,"end":6.65},{"text":"B","start":6.65,"end":6.75},{"text":"processing","start":6.75,"end":6.85},{"text":"as","start":6.85,"end":6.95},{"text":"batch","start":6.95,"end":7.05},{"text":"at","start":7.05,"end":7.15},{"text":"Lab","start":7.15,"end":7.25},{"text":"during","start":7.25,"end":7.35},{"text":"Today.","start":7.35,"end":7.45},
+        {"text":"Ada","start":8.25,"end":8.35},{"text":"reports","start":8.35,"end":8.45},{"text":"A","start":8.45,"end":8.55},{"text":"and","start":8.55,"end":8.65},{"text":"B","start":8.65,"end":8.75},{"text":"result","start":8.75,"end":8.85},{"text":"as","start":8.85,"end":8.95},{"text":"unknown","start":8.95,"end":9.05},{"text":"at","start":9.05,"end":9.15},{"text":"Lab","start":9.15,"end":9.25},{"text":"during","start":9.25,"end":9.35},{"text":"Today.","start":9.35,"end":9.65}
+      ],
+      "window":{"startWord":0,"endWord":60,"startTime":0,"endTime":10},
+      "proposal":{
+        "kind":"computing-flow","preset":"batch-stream","visualMode":"diagram","evidence":"source-stated","template":"input-buffer","label":"Flow","subject":"Flow","outcome":"unknown","scope":"Lab","period":"Today","setupWord":0,"actionWord":13,"responseWord":25,"checkWord":37,"resolveWord":49,
+        "entities":[{"label":"Ada","evidence":{"fromWord":0,"toWord":12}},{"label":"A","evidence":{"fromWord":0,"toWord":12}},{"label":"B","evidence":{"fromWord":0,"toWord":12}},{"label":"Group","evidence":{"fromWord":0,"toWord":12}}],
+        "records":[
+          {"actor":"Ada","targets":["A","B"],"role":"grouping","scope":"Lab","period":"Today","state":"known","value":"Group","evidence":{"fromWord":13,"toWord":24}},
+          {"actor":"Ada","targets":["A","B"],"role":"arrival","scope":"Lab","period":"Today","state":"known","value":"together","evidence":{"fromWord":25,"toWord":36}},
+          {"actor":"Ada","targets":["A","B"],"role":"processing","scope":"Lab","period":"Today","state":"known","value":"batch","evidence":{"fromWord":37,"toWord":48}}
+        ],
+        "relations":[{"actor":"Ada","targets":["A","B"],"role":"result","scope":"Lab","period":"Today","state":"unknown","qualifier":"unknown","evidence":{"fromWord":49,"toWord":60}}]
+      },
+      "paraphrases":[{"name":"fronted scoped input paraphrase","clauses":["At Lab during Today, Flow names Ada and A and B and Group.","At Lab during Today, Ada records A and B grouping as Group.","At Lab during Today, Ada records A and B arrival as together.","At Lab during Today, Ada records A and B processing as batch.","At Lab during Today, Ada records A and B result as unknown."],"outcome":"unknown"}],
+      "negatives":[
+        {"name":"wrong actor","path":"records.0.actor","value":"A"},
+        {"name":"invented version","path":"records.0.version","value":"v2"},
+        {"name":"invented freshness","path":"records.0.freshness","value":"fresh"},
+        {"name":"wrong identity","path":"records.0.targets","value":["A","Other"]},
+        {"name":"wrong input order","path":"records.1.targets","value":["B","A"]},
+        {"name":"wrong group","path":"records.0.value","value":"B"},
+        {"name":"invented condition","path":"records.2.condition","value":"if approved"},
+        {"name":"invented result","edits":[{"path":["relations",0,"state"],"value":"known"},{"path":["relations",0,"value"],"value":"processed"},{"path":["relations",0,"qualifier"],"remove":true}]},
+        {"name":"wrong state","path":"relations.0.state","value":"missing"},
+        {"name":"invented rate unit","path":"records.1.unit","value":"item/second"},
+        {"name":"wrong template","path":"template","value":"cache-board"},
+        {"name":"wrong preset","path":"preset","value":"cache-freshness"},
+        {"name":"wrong mode","path":"visualMode","value":"3d"},
+        {"name":"lower relation cap","path":"relations","value":[]},
+        {"name":"wrong beats","path":"responseWord","value":13},
+        {"name":"invented processing order","edits":[],"clauses":{"3":"Ada reports B then A processing as batch at Lab during Today."}},
+        {"name":"wrong arrival","path":"records.1.value","value":"individually"},
+        {"name":"wrong processing","path":"records.2.value","value":"per-item"},
+        {"name":"invented camera","path":"camera","value":"orbit"},
+        {"name":"arbitrary geometry","path":"mesh","value":"cube"},
+        {"name":"wrong population","path":"records.0.population","value":"Other"},
+        {"name":"partial clause","path":"records.0.evidence.fromWord","value":14}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "pack": "probability",
+  "sourceFiles": [
+    { "stories": ["09", "10"], "file": "probability/base-update.source.json" },
+    { "stories": ["11", "12"], "file": "probability/conditioning-sampling.source.json" },
+    { "stories": ["13", "14"], "file": "probability/variation-range.source.json" },
+    { "stories": ["15", "16"], "file": "probability/risk-calibration.source.json" }
+  ]
+}

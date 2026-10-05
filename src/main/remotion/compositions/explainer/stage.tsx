@@ -74,7 +74,9 @@ const ExplainerContext = createContext<ExplainerContextValue>(DEFAULT_CONTEXT);
 
 export const ExplainerProvider: React.FC<{
   value: Partial<ExplainerContextValue>;
-  children: React.ReactNode;
+  // Optional so createElement callers can pass children positionally (which
+  // noChildrenProp requires) without needing a props-object `children` key.
+  children?: React.ReactNode;
 }> = ({ value, children }) => {
   const parent = useContext(ExplainerContext);
   const merged = useMemo(() => ({ ...parent, ...value }), [parent, value]);

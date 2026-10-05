@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "pack": "quantities",
+  "sourceFiles": [
+    { "stories": ["17", "18"], "file": "quantities/distribution.source.json" },
+    { "stories": ["19", "20"], "file": "quantities/denominator-partition.source.json" },
+    { "stories": ["21", "22"], "file": "quantities/ranking-calendar.source.json" },
+    { "stories": ["23", "24"], "file": "quantities/deviation-multiples.source.json" }
+  ]
+}

@@ -7,6 +7,16 @@ import { DiagramChrome, DiagramStage, DiagramSurface } from './DiagramStage';
 import { diagramPose } from './motion';
 import type { DiagramStory } from './types';
 
+/** Pure layer selection: null diagrams must not create an empty extra SVG surface. */
+export function hybridDiagramLayer(
+  diagram: React.ReactNode,
+  opacity: number,
+): React.ReactElement | null {
+  return diagram === null || diagram === undefined ? null : (
+    <DiagramSurface opacity={opacity}>{diagram}</DiagramSurface>
+  );
+}
+
 /**
  * One existing studio, then an authored same-subject crossfade into the complete diagram.
  * Stage3D and DiagramSurface share the same native model rectangle in landscape;
@@ -42,7 +52,7 @@ export function HybridStage({
           <group rotation={[0, pose.modelTurn, 0]}>{model}</group>
         </Stage3D>
       </div>
-      <DiagramSurface opacity={pose.diagramOpacity}>{diagram}</DiagramSurface>
+      {hybridDiagramLayer(diagram, pose.diagramOpacity)}
       <DiagramChrome scene={scene} />
     </>
   );

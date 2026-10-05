@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "pack": "relationships",
+  "sourceFiles": [
+    { "stories": ["33", "34"], "file": "relationships/taxonomy-rights.source.json" },
+    { "stories": ["35", "36"], "file": "relationships/approval-dependency.source.json" },
+    { "stories": ["37", "38"], "file": "relationships/matrix-matching.source.json" },
+    { "stories": ["39", "40"], "file": "relationships/sets-topology.source.json" }
+  ]
+}

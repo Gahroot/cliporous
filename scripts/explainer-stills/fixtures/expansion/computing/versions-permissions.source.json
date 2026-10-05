@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "pack": "computing",
+  "positiveExamples": [
+    {"id":"69","name":"unknown version and merge","state":"unknown","clauses":{"1":"Nora reports version of Draft on East as unknown for Lab during Trial.","4":"Nora reports merge of Draft between East and West as unknown for Lab during Trial."},"edits":[{"path":["records",0,"version"],"remove":true},{"path":["records",0,"state"],"value":"unknown"},{"path":["records",0,"qualification"],"value":"unknown"},{"path":["records",0,"result"],"value":"unknown"},{"path":["relations",1,"state"],"value":"unknown"},{"path":["relations",1,"qualification"],"value":"unknown"},{"path":["relations",1,"result"],"value":"unknown"},{"path":["outcome"],"value":"unknown"}]},
+    {"id":"69","name":"missing version and merge","state":"missing","clauses":{"1":"Nora reports version of Draft on East as missing for Lab during Trial.","4":"Nora reports merge of Draft between East and West as missing for Lab during Trial."},"edits":[{"path":["records",0,"version"],"remove":true},{"path":["records",0,"state"],"value":"missing"},{"path":["records",0,"qualification"],"value":"missing"},{"path":["records",0,"result"],"value":"missing"},{"path":["relations",1,"state"],"value":"missing"},{"path":["relations",1,"qualification"],"value":"missing"},{"path":["relations",1,"result"],"value":"missing"},{"path":["outcome"],"value":"missing"}]},
+    {"id":"69","name":"disputed version and merge","state":"disputed","clauses":{"1":"Nora reports version of Draft on East as disputed for Lab during Trial.","4":"Nora reports merge of Draft between East and West as disputed for Lab during Trial."},"edits":[{"path":["records",0,"version"],"remove":true},{"path":["records",0,"state"],"value":"disputed"},{"path":["records",0,"qualification"],"value":"disputed"},{"path":["records",0,"result"],"value":"disputed"},{"path":["relations",1,"state"],"value":"disputed"},{"path":["relations",1,"qualification"],"value":"disputed"},{"path":["relations",1,"result"],"value":"disputed"},{"path":["outcome"],"value":"disputed"}]},
+    {"id":"69","name":"independent conditional version and unresolved merge","state":"conditional","clauses":{"1":"Nora reports East holding version Alpha of Draft as retained for Lab during Trial if checked.","4":"Nora reports merge of Draft between East and West as unresolved for Lab during Trial if reviewed."},"edits":[{"path":["records",0,"state"],"value":"conditional"},{"path":["records",0,"condition"],"value":"if checked"},{"path":["relations",1,"state"],"value":"conditional"},{"path":["relations",1,"condition"],"value":"if reviewed"}]},
+    {"id":"69","name":"simulated replica conflict remains unresolved","state":"simulated","clauses":{"1":"In this simulated, Nora reports East holding version Alpha of Draft as retained for Lab during Trial.","2":"In this simulated, Nora reports West holding version Beta of Draft as retained for Lab during Trial.","3":"In this simulated, Nora reports conflict of Draft between East and West as conflict for Lab during Trial.","4":"In this simulated, Nora reports merge of Draft between East and West as unresolved for Lab during Trial."},"edits":[{"path":["evidence"],"value":"illustrative"},{"path":["records",0,"state"],"value":"simulated"},{"path":["records",0,"qualification"],"value":"simulated"},{"path":["records",1,"state"],"value":"simulated"},{"path":["records",1,"qualification"],"value":"simulated"},{"path":["relations",0,"state"],"value":"simulated"},{"path":["relations",0,"qualification"],"value":"simulated"},{"path":["relations",1,"state"],"value":"simulated"},{"path":["relations",1,"qualification"],"value":"simulated"}]},
+    {"id":"69","name":"illustrative replica conflict remains unresolved","state":"illustrative","clauses":{"1":"In this illustrative, Nora reports East holding version Alpha of Draft as retained for Lab during Trial.","2":"In this illustrative, Nora reports West holding version Beta of Draft as retained for Lab during Trial.","3":"In this illustrative, Nora reports conflict of Draft between East and West as conflict for Lab during Trial.","4":"In this illustrative, Nora reports merge of Draft between East and West as unresolved for Lab during Trial."},"edits":[{"path":["evidence"],"value":"illustrative"},{"path":["records",0,"state"],"value":"illustrative"},{"path":["records",0,"qualification"],"value":"illustrative"},{"path":["records",1,"state"],"value":"illustrative"},{"path":["records",1,"qualification"],"value":"illustrative"},{"path":["relations",0,"state"],"value":"illustrative"},{"path":["relations",0,"qualification"],"value":"illustrative"},{"path":["relations",1,"state"],"value":"illustrative"},{"path":["relations",1,"qualification"],"value":"illustrative"}]},
+    {"id":"70","name":"unknown permission result","state":"unknown","clauses":{"4":"Nora has execute permission on Draft as unknown for Lab during Trial."},"edits":[{"path":["relations",1,"state"],"value":"unknown"},{"path":["relations",1,"qualification"],"value":"unknown"},{"path":["relations",1,"condition"],"remove":true},{"path":["relations",1,"result"],"value":"unknown"},{"path":["outcome"],"value":"unknown"}]},
+    {"id":"70","name":"missing permission result","state":"missing","clauses":{"4":"Nora has execute permission on Draft as missing for Lab during Trial."},"edits":[{"path":["relations",1,"state"],"value":"missing"},{"path":["relations",1,"qualification"],"value":"missing"},{"path":["relations",1,"condition"],"remove":true},{"path":["relations",1,"result"],"value":"missing"},{"path":["outcome"],"value":"missing"}]},
+    {"id":"70","name":"disputed permission result","state":"disputed","clauses":{"4":"Nora has execute permission on Draft as disputed for Lab during Trial."},"edits":[{"path":["relations",1,"state"],"value":"disputed"},{"path":["relations",1,"qualification"],"value":"disputed"},{"path":["relations",1,"condition"],"remove":true},{"path":["relations",1,"result"],"value":"disputed"},{"path":["outcome"],"value":"disputed"}]},
+    {"id":"70","name":"independent read and execute permission conditions","state":"conditional","clauses":{"1":"Nora has read permission on Draft as conditional for Lab during Trial if checked."},"edits":[{"path":["records",0,"state"],"value":"conditional"},{"path":["records",0,"condition"],"value":"if checked"},{"path":["records",0,"result"],"value":"conditional"}]},
+    {"id":"70","name":"simulated permissions retain denied result and unknown deletion","state":"simulated","clauses":{"1":"In this simulated, Nora has read permission on Draft as allowed for Lab during Trial.","2":"In this simulated, Nora has write permission on Draft as denied for Lab during Trial.","4":"In this simulated, Nora has execute permission on Draft as denied for Lab during Trial."},"edits":[{"path":["evidence"],"value":"illustrative"},{"path":["records",0,"state"],"value":"simulated"},{"path":["records",0,"qualification"],"value":"simulated"},{"path":["records",1,"state"],"value":"simulated"},{"path":["records",1,"qualification"],"value":"simulated"},{"path":["relations",1,"state"],"value":"simulated"},{"path":["relations",1,"qualification"],"value":"simulated"},{"path":["relations",1,"condition"],"remove":true},{"path":["relations",1,"result"],"value":"denied"},{"path":["outcome"],"value":"denied"}]},
+    {"id":"70","name":"illustrative permissions retain denied result and unknown deletion","state":"illustrative","clauses":{"1":"In this illustrative, Nora has read permission on Draft as allowed for Lab during Trial.","2":"In this illustrative, Nora has write permission on Draft as denied for Lab during Trial.","4":"In this illustrative, Nora has execute permission on Draft as denied for Lab during Trial."},"edits":[{"path":["evidence"],"value":"illustrative"},{"path":["records",0,"state"],"value":"illustrative"},{"path":["records",0,"qualification"],"value":"illustrative"},{"path":["records",1,"state"],"value":"illustrative"},{"path":["records",1,"qualification"],"value":"illustrative"},{"path":["relations",1,"state"],"value":"illustrative"},{"path":["relations",1,"qualification"],"value":"illustrative"},{"path":["relations",1,"condition"],"remove":true},{"path":["relations",1,"result"],"value":"denied"},{"path":["outcome"],"value":"denied"}]}
+  ],
+  "stories": [
+    {
+      "id": "69",
+      "sourceText": "Copies includes Nora, Draft, East and West for Lab during Trial. Nora reports East holding version Alpha of Draft as retained for Lab during Trial. Nora reports West holding version Beta of Draft as retained for Lab during Trial. Nora reports conflict of Draft between East and West as conflict for Lab during Trial. Nora reports merge of Draft between East and West as unresolved for Lab during Trial.",
+      "words": [
+        {"text":"Copies","start":0.25,"end":0.3},{"text":"includes","start":0.3,"end":0.35},{"text":"Nora,","start":0.35,"end":0.4},{"text":"Draft,","start":0.4,"end":0.45},{"text":"East","start":0.45,"end":0.5},{"text":"and","start":0.5,"end":0.55},{"text":"West","start":0.55,"end":0.6},{"text":"for","start":0.6,"end":0.65},{"text":"Lab","start":0.65,"end":0.7},{"text":"during","start":0.7,"end":0.75},{"text":"Trial.","start":0.75,"end":0.8},
+        {"text":"Nora","start":2.25,"end":2.3},{"text":"reports","start":2.3,"end":2.35},{"text":"East","start":2.35,"end":2.4},{"text":"holding","start":2.4,"end":2.45},{"text":"version","start":2.45,"end":2.5},{"text":"Alpha","start":2.5,"end":2.55},{"text":"of","start":2.55,"end":2.6},{"text":"Draft","start":2.6,"end":2.65},{"text":"as","start":2.65,"end":2.7},{"text":"retained","start":2.7,"end":2.75},{"text":"for","start":2.75,"end":2.8},{"text":"Lab","start":2.8,"end":2.85},{"text":"during","start":2.85,"end":2.9},{"text":"Trial.","start":2.9,"end":2.95},
+        {"text":"Nora","start":4.25,"end":4.3},{"text":"reports","start":4.3,"end":4.35},{"text":"West","start":4.35,"end":4.4},{"text":"holding","start":4.4,"end":4.45},{"text":"version","start":4.45,"end":4.5},{"text":"Beta","start":4.5,"end":4.55},{"text":"of","start":4.55,"end":4.6},{"text":"Draft","start":4.6,"end":4.65},{"text":"as","start":4.65,"end":4.7},{"text":"retained","start":4.7,"end":4.75},{"text":"for","start":4.75,"end":4.8},{"text":"Lab","start":4.8,"end":4.85},{"text":"during","start":4.85,"end":4.9},{"text":"Trial.","start":4.9,"end":4.95},
+        {"text":"Nora","start":6.25,"end":6.3},{"text":"reports","start":6.3,"end":6.35},{"text":"conflict","start":6.35,"end":6.4},{"text":"of","start":6.4,"end":6.45},{"text":"Draft","start":6.45,"end":6.5},{"text":"between","start":6.5,"end":6.55},{"text":"East","start":6.55,"end":6.6},{"text":"and","start":6.6,"end":6.65},{"text":"West","start":6.65,"end":6.7},{"text":"as","start":6.7,"end":6.75},{"text":"conflict","start":6.75,"end":6.8},{"text":"for","start":6.8,"end":6.85},{"text":"Lab","start":6.85,"end":6.9},{"text":"during","start":6.9,"end":6.95},{"text":"Trial.","start":6.95,"end":7},
+        {"text":"Nora","start":8.25,"end":8.3},{"text":"reports","start":8.3,"end":8.35},{"text":"merge","start":8.35,"end":8.4},{"text":"of","start":8.4,"end":8.45},{"text":"Draft","start":8.45,"end":8.5},{"text":"between","start":8.5,"end":8.55},{"text":"East","start":8.55,"end":8.6},{"text":"and","start":8.6,"end":8.65},{"text":"West","start":8.65,"end":8.7},{"text":"as","start":8.7,"end":8.75},{"text":"unresolved","start":8.75,"end":8.8},{"text":"for","start":8.8,"end":8.85},{"text":"Lab","start":8.85,"end":8.9},{"text":"during","start":8.9,"end":8.95},{"text":"Trial.","start":8.95,"end":9}
+      ],
+      "window":{"startWord":0,"endWord":68,"startTime":0,"endTime":10},
+      "proposal":{
+        "kind":"version-state","preset":"replica-merge","template":"replica-board","visualMode":"diagram","evidence":"source-stated","label":"Copies","subject":"Nora","outcome":"unresolved","scope":"Lab","period":"Trial","setupWord":0,"actionWord":11,"responseWord":25,"checkWord":39,"resolveWord":54,
+        "entities":[{"label":"Nora","evidence":{"fromWord":0,"toWord":10}},{"label":"Draft","evidence":{"fromWord":0,"toWord":10}},{"label":"East","evidence":{"fromWord":0,"toWord":10}},{"label":"West","evidence":{"fromWord":0,"toWord":10}}],
+        "records":[
+          {"actor":"Nora","resource":"Draft","replica":"East","version":"Alpha","role":"version","result":"retained","state":"known","scope":"Lab","period":"Trial","evidence":{"fromWord":11,"toWord":24}},
+          {"actor":"Nora","resource":"Draft","replica":"West","version":"Beta","role":"version","result":"retained","state":"known","scope":"Lab","period":"Trial","evidence":{"fromWord":25,"toWord":38}}
+        ],
+        "relations":[
+          {"actor":"Nora","resource":"Draft","replica":"East","otherReplica":"West","role":"conflict","result":"conflict","state":"known","scope":"Lab","period":"Trial","evidence":{"fromWord":39,"toWord":53}},
+          {"actor":"Nora","resource":"Draft","replica":"East","otherReplica":"West","role":"merge","result":"unresolved","state":"known","scope":"Lab","period":"Trial","evidence":{"fromWord":54,"toWord":68}}
+        ]
+      },
+      "paraphrases":[{"name":"independent replica wording","outcome":"unresolved","clauses":["Nora, Draft, East and West belong to Copies among Lab in Trial.","Nora records version Alpha of Draft on East as retained among Lab in Trial.","Nora records version Beta of Draft on West as retained among Lab in Trial.","Nora records Draft between East and West with conflict status conflict among Lab in Trial.","Nora records Draft between East and West with merge status unresolved among Lab in Trial."]}],
+      "negatives":[
+        {"name":"wrong actor","path":"records.0.actor","value":"West"},
+        {"name":"wrong version","path":"records.0.version","value":"Beta"},
+        {"name":"wrong replica","path":"records.0.replica","value":"West"},
+        {"name":"wrong conflict","path":"relations.0.result","value":"unknown"},
+        {"name":"fabricated merge success","path":"relations.1.result","value":"merged"},
+        {"name":"wrong resource","path":"records.0.resource","value":"West"},
+        {"name":"wrong operation","path":"records.0.operation","value":"write"},
+        {"name":"wrong result","path":"outcome","value":"merged"},
+        {"name":"wrong status","path":"relations.1.state","value":"unknown"},
+        {"name":"wrong condition","path":"records.0.condition","value":"if reviewed"},
+        {"name":"wrong unit","path":"records.0.unit","value":"byte"},
+        {"name":"wrong scope","path":"records.0.scope","value":"World"},
+        {"name":"wrong period","path":"records.0.period","value":"Later"},
+        {"name":"wrong template","path":"template","value":"permission-board"},
+        {"name":"wrong preset","path":"preset","value":"software-scope"},
+        {"name":"caller ID","path":"records.0.id","value":"chosen"},
+        {"name":"treatment","path":"treatment","value":"zoom"},
+        {"name":"latest wins","clauses":{"4":"Nora reports merge of Draft between East and West as unresolved for Lab during Trial because latest wins."},"edits":[]},
+        {"name":"same beat","path":"responseWord","value":11},
+        {"name":"nonpositive word","path":"words.0.end","value":0.25},
+        {"name":"overlap","path":"words.1.start","value":0.29},
+        {"name":"missing padding","path":"words.0.start","value":0.2},
+        {"name":"beat gap","intervals":[[0.25,0.8],[1.2,1.9],[4.25,4.95],[6.25,7],[8.25,9]],"edits":[]},
+        {"name":"short hold","path":"window.endTime","value":8.99},
+        {"name":"record caps","path":"records","value":[]},
+        {"name":"relation caps","path":"relations","value":[]},
+        {"name":"actor caps","path":"entities","value":[]}
+      ]
+    },
+    {
+      "id":"70",
+      "sourceText":"Access includes Nora and Draft for Lab during Trial. Nora has read permission on Draft as allowed for Lab during Trial. Nora has write permission on Draft as denied for Lab during Trial. Nora has delete permission on Draft as unknown for Lab during Trial. Nora has execute permission on Draft as conditional for Lab during Trial if reviewed.",
+      "words":[
+        {"text":"Access","start":0.25,"end":0.3},{"text":"includes","start":0.3,"end":0.35},{"text":"Nora","start":0.35,"end":0.4},{"text":"and","start":0.4,"end":0.45},{"text":"Draft","start":0.45,"end":0.5},{"text":"for","start":0.5,"end":0.55},{"text":"Lab","start":0.55,"end":0.6},{"text":"during","start":0.6,"end":0.65},{"text":"Trial.","start":0.65,"end":0.7},
+        {"text":"Nora","start":2.25,"end":2.3},{"text":"has","start":2.3,"end":2.35},{"text":"read","start":2.35,"end":2.4},{"text":"permission","start":2.4,"end":2.45},{"text":"on","start":2.45,"end":2.5},{"text":"Draft","start":2.5,"end":2.55},{"text":"as","start":2.55,"end":2.6},{"text":"allowed","start":2.6,"end":2.65},{"text":"for","start":2.65,"end":2.7},{"text":"Lab","start":2.7,"end":2.75},{"text":"during","start":2.75,"end":2.8},{"text":"Trial.","start":2.8,"end":2.85},
+        {"text":"Nora","start":4.25,"end":4.3},{"text":"has","start":4.3,"end":4.35},{"text":"write","start":4.35,"end":4.4},{"text":"permission","start":4.4,"end":4.45},{"text":"on","start":4.45,"end":4.5},{"text":"Draft","start":4.5,"end":4.55},{"text":"as","start":4.55,"end":4.6},{"text":"denied","start":4.6,"end":4.65},{"text":"for","start":4.65,"end":4.7},{"text":"Lab","start":4.7,"end":4.75},{"text":"during","start":4.75,"end":4.8},{"text":"Trial.","start":4.8,"end":4.85},
+        {"text":"Nora","start":6.25,"end":6.3},{"text":"has","start":6.3,"end":6.35},{"text":"delete","start":6.35,"end":6.4},{"text":"permission","start":6.4,"end":6.45},{"text":"on","start":6.45,"end":6.5},{"text":"Draft","start":6.5,"end":6.55},{"text":"as","start":6.55,"end":6.6},{"text":"unknown","start":6.6,"end":6.65},{"text":"for","start":6.65,"end":6.7},{"text":"Lab","start":6.7,"end":6.75},{"text":"during","start":6.75,"end":6.8},{"text":"Trial.","start":6.8,"end":6.85},
+        {"text":"Nora","start":8.25,"end":8.3},{"text":"has","start":8.3,"end":8.35},{"text":"execute","start":8.35,"end":8.4},{"text":"permission","start":8.4,"end":8.45},{"text":"on","start":8.45,"end":8.5},{"text":"Draft","start":8.5,"end":8.55},{"text":"as","start":8.55,"end":8.6},{"text":"conditional","start":8.6,"end":8.65},{"text":"for","start":8.65,"end":8.7},{"text":"Lab","start":8.7,"end":8.75},{"text":"during","start":8.75,"end":8.8},{"text":"Trial","start":8.8,"end":8.85},{"text":"if","start":8.85,"end":8.9},{"text":"reviewed.","start":8.9,"end":8.95}
+      ],
+      "window":{"startWord":0,"endWord":58,"startTime":0,"endTime":10},
+      "proposal":{
+        "kind":"property-access","preset":"software-scope","template":"permission-board","visualMode":"diagram","evidence":"source-stated","label":"Access","subject":"Nora","outcome":"conditional","scope":"Lab","period":"Trial","setupWord":0,"actionWord":9,"responseWord":21,"checkWord":33,"resolveWord":45,
+        "entities":[{"label":"Nora","evidence":{"fromWord":0,"toWord":8}},{"label":"Draft","evidence":{"fromWord":0,"toWord":8}}],
+        "records":[
+          {"actor":"Nora","resource":"Draft","operation":"read","role":"permission","result":"allowed","state":"known","scope":"Lab","period":"Trial","evidence":{"fromWord":9,"toWord":20}},
+          {"actor":"Nora","resource":"Draft","operation":"write","role":"permission","result":"denied","state":"known","scope":"Lab","period":"Trial","evidence":{"fromWord":21,"toWord":32}}
+        ],
+        "relations":[
+          {"actor":"Nora","resource":"Draft","operation":"delete","role":"permission","result":"unknown","state":"unknown","qualification":"unknown","scope":"Lab","period":"Trial","evidence":{"fromWord":33,"toWord":44}},
+          {"actor":"Nora","resource":"Draft","operation":"execute","role":"permission","result":"conditional","state":"conditional","condition":"if reviewed","scope":"Lab","period":"Trial","evidence":{"fromWord":45,"toWord":58}}
+        ]
+      },
+      "paraphrases":[{"name":"independent permissions wording","outcome":"conditional","clauses":["Nora and Draft belong to Access among Lab in Trial.","read permission for Nora on Draft is allowed among Lab in Trial.","write permission for Nora on Draft is denied among Lab in Trial.","delete permission for Nora on Draft is unknown among Lab in Trial.","If reviewed, execute permission for Nora on Draft is conditional among Lab in Trial."]}],
+      "negatives":[
+        {"name":"wrong actor","path":"records.0.actor","value":"Draft"},
+        {"name":"wrong resource","path":"records.0.resource","value":"Nora"},
+        {"name":"wrong operation","path":"records.0.operation","value":"write"},
+        {"name":"wrong result","path":"records.0.result","value":"denied"},
+        {"name":"wrong condition","path":"relations.1.condition","value":"if approved"},
+        {"name":"omitted condition","edits":[{"path":["relations",1,"condition"],"remove":true}]},
+        {"name":"wrong status","path":"relations.0.state","value":"known"},
+        {"name":"unknown promoted","path":"relations.0.result","value":"allowed"},
+        {"name":"wrong version","path":"records.0.version","value":"Alpha"},
+        {"name":"wrong replica","path":"records.0.replica","value":"East"},
+        {"name":"wrong conflict","path":"records.0.role","value":"conflict"},
+        {"name":"wrong merge","path":"records.0.role","value":"merge"},
+        {"name":"wrong unit","path":"records.0.unit","value":"count"},
+        {"name":"wrong template","path":"template","value":"replica-board"},
+        {"name":"wrong preset","path":"preset","value":"owner-scope"},
+        {"name":"same beat","path":"checkWord","value":21},
+        {"name":"UI authorization","clauses":{"1":"Nora has read permission on Draft as allowed for Lab during Trial because the button is visible."},"edits":[]},
+        {"name":"URL","path":"records.0.resource","value":"https://example.com"},
+        {"name":"caller ID","path":"entities.0.id","value":"custom"},
+        {"name":"short window","path":"window.endTime","value":4},
+        {"name":"record caps","path":"records","value":[]},
+        {"name":"relation caps","path":"relations","value":[]},
+        {"name":"actor caps","path":"entities","value":[]}
+      ]
+    }
+  ]
+}

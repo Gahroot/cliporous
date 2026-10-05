@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "pack": "representations",
+  "sourceFiles": [
+    { "stories": ["49", "50"], "file": "representations/units-equivalence.source.json" },
+    { "stories": ["51", "52"], "file": "representations/information-loss.source.json" },
+    { "stories": ["53", "54"], "file": "representations/projection-matrix.source.json" },
+    { "stories": ["55", "56"], "file": "representations/vector-factorization.source.json" }
+  ]
+}

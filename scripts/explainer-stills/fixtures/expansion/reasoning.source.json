@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "pack": "reasoning",
+  "sourceFiles": [
+    { "stories": ["01", "02"], "file": "reasoning/trace.source.json" },
+    { "stories": ["03", "04"], "file": "reasoning/argument.source.json" },
+    { "stories": ["05", "06"], "file": "reasoning/information.source.json" },
+    { "stories": ["07", "08"], "file": "reasoning/scope.source.json" }
+  ]
+}

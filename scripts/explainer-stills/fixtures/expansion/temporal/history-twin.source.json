@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "pack": "temporal",
+  "negativeFormat": "explicit-path-edits-and-complete-clause-replacements",
+  "materialization": "Complete source clauses and full raw positive proposals. Hydrate only word intervals with expansionFixtureSpeech and the authored timing below. Negatives use the existing story41 edits path-array/value/remove format; optional clauses map clause indices to complete replacements. Never infer facts.",
+  "timing": { "durationSec": 12, "clauseStarts": [0.25, 2.4, 4.65, 6.9, 9.15], "interClausePauseSec": 0.2, "leadInSec": 0.25, "tailSec": 0.35 },
+  "stories": [
+    {
+      "id": "47",
+      "clauses": [
+        "State board tracks Fan states Off and On for chamber during shift A.",
+        "If demand is high, Fan enters On from Off for chamber during shift A.",
+        "If demand is low, Fan leaves On for Off for chamber during shift A.",
+        "Fan history at sample A records Off and is retained for chamber during shift A.",
+        "Fan current state remains unknown and retains sample A history for chamber during shift A."
+      ],
+      "proposal": {
+        "kind": "state-transition", "preset": "hysteresis", "template": "two-state-history", "visualMode": "diagram", "evidence": "source-stated",
+        "label": "State board", "subject": "Fan", "outcome": "remains unknown", "actor": "Fan", "scope": "chamber", "period": "shift A",
+        "startWord": 0, "endWord": 70, "setupWord": 0, "actionWord": 13, "responseWord": 27, "checkWord": 41, "resolveWord": 56,
+        "entities": [{"label":"Fan","evidence":{"fromWord":0,"toWord":12}}, {"label":"Off","evidence":{"fromWord":0,"toWord":12}}, {"label":"On","evidence":{"fromWord":0,"toWord":12}}],
+        "states": ["Off", "On"],
+        "rules": [
+          {"role":"enter","actor":"Fan","from":"Off","to":"On","state":"conditional","condition":"If demand is high","evidence":{"fromWord":13,"toWord":26}},
+          {"role":"leave","actor":"Fan","from":"On","to":"Off","state":"conditional","condition":"If demand is low","evidence":{"fromWord":27,"toWord":40}}
+        ],
+        "thresholds": [],
+        "history": [{"actor":"Fan","dataTime":"sample A","state":"known","value":"Off","evidence":{"fromWord":41,"toWord":55}}],
+        "result": {"actor":"Fan","claim":"current state","state":"unknown","qualification":"unknown","evidence":{"fromWord":56,"toWord":70}}
+      },
+      "negatives": [
+        {"name":"rule actor substitution","edits":[{"path":["rules",0,"actor"],"value":"Off"}]},
+        {"name":"scope substitution","edits":[{"path":["scope"],"value":"other chamber"}]},
+        {"name":"period substitution","edits":[{"path":["period"],"value":"shift B"}]},
+        {"name":"enter condition erased","edits":[{"path":["rules",0,"condition"],"remove":true}]},
+        {"name":"leave condition swapped","edits":[{"path":["rules",1,"condition"],"value":"If demand is high"}]},
+        {"name":"nonreversing leave","edits":[{"path":["rules",1,"from"],"value":"Off"},{"path":["rules",1,"to"],"value":"On"}]},
+        {"name":"invented history value","edits":[{"path":["history",0,"value"],"value":"On"}]},
+        {"name":"history erased","edits":[{"path":["history"],"value":[]}]},
+        {"name":"domain timestamp invented","edits":[{"path":["history",0,"dataTime"],"value":"sample B"}]},
+        {"name":"unknown result becomes zero","edits":[{"path":["result","value"],"value":0}]},
+        {"name":"current state inferred from history","edits":[{"path":["result","state"],"value":"known"},{"path":["result","qualification"],"remove":true},{"path":["result","value"],"value":"Off"},{"path":["outcome"],"value":"is Off"}]},
+        {"name":"invented threshold reference","edits":[{"path":["rules",0,"threshold"],"value":"enter threshold"}]},
+        {"name":"derived numerical output","edits":[{"path":["result","derived"],"value":{"operation":"difference","result":2}}]},
+        {"name":"malformed template","edits":[{"path":["template"],"value":"arbitrary-state-machine"}]},
+        {"name":"wrong preset","edits":[{"path":["preset"],"value":"reversible"}]},
+        {"name":"wrong mode","edits":[{"path":["visualMode"],"value":"measured"}]},
+        {"name":"caller ID","edits":[{"path":["entities",0,"id"],"value":"caller-fan"}]},
+        {"name":"raw SVG","edits":[{"path":["svg"],"value":"<svg/>"}]},
+        {"name":"records cap","edits":[{"path":["history"],"value":[{},{},{},{},{},{},{},{},{},{},{},{},{}]}]},
+        {"name":"relations cap independently","edits":[{"path":["history"],"value":[{},{},{},{},{},{},{},{}]}]},
+        {"name":"entities cap","edits":[{"path":["entities"],"value":[{},{},{},{},{},{},{},{},{}]}]},
+        {"name":"duplicate beat","edits":[{"path":["responseWord"],"value":13}]},
+        {"name":"keyword beat not clause","edits":[{"path":["actionWord"],"value":17}]}
+      ]
+    },
+    {
+      "id": "48",
+      "clauses": [
+        "Twin board compares Reference and Model states of Pump for bench during run A.",
+        "If supply is steady, Pump Reference operating state is Idle at sample A under locked valve for bench during run A.",
+        "If supply is steady, in this simulation, Pump Model operating state is Running at sample A under locked valve for bench during run A.",
+        "Twin board aligns Reference and Model for the same Pump and retains source controls for bench during run A.",
+        "Pump state comparison remains unknown and retains qualified states for bench during run A."
+      ],
+      "proposal": {
+        "kind": "digital-twin", "preset": "aligned-state-comparison", "template": "same-subject-pair", "visualMode": "diagram", "evidence": "illustrative",
+        "label": "Twin board", "subject": "Pump", "outcome": "remains unknown", "actor": "Pump", "scope": "bench", "period": "run A",
+        "startWord": 0, "endWord": 91, "setupWord": 0, "actionWord": 14, "responseWord": 35, "checkWord": 59, "resolveWord": 78,
+        "entities": [{"label":"Pump","evidence":{"fromWord":0,"toWord":13}}, {"label":"Reference","evidence":{"fromWord":0,"toWord":13}}, {"label":"Model","evidence":{"fromWord":0,"toWord":13}}],
+        "views": ["Reference", "Model"],
+        "snapshots": [
+          {"actor":"Pump","view":"Reference","claim":"operating state","dataTime":"sample A","controls":["locked valve"],"state":"conditional","condition":"If supply is steady","value":"Idle","evidence":{"fromWord":14,"toWord":34}},
+          {"actor":"Pump","view":"Model","claim":"operating state","dataTime":"sample A","controls":["locked valve"],"state":"simulated","qualification":"simulation","condition":"If supply is steady","value":"Running","evidence":{"fromWord":35,"toWord":58}}
+        ],
+        "quantities": [],
+        "alignment": {"actor":"Pump","left":"Reference","right":"Model","evidence":{"fromWord":59,"toWord":77}},
+        "result": {"actor":"Pump","claim":"state comparison","state":"unknown","qualification":"unknown","evidence":{"fromWord":78,"toWord":91}}
+      },
+      "negatives": [
+        {"name":"different subject snapshot","edits":[{"path":["snapshots",1,"actor"],"value":"Model"}]},
+        {"name":"subject substituted","edits":[{"path":["subject"],"value":"Reference"}]},
+        {"name":"scope substituted","edits":[{"path":["scope"],"value":"other bench"}]},
+        {"name":"period substituted","edits":[{"path":["period"],"value":"run B"}]},
+        {"name":"source condition erased","edits":[{"path":["snapshots",0,"condition"],"remove":true}]},
+        {"name":"source controls erased","edits":[{"path":["snapshots",1,"controls"],"value":[]}]},
+        {"name":"source controls invented","edits":[{"path":["snapshots",1,"controls"],"value":["open valve"]}]},
+        {"name":"state invented","edits":[{"path":["snapshots",0,"value"],"value":"Running"}]},
+        {"name":"simulation promoted","edits":[{"path":["snapshots",1,"state"],"value":"conditional"},{"path":["snapshots",1,"qualification"],"remove":true}]},
+        {"name":"simulation measured envelope","edits":[{"path":["evidence"],"value":"source-stated"}]},
+        {"name":"invented comparison result","edits":[{"path":["result","state"],"value":"known"},{"path":["result","qualification"],"remove":true},{"path":["result","result"],"value":"different"},{"path":["outcome"],"value":"is different"}]},
+        {"name":"unknown comparison becomes zero","edits":[{"path":["result","result"],"value":0}]},
+        {"name":"misaligned views","edits":[{"path":["alignment","left"],"value":"Model"},{"path":["alignment","right"],"value":"Reference"}]},
+        {"name":"domain timestamp invented","edits":[{"path":["snapshots",1,"dataTime"],"value":"sample B"}]},
+        {"name":"claim mismatch","edits":[{"path":["snapshots",1,"claim"],"value":"temperature"}]},
+        {"name":"legacy conveyor template","edits":[{"path":["template"],"value":"conveyor-gate"}]},
+        {"name":"wrong preset","edits":[{"path":["preset"],"value":"digital-twin"}]},
+        {"name":"wrong mode","edits":[{"path":["visualMode"],"value":"3d-only"}]},
+        {"name":"raw HTML","edits":[{"path":["html"],"value":"<script/>"}]},
+        {"name":"numeric difference derived","edits":[{"path":["result","difference"],"value":12}]},
+        {"name":"caller snapshot ID","edits":[{"path":["snapshots",0,"id"],"value":"caller-id"}]},
+        {"name":"entities cap","edits":[{"path":["entities"],"value":[{},{},{},{},{},{},{},{},{}]}]},
+        {"name":"records cap","edits":[{"path":["quantities"],"value":[{},{},{},{},{},{},{},{},{}]}]},
+        {"name":"duplicate beat","edits":[{"path":["resolveWord"],"value":59}]},
+        {"name":"keyword beat not clause","edits":[{"path":["actionWord"],"value":18}]}
+      ]
+    }
+  ],
+  "paraphrases": [
+    {
+      "id": "47",
+      "clauses": [
+        "During run B for bench, Switch log records Pump states Standby and Active.",
+        "For bench during run B, Pump moves into Active from Standby, if load is heavy.",
+        "During run B for bench, Pump moves out of Active for Standby, if load is light.",
+        "For bench during run B, Pump history at earlier cycle remains missing and is retained.",
+        "During run B for bench, Pump current state remains disputed and retains earlier cycle history."
+      ],
+      "proposal": {
+        "kind": "state-transition", "preset": "hysteresis", "template": "two-state-history", "visualMode": "hybrid", "evidence": "source-stated",
+        "label": "Switch log", "subject": "Pump", "outcome": "remains disputed", "actor": "Pump", "scope": "bench", "period": "run B",
+        "startWord": 0, "endWord": 73, "setupWord": 0, "actionWord": 13, "responseWord": 28, "checkWord": 44, "resolveWord": 59,
+        "entities": [{"label":"Pump","evidence":{"fromWord":0,"toWord":12}}, {"label":"Standby","evidence":{"fromWord":0,"toWord":12}}, {"label":"Active","evidence":{"fromWord":0,"toWord":12}}],
+        "states": ["Standby", "Active"],
+        "rules": [
+          {"role":"enter","actor":"Pump","from":"Standby","to":"Active","state":"conditional","condition":"if load is heavy","evidence":{"fromWord":13,"toWord":27}},
+          {"role":"leave","actor":"Pump","from":"Active","to":"Standby","state":"conditional","condition":"if load is light","evidence":{"fromWord":28,"toWord":43}}
+        ],
+        "thresholds": [],
+        "history": [{"actor":"Pump","dataTime":"earlier cycle","state":"missing","qualification":"missing","evidence":{"fromWord":44,"toWord":58}}],
+        "result": {"actor":"Pump","claim":"current state","state":"disputed","qualification":"disputed","evidence":{"fromWord":59,"toWord":73}}
+      },
+      "negatives": [
+        {"name":"missing history becomes measured zero","edits":[{"path":["history",0,"value"],"value":0}]},
+        {"name":"missing history becomes known standby","edits":[{"path":["history",0,"state"],"value":"known"},{"path":["history",0,"qualification"],"remove":true},{"path":["history",0,"value"],"value":"Standby"}]}
+      ]
+    },
+    {
+      "id": "48",
+      "clauses": [
+        "For rigs during trial B, Paired log reviews Baseline and Candidate states of Sensor.",
+        "During trial B for rigs, Sensor Baseline calibration state remains unknown at prior pass under fixed gain, if input is stable.",
+        "Provided that noise is low, in this teaching example, for rigs during trial B, Sensor Candidate calibration state is Ready at later pass under fixed gain.",
+        "During trial B for rigs, Paired log pairs Baseline and Candidate for the same Sensor and keeps source controls.",
+        "For rigs during trial B, Sensor state comparison remains missing and keeps qualified states."
+      ],
+      "proposal": {
+        "kind": "digital-twin", "preset": "aligned-state-comparison", "template": "same-subject-pair", "visualMode": "hybrid", "evidence": "illustrative",
+        "label": "Paired log", "subject": "Sensor", "outcome": "remains missing", "actor": "Sensor", "scope": "rigs", "period": "trial B",
+        "startWord": 0, "endWord": 93, "setupWord": 0, "actionWord": 14, "responseWord": 35, "checkWord": 61, "resolveWord": 80,
+        "entities": [{"label":"Sensor","evidence":{"fromWord":0,"toWord":13}}, {"label":"Baseline","evidence":{"fromWord":0,"toWord":13}}, {"label":"Candidate","evidence":{"fromWord":0,"toWord":13}}],
+        "views": ["Baseline", "Candidate"],
+        "snapshots": [
+          {"actor":"Sensor","view":"Baseline","claim":"calibration state","dataTime":"prior pass","controls":["fixed gain"],"state":"unknown","qualification":"unknown","condition":"if input is stable","evidence":{"fromWord":14,"toWord":34}},
+          {"actor":"Sensor","view":"Candidate","claim":"calibration state","dataTime":"later pass","controls":["fixed gain"],"state":"illustrative","qualification":"teaching example","condition":"Provided that noise is low","value":"Ready","evidence":{"fromWord":35,"toWord":60}}
+        ],
+        "quantities": [],
+        "alignment": {"actor":"Sensor","left":"Baseline","right":"Candidate","evidence":{"fromWord":61,"toWord":79}},
+        "result": {"actor":"Sensor","claim":"state comparison","state":"missing","qualification":"missing","evidence":{"fromWord":80,"toWord":93}}
+      },
+      "negatives": [
+        {"name":"unknown snapshot becomes numeric zero","edits":[{"path":["snapshots",0,"value"],"value":0}]},
+        {"name":"illustration qualifier removed","edits":[{"path":["snapshots",1,"qualification"],"remove":true}]}
+      ]
+    }
+  ]
+}
