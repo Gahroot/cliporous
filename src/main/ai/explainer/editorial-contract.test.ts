@@ -254,6 +254,7 @@ it('enforces nonadjacency and prevents automatic emphasis from bypassing the pri
     kind: 'statement',
     startWord: 18,
     endWord: 26,
+    layout: 'stack',
     words: [{ text: 'privacy', word: 19 }],
     labelTreatment: { kind: 'peel-back', targetIndex: 0, revealWord: 21 },
   };
@@ -261,7 +262,7 @@ it('enforces nonadjacency and prevents automatic emphasis from bypassing the pri
     { scenes: [first, second] },
     many,
     { minStart: 0, maxEnd: 35 },
-    { emphasisTimes: [4.5, 11.5] },
+    { aspect: '16:9', profile: 'content-led-codex-v1', emphasisTimes: [4.5, 11.5] },
   );
   expect(planned).toHaveLength(2);
   const [firstPlanned, secondPlanned] = planned;

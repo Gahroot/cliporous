@@ -19,7 +19,7 @@ import { join } from 'node:path';
 import type { PlannerGenerator } from '../ai/explainer/planner-generation';
 import type { PlannerProfileId } from '../ai/explainer/planner-profiles';
 import type { PlanningObserver } from '../ai/explainer/planning-diagnostics';
-import { type QuoteWindow, selectQuoteWindows } from '../ai/explainer/quote-selection';
+import type { QuoteWindow } from '../ai/explainer/quote-selection';
 import { summarizeUsage, type UsageChoice, type UsageRecord } from '../ai/explainer/recent-usage';
 import {
   type PlanBounds,
@@ -286,65 +286,39 @@ export function prepareExplainerTimeline(
   quotes: QuoteWindow[];
   choices: UsageChoice[];
 } {
-  let pieces = spliceExplainerScenes(
+  // Saved plans may still contain decorative text. Omit it before grouping,
+  // leaving the source timeline intact and breaking any chain through a removed scene.
+  const scenes: PlannedExplainerScene[] = [];
+  let chainBroken = false;
+  for (const [index, planned] of plan.scenes.entries()) {
+    if (planned.scene.kind === 'statement') {
+      observe?.({
+        stage: 'splice',
+        action: 'removed',
+        reason: 'short-form-redundant-text',
+        index,
+        count: 1,
+      });
+      chainBroken = true;
+      continue;
+    }
+    scenes.push(chainBroken && planned.chained ? { ...planned, chained: false } : planned);
+    chainBroken = false;
+  }
+  for (const [index] of plan.quotes.entries()) {
+    observe?.({ stage: 'quote', action: 'rejected', reason: 'short-form-redundant-text', index });
+  }
+  const pieces = spliceExplainerScenes(
     segments,
-    groupPlannedScenes(plan.scenes, observe),
+    groupPlannedScenes(scenes, observe),
     bounds.minStart,
     observe,
   );
-  const quotes: QuoteWindow[] = [];
-  for (const [index, quote] of plan.quotes.entries()) {
-    const { startTime: start, endTime: end } = quote;
-    const overlapping = pieces.filter(({ segment: s }) => s.startTime < end && s.endTime > start);
-    const reason =
-      !Number.isFinite(start) || !Number.isFinite(end) || end <= start
-        ? 'quote-invalid-window'
-        : start < bounds.minStart || end > bounds.maxEnd
-          ? 'quote-outside-window'
-          : !coversContiguously(segments, start, end, 0)
-            ? 'source-gap'
-            : overlapping.some((p) => p.group)
-              ? 'quote-animation-overlap'
-              : overlapping.some(
-                    ({ segment: s }) =>
-                      !['talking-head', 'tight-punch', 'wide-breather'].includes(s.archetype) ||
-                      s.explainerLayout !== undefined ||
-                      s.videoPath !== undefined ||
-                      s.imagePath !== undefined,
-                  )
-                ? 'quote-explicit-layout'
-                : undefined;
-    if (reason) {
-      observe?.({ stage: 'quote', action: 'rejected', reason, index });
-      continue;
-    }
-    pieces = pieces.flatMap((piece): SplicedPiece[] => {
-      const s = piece.segment;
-      if (s.endTime <= start || s.startTime >= end) return [piece];
-      const out: SplicedPiece[] = [];
-      if (s.startTime < start) out.push({ segment: { ...s, endTime: start } });
-      out.push({
-        segment: {
-          ...s,
-          startTime: Math.max(start, s.startTime),
-          endTime: Math.min(end, s.endTime),
-          archetype: 'fullscreen-quote',
-          zoom: { style: 'none', intensity: 1 },
-          transitionIn: 'hard-cut',
-        },
-      });
-      if (s.endTime > end)
-        out.push({ segment: { ...s, startTime: end, transitionIn: 'hard-cut' } });
-      return out;
-    });
-    quotes.push(quote);
-    observe?.({ stage: 'quote', action: 'accepted', reason: 'timeline-admitted', index });
-  }
   const clipStart = segments[0]?.startTime ?? 0;
   return {
     pieces,
     segments: pieces.map((p) => p.segment),
-    quotes,
+    quotes: [],
     captionWindows: pieces.flatMap(({ segment: s }) =>
       s.explainerLayout
         ? [
@@ -578,27 +552,7 @@ export async function applyExplainerScenes(
     }
     plan = result.value;
   }
-  // Re-authorize optional text against the EXACT parser input, never synthetic quote words.
-  const quotes = selectQuoteWindows(
-    {
-      quotes: plan.quotes.map(({ startWord, endWord, text, reason }) => ({
-        startWord,
-        endWord,
-        text,
-        reason,
-      })),
-    },
-    opts.words,
-    opts.bounds,
-    plan.scenes,
-    opts.onDiagnostic,
-  );
-  const timeline = prepareExplainerTimeline(
-    opts.segments,
-    { ...plan, quotes },
-    opts.bounds,
-    opts.onDiagnostic,
-  );
+  const timeline = prepareExplainerTimeline(opts.segments, plan, opts.bounds, opts.onDiagnostic);
   opts.onPlanned?.(timeline.choices);
   const pieces = timeline.pieces;
   const scenePieces = pieces.filter((p) => p.group);

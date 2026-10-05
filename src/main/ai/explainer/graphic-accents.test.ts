@@ -78,14 +78,12 @@ describe('planner graphic boundaries', () => {
         scenes: [
           { ...base, endWord: 6, annotation: { kind: 'circle', word: 4 } },
           {
-            kind: 'statement',
+            kind: 'hero',
+            prop: 'lock',
+            label: 'Stay safe',
+            word: 12,
             startWord: 12,
             endWord: 18,
-            words: [
-              { text: 'Stay', word: 12 },
-              { text: 'safe', word: 14 },
-            ],
-            accentIndex: 1,
             annotation: { kind: 'underline', word: 16 },
           },
         ],

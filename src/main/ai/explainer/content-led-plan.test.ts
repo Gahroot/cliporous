@@ -34,10 +34,14 @@ const scenes = [
     layout: 'stack',
   },
   {
-    kind: 'statement',
+    kind: 'checklist',
     startWord: 22,
     endWord: 28,
-    words: [{ text: 'review', word: 22 }],
+    title: 'Review',
+    items: [
+      { label: 'Check source', word: 22 },
+      { label: 'Verify result', word: 24 },
+    ],
     continues: true,
     layout: 'stack',
   },
@@ -86,7 +90,7 @@ describe('content-led planner policy', () => {
     expect(plan.map((p) => p.layout)).toEqual(['stack', 'stack', 'stack']);
     expect(groupPlannedScenes(plan)).toHaveLength(1);
   });
-  it('explicit empty review can remove a draft, including optional quote selections', async () => {
+  it('explicit empty review can remove a draft without adding quote selections', async () => {
     const result = await planExplainerEditPlan('', words, bounds, {
       profile: 'content-led-codex-v1',
       generator: async ({ phase }) => ({

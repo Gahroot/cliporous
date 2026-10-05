@@ -1,5 +1,5 @@
 import type { ExplainerSceneKind } from '../../remotion/compositions/explainer/types';
-import { idx, isRec, type PlannerWord, str } from './kind-spec';
+import { type AnyKindSpec, idx, isRec, type PlannerWord, str } from './kind-spec';
 import { ALL_KIND_SPECS, getKindSpec } from './kinds';
 
 export interface PlanningIdea {
@@ -17,11 +17,15 @@ export const OUTLINE_LIMITS = {
 } as const;
 type Bounds = { minStart: number; maxEnd: number };
 
-/** Semantic planning sees every kind, but none of the realization schemas. */
-export function buildOutlinePrompt(words: readonly PlannerWord[], bounds: Bounds): string {
-  const catalog = ALL_KIND_SPECS.map(
-    (spec) => `- ${spec.kind}: ${spec.describe}${spec.avoid ? ` Avoid: ${spec.avoid}` : ''}`,
-  ).join('\n');
+/** Semantic planning sees the allowed kinds, but none of the realization schemas. */
+export function buildOutlinePrompt(
+  words: readonly PlannerWord[],
+  bounds: Bounds,
+  specs: readonly AnyKindSpec[] = ALL_KIND_SPECS,
+): string {
+  const catalog = specs
+    .map((spec) => `- ${spec.kind}: ${spec.describe}${spec.avoid ? ` Avoid: ${spec.avoid}` : ''}`)
+    .join('\n');
   return `Plan explanations for the source, not decorative animations. Select specialized kinds when their relationships match what is said; generic AI/business wording alone is not evidence for a specialized story. Preserve uncertainty, conditions and unresolved outcomes; never invent facts.
 Return JSON only: {"ideas":[{"startWord":0,"endWord":5,"goal":"Explain the source relationship","kinds":["flow"]}]}.
 Use at most ${OUTLINE_LIMITS.maxIdeas} ideas, ordered by source word index, with no overlapping inclusive word ranges or time windows. Every index must be an integer in the original source word array, and every selected word must lie inside the time bounds. Each goal is a nonempty explanation objective of at most ${OUTLINE_LIMITS.maxGoalChars} characters. Each idea selects 1 to at most ${OUTLINE_LIMITS.maxKindsPerIdea} distinct kinds from the catalog only. Prefer the necessary specific explanation, not variety for its own sake. Do not produce scene schemas, beats, layouts or invented labels. Keep output under ${OUTLINE_LIMITS.maxOutputChars} characters. No explanation needed is valid: {"ideas":[]}.

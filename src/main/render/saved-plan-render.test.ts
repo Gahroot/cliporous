@@ -10,6 +10,7 @@ import { deriveExplainerPalette } from '../remotion/compositions/explainer/palet
 import {
   type ApplyExplainerOptions,
   applyExplainerScenes,
+  buildGroupRenderPlan,
   plannerInputFingerprint,
   prepareExplainerTimeline,
 } from './explainer-scenes';
@@ -56,21 +57,40 @@ const quote = (startWord = 40, endWord = startWord + 3) => ({
   reason: 'takeaway',
 });
 const rawScene = (startWord: number, endWord: number, continues = false, layout = 'stack') => ({
-  kind: 'statement',
+  kind: 'stack',
   startWord,
   endWord,
   layout,
   continues,
   transition: 'slide',
-  words: [
-    { text: words[startWord + 1].text, word: startWord + 1 },
-    { text: words[endWord - 1].text, word: endWord - 1 },
+  layers: [
+    { label: words[startWord + 1].text, word: startWord + 1 },
+    { label: words[endWord - 1].text, word: endWord - 1 },
   ],
 });
 const parse = (raw: unknown): PlannerEditPlan =>
   parseExplainerEditPlan(raw, words, bounds, { profile });
 const chain = () =>
   parse({ scenes: [rawScene(8, 15), rawScene(16, 23, true), rawScene(24, 31, true)] });
+// Old precomputed payloads must not depend on today's short-form parser allowing decorative text.
+const quotePlan = (): PlannerEditPlan => ({
+  ...parse({ scenes: [] }),
+  quotes: [{ ...quote(), startTime: words[40].start, endTime: words[43].end }],
+});
+const statementPlan = (): PlannerEditPlan => ({
+  ...parse({ scenes: [] }),
+  scenes: [
+    {
+      startTime: 14,
+      endTime: 18,
+      layout: 'takeover',
+      chained: false,
+      transition: 'slide',
+      cues: [{ kind: 'thump', at: 15 }],
+      scene: { kind: 'statement', words: [{ text: words[10].text, at: 15 }] },
+    },
+  ],
+});
 const options = (
   precomputedPlan = parse({ scenes: [] }),
   extra: Partial<ApplyExplainerOptions> = {},
@@ -188,34 +208,35 @@ describe('pure timeline admission', () => {
     expect(JSON.stringify({ plan, segments })).toBe(before);
   });
 
-  it('inserts source-exact optional quotes without an animation or fabricated text', () => {
-    const plan = parse({ scenes: [], quotes: [quote()] });
-    expect(plan.quotes).toHaveLength(1);
-    const timeline = prepareExplainerTimeline([speaker()], plan, bounds);
-    expect(timeline.segments.map((s) => [s.startTime, s.endTime, s.archetype])).toEqual([
-      [10, 30, 'talking-head'],
-      [30, 32, 'fullscreen-quote'],
-      [32, 55, 'talking-head'],
-    ]);
-    expect(timeline.quotes).toEqual(plan.quotes);
+  it('omits old source-exact optional quotes without splitting the speaker timeline', () => {
+    const plan = quotePlan();
+    const segments = [speaker()];
+    const before = structuredClone({ plan, segments });
+    const timeline = prepareExplainerTimeline(segments, plan, bounds);
+    expect(timeline.segments).toEqual(segments);
+    expect(timeline.segments[0]).toBe(segments[0]);
+    expect(timeline.pieces).toEqual([{ segment: segments[0] }]);
+    expect(timeline.quotes).toEqual([]);
+    expect(timeline.captionWindows).toEqual([]);
     expect(timeline.choices).toEqual([]);
-    expect(
-      parse({ scenes: [], quotes: [{ ...quote(), text: 'invented text here' }] }).quotes,
-    ).toEqual([]);
-    expect(parse({ scenes: [], quotes: [quote(0)] }).quotes).toEqual([]);
+    expect({ plan, segments }).toEqual(before);
   });
 
-  it('rejects quotes crossing gaps or overlapping final snapped scenes with diagnostics', () => {
+  it('omits optional quotes at source gaps or over final snapped scenes with diagnostics', () => {
     const observe = vi.fn();
-    const quotePlan = parse({ scenes: [], quotes: [quote()] });
-    expect(
-      prepareExplainerTimeline([speaker(10, 31), speaker(31.5, 55)], quotePlan, bounds, observe)
-        .quotes,
-    ).toEqual([]);
+    const plan = quotePlan();
+    const segments = [speaker(10, 31), speaker(31.5, 55)];
+    const timeline = prepareExplainerTimeline(segments, plan, bounds, observe);
+    expect(timeline.quotes).toEqual([]);
+    expect(timeline.segments).toEqual(segments);
     expect(observe).toHaveBeenCalledWith(
-      expect.objectContaining({ stage: 'quote', action: 'rejected', reason: 'source-gap' }),
+      expect.objectContaining({
+        stage: 'quote',
+        action: 'rejected',
+        reason: 'short-form-redundant-text',
+      }),
     );
-    const scenePlan = parse({ scenes: [rawScene(32, 38)], quotes: [quote()] });
+    const scenePlan = { ...parse({ scenes: [rawScene(32, 38)] }), quotes: plan.quotes };
     expect(scenePlan.quotes).toHaveLength(1);
     const final = prepareExplainerTimeline(
       [speaker(10, 30.2), speaker(30.2, 55)],
@@ -224,11 +245,13 @@ describe('pure timeline admission', () => {
       observe,
     );
     expect(final.quotes).toEqual([]);
+    expect(final.pieces.filter((p) => p.group)).toHaveLength(1);
+    expect(final.pieces.find((p) => p.group)?.segment.endTime).toBe(30.2);
     expect(observe).toHaveBeenCalledWith(
       expect.objectContaining({
         stage: 'quote',
         action: 'rejected',
-        reason: 'quote-animation-overlap',
+        reason: 'short-form-redundant-text',
       }),
     );
   });
@@ -244,19 +267,15 @@ describe('pure timeline admission', () => {
     const manual = Object.freeze(speaker(29, 34, extra));
     const segments = [speaker(10, 29), manual, speaker(34, 55)];
     const observe = vi.fn();
-    const final = prepareExplainerTimeline(
-      segments,
-      parse({ scenes: [], quotes: [quote()] }),
-      bounds,
-      observe,
-    );
+    const final = prepareExplainerTimeline(segments, quotePlan(), bounds, observe);
     expect(final.quotes).toEqual([]);
+    expect(final.segments).toEqual(segments);
     expect(final.segments[1]).toBe(manual);
     expect(observe).toHaveBeenCalledWith(
       expect.objectContaining({
         stage: 'quote',
         action: 'rejected',
-        reason: 'quote-explicit-layout',
+        reason: 'short-form-redundant-text',
       }),
     );
   });
@@ -304,41 +323,96 @@ describe('local render accounting', () => {
     expect(measureFaces).toHaveBeenCalledTimes(1);
   });
 
-  it('renders three connected stack scenes once with their palette and SFX intact', async () => {
+  it('renders three useful connected stack scenes unchanged with their palette and SFX intact', async () => {
     const plan = chain();
     const opts = options(plan);
+    const before = structuredClone({ plan, segments: opts.segments });
+    const timeline = prepareExplainerTimeline(opts.segments, plan, bounds);
+    const piece = timeline.pieces.find((p) => p.group);
+    if (!piece?.group) throw new Error('Expected stack diagram group');
+    const renderPlan = buildGroupRenderPlan(piece.group, piece.segment, opts.palette);
     const result = await applyExplainerScenes(opts);
-    expect(mocks.render).toHaveBeenCalledTimes(1);
-    expect(mocks.render).toHaveBeenCalledWith(
+    expect(mocks.render).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({
         compositionId: 'ExplainerSequence',
-        inputProps: expect.objectContaining({ palette: opts.palette }),
+        inputProps: renderPlan.props,
+        durationSec: renderPlan.durationSec,
+        fps: 30,
+        width: 1080,
+        height: 960,
+        transparent: false,
       }),
     );
+    expect(result.rendered).toBe(1);
+    expect(result.failed).toBe(0);
     expect(result.renderedChoices).toEqual(summarizeUsage(plan.scenes));
+    expect(renderPlan.props).toMatchObject({ palette: opts.palette });
     expect(result.cues.length).toBeGreaterThan(0);
+    expect(result.cues).toEqual(renderPlan.cues);
+    expect(result.segments).toEqual(
+      timeline.segments.map((s) =>
+        s.explainerLayout ? { ...s, videoPath: mocks.render.mock.calls[0][0].outputPath } : s,
+      ),
+    );
+    expect({ plan, segments: opts.segments }).toEqual(before);
   });
 
-  it('handles quote-only output without rendering or reserving animation usage', async () => {
+  it.each([
+    'statement-only',
+    'quote-only',
+    'combined',
+  ] as const)('returns an old precomputed %s plan to the speaker without graphics or animation usage', async (kind) => {
+    const plan = kind === 'quote-only' ? quotePlan() : statementPlan();
+    if (kind === 'combined') plan.quotes = quotePlan().quotes;
+    const before = structuredClone(plan);
     const onPlanned = vi.fn();
-    const result = await applyExplainerScenes(
-      options(parse({ scenes: [], quotes: [quote()] }), { onPlanned }),
-    );
-    expect(result.segments.some((s) => s.archetype === 'fullscreen-quote')).toBe(true);
-    expect(result.renderedChoices).toEqual([]);
+    const onDiagnostic = vi.fn();
+    const measureFaces = vi.fn();
+    const opts = options(plan, {
+      segments: [speaker(10, 30), speaker(30, 55, { archetype: 'tight-punch' })],
+      onPlanned,
+      onDiagnostic,
+      measureFaces,
+    });
+    const result = await applyExplainerScenes(opts);
+    expect(result).toEqual({
+      segments: opts.segments,
+      tempFiles: [],
+      cues: [],
+      rendered: 0,
+      failed: 0,
+      renderedChoices: [],
+    });
+    for (const [index, segment] of result.segments.entries()) {
+      expect(segment).toBe(opts.segments[index]);
+    }
     expect(onPlanned).toHaveBeenCalledExactlyOnceWith([]);
+    expect(onDiagnostic).toHaveBeenCalledTimes(kind === 'combined' ? 2 : 1);
+    expect(onDiagnostic).toHaveBeenCalledWith(
+      expect.objectContaining({ reason: 'short-form-redundant-text' }),
+    );
+    expect(measureFaces).not.toHaveBeenCalled();
     expect(mocks.render).not.toHaveBeenCalled();
+    expect(mocks.production).not.toHaveBeenCalled();
+    expect(plan).toEqual(before);
   });
 
-  it('reauthorizes saved quote text against the original words, not invented quote words', async () => {
-    const plan = parse({ scenes: [], quotes: [quote()] });
+  it('omits off-source saved optional quotes without reauthorization or rewriting saved text', async () => {
+    const plan = quotePlan();
     plan.quotes[0] = { ...plan.quotes[0], text: 'invented words only' };
+    const before = structuredClone(plan);
     const onDiagnostic = vi.fn();
-    const result = await applyExplainerScenes(options(plan, { onDiagnostic }));
-    expect(result.segments.some((s) => s.archetype === 'fullscreen-quote')).toBe(false);
-    expect(onDiagnostic).toHaveBeenCalledWith(
-      expect.objectContaining({ reason: 'quote-off-source' }),
-    );
+    const opts = options(plan, { onDiagnostic });
+    const result = await applyExplainerScenes(opts);
+    expect(result.segments).toEqual(opts.segments);
+    expect(onDiagnostic).toHaveBeenCalledExactlyOnceWith({
+      stage: 'quote',
+      action: 'rejected',
+      reason: 'short-form-redundant-text',
+      index: 0,
+    });
+    expect(mocks.render).not.toHaveBeenCalled();
+    expect(plan).toEqual(before);
   });
 
   it('excludes failed groups from rendered usage and falls back with a diagnostic', async () => {
@@ -391,14 +465,19 @@ describe('local render accounting', () => {
       expect(request.signal).toBe(signal);
       expect(request.prompt).toContain('0:word0');
       return {
-        text: JSON.stringify({ scenes: [], quotes: [quote()] }),
+        text: JSON.stringify({ scenes: [rawScene(8, 15)] }),
         metadata: { provider: 'offline' as const, model: 'test', configId: 'test', latencyMs: 0 },
       };
     });
     const result = await applyExplainerScenes(
       options(undefined, { precomputedPlan: undefined, noAi: false, generator, signal, profile }),
     );
-    expect(result.segments.some((s) => s.archetype === 'fullscreen-quote')).toBe(true);
+    expect(result.segments.map((s) => [s.startTime, s.endTime, s.archetype])).toEqual([
+      [10, 13.75, 'talking-head'],
+      [13.75, 18.35, 'split-image'],
+      [18.35, 55, 'talking-head'],
+    ]);
+    expect(mocks.render).toHaveBeenCalledOnce();
     expect(generator).toHaveBeenCalledTimes(2);
     expect(mocks.production).not.toHaveBeenCalled();
   });

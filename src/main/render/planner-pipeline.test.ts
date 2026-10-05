@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Ch } from '../../shared/ipc-channels';
 import { clipIdentity, summarizeUsage } from '../ai/explainer/recent-usage';
 import { parseExplainerEditPlan } from '../ai/explainer-scenes';
+import { buildCaptionASSDocument } from '../captions';
 import { createPlannerUsageStore } from '../planner-usage-store';
 import * as explainers from './explainer-scenes';
 import { MIN_FACE_LEAD_SECONDS } from './opening-guard';
@@ -108,6 +109,48 @@ afterEach(() => {
 });
 
 describe('internal planner render execution', () => {
+  it.each([
+    'standard',
+    'emphasis',
+    'emphasis_highlight',
+    'editorial',
+  ] as const)('returns legacy quote segments to the speaker with ordinary %s captions even when animations are disabled', async (captionMode) => {
+    const input = options();
+    input.explainerScenesEnabled = false;
+    input.captionMode = captionMode;
+    input.jobs[0].segmentedSegments = [
+      { startTime: 0, endTime: 5, archetype: 'talking-head' },
+      { startTime: 5, endTime: 9, archetype: 'fullscreen-quote', videoPath: 'old-quote-card.mp4' },
+      { startTime: 9, endTime: 40, archetype: 'talking-head' },
+    ];
+    const original = structuredClone(input);
+    const observe = vi.fn();
+    await startBatchRender(input, window, undefined, {
+      noAi: true,
+      plans: new Map([['one', saved()]]),
+      onDiagnostic: observe,
+    });
+    expect(media.encode).toHaveBeenCalledOnce();
+    const encoded = media.encode.mock.calls[0][0];
+    expect(encoded.segments.map((s) => [s.startTime, s.endTime, s.archetype])).toEqual([
+      [0, 5, 'talking-head'],
+      [5, 9, 'talking-head'],
+      [9, 40, 'talking-head'],
+    ]);
+    expect(encoded.segments[1]).toMatchObject({ videoPath: undefined, transitionIn: 'hard-cut' });
+    expect(encoded.wordTimestamps).toEqual(words);
+    const style = { captionMode, fontSize: 0.065, wordsPerLine: 3 };
+    expect(
+      buildCaptionASSDocument(words, style, { archetypeWindows: encoded.archetypeWindows }),
+    ).toBe(buildCaptionASSDocument(words, style));
+    expect(media.animation).not.toHaveBeenCalled();
+    expect(media.paid).not.toHaveBeenCalled();
+    expect(observe).toHaveBeenCalledWith(
+      expect.objectContaining({ stage: 'policy', reason: 'short-form-redundant-text' }),
+    );
+    expect(input).toEqual(original);
+  });
+
   it('runs a saved empty plan without a Gemini key through the real segmented route', async () => {
     const apply = vi.spyOn(explainers, 'applyExplainerScenes');
     const execution: RenderExecutionOptions = { noAi: true, plans: new Map([['one', saved()]]) };
@@ -134,11 +177,14 @@ describe('internal planner render execution', () => {
       {
         scenes: [
           {
-            kind: 'statement',
+            kind: 'stack',
             startWord: 5,
             endWord: 8,
             layout: 'stack',
-            words: [{ text: 'word6', word: 6 }],
+            layers: [
+              { label: 'word6', word: 6 },
+              { label: 'word7', word: 7 },
+            ],
           },
         ],
       },
@@ -275,13 +321,13 @@ describe('internal planner render execution', () => {
       {
         scenes: [
           {
-            kind: 'statement',
+            kind: 'stack',
             startWord: 5,
             endWord: 8,
             layout: 'stack',
-            words: [
-              { text: 'word16', word: 6 },
-              { text: 'word17', word: 7 },
+            layers: [
+              { label: 'word16', word: 6 },
+              { label: 'word17', word: 7 },
             ],
           },
         ],
@@ -299,18 +345,9 @@ describe('internal planner render execution', () => {
       { profile },
     );
     expect(plan.scenes).toMatchObject([
-      { startTime: 4.75, endTime: 9.1, layout: 'stack', scene: { kind: 'statement' } },
+      { startTime: 4.75, endTime: 9.1, layout: 'stack', scene: { kind: 'stack' } },
     ]);
-    expect(plan.quotes).toEqual([
-      {
-        startWord: 13,
-        endWord: 16,
-        text: 'word33 word34 word35 word36',
-        reason: 'takeaway',
-        startTime: 13,
-        endTime: 16.75,
-      },
-    ]);
+    expect(plan.quotes).toEqual([]);
     const savedPlan = {
       plan,
       wordsHash: explainers.plannerInputFingerprint(finalWords, finalBounds),
@@ -344,10 +381,10 @@ describe('internal planner render execution', () => {
           scenes: [
             expect.objectContaining({
               scene: expect.objectContaining({
-                kind: 'statement',
-                words: [
-                  { text: 'word16', at: 1.25 },
-                  { text: 'word17', at: 2.25 },
+                kind: 'stack',
+                layers: [
+                  { label: 'word16', at: 1.25 },
+                  { label: 'word17', at: 2.25 },
                 ],
               }),
             }),
@@ -362,9 +399,7 @@ describe('internal planner render execution', () => {
       [0, 4.75, 'talking-head'],
       [4.75, 9.1, 'split-image'],
       [9.1, 10, 'talking-head'],
-      [10, 13, 'talking-head'],
-      [13, 16.75, 'fullscreen-quote'],
-      [16.75, 20, 'talking-head'],
+      [10, 20, 'talking-head'],
     ]);
     expect(encoded.segments[1]).toMatchObject({
       explainerLayout: 'stack',
@@ -383,13 +418,13 @@ describe('internal planner render execution', () => {
     const apply = vi.spyOn(explainers, 'applyExplainerScenes');
     const store = createPlannerUsageStore(directory);
     const scene = {
-      kind: 'statement',
+      kind: 'stack',
       startWord: 5,
       endWord: 8,
       layout: 'stack',
-      words: [
-        { text: 'word6', word: 6 },
-        { text: 'word7', word: 7 },
+      layers: [
+        { label: 'word6', word: 6 },
+        { label: 'word7', word: 7 },
       ],
     };
     const plan = parseExplainerEditPlan({ scenes: [scene] }, words, bounds);

@@ -1,11 +1,12 @@
 import type { Archetype } from '@shared/types';
 import { describe, expect, it, vi } from 'vitest';
-import type { PlannedExplainerScene } from '../ai/explainer-scenes';
+import type { PlannedExplainerScene, PlannerEditPlan } from '../ai/explainer-scenes';
 import { deriveExplainerPalette } from '../remotion/compositions/explainer/palette';
 import type { ExplainerLayout, ExplainerScene } from '../remotion/compositions/explainer/types';
 import {
   buildGroupRenderPlan,
   groupPlannedScenes,
+  prepareExplainerTimeline,
   type SceneGroup,
   spliceExplainerScenes,
 } from './explainer-scenes';
@@ -183,6 +184,59 @@ describe('spliceExplainerScenes', () => {
   it('returns the input unchanged when nothing is planned', () => {
     const segments = [seg('talking-head', 10, 20)];
     expect(spliceExplainerScenes(segments, [], 12).map((p) => p.segment)).toEqual(segments);
+  });
+});
+
+describe('prepareExplainerTimeline', () => {
+  it('does not re-chain useful scenes across a removed statement, even inside chain tolerance', () => {
+    const first = planned(14, 18);
+    const statement = planned(18, 18.02, {
+      chained: true,
+      scene: { kind: 'statement', words: [{ text: 'Repeated speech', at: 18 }] },
+    });
+    const last = planned(18.02, 22, {
+      chained: true,
+      scene: {
+        kind: 'stack',
+        layers: [
+          { label: 'Tools', at: 19 },
+          { label: 'Workflow', at: 20 },
+        ],
+      },
+    });
+    const plan: PlannerEditPlan = { scenes: [first, statement, last], quotes: [] };
+    const segments = [seg('talking-head', 10, 30)];
+    const before = structuredClone({ plan, segments });
+    const observe = vi.fn();
+    const timeline = prepareExplainerTimeline(
+      segments,
+      plan,
+      { minStart: 12, maxEnd: 30 },
+      observe,
+    );
+    expect(shape(timeline.pieces)).toEqual([
+      'talking-head 10-14 crossfade',
+      'SCENE 14-18 hard-cut',
+      'talking-head 18-18.02 hard-cut',
+      'SCENE 18.02-22 hard-cut',
+      'talking-head 22-30 hard-cut',
+    ]);
+    const groups = timeline.pieces.flatMap((p) => (p.group ? [p.group] : []));
+    expect(groups.map((g) => g.scenes)).toEqual([[first], [{ ...last, chained: false }]]);
+    expect(groups[0].scenes[0]).toBe(first);
+    expect(groups[1].scenes[0].scene).toBe(last.scene);
+    expect(timeline.captionWindows).toEqual([
+      { startTime: 4, endTime: 8, layout: 'stack' },
+      { startTime: 8.02, endTime: 12, layout: 'stack' },
+    ]);
+    expect(observe).toHaveBeenCalledWith({
+      stage: 'splice',
+      action: 'removed',
+      reason: 'short-form-redundant-text',
+      index: 1,
+      count: 1,
+    });
+    expect({ plan, segments }).toEqual(before);
   });
 });
 

@@ -66,13 +66,13 @@ const corpus: CorpusManifest = {
 const valid = JSON.stringify({
   scenes: [
     {
-      kind: 'statement',
+      kind: 'stack',
       startWord: 2,
       endWord: 5,
       layout: 'stack',
-      words: [
-        { text: 'Stop', word: 2 },
-        { text: 'guessing', word: 3 },
+      layers: [
+        { label: 'Stop', word: 2 },
+        { label: 'guessing', word: 3 },
       ],
     },
     { kind: 'not-a-real-kind', startWord: 6, endWord: 9, layout: 'stack' },
@@ -249,7 +249,7 @@ describe('step 6 evaluation runner', () => {
     expect(generator.mock.calls.map(([request]) => request.phase)).toEqual(['draft', 'review']);
     expect(
       artifact.result?.ok && artifact.result.value.scenes.map((scene) => scene.scene.kind),
-    ).toEqual(['statement']);
+    ).toEqual(['stack']);
     expect(artifact.result?.ok && artifact.result.value.scenes[0].startTime).toBeGreaterThanOrEqual(
       11.5,
     );

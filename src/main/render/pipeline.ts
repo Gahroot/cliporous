@@ -34,7 +34,6 @@ import {
   ARCHETYPE_DEFAULT_TRANSITION_IN,
   ARCHETYPE_TO_CATEGORY,
 } from './../edit-styles/shared/archetypes';
-import { BRAND_FG } from './../edit-styles/shared/brand';
 import type { ManifestJobMeta } from '../export-manifest';
 import type { FfmpegCommand } from '../ffmpeg';
 import { getEncoder, getVideoMetadata, isHardwareEncoder } from '../ffmpeg';
@@ -67,7 +66,6 @@ import { renderLongformVideo } from './longform-pipeline';
 import { enforceSpeakerOpening, MIN_FACE_LEAD_SECONDS } from './opening-guard';
 import { measureFaceBands } from './over-face';
 import { resolveQualityParams } from './quality';
-import { applyQuoteGraphics } from './quote-graphics';
 import { classifyRenderError } from './render-error-map';
 import type { ResolvedSegment, SegmentRenderConfig } from './segment-render';
 import { renderSegmentedClip } from './segment-render';
@@ -767,27 +765,41 @@ export async function startBatchRender(
         // marginV; no per-segment text / color / variant plumbing. Captions,
         // hook title, and rehook are burned post-concat inside
         // renderSegmentedClip from the data forwarded below.
-        const builtSegments: ResolvedSegment[] = job.segmentedSegments.map((raw) => ({
-          startTime: raw.startTime,
-          endTime: raw.endTime,
-          archetype: raw.archetype,
-          zoom: {
-            style: raw.zoomStyle ?? editStyle.defaultZoomStyle,
-            intensity: raw.zoomIntensity ?? editStyle.defaultZoomIntensity,
-          },
-          transitionIn:
-            options.shotTransitionsEnabled === false ||
-            job.clipOverrides?.enableShotTransitions === false
-              ? 'hard-cut'
-              : (ARCHETYPE_DEFAULT_TRANSITION_IN[raw.archetype] ?? editStyle.defaultTransition),
-          videoPath: raw.videoPath,
-          cropRect: raw.cropRect,
-        }));
+        const builtSegments: ResolvedSegment[] = job.segmentedSegments.map((raw, index) => {
+          // Old edit plans may still contain quote cards. Keep the spoken window,
+          // but show the speaker instead of repeating the transcript as hero text.
+          const isQuote = raw.archetype === 'fullscreen-quote';
+          const archetype = isQuote ? 'talking-head' : raw.archetype;
+          if (isQuote) {
+            execution.onDiagnostic?.({
+              stage: 'policy',
+              action: 'removed',
+              reason: 'short-form-redundant-text',
+              index,
+            });
+          }
+          return {
+            startTime: raw.startTime,
+            endTime: raw.endTime,
+            archetype,
+            zoom: {
+              style: raw.zoomStyle ?? editStyle.defaultZoomStyle,
+              intensity: raw.zoomIntensity ?? editStyle.defaultZoomIntensity,
+            },
+            transitionIn:
+              options.shotTransitionsEnabled === false ||
+              job.clipOverrides?.enableShotTransitions === false
+                ? 'hard-cut'
+                : (ARCHETYPE_DEFAULT_TRANSITION_IN[archetype] ?? editStyle.defaultTransition),
+            videoPath: isQuote ? undefined : raw.videoPath,
+            cropRect: raw.cropRect,
+          };
+        });
 
         // ── Opening guard ────────────────────────────────────────────────
         // Guarantee the clip opens on the speaker (talking-head) within the
         // first MIN_FACE_LEAD_SECONDS. When the first segment is a non-speaker
-        // archetype (fullscreen image/quote card, split-image), it is split or
+        // archetype (fullscreen-image, split-image), it is split or
         // demoted so a face is visible from frame 0 and any media/card overlay
         // is delayed past the lead.
         let resolvedSegments: ResolvedSegment[] = enforceSpeakerOpening(builtSegments);
@@ -872,43 +884,6 @@ export async function startBatchRender(
         // Release skipped/empty/failed planning; a reserved proposal remains in this batch.
         reservations.release(String(i));
         if (isCancelled()) return;
-
-        // ── Quote-card graphics ─────────────────────────────────────────────────────
-        // Fullscreen-quote cards keep their sand backdrop and one-word-at-a-time
-        // serif text; when the quote names a catalog prop, that prop animates
-        // in the top band. Same toggle as the explainer scenes; no API call.
-        if (
-          options.explainerScenesEnabled !== false &&
-          job.wordTimestamps &&
-          job.wordTimestamps.length > 0 &&
-          resolvedSegments.some((s) => s.archetype === 'fullscreen-quote')
-        ) {
-          const quotes = await applyQuoteGraphics({
-            onDiagnostic: execution.onDiagnostic,
-            segments: resolvedSegments,
-            words: job.wordTimestamps,
-            colors: {
-              background: BRAND_FG,
-              seedBackground: selectedPalette.background,
-              seedForeground: selectedPalette.foreground,
-              accent: job.clipOverrides?.accentColor ?? selectedPalette.accent,
-              ...(selectedPalette.accent2 ? { accent2: selectedPalette.accent2 } : {}),
-            },
-            isCancelled,
-            onProgress: (message, fraction) => {
-              if (!isCancelled()) {
-                window.webContents.send(Ch.Send.RENDER_CLIP_PREPARE, {
-                  clipId: job.clipId,
-                  message,
-                  percent: 20 + Math.round(fraction * 4),
-                });
-              }
-            },
-          });
-          allTempFiles.push(...quotes.tempFiles);
-          resolvedSegments = quotes.segments;
-          sceneCues = [...sceneCues, ...quotes.cues].sort((a, b) => a.at - b.at);
-        }
 
         // Clip-relative archetype windows for the post-concat caption pass.
         const archetypeWindows: ArchetypeWindow[] = [];
