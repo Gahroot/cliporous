@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "pack": "geometry",
+  "sourceFiles": [
+    { "stories": ["57", "58"], "file": "geometry/section-unfold.source.json" },
+    { "stories": ["59", "60"], "file": "geometry/fit-scale.source.json" },
+    { "stories": ["61", "62"], "file": "geometry/visibility-access.source.json" },
+    { "stories": ["63", "64"], "file": "geometry/regions-dimensions.source.json" }
+  ]
+}

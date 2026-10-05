@@ -1,0 +1,3360 @@
+{
+  "version": 1,
+  "pack": "representations",
+  "negativeFormat": "explicit-path-edits-and-complete-clause-replacements",
+  "stories": [
+    {
+      "id": "49",
+      "name": "canonical",
+      "sourceText": "Span lists Ada as actor for Harbor during May. Ada Span is 1.5 metres during May among Harbor with denominator 12. Ada requests Span conversion from metre to centimetre for Harbor during May. Ada confirms Span conversion preserves amount for Harbor during May. Ada requests Span conversion for Harbor during May.",
+      "words": [
+        {
+          "text": "Span",
+          "start": 0.25,
+          "end": 0.388888889
+        },
+        {
+          "text": "lists",
+          "start": 0.388888889,
+          "end": 0.527777778
+        },
+        {
+          "text": "Ada",
+          "start": 0.527777778,
+          "end": 0.666666667
+        },
+        {
+          "text": "as",
+          "start": 0.666666667,
+          "end": 0.805555556
+        },
+        {
+          "text": "actor",
+          "start": 0.805555556,
+          "end": 0.944444444
+        },
+        {
+          "text": "for",
+          "start": 0.944444444,
+          "end": 1.083333333
+        },
+        {
+          "text": "Harbor",
+          "start": 1.083333333,
+          "end": 1.222222222
+        },
+        {
+          "text": "during",
+          "start": 1.222222222,
+          "end": 1.361111111
+        },
+        {
+          "text": "May.",
+          "start": 1.361111111,
+          "end": 1.5
+        },
+        {
+          "text": "Ada",
+          "start": 2,
+          "end": 2.125
+        },
+        {
+          "text": "Span",
+          "start": 2.125,
+          "end": 2.25
+        },
+        {
+          "text": "is",
+          "start": 2.25,
+          "end": 2.375
+        },
+        {
+          "text": "1.5",
+          "start": 2.375,
+          "end": 2.5
+        },
+        {
+          "text": "metres",
+          "start": 2.5,
+          "end": 2.625
+        },
+        {
+          "text": "during",
+          "start": 2.625,
+          "end": 2.75
+        },
+        {
+          "text": "May",
+          "start": 2.75,
+          "end": 2.875
+        },
+        {
+          "text": "among",
+          "start": 2.875,
+          "end": 3
+        },
+        {
+          "text": "Harbor",
+          "start": 3,
+          "end": 3.125
+        },
+        {
+          "text": "with",
+          "start": 3.125,
+          "end": 3.25
+        },
+        {
+          "text": "denominator",
+          "start": 3.25,
+          "end": 3.375
+        },
+        {
+          "text": "12.",
+          "start": 3.375,
+          "end": 3.5
+        },
+        {
+          "text": "Ada",
+          "start": 4,
+          "end": 4.125
+        },
+        {
+          "text": "requests",
+          "start": 4.125,
+          "end": 4.25
+        },
+        {
+          "text": "Span",
+          "start": 4.25,
+          "end": 4.375
+        },
+        {
+          "text": "conversion",
+          "start": 4.375,
+          "end": 4.5
+        },
+        {
+          "text": "from",
+          "start": 4.5,
+          "end": 4.625
+        },
+        {
+          "text": "metre",
+          "start": 4.625,
+          "end": 4.75
+        },
+        {
+          "text": "to",
+          "start": 4.75,
+          "end": 4.875
+        },
+        {
+          "text": "centimetre",
+          "start": 4.875,
+          "end": 5
+        },
+        {
+          "text": "for",
+          "start": 5,
+          "end": 5.125
+        },
+        {
+          "text": "Harbor",
+          "start": 5.125,
+          "end": 5.25
+        },
+        {
+          "text": "during",
+          "start": 5.25,
+          "end": 5.375
+        },
+        {
+          "text": "May.",
+          "start": 5.375,
+          "end": 5.5
+        },
+        {
+          "text": "Ada",
+          "start": 6,
+          "end": 6.25
+        },
+        {
+          "text": "confirms",
+          "start": 6.25,
+          "end": 6.5
+        },
+        {
+          "text": "Span",
+          "start": 6.5,
+          "end": 6.75
+        },
+        {
+          "text": "conversion",
+          "start": 6.75,
+          "end": 7
+        },
+        {
+          "text": "preserves",
+          "start": 7,
+          "end": 7.25
+        },
+        {
+          "text": "amount",
+          "start": 7.25,
+          "end": 7.5
+        },
+        {
+          "text": "for",
+          "start": 7.5,
+          "end": 7.75
+        },
+        {
+          "text": "Harbor",
+          "start": 7.75,
+          "end": 8
+        },
+        {
+          "text": "during",
+          "start": 8,
+          "end": 8.25
+        },
+        {
+          "text": "May.",
+          "start": 8.25,
+          "end": 8.5
+        },
+        {
+          "text": "Ada",
+          "start": 9.5,
+          "end": 9.76875
+        },
+        {
+          "text": "requests",
+          "start": 9.76875,
+          "end": 10.0375
+        },
+        {
+          "text": "Span",
+          "start": 10.0375,
+          "end": 10.30625
+        },
+        {
+          "text": "conversion",
+          "start": 10.30625,
+          "end": 10.575
+        },
+        {
+          "text": "for",
+          "start": 10.575,
+          "end": 10.84375
+        },
+        {
+          "text": "Harbor",
+          "start": 10.84375,
+          "end": 11.1125
+        },
+        {
+          "text": "during",
+          "start": 11.1125,
+          "end": 11.38125
+        },
+        {
+          "text": "May.",
+          "start": 11.38125,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 50,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "representation-transform",
+        "preset": "unit-conversion",
+        "visualMode": "diagram",
+        "template": "compatible-units",
+        "label": "Span",
+        "subject": "Ada",
+        "outcome": "conversion",
+        "evidence": "source-stated",
+        "actors": [
+          {
+            "label": "Ada",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 8
+            }
+          }
+        ],
+        "identity": "Span",
+        "population": "Harbor",
+        "period": "May",
+        "startWord": 0,
+        "endWord": 50,
+        "setupWord": 0,
+        "actionWord": 9,
+        "responseWord": 21,
+        "checkWord": 33,
+        "resolveWord": 43,
+        "quantity": {
+          "actor": "Ada",
+          "claim": "Span",
+          "basis": {
+            "unit": "metre",
+            "period": "May",
+            "population": "Harbor",
+            "denominator": {
+              "numerator": 12,
+              "denominator": 1
+            }
+          },
+          "state": "known",
+          "amount": {
+            "kind": "rational",
+            "value": {
+              "numerator": 3,
+              "denominator": 2
+            }
+          },
+          "evidence": {
+            "fromWord": 9,
+            "toWord": 20
+          }
+        },
+        "conversion": {
+          "actor": "Ada",
+          "identity": "Span",
+          "population": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 21,
+            "toWord": 32
+          },
+          "fromUnit": "metre",
+          "toUnit": "centimetre"
+        },
+        "result": {
+          "actor": "Ada",
+          "identity": "Span",
+          "population": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 43,
+            "toWord": 50
+          },
+          "operation": "unit-conversion"
+        }
+      },
+      "negatives": [
+        {
+          "name": "wrong actor",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "actor"
+              ],
+              "value": "Bea"
+            }
+          ]
+        },
+        {
+          "name": "wrong population",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "basis",
+                "population"
+              ],
+              "value": "Cedar"
+            }
+          ]
+        },
+        {
+          "name": "wrong period",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "basis",
+                "period"
+              ],
+              "value": "July"
+            }
+          ]
+        },
+        {
+          "name": "invented claim",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "claim"
+              ],
+              "value": "Width"
+            }
+          ]
+        },
+        {
+          "name": "invented value",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "amount",
+                "value",
+                "numerator"
+              ],
+              "value": 30
+            }
+          ]
+        },
+        {
+          "name": "sign stolen from positive source",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "amount",
+                "value",
+                "numerator"
+              ],
+              "value": -3
+            }
+          ]
+        },
+        {
+          "name": "unsupported precision",
+          "edits": [],
+          "clauses": {
+            "1": "Ada Span is 1.5000001 metres during May among Harbor with denominator 12."
+          }
+        },
+        {
+          "name": "zero denominator",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "basis",
+                "denominator",
+                "denominator"
+              ],
+              "value": 0
+            }
+          ]
+        },
+        {
+          "name": "exact conversion overflow",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 1000000000,
+                  "denominator": 1
+                }
+              }
+            },
+            {
+              "path": [
+                "conversion",
+                "toUnit"
+              ],
+              "value": "millimetre"
+            }
+          ],
+          "clauses": {
+            "1": "Ada Span is 1000000000 metres during May among Harbor with denominator 12.",
+            "2": "Ada requests Span conversion from metre to millimetre for Harbor during May."
+          }
+        },
+        {
+          "name": "currency conversion",
+          "edits": [
+            {
+              "path": [
+                "conversion",
+                "toUnit"
+              ],
+              "value": "EUR"
+            }
+          ]
+        },
+        {
+          "name": "angle approximation",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "basis",
+                "unit"
+              ],
+              "value": "radian"
+            },
+            {
+              "path": [
+                "conversion",
+                "fromUnit"
+              ],
+              "value": "radian"
+            },
+            {
+              "path": [
+                "conversion",
+                "toUnit"
+              ],
+              "value": "degree"
+            }
+          ],
+          "clauses": {
+            "1": "Ada Span is 1.5 radians during May among Harbor with denominator 12.",
+            "2": "Ada requests Span conversion from radian to degree for Harbor during May."
+          }
+        },
+        {
+          "name": "temperature invented conversion",
+          "edits": [
+            {
+              "path": [
+                "conversion",
+                "toUnit"
+              ],
+              "value": "celsius"
+            }
+          ]
+        },
+        {
+          "name": "identity pair is not conversion",
+          "edits": [
+            {
+              "path": [
+                "conversion",
+                "toUnit"
+              ],
+              "value": "metre"
+            }
+          ],
+          "clauses": {
+            "2": "Ada requests Span conversion from metre to metre for Harbor during May."
+          }
+        },
+        {
+          "name": "condition silently discarded",
+          "edits": [],
+          "clauses": {
+            "1": "If access opens, Ada Span is 1.5 metres during May among Harbor with denominator 12."
+          }
+        },
+        {
+          "name": "unsupported mode",
+          "edits": [
+            {
+              "path": [
+                "visualMode"
+              ],
+              "value": "camera"
+            }
+          ]
+        },
+        {
+          "name": "unsupported template",
+          "edits": [
+            {
+              "path": [
+                "template"
+              ],
+              "value": "freeform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "49",
+      "name": "paraphrase",
+      "sourceText": "For Cedar during July, Mass records Inez as actor. In this simulated sample, during July, Inez recorded Mass of -0.25 kilograms among Cedar. For Cedar during July, Inez specifies Mass conversion from kilogram to gram. For Cedar during July, Inez states Mass conversion preserves amount. For Cedar during July, Inez requests Mass conversion.",
+      "words": [
+        {
+          "text": "For",
+          "start": 0.25,
+          "end": 0.388888889
+        },
+        {
+          "text": "Cedar",
+          "start": 0.388888889,
+          "end": 0.527777778
+        },
+        {
+          "text": "during",
+          "start": 0.527777778,
+          "end": 0.666666667
+        },
+        {
+          "text": "July,",
+          "start": 0.666666667,
+          "end": 0.805555556
+        },
+        {
+          "text": "Mass",
+          "start": 0.805555556,
+          "end": 0.944444444
+        },
+        {
+          "text": "records",
+          "start": 0.944444444,
+          "end": 1.083333333
+        },
+        {
+          "text": "Inez",
+          "start": 1.083333333,
+          "end": 1.222222222
+        },
+        {
+          "text": "as",
+          "start": 1.222222222,
+          "end": 1.361111111
+        },
+        {
+          "text": "actor.",
+          "start": 1.361111111,
+          "end": 1.5
+        },
+        {
+          "text": "In",
+          "start": 2,
+          "end": 2.107142857
+        },
+        {
+          "text": "this",
+          "start": 2.107142857,
+          "end": 2.214285714
+        },
+        {
+          "text": "simulated",
+          "start": 2.214285714,
+          "end": 2.321428571
+        },
+        {
+          "text": "sample,",
+          "start": 2.321428571,
+          "end": 2.428571429
+        },
+        {
+          "text": "during",
+          "start": 2.428571429,
+          "end": 2.535714286
+        },
+        {
+          "text": "July,",
+          "start": 2.535714286,
+          "end": 2.642857143
+        },
+        {
+          "text": "Inez",
+          "start": 2.642857143,
+          "end": 2.75
+        },
+        {
+          "text": "recorded",
+          "start": 2.75,
+          "end": 2.857142857
+        },
+        {
+          "text": "Mass",
+          "start": 2.857142857,
+          "end": 2.964285714
+        },
+        {
+          "text": "of",
+          "start": 2.964285714,
+          "end": 3.071428571
+        },
+        {
+          "text": "-0.25",
+          "start": 3.071428571,
+          "end": 3.178571429
+        },
+        {
+          "text": "kilograms",
+          "start": 3.178571429,
+          "end": 3.285714286
+        },
+        {
+          "text": "among",
+          "start": 3.285714286,
+          "end": 3.392857143
+        },
+        {
+          "text": "Cedar.",
+          "start": 3.392857143,
+          "end": 3.5
+        },
+        {
+          "text": "For",
+          "start": 4,
+          "end": 4.125
+        },
+        {
+          "text": "Cedar",
+          "start": 4.125,
+          "end": 4.25
+        },
+        {
+          "text": "during",
+          "start": 4.25,
+          "end": 4.375
+        },
+        {
+          "text": "July,",
+          "start": 4.375,
+          "end": 4.5
+        },
+        {
+          "text": "Inez",
+          "start": 4.5,
+          "end": 4.625
+        },
+        {
+          "text": "specifies",
+          "start": 4.625,
+          "end": 4.75
+        },
+        {
+          "text": "Mass",
+          "start": 4.75,
+          "end": 4.875
+        },
+        {
+          "text": "conversion",
+          "start": 4.875,
+          "end": 5
+        },
+        {
+          "text": "from",
+          "start": 5,
+          "end": 5.125
+        },
+        {
+          "text": "kilogram",
+          "start": 5.125,
+          "end": 5.25
+        },
+        {
+          "text": "to",
+          "start": 5.25,
+          "end": 5.375
+        },
+        {
+          "text": "gram.",
+          "start": 5.375,
+          "end": 5.5
+        },
+        {
+          "text": "For",
+          "start": 6,
+          "end": 6.25
+        },
+        {
+          "text": "Cedar",
+          "start": 6.25,
+          "end": 6.5
+        },
+        {
+          "text": "during",
+          "start": 6.5,
+          "end": 6.75
+        },
+        {
+          "text": "July,",
+          "start": 6.75,
+          "end": 7
+        },
+        {
+          "text": "Inez",
+          "start": 7,
+          "end": 7.25
+        },
+        {
+          "text": "states",
+          "start": 7.25,
+          "end": 7.5
+        },
+        {
+          "text": "Mass",
+          "start": 7.5,
+          "end": 7.75
+        },
+        {
+          "text": "conversion",
+          "start": 7.75,
+          "end": 8
+        },
+        {
+          "text": "preserves",
+          "start": 8,
+          "end": 8.25
+        },
+        {
+          "text": "amount.",
+          "start": 8.25,
+          "end": 8.5
+        },
+        {
+          "text": "For",
+          "start": 9.5,
+          "end": 9.76875
+        },
+        {
+          "text": "Cedar",
+          "start": 9.76875,
+          "end": 10.0375
+        },
+        {
+          "text": "during",
+          "start": 10.0375,
+          "end": 10.30625
+        },
+        {
+          "text": "July,",
+          "start": 10.30625,
+          "end": 10.575
+        },
+        {
+          "text": "Inez",
+          "start": 10.575,
+          "end": 10.84375
+        },
+        {
+          "text": "requests",
+          "start": 10.84375,
+          "end": 11.1125
+        },
+        {
+          "text": "Mass",
+          "start": 11.1125,
+          "end": 11.38125
+        },
+        {
+          "text": "conversion.",
+          "start": 11.38125,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 52,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "representation-transform",
+        "preset": "unit-conversion",
+        "visualMode": "diagram",
+        "template": "compatible-units",
+        "label": "Mass",
+        "subject": "Inez",
+        "outcome": "conversion",
+        "evidence": "source-stated",
+        "actors": [
+          {
+            "label": "Inez",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 8
+            }
+          }
+        ],
+        "identity": "Mass",
+        "population": "Cedar",
+        "period": "July",
+        "startWord": 0,
+        "endWord": 52,
+        "setupWord": 0,
+        "actionWord": 9,
+        "responseWord": 23,
+        "checkWord": 35,
+        "resolveWord": 45,
+        "quantity": {
+          "actor": "Inez",
+          "claim": "Mass",
+          "basis": {
+            "unit": "kilogram",
+            "period": "July",
+            "population": "Cedar"
+          },
+          "state": "simulated",
+          "amount": {
+            "kind": "rational",
+            "value": {
+              "numerator": -1,
+              "denominator": 4
+            }
+          },
+          "evidence": {
+            "fromWord": 9,
+            "toWord": 22
+          },
+          "qualifier": "simulated sample"
+        },
+        "conversion": {
+          "actor": "Inez",
+          "identity": "Mass",
+          "population": "Cedar",
+          "period": "July",
+          "evidence": {
+            "fromWord": 23,
+            "toWord": 34
+          },
+          "fromUnit": "kilogram",
+          "toUnit": "gram"
+        },
+        "result": {
+          "actor": "Inez",
+          "identity": "Mass",
+          "population": "Cedar",
+          "period": "July",
+          "evidence": {
+            "fromWord": 45,
+            "toWord": 52
+          },
+          "operation": "unit-conversion"
+        }
+      },
+      "negatives": [
+        {
+          "name": "simulation promoted to known",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "state"
+              ],
+              "value": "known"
+            },
+            {
+              "path": [
+                "quantity",
+                "qualifier"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "unqualified simulation",
+          "edits": [
+            {
+              "path": [
+                "quantity",
+                "qualifier"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "different source identity",
+          "edits": [
+            {
+              "path": [
+                "identity"
+              ],
+              "value": "Volume"
+            }
+          ]
+        },
+        {
+          "name": "invented conversion actor",
+          "edits": [
+            {
+              "path": [
+                "conversion",
+                "actor"
+              ],
+              "value": "Ada"
+            }
+          ]
+        },
+        {
+          "name": "target population invented",
+          "edits": [
+            {
+              "path": [
+                "conversion",
+                "population"
+              ],
+              "value": "Harbor"
+            }
+          ]
+        },
+        {
+          "name": "derived result supplied by caller",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "values"
+              ],
+              "value": [
+                {
+                  "kind": "rational",
+                  "value": {
+                    "numerator": -250,
+                    "denominator": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "unauthorized derivation",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "operation"
+              ],
+              "value": "ratio"
+            }
+          ]
+        },
+        {
+          "name": "wrong preset",
+          "edits": [
+            {
+              "path": [
+                "preset"
+              ],
+              "value": "equivalence"
+            }
+          ]
+        },
+        {
+          "name": "nine actors",
+          "edits": [
+            {
+              "path": [
+                "actors"
+              ],
+              "value": [
+                {
+                  "label": "Inez",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Inez",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Inez",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Inez",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Inez",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Inez",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Inez",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Inez",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Inez",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "thirteen records",
+          "edits": [
+            {
+              "path": [
+                "records"
+              ],
+              "value": [
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                },
+                {
+                  "actor": "Inez",
+                  "claim": "Mass",
+                  "basis": {
+                    "unit": "kilogram",
+                    "period": "July",
+                    "population": "Cedar"
+                  },
+                  "state": "simulated",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": -1,
+                      "denominator": 4
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 22
+                  },
+                  "qualifier": "simulated sample"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "seventeen relations",
+          "edits": [
+            {
+              "path": [
+                "relations"
+              ],
+              "value": [
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
+              ]
+            }
+          ]
+        },
+        {
+          "name": "caller ID",
+          "edits": [
+            {
+              "path": [
+                "actors",
+                0,
+                "id"
+              ],
+              "value": "caller"
+            }
+          ]
+        },
+        {
+          "name": "compressed beats",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              1.1
+            ],
+            [
+              1.25,
+              3.5
+            ],
+            [
+              4,
+              5.5
+            ],
+            [
+              6,
+              8.5
+            ],
+            [
+              9.5,
+              11.65
+            ]
+          ]
+        },
+        {
+          "name": "same clause for two beats",
+          "edits": [
+            {
+              "path": [
+                "checkWord"
+              ],
+              "value": 23
+            }
+          ]
+        },
+        {
+          "name": "overlong window",
+          "edits": [
+            {
+              "path": [
+                "window",
+                "endTime"
+              ],
+              "value": 13
+            }
+          ]
+        },
+        {
+          "name": "HTML",
+          "edits": [
+            {
+              "path": [
+                "label"
+              ],
+              "value": "<svg/>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "50",
+      "name": "canonical",
+      "sourceText": "Survey lists Ada as actor for Harbor during May. Ada Survey selected is 40 count during May among Harbor with denominator 200. Ada Survey total is 200 count during May among Harbor with denominator 200. Ada states Survey views are set and area with 10 marks each representing 20 count for Harbor during May. Ada requests Survey equivalent views for Harbor during May.",
+      "words": [
+        {
+          "text": "Survey",
+          "start": 0.25,
+          "end": 0.388888889
+        },
+        {
+          "text": "lists",
+          "start": 0.388888889,
+          "end": 0.527777778
+        },
+        {
+          "text": "Ada",
+          "start": 0.527777778,
+          "end": 0.666666667
+        },
+        {
+          "text": "as",
+          "start": 0.666666667,
+          "end": 0.805555556
+        },
+        {
+          "text": "actor",
+          "start": 0.805555556,
+          "end": 0.944444444
+        },
+        {
+          "text": "for",
+          "start": 0.944444444,
+          "end": 1.083333333
+        },
+        {
+          "text": "Harbor",
+          "start": 1.083333333,
+          "end": 1.222222222
+        },
+        {
+          "text": "during",
+          "start": 1.222222222,
+          "end": 1.361111111
+        },
+        {
+          "text": "May.",
+          "start": 1.361111111,
+          "end": 1.5
+        },
+        {
+          "text": "Ada",
+          "start": 2,
+          "end": 2.115384615
+        },
+        {
+          "text": "Survey",
+          "start": 2.115384615,
+          "end": 2.230769231
+        },
+        {
+          "text": "selected",
+          "start": 2.230769231,
+          "end": 2.346153846
+        },
+        {
+          "text": "is",
+          "start": 2.346153846,
+          "end": 2.461538462
+        },
+        {
+          "text": "40",
+          "start": 2.461538462,
+          "end": 2.576923077
+        },
+        {
+          "text": "count",
+          "start": 2.576923077,
+          "end": 2.692307692
+        },
+        {
+          "text": "during",
+          "start": 2.692307692,
+          "end": 2.807692308
+        },
+        {
+          "text": "May",
+          "start": 2.807692308,
+          "end": 2.923076923
+        },
+        {
+          "text": "among",
+          "start": 2.923076923,
+          "end": 3.038461538
+        },
+        {
+          "text": "Harbor",
+          "start": 3.038461538,
+          "end": 3.153846154
+        },
+        {
+          "text": "with",
+          "start": 3.153846154,
+          "end": 3.269230769
+        },
+        {
+          "text": "denominator",
+          "start": 3.269230769,
+          "end": 3.384615385
+        },
+        {
+          "text": "200.",
+          "start": 3.384615385,
+          "end": 3.5
+        },
+        {
+          "text": "Ada",
+          "start": 4,
+          "end": 4.115384615
+        },
+        {
+          "text": "Survey",
+          "start": 4.115384615,
+          "end": 4.230769231
+        },
+        {
+          "text": "total",
+          "start": 4.230769231,
+          "end": 4.346153846
+        },
+        {
+          "text": "is",
+          "start": 4.346153846,
+          "end": 4.461538462
+        },
+        {
+          "text": "200",
+          "start": 4.461538462,
+          "end": 4.576923077
+        },
+        {
+          "text": "count",
+          "start": 4.576923077,
+          "end": 4.692307692
+        },
+        {
+          "text": "during",
+          "start": 4.692307692,
+          "end": 4.807692308
+        },
+        {
+          "text": "May",
+          "start": 4.807692308,
+          "end": 4.923076923
+        },
+        {
+          "text": "among",
+          "start": 4.923076923,
+          "end": 5.038461538
+        },
+        {
+          "text": "Harbor",
+          "start": 5.038461538,
+          "end": 5.153846154
+        },
+        {
+          "text": "with",
+          "start": 5.153846154,
+          "end": 5.269230769
+        },
+        {
+          "text": "denominator",
+          "start": 5.269230769,
+          "end": 5.384615385
+        },
+        {
+          "text": "200.",
+          "start": 5.384615385,
+          "end": 5.5
+        },
+        {
+          "text": "Ada",
+          "start": 6,
+          "end": 6.131578947
+        },
+        {
+          "text": "states",
+          "start": 6.131578947,
+          "end": 6.263157895
+        },
+        {
+          "text": "Survey",
+          "start": 6.263157895,
+          "end": 6.394736842
+        },
+        {
+          "text": "views",
+          "start": 6.394736842,
+          "end": 6.526315789
+        },
+        {
+          "text": "are",
+          "start": 6.526315789,
+          "end": 6.657894737
+        },
+        {
+          "text": "set",
+          "start": 6.657894737,
+          "end": 6.789473684
+        },
+        {
+          "text": "and",
+          "start": 6.789473684,
+          "end": 6.921052632
+        },
+        {
+          "text": "area",
+          "start": 6.921052632,
+          "end": 7.052631579
+        },
+        {
+          "text": "with",
+          "start": 7.052631579,
+          "end": 7.184210526
+        },
+        {
+          "text": "10",
+          "start": 7.184210526,
+          "end": 7.315789474
+        },
+        {
+          "text": "marks",
+          "start": 7.315789474,
+          "end": 7.447368421
+        },
+        {
+          "text": "each",
+          "start": 7.447368421,
+          "end": 7.578947368
+        },
+        {
+          "text": "representing",
+          "start": 7.578947368,
+          "end": 7.710526316
+        },
+        {
+          "text": "20",
+          "start": 7.710526316,
+          "end": 7.842105263
+        },
+        {
+          "text": "count",
+          "start": 7.842105263,
+          "end": 7.973684211
+        },
+        {
+          "text": "for",
+          "start": 7.973684211,
+          "end": 8.105263158
+        },
+        {
+          "text": "Harbor",
+          "start": 8.105263158,
+          "end": 8.236842105
+        },
+        {
+          "text": "during",
+          "start": 8.236842105,
+          "end": 8.368421053
+        },
+        {
+          "text": "May.",
+          "start": 8.368421053,
+          "end": 8.5
+        },
+        {
+          "text": "Ada",
+          "start": 9.5,
+          "end": 9.738888889
+        },
+        {
+          "text": "requests",
+          "start": 9.738888889,
+          "end": 9.977777778
+        },
+        {
+          "text": "Survey",
+          "start": 9.977777778,
+          "end": 10.216666667
+        },
+        {
+          "text": "equivalent",
+          "start": 10.216666667,
+          "end": 10.455555556
+        },
+        {
+          "text": "views",
+          "start": 10.455555556,
+          "end": 10.694444444
+        },
+        {
+          "text": "for",
+          "start": 10.694444444,
+          "end": 10.933333333
+        },
+        {
+          "text": "Harbor",
+          "start": 10.933333333,
+          "end": 11.172222222
+        },
+        {
+          "text": "during",
+          "start": 11.172222222,
+          "end": 11.411111111
+        },
+        {
+          "text": "May.",
+          "start": 11.411111111,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 62,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "representation-transform",
+        "preset": "equivalence",
+        "visualMode": "diagram",
+        "template": "equivalent-views",
+        "label": "Survey",
+        "subject": "Ada",
+        "outcome": "equivalent views",
+        "evidence": "source-stated",
+        "actors": [
+          {
+            "label": "Ada",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 8
+            }
+          }
+        ],
+        "identity": "Survey",
+        "population": "Harbor",
+        "period": "May",
+        "startWord": 0,
+        "endWord": 62,
+        "setupWord": 0,
+        "actionWord": 9,
+        "responseWord": 22,
+        "checkWord": 35,
+        "resolveWord": 54,
+        "quantities": [
+          {
+            "actor": "Ada",
+            "claim": "Survey selected",
+            "basis": {
+              "unit": "count",
+              "period": "May",
+              "population": "Harbor",
+              "denominator": {
+                "numerator": 200,
+                "denominator": 1
+              }
+            },
+            "state": "known",
+            "amount": {
+              "kind": "rational",
+              "value": {
+                "numerator": 40,
+                "denominator": 1
+              }
+            },
+            "evidence": {
+              "fromWord": 9,
+              "toWord": 21
+            }
+          },
+          {
+            "actor": "Ada",
+            "claim": "Survey total",
+            "basis": {
+              "unit": "count",
+              "period": "May",
+              "population": "Harbor",
+              "denominator": {
+                "numerator": 200,
+                "denominator": 1
+              }
+            },
+            "state": "known",
+            "amount": {
+              "kind": "rational",
+              "value": {
+                "numerator": 200,
+                "denominator": 1
+              }
+            },
+            "evidence": {
+              "fromWord": 22,
+              "toWord": 34
+            }
+          }
+        ],
+        "views": [
+          "set",
+          "area"
+        ],
+        "aggregation": {
+          "actor": "Ada",
+          "identity": "Survey",
+          "population": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 35,
+            "toWord": 53
+          },
+          "marks": 10,
+          "unitsPerMark": {
+            "numerator": 20,
+            "denominator": 1
+          }
+        },
+        "result": {
+          "actor": "Ada",
+          "identity": "Survey",
+          "population": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 54,
+            "toWord": 62
+          },
+          "operation": "ratio"
+        }
+      },
+      "negatives": [
+        {
+          "name": "wrong selected actor",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                0,
+                "actor"
+              ],
+              "value": "Bea"
+            }
+          ]
+        },
+        {
+          "name": "wrong denominator population",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                1,
+                "basis",
+                "population"
+              ],
+              "value": "Atlas"
+            }
+          ]
+        },
+        {
+          "name": "wrong period",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                1,
+                "basis",
+                "period"
+              ],
+              "value": "June"
+            }
+          ]
+        },
+        {
+          "name": "invented selected value",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                0,
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 50,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "incompatible units",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                1,
+                "basis",
+                "unit"
+              ],
+              "value": "metre"
+            }
+          ],
+          "clauses": {
+            "2": "Ada Survey total is 200 metres during May among Harbor with denominator 200."
+          }
+        },
+        {
+          "name": "wrong supplied denominator",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                1,
+                "basis",
+                "denominator",
+                "numerator"
+              ],
+              "value": 100
+            }
+          ]
+        },
+        {
+          "name": "zero total",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                1,
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            }
+          ],
+          "clauses": {
+            "2": "Ada Survey total is 0 count during May among Harbor with denominator 200."
+          }
+        },
+        {
+          "name": "negative selected count",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                0,
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": -40,
+                  "denominator": 1
+                }
+              }
+            }
+          ],
+          "clauses": {
+            "1": "Ada Survey selected is -40 count during May among Harbor with denominator 200."
+          }
+        },
+        {
+          "name": "selected exceeds total",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                0,
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 201,
+                  "denominator": 1
+                }
+              }
+            }
+          ],
+          "clauses": {
+            "1": "Ada Survey selected is 201 count during May among Harbor with denominator 200."
+          }
+        },
+        {
+          "name": "fractional invented member",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                0,
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 41,
+                  "denominator": 1
+                }
+              }
+            }
+          ],
+          "clauses": {
+            "1": "Ada Survey selected is 41 count during May among Harbor with denominator 200."
+          }
+        },
+        {
+          "name": "zero aggregation scale",
+          "edits": [
+            {
+              "path": [
+                "aggregation",
+                "unitsPerMark",
+                "numerator"
+              ],
+              "value": 0
+            }
+          ]
+        },
+        {
+          "name": "over 100 displayed marks",
+          "edits": [
+            {
+              "path": [
+                "aggregation",
+                "marks"
+              ],
+              "value": 51
+            }
+          ],
+          "clauses": {
+            "3": "Ada states Survey views are set and area with 51 marks each representing 20 count for Harbor during May."
+          }
+        },
+        {
+          "name": "overflow mark coverage",
+          "edits": [
+            {
+              "path": [
+                "aggregation",
+                "unitsPerMark",
+                "numerator"
+              ],
+              "value": 1000000000
+            }
+          ],
+          "clauses": {
+            "3": "Ada states Survey views are set and area with 10 marks each representing 1000000000 count for Harbor during May."
+          }
+        },
+        {
+          "name": "invented aggregation scale",
+          "edits": [
+            {
+              "path": [
+                "aggregation",
+                "unitsPerMark",
+                "numerator"
+              ],
+              "value": 10
+            }
+          ]
+        },
+        {
+          "name": "duplicate views",
+          "edits": [
+            {
+              "path": [
+                "views"
+              ],
+              "value": [
+                "set",
+                "set"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "arbitrary geometry",
+          "edits": [
+            {
+              "path": [
+                "views"
+              ],
+              "value": [
+                "set",
+                "mesh"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "50",
+      "name": "paraphrase",
+      "sourceText": "For Atlas during June, Census records Selene as actor. If access opens, during June, Selene recorded Census selected of 72 count among Atlas with denominator 300. If access opens, during June, Selene recorded Census total of 300 count among Atlas with denominator 300. For Atlas during June, Selene records Census views are set, area and length with 25 marks each representing 12 count. For Atlas during June, Selene requests Census equivalent views.",
+      "words": [
+        {
+          "text": "For",
+          "start": 0.25,
+          "end": 0.388888889
+        },
+        {
+          "text": "Atlas",
+          "start": 0.388888889,
+          "end": 0.527777778
+        },
+        {
+          "text": "during",
+          "start": 0.527777778,
+          "end": 0.666666667
+        },
+        {
+          "text": "June,",
+          "start": 0.666666667,
+          "end": 0.805555556
+        },
+        {
+          "text": "Census",
+          "start": 0.805555556,
+          "end": 0.944444444
+        },
+        {
+          "text": "records",
+          "start": 0.944444444,
+          "end": 1.083333333
+        },
+        {
+          "text": "Selene",
+          "start": 1.083333333,
+          "end": 1.222222222
+        },
+        {
+          "text": "as",
+          "start": 1.222222222,
+          "end": 1.361111111
+        },
+        {
+          "text": "actor.",
+          "start": 1.361111111,
+          "end": 1.5
+        },
+        {
+          "text": "If",
+          "start": 2,
+          "end": 2.088235294
+        },
+        {
+          "text": "access",
+          "start": 2.088235294,
+          "end": 2.176470588
+        },
+        {
+          "text": "opens,",
+          "start": 2.176470588,
+          "end": 2.264705882
+        },
+        {
+          "text": "during",
+          "start": 2.264705882,
+          "end": 2.352941176
+        },
+        {
+          "text": "June,",
+          "start": 2.352941176,
+          "end": 2.441176471
+        },
+        {
+          "text": "Selene",
+          "start": 2.441176471,
+          "end": 2.529411765
+        },
+        {
+          "text": "recorded",
+          "start": 2.529411765,
+          "end": 2.617647059
+        },
+        {
+          "text": "Census",
+          "start": 2.617647059,
+          "end": 2.705882353
+        },
+        {
+          "text": "selected",
+          "start": 2.705882353,
+          "end": 2.794117647
+        },
+        {
+          "text": "of",
+          "start": 2.794117647,
+          "end": 2.882352941
+        },
+        {
+          "text": "72",
+          "start": 2.882352941,
+          "end": 2.970588235
+        },
+        {
+          "text": "count",
+          "start": 2.970588235,
+          "end": 3.058823529
+        },
+        {
+          "text": "among",
+          "start": 3.058823529,
+          "end": 3.147058824
+        },
+        {
+          "text": "Atlas",
+          "start": 3.147058824,
+          "end": 3.235294118
+        },
+        {
+          "text": "with",
+          "start": 3.235294118,
+          "end": 3.323529412
+        },
+        {
+          "text": "denominator",
+          "start": 3.323529412,
+          "end": 3.411764706
+        },
+        {
+          "text": "300.",
+          "start": 3.411764706,
+          "end": 3.5
+        },
+        {
+          "text": "If",
+          "start": 4,
+          "end": 4.088235294
+        },
+        {
+          "text": "access",
+          "start": 4.088235294,
+          "end": 4.176470588
+        },
+        {
+          "text": "opens,",
+          "start": 4.176470588,
+          "end": 4.264705882
+        },
+        {
+          "text": "during",
+          "start": 4.264705882,
+          "end": 4.352941176
+        },
+        {
+          "text": "June,",
+          "start": 4.352941176,
+          "end": 4.441176471
+        },
+        {
+          "text": "Selene",
+          "start": 4.441176471,
+          "end": 4.529411765
+        },
+        {
+          "text": "recorded",
+          "start": 4.529411765,
+          "end": 4.617647059
+        },
+        {
+          "text": "Census",
+          "start": 4.617647059,
+          "end": 4.705882353
+        },
+        {
+          "text": "total",
+          "start": 4.705882353,
+          "end": 4.794117647
+        },
+        {
+          "text": "of",
+          "start": 4.794117647,
+          "end": 4.882352941
+        },
+        {
+          "text": "300",
+          "start": 4.882352941,
+          "end": 4.970588235
+        },
+        {
+          "text": "count",
+          "start": 4.970588235,
+          "end": 5.058823529
+        },
+        {
+          "text": "among",
+          "start": 5.058823529,
+          "end": 5.147058824
+        },
+        {
+          "text": "Atlas",
+          "start": 5.147058824,
+          "end": 5.235294118
+        },
+        {
+          "text": "with",
+          "start": 5.235294118,
+          "end": 5.323529412
+        },
+        {
+          "text": "denominator",
+          "start": 5.323529412,
+          "end": 5.411764706
+        },
+        {
+          "text": "300.",
+          "start": 5.411764706,
+          "end": 5.5
+        },
+        {
+          "text": "For",
+          "start": 6,
+          "end": 6.125
+        },
+        {
+          "text": "Atlas",
+          "start": 6.125,
+          "end": 6.25
+        },
+        {
+          "text": "during",
+          "start": 6.25,
+          "end": 6.375
+        },
+        {
+          "text": "June,",
+          "start": 6.375,
+          "end": 6.5
+        },
+        {
+          "text": "Selene",
+          "start": 6.5,
+          "end": 6.625
+        },
+        {
+          "text": "records",
+          "start": 6.625,
+          "end": 6.75
+        },
+        {
+          "text": "Census",
+          "start": 6.75,
+          "end": 6.875
+        },
+        {
+          "text": "views",
+          "start": 6.875,
+          "end": 7
+        },
+        {
+          "text": "are",
+          "start": 7,
+          "end": 7.125
+        },
+        {
+          "text": "set,",
+          "start": 7.125,
+          "end": 7.25
+        },
+        {
+          "text": "area",
+          "start": 7.25,
+          "end": 7.375
+        },
+        {
+          "text": "and",
+          "start": 7.375,
+          "end": 7.5
+        },
+        {
+          "text": "length",
+          "start": 7.5,
+          "end": 7.625
+        },
+        {
+          "text": "with",
+          "start": 7.625,
+          "end": 7.75
+        },
+        {
+          "text": "25",
+          "start": 7.75,
+          "end": 7.875
+        },
+        {
+          "text": "marks",
+          "start": 7.875,
+          "end": 8
+        },
+        {
+          "text": "each",
+          "start": 8,
+          "end": 8.125
+        },
+        {
+          "text": "representing",
+          "start": 8.125,
+          "end": 8.25
+        },
+        {
+          "text": "12",
+          "start": 8.25,
+          "end": 8.375
+        },
+        {
+          "text": "count.",
+          "start": 8.375,
+          "end": 8.5
+        },
+        {
+          "text": "For",
+          "start": 9.5,
+          "end": 9.738888889
+        },
+        {
+          "text": "Atlas",
+          "start": 9.738888889,
+          "end": 9.977777778
+        },
+        {
+          "text": "during",
+          "start": 9.977777778,
+          "end": 10.216666667
+        },
+        {
+          "text": "June,",
+          "start": 10.216666667,
+          "end": 10.455555556
+        },
+        {
+          "text": "Selene",
+          "start": 10.455555556,
+          "end": 10.694444444
+        },
+        {
+          "text": "requests",
+          "start": 10.694444444,
+          "end": 10.933333333
+        },
+        {
+          "text": "Census",
+          "start": 10.933333333,
+          "end": 11.172222222
+        },
+        {
+          "text": "equivalent",
+          "start": 11.172222222,
+          "end": 11.411111111
+        },
+        {
+          "text": "views.",
+          "start": 11.411111111,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 71,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "representation-transform",
+        "preset": "equivalence",
+        "visualMode": "diagram",
+        "template": "equivalent-views",
+        "label": "Census",
+        "subject": "Selene",
+        "outcome": "equivalent views",
+        "evidence": "source-stated",
+        "actors": [
+          {
+            "label": "Selene",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 8
+            }
+          }
+        ],
+        "identity": "Census",
+        "population": "Atlas",
+        "period": "June",
+        "startWord": 0,
+        "endWord": 71,
+        "setupWord": 0,
+        "actionWord": 9,
+        "responseWord": 26,
+        "checkWord": 43,
+        "resolveWord": 63,
+        "quantities": [
+          {
+            "actor": "Selene",
+            "claim": "Census selected",
+            "basis": {
+              "unit": "count",
+              "period": "June",
+              "population": "Atlas",
+              "denominator": {
+                "numerator": 300,
+                "denominator": 1
+              }
+            },
+            "state": "conditional",
+            "amount": {
+              "kind": "rational",
+              "value": {
+                "numerator": 72,
+                "denominator": 1
+              }
+            },
+            "evidence": {
+              "fromWord": 9,
+              "toWord": 25
+            },
+            "condition": "If access opens"
+          },
+          {
+            "actor": "Selene",
+            "claim": "Census total",
+            "basis": {
+              "unit": "count",
+              "period": "June",
+              "population": "Atlas",
+              "denominator": {
+                "numerator": 300,
+                "denominator": 1
+              }
+            },
+            "state": "conditional",
+            "amount": {
+              "kind": "rational",
+              "value": {
+                "numerator": 300,
+                "denominator": 1
+              }
+            },
+            "evidence": {
+              "fromWord": 26,
+              "toWord": 42
+            },
+            "condition": "If access opens"
+          }
+        ],
+        "views": [
+          "set",
+          "area",
+          "length"
+        ],
+        "aggregation": {
+          "actor": "Selene",
+          "identity": "Census",
+          "population": "Atlas",
+          "period": "June",
+          "evidence": {
+            "fromWord": 43,
+            "toWord": 62
+          },
+          "marks": 25,
+          "unitsPerMark": {
+            "numerator": 12,
+            "denominator": 1
+          }
+        },
+        "result": {
+          "actor": "Selene",
+          "identity": "Census",
+          "population": "Atlas",
+          "period": "June",
+          "evidence": {
+            "fromWord": 63,
+            "toWord": 71
+          },
+          "operation": "ratio"
+        }
+      },
+      "negatives": [
+        {
+          "name": "condition omitted",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                0,
+                "condition"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "conditions independently incompatible",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                1,
+                "condition"
+              ],
+              "value": "If weather holds"
+            }
+          ],
+          "clauses": {
+            "2": "If weather holds, during June, Selene recorded Census total of 300 count among Atlas with denominator 300."
+          }
+        },
+        {
+          "name": "unknown total cannot produce marks",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                1,
+                "state"
+              ],
+              "value": "unknown"
+            },
+            {
+              "path": [
+                "quantities",
+                1,
+                "qualifier"
+              ],
+              "value": "unknown"
+            },
+            {
+              "path": [
+                "quantities",
+                1,
+                "condition"
+              ],
+              "remove": true
+            },
+            {
+              "path": [
+                "quantities",
+                1,
+                "amount"
+              ],
+              "remove": true
+            }
+          ],
+          "clauses": {
+            "2": "During June, Selene recorded Census total of unknown count among Atlas with denominator 300."
+          }
+        },
+        {
+          "name": "missing selected cannot become zero",
+          "edits": [
+            {
+              "path": [
+                "quantities",
+                0,
+                "state"
+              ],
+              "value": "missing"
+            },
+            {
+              "path": [
+                "quantities",
+                0,
+                "qualifier"
+              ],
+              "value": "missing"
+            },
+            {
+              "path": [
+                "quantities",
+                0,
+                "condition"
+              ],
+              "remove": true
+            },
+            {
+              "path": [
+                "quantities",
+                0,
+                "amount"
+              ],
+              "remove": true
+            }
+          ],
+          "clauses": {
+            "1": "During June, Selene recorded Census selected of missing count among Atlas with denominator 300."
+          }
+        },
+        {
+          "name": "rounded caller ratio",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "ratio"
+              ],
+              "value": {
+                "numerator": 24,
+                "denominator": 100
+              }
+            }
+          ]
+        },
+        {
+          "name": "unauthorized difference",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "operation"
+              ],
+              "value": "difference"
+            }
+          ]
+        },
+        {
+          "name": "source precision truncated",
+          "edits": [],
+          "clauses": {
+            "1": "If access opens, during June, Selene recorded Census selected of 72.0000001 count among Atlas with denominator 300."
+          }
+        },
+        {
+          "name": "unsupported preset",
+          "edits": [
+            {
+              "path": [
+                "preset"
+              ],
+              "value": "unit-conversion"
+            }
+          ]
+        },
+        {
+          "name": "unsupported mode",
+          "edits": [
+            {
+              "path": [
+                "visualMode"
+              ],
+              "value": "3d"
+            }
+          ]
+        },
+        {
+          "name": "unsupported template",
+          "edits": [
+            {
+              "path": [
+                "template"
+              ],
+              "value": "arbitrary-layout"
+            }
+          ]
+        },
+        {
+          "name": "nine actors",
+          "edits": [
+            {
+              "path": [
+                "actors"
+              ],
+              "value": [
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "thirteen operands",
+          "edits": [
+            {
+              "path": [
+                "quantities"
+              ],
+              "value": [
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                },
+                {
+                  "actor": "Selene",
+                  "claim": "Census selected",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "Atlas",
+                    "denominator": {
+                      "numerator": 300,
+                      "denominator": 1
+                    }
+                  },
+                  "state": "conditional",
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 72,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 25
+                  },
+                  "condition": "If access opens"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "caller member IDs",
+          "edits": [
+            {
+              "path": [
+                "members"
+              ],
+              "value": [
+                "Ada",
+                "Bea"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "zero source interval",
+          "edits": [
+            {
+              "path": [
+                "words",
+                0,
+                "end"
+              ],
+              "value": 0.25
+            }
+          ]
+        },
+        {
+          "name": "same clause two beats",
+          "edits": [
+            {
+              "path": [
+                "responseWord"
+              ],
+              "value": 9
+            }
+          ]
+        },
+        {
+          "name": "unretained source negation",
+          "edits": [],
+          "clauses": {
+            "3": "For Atlas during June, Selene records Census views are not set, area and length with 25 marks each representing 12 count."
+          }
+        }
+      ]
+    }
+  ]
+}

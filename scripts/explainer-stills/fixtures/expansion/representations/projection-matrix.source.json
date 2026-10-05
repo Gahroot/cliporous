@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "pack": "representations",
+  "stories": [
+    {
+      "id":"53",
+      "sourceText":"Projection board lists Aster and Beacon in World and Sheet with rightward x and upward y axes during May among points. Aster World x coordinate is -2 metres during May among points with denominator 2. Beacon Sheet x coordinate is 7 metres during May among points with denominator 2. In this schematic, Aster in World corresponds to Beacon in Sheet by orthographic-xy projection during May among points. Projection board keeps only supplied coordinates.",
+      "words":[
+        {"text":"Projection","start":0.25,"end":0.32},{"text":"board","start":0.32,"end":0.39},{"text":"lists","start":0.39,"end":0.46},{"text":"Aster","start":0.46,"end":0.53},{"text":"and","start":0.53,"end":0.6},{"text":"Beacon","start":0.6,"end":0.67},{"text":"in","start":0.67,"end":0.74},{"text":"World","start":0.74,"end":0.81},{"text":"and","start":0.81,"end":0.88},{"text":"Sheet","start":0.88,"end":0.95},{"text":"with","start":0.95,"end":1.02},{"text":"rightward","start":1.02,"end":1.09},{"text":"x","start":1.09,"end":1.16},{"text":"and","start":1.16,"end":1.23},{"text":"upward","start":1.23,"end":1.3},{"text":"y","start":1.3,"end":1.37},{"text":"axes","start":1.37,"end":1.44},{"text":"during","start":1.44,"end":1.51},{"text":"May","start":1.51,"end":1.58},{"text":"among","start":1.58,"end":1.65},{"text":"points.","start":1.65,"end":1.72},
+        {"text":"Aster","start":2.25,"end":2.35},{"text":"World","start":2.35,"end":2.45},{"text":"x","start":2.45,"end":2.55},{"text":"coordinate","start":2.55,"end":2.65},{"text":"is","start":2.65,"end":2.75},{"text":"-2","start":2.75,"end":2.85},{"text":"metres","start":2.85,"end":2.95},{"text":"during","start":2.95,"end":3.05},{"text":"May","start":3.05,"end":3.15},{"text":"among","start":3.15,"end":3.25},{"text":"points","start":3.25,"end":3.35},{"text":"with","start":3.35,"end":3.45},{"text":"denominator","start":3.45,"end":3.55},{"text":"2.","start":3.55,"end":3.65},
+        {"text":"Beacon","start":4.25,"end":4.35},{"text":"Sheet","start":4.35,"end":4.45},{"text":"x","start":4.45,"end":4.55},{"text":"coordinate","start":4.55,"end":4.65},{"text":"is","start":4.65,"end":4.75},{"text":"7","start":4.75,"end":4.85},{"text":"metres","start":4.85,"end":4.95},{"text":"during","start":4.95,"end":5.05},{"text":"May","start":5.05,"end":5.15},{"text":"among","start":5.15,"end":5.25},{"text":"points","start":5.25,"end":5.35},{"text":"with","start":5.35,"end":5.45},{"text":"denominator","start":5.45,"end":5.55},{"text":"2.","start":5.55,"end":5.65},
+        {"text":"In","start":6.75,"end":6.85},{"text":"this","start":6.85,"end":6.95},{"text":"schematic,","start":6.95,"end":7.05},{"text":"Aster","start":7.05,"end":7.15},{"text":"in","start":7.15,"end":7.25},{"text":"World","start":7.25,"end":7.35},{"text":"corresponds","start":7.35,"end":7.45},{"text":"to","start":7.45,"end":7.55},{"text":"Beacon","start":7.55,"end":7.65},{"text":"in","start":7.65,"end":7.75},{"text":"Sheet","start":7.75,"end":7.85},{"text":"by","start":7.85,"end":7.95},{"text":"orthographic-xy","start":7.95,"end":8.05},{"text":"projection","start":8.05,"end":8.15},{"text":"during","start":8.15,"end":8.25},{"text":"May","start":8.25,"end":8.35},{"text":"among","start":8.35,"end":8.45},{"text":"points.","start":8.45,"end":8.55},
+        {"text":"Projection","start":10.25,"end":10.45},{"text":"board","start":10.45,"end":10.65},{"text":"keeps","start":10.65,"end":10.85},{"text":"only","start":10.85,"end":11.05},{"text":"supplied","start":11.05,"end":11.25},{"text":"coordinates.","start":11.25,"end":11.65}
+      ],
+      "window":{"startWord":0,"endWord":72,"startTime":0,"endTime":12},
+      "proposal":{
+        "kind":"geometry-projection","preset":"coordinates","visualMode":"diagram","template":"orthographic-xy","evidence":"illustrative","label":"Projection board","subject":"Projection board","outcome":"supplied coordinates","startWord":0,"endWord":72,"setupWord":0,"actionWord":21,"responseWord":35,"checkWord":49,"resolveWord":67,"period":"May","population":"points",
+        "entities":[{"label":"Aster","evidence":{"fromWord":0,"toWord":20}},{"label":"Beacon","evidence":{"fromWord":0,"toWord":20}}],
+        "frames":[{"label":"World","axes":[{"axis":"x","positive":"right"},{"axis":"y","positive":"up"}],"evidence":{"fromWord":0,"toWord":20}},{"label":"Sheet","axes":[{"axis":"x","positive":"right"},{"axis":"y","positive":"up"}],"evidence":{"fromWord":0,"toWord":20}}],
+        "records":[
+          {"actor":"Aster","frame":"World","axis":"x","quantity":{"actor":"Aster","claim":"World x coordinate","basis":{"unit":"metre","period":"May","population":"points","denominator":{"numerator":2,"denominator":1}},"state":"known","amount":{"kind":"rational","value":{"numerator":-2,"denominator":1}},"evidence":{"fromWord":21,"toWord":34}}},
+          {"actor":"Beacon","frame":"Sheet","axis":"x","quantity":{"actor":"Beacon","claim":"Sheet x coordinate","basis":{"unit":"metre","period":"May","population":"points","denominator":{"numerator":2,"denominator":1}},"state":"known","amount":{"kind":"rational","value":{"numerator":7,"denominator":1}},"evidence":{"fromWord":35,"toWord":48}}}
+        ],
+        "relations":[{"fromActor":"Aster","fromFrame":"World","toActor":"Beacon","toFrame":"Sheet","state":"illustrative","qualifier":"schematic","evidence":{"fromWord":49,"toWord":66}}]
+      },
+      "paraphrases":[{"name":"independent paraphrase","outcome":"supplied coordinates","clauses":["During May among points, Projection board names Aster and Beacon in World and Sheet with rightward x and upward y axes.","During May, Aster reported World x coordinate of -2 metres among points with denominator 2.","During May, Beacon recorded Sheet x coordinate as 7 metres among points with denominator 2.","During May among points, In this schematic, Beacon in Sheet is the supplied correspondence of Aster in World by orthographic-xy projection.","Projection board preserves supplied coordinates."]}],
+      "negatives":[
+        {"name":"wrong actor","edits":[{"path":["records",0,"quantity","actor"],"value":"Beacon"}]},
+        {"name":"wrong axis","edits":[{"path":["records",0,"axis"],"value":"y"}]},
+        {"name":"wrong frame","edits":[{"path":["records",0,"frame"],"value":"Sheet"}]},
+        {"name":"lost sign","edits":[{"path":["records",0,"quantity","amount","value","numerator"],"value":2}]},
+        {"name":"wrong unit","edits":[{"path":["records",0,"quantity","basis","unit"],"value":"second"}]},
+        {"name":"wrong basis","edits":[{"path":["records",0,"quantity","basis","denominator","numerator"],"value":3}]},
+        {"name":"wrong population","edits":[{"path":["records",0,"quantity","basis","population"],"value":"samples"}]},
+        {"name":"wrong period","edits":[{"path":["records",0,"quantity","basis","period"],"value":"June"}]},
+        {"name":"unknown made zero","clauses":{"1":"Aster World x coordinate is unknown metres during May among points with denominator 2."},"edits":[{"path":["records",0,"quantity","amount","value","numerator"],"value":0}]},
+        {"name":"invented condition","edits":[{"path":["condition"],"value":"if the frame moves"}]},
+        {"name":"unsupplied output derivation","edits":[{"path":["result"],"value":7}]},
+        {"name":"measurement promoted from schematic","edits":[{"path":["relations",0,"state"],"value":"known"}]},
+        {"name":"wrong orientation","edits":[{"path":["frames",0,"axes",0,"positive"],"value":"left"}]},
+        {"name":"wrong template","edits":[{"path":["template"],"value":"perspective-camera"}]},
+        {"name":"wrong preset","edits":[{"path":["preset"],"value":"matrix-product"}]},
+        {"name":"wrong mode","edits":[{"path":["visualMode"],"value":"webgl"}]},
+        {"name":"incomplete beat","edits":[{"path":["actionWord"],"value":22}]},
+        {"name":"caller camera","edits":[{"path":["camera"],"value":{"position":[1,2,3]}}]}
+      ]
+    },
+    {
+      "id":"54",
+      "sourceText":"Matrix board lists Aster during May among samples. Aster Left weights matrix has rows R and columns K1 and K2 with values 1/2, -2 ratio during May among samples with denominator 2. Aster Right weights matrix has rows K1 and K2 and columns C with values 4, 3 ratio during May among samples with denominator 2. Aster requests the worked matrix-product calculation for weights using Left times Right during May among samples. Matrix board keeps the supplied operands.",
+      "words":[
+        {"text":"Matrix","start":0.25,"end":0.35},{"text":"board","start":0.35,"end":0.45},{"text":"lists","start":0.45,"end":0.55},{"text":"Aster","start":0.55,"end":0.65},{"text":"during","start":0.65,"end":0.75},{"text":"May","start":0.75,"end":0.85},{"text":"among","start":0.85,"end":0.95},{"text":"samples.","start":0.95,"end":1.05},
+        {"text":"Aster","start":2.25,"end":2.325},{"text":"Left","start":2.325,"end":2.4},{"text":"weights","start":2.4,"end":2.475},{"text":"matrix","start":2.475,"end":2.55},{"text":"has","start":2.55,"end":2.625},{"text":"rows","start":2.625,"end":2.7},{"text":"R","start":2.7,"end":2.775},{"text":"and","start":2.775,"end":2.85},{"text":"columns","start":2.85,"end":2.925},{"text":"K1","start":2.925,"end":3},{"text":"and","start":3,"end":3.075},{"text":"K2","start":3.075,"end":3.15},{"text":"with","start":3.15,"end":3.225},{"text":"values","start":3.225,"end":3.3},{"text":"1/2,","start":3.3,"end":3.375},{"text":"-2","start":3.375,"end":3.45},{"text":"ratio","start":3.45,"end":3.525},{"text":"during","start":3.525,"end":3.6},{"text":"May","start":3.6,"end":3.675},{"text":"among","start":3.675,"end":3.75},{"text":"samples","start":3.75,"end":3.825},{"text":"with","start":3.825,"end":3.9},{"text":"denominator","start":3.9,"end":3.975},{"text":"2.","start":3.975,"end":4.05},
+        {"text":"Aster","start":4.25,"end":4.325},{"text":"Right","start":4.325,"end":4.4},{"text":"weights","start":4.4,"end":4.475},{"text":"matrix","start":4.475,"end":4.55},{"text":"has","start":4.55,"end":4.625},{"text":"rows","start":4.625,"end":4.7},{"text":"K1","start":4.7,"end":4.775},{"text":"and","start":4.775,"end":4.85},{"text":"K2","start":4.85,"end":4.925},{"text":"and","start":4.925,"end":5},{"text":"columns","start":5,"end":5.075},{"text":"C","start":5.075,"end":5.15},{"text":"with","start":5.15,"end":5.225},{"text":"values","start":5.225,"end":5.3},{"text":"4,","start":5.3,"end":5.375},{"text":"3","start":5.375,"end":5.45},{"text":"ratio","start":5.45,"end":5.525},{"text":"during","start":5.525,"end":5.6},{"text":"May","start":5.6,"end":5.675},{"text":"among","start":5.675,"end":5.75},{"text":"samples","start":5.75,"end":5.825},{"text":"with","start":5.825,"end":5.9},{"text":"denominator","start":5.9,"end":5.975},{"text":"2.","start":5.975,"end":6.05},
+        {"text":"Aster","start":6.75,"end":6.85},{"text":"requests","start":6.85,"end":6.95},{"text":"the","start":6.95,"end":7.05},{"text":"worked","start":7.05,"end":7.15},{"text":"matrix-product","start":7.15,"end":7.25},{"text":"calculation","start":7.25,"end":7.35},{"text":"for","start":7.35,"end":7.45},{"text":"weights","start":7.45,"end":7.55},{"text":"using","start":7.55,"end":7.65},{"text":"Left","start":7.65,"end":7.75},{"text":"times","start":7.75,"end":7.85},{"text":"Right","start":7.85,"end":7.95},{"text":"during","start":7.95,"end":8.05},{"text":"May","start":8.05,"end":8.15},{"text":"among","start":8.15,"end":8.25},{"text":"samples.","start":8.25,"end":8.35},
+        {"text":"Matrix","start":10.25,"end":10.45},{"text":"board","start":10.45,"end":10.65},{"text":"keeps","start":10.65,"end":10.85},{"text":"the","start":10.85,"end":11.05},{"text":"supplied","start":11.05,"end":11.25},{"text":"operands.","start":11.25,"end":11.65}
+      ],
+      "window":{"startWord":0,"endWord":77,"startTime":0,"endTime":12},
+      "proposal":{
+        "kind":"linear-algebra","preset":"matrix-product","visualMode":"diagram","template":"row-column-product","evidence":"source-stated","label":"Matrix board","subject":"Matrix board","outcome":"supplied operands","startWord":0,"endWord":77,"setupWord":0,"actionWord":8,"responseWord":32,"checkWord":56,"resolveWord":72,"period":"May","population":"samples",
+        "entities":[{"label":"Aster","evidence":{"fromWord":0,"toWord":7}}],
+        "records":[
+          {"actor":"Aster","label":"Left","claim":"weights","basis":{"unit":"ratio","period":"May","population":"samples","denominator":{"numerator":2,"denominator":1}},"rows":["R"],"columns":["K1","K2"],"values":[[{"numerator":1,"denominator":2},{"numerator":-2,"denominator":1}]],"state":"known","evidence":{"fromWord":8,"toWord":31}},
+          {"actor":"Aster","label":"Right","claim":"weights","basis":{"unit":"ratio","period":"May","population":"samples","denominator":{"numerator":2,"denominator":1}},"rows":["K1","K2"],"columns":["C"],"values":[[{"numerator":4,"denominator":1}],[{"numerator":3,"denominator":1}]],"state":"known","evidence":{"fromWord":32,"toWord":55}}
+        ],
+        "relations":[{"actor":"Aster","left":"Left","right":"Right","operation":"matrix-product","state":"known","evidence":{"fromWord":56,"toWord":71}}]
+      },
+      "paraphrases":[{"name":"period-first independent paraphrase","outcome":"supplied operands","clauses":["During May among samples, Matrix board names Aster.","During May among samples with denominator 2, Aster Left weights matrix supplies rows R and columns K1 and K2 with values 1/2, -2 ratio.","During May among samples with denominator 2, Aster Right weights matrix supplies rows K1 and K2 and columns C with values 4, 3 ratio.","During May among samples, Aster asks to work the matrix-product calculation for weights using Left times Right.","Matrix board retains the supplied operands."]}],
+      "negatives":[
+        {"name":"wrong actor","edits":[{"path":["records",0,"actor"],"value":"Beacon"}]},
+        {"name":"wrong cell sign","edits":[{"path":["records",0,"values",0,1,"numerator"],"value":2}]},
+        {"name":"wrong cell position","edits":[{"path":["records",0,"values"],"value":[[{"numerator":-2,"denominator":1},{"numerator":1,"denominator":2}]]}]},
+        {"name":"incompatible dimensions","edits":[{"path":["records",1,"rows"],"value":["K1"]}]},
+        {"name":"wrong row identity","edits":[{"path":["records",1,"rows"],"value":["K2","K1"]}]},
+        {"name":"wrong claim","edits":[{"path":["records",1,"claim"],"value":"scores"}]},
+        {"name":"wrong units","edits":[{"path":["records",0,"basis","unit"],"value":"metre"}]},
+        {"name":"wrong population","edits":[{"path":["records",0,"basis","population"],"value":"points"}]},
+        {"name":"wrong period","edits":[{"path":["records",0,"basis","period"],"value":"June"}]},
+        {"name":"wrong denominator","edits":[{"path":["records",0,"basis","denominator","numerator"],"value":3}]},
+        {"name":"unknown operand made zero","clauses":{"1":"Aster Left weights matrix has rows R and columns K1 and K2 with values unknown ratio during May among samples with denominator 2."},"edits":[{"path":["records",0,"values"],"value":[[{"numerator":0,"denominator":1},{"numerator":0,"denominator":1}]]}]},
+        {"name":"zero denominator","edits":[{"path":["records",0,"values",0,0,"denominator"],"value":0}]},
+        {"name":"rational overflow","edits":[{"path":["records",0,"values",0,0,"numerator"],"value":1000000001}]},
+        {"name":"incomplete operand","edits":[{"path":["records",0,"values"],"value":[[{"numerator":1,"denominator":2}]]}]},
+        {"name":"status omitted","edits":[{"path":["records",0,"state"],"remove":true}]},
+        {"name":"invented condition","edits":[{"path":["condition"],"value":"if demand rises"}]},
+        {"name":"no worked calculation request","clauses":{"3":"Aster mentions Left and Right weights during May among samples."},"edits":[]},
+        {"name":"unapproved operation","edits":[{"path":["relations",0,"operation"],"value":"vector-product"}]},
+        {"name":"wrong template","edits":[{"path":["template"],"value":"function-evaluator"}]},
+        {"name":"wrong preset","edits":[{"path":["preset"],"value":"coordinates"}]},
+        {"name":"wrong mode","edits":[{"path":["visualMode"],"value":"webgl"}]},
+        {"name":"incomplete beat","edits":[{"path":["actionWord"],"value":9}]},
+        {"name":"caller cell identity","edits":[{"path":["records",0,"id"],"value":"caller-cell"}]}
+      ]
+    }
+  ]
+}

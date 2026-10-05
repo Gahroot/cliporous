@@ -13,3 +13,6 @@
 - **Storyboard style** — Ink or Polish, a material and typography treatment independent of color palette, legacy block skin and app theme.
 - **Appearance snapshot** — The style and resolved palette saved with an edit-plan version. Later changes to defaults or a custom palette do not change that version.
 - **Overview hold** — An optional readable pause showing the accumulated board; it is only used when the source window has enough time.
+- **Scene kind** — An explanation family. A kind alone does not identify every story variant in that family.
+- **Scene preset** — One named story variant within a scene kind. The kind and preset together identify its source-grounded story, not its visual treatment.
+- **Story identity** — The stable identity of one approved animation-library story. It follows from the recognized kind and preset, not from an arbitrary caller-supplied name.

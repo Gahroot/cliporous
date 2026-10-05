@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  EXPLAINER_SCENE_KINDS,
+  LEGACY_EXPLAINER_SCENE_KINDS,
   mapSceneTimes,
   SCENE_CUE_KINDS,
 } from '../../remotion/compositions/explainer/types';
@@ -173,10 +173,10 @@ const VALID: Record<string, Rec> = {
 const V3_KINDS = Object.keys(VALID);
 
 describe('kind registry', () => {
-  it('registers a spec for every scene kind, exactly once', () => {
+  it('registers a spec for every legacy scene kind, exactly once', () => {
     const kinds = ALL_KIND_SPECS.map((s) => s.kind);
     expect(new Set(kinds).size).toBe(kinds.length);
-    expect([...kinds].sort()).toEqual([...EXPLAINER_SCENE_KINDS].sort());
+    expect([...kinds].sort()).toEqual([...LEGACY_EXPLAINER_SCENE_KINDS].sort());
   });
 
   it('gives every spec a family, layouts and sane durations', () => {

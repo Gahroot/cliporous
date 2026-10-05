@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "pack": "temporal",
+  "stories": [
+    {
+      "id": "45",
+      "sourceText": "Delay board lists Aster and Beacon during May among jobs. Aster latency is 2 seconds during May among jobs with denominator 20. Aster throughput is 3 items per second during May among jobs with denominator 20. Beacon latency is 4 seconds during May among jobs with denominator 20. Beacon throughput is unknown items per second during May among jobs with denominator 20. In this qualitative comparison, Aster has lower latency than Beacon in seconds during May among jobs with denominator 20. Delay board keeps latency separate from throughput.",
+      "words": [
+        {"text":"Delay","start":0.25,"end":0.35}, {"text":"board","start":0.35,"end":0.45}, {"text":"lists","start":0.45,"end":0.55}, {"text":"Aster","start":0.55,"end":0.65}, {"text":"and","start":0.65,"end":0.75}, {"text":"Beacon","start":0.75,"end":0.85}, {"text":"during","start":0.85,"end":0.95}, {"text":"May","start":0.95,"end":1.05}, {"text":"among","start":1.05,"end":1.15}, {"text":"jobs.","start":1.15,"end":1.25},
+        {"text":"Aster","start":2.25,"end":2.35}, {"text":"latency","start":2.35,"end":2.45}, {"text":"is","start":2.45,"end":2.55}, {"text":"2","start":2.55,"end":2.65}, {"text":"seconds","start":2.65,"end":2.75}, {"text":"during","start":2.75,"end":2.85}, {"text":"May","start":2.85,"end":2.95}, {"text":"among","start":2.95,"end":3.05}, {"text":"jobs","start":3.05,"end":3.15}, {"text":"with","start":3.15,"end":3.25}, {"text":"denominator","start":3.25,"end":3.35}, {"text":"20.","start":3.35,"end":3.45},
+        {"text":"Aster","start":4.25,"end":4.325}, {"text":"throughput","start":4.325,"end":4.4}, {"text":"is","start":4.4,"end":4.475}, {"text":"3","start":4.475,"end":4.55}, {"text":"items","start":4.55,"end":4.625}, {"text":"per","start":4.625,"end":4.7}, {"text":"second","start":4.7,"end":4.775}, {"text":"during","start":4.775,"end":4.85}, {"text":"May","start":4.85,"end":4.925}, {"text":"among","start":4.925,"end":5}, {"text":"jobs","start":5,"end":5.075}, {"text":"with","start":5.075,"end":5.15}, {"text":"denominator","start":5.15,"end":5.225}, {"text":"20.","start":5.225,"end":5.3},
+        {"text":"Beacon","start":5.3,"end":5.375}, {"text":"latency","start":5.375,"end":5.45}, {"text":"is","start":5.45,"end":5.525}, {"text":"4","start":5.525,"end":5.6}, {"text":"seconds","start":5.6,"end":5.675}, {"text":"during","start":5.675,"end":5.75}, {"text":"May","start":5.75,"end":5.825}, {"text":"among","start":5.825,"end":5.9}, {"text":"jobs","start":5.9,"end":5.975}, {"text":"with","start":5.975,"end":6.05}, {"text":"denominator","start":6.05,"end":6.125}, {"text":"20.","start":6.125,"end":6.2},
+        {"text":"Beacon","start":6.2,"end":6.275}, {"text":"throughput","start":6.275,"end":6.35}, {"text":"is","start":6.35,"end":6.425}, {"text":"unknown","start":6.425,"end":6.5}, {"text":"items","start":6.5,"end":6.575}, {"text":"per","start":6.575,"end":6.65}, {"text":"second","start":6.65,"end":6.725}, {"text":"during","start":6.725,"end":6.8}, {"text":"May","start":6.8,"end":6.875}, {"text":"among","start":6.875,"end":6.95}, {"text":"jobs","start":6.95,"end":7.025}, {"text":"with","start":7.025,"end":7.1}, {"text":"denominator","start":7.1,"end":7.175}, {"text":"20.","start":7.175,"end":7.25},
+        {"text":"In","start":8.25,"end":8.35}, {"text":"this","start":8.35,"end":8.45}, {"text":"qualitative","start":8.45,"end":8.55}, {"text":"comparison,","start":8.55,"end":8.65}, {"text":"Aster","start":8.65,"end":8.75}, {"text":"has","start":8.75,"end":8.85}, {"text":"lower","start":8.85,"end":8.95}, {"text":"latency","start":8.95,"end":9.05}, {"text":"than","start":9.05,"end":9.15}, {"text":"Beacon","start":9.15,"end":9.25}, {"text":"in","start":9.25,"end":9.35}, {"text":"seconds","start":9.35,"end":9.45}, {"text":"during","start":9.45,"end":9.55}, {"text":"May","start":9.55,"end":9.65}, {"text":"among","start":9.65,"end":9.75}, {"text":"jobs","start":9.75,"end":9.85}, {"text":"with","start":9.85,"end":9.95}, {"text":"denominator","start":9.95,"end":10.05}, {"text":"20.","start":10.05,"end":10.15},
+        {"text":"Delay","start":10.25,"end":10.45}, {"text":"board","start":10.45,"end":10.65}, {"text":"keeps","start":10.65,"end":10.85}, {"text":"latency","start":10.85,"end":11.05}, {"text":"separate","start":11.05,"end":11.25}, {"text":"from","start":11.25,"end":11.45}, {"text":"throughput.","start":11.45,"end":11.65}
+      ],
+      "window": {"startWord":0,"endWord":87,"startTime":0,"endTime":12},
+      "proposal": {
+        "kind":"temporal-structure", "preset":"delay-throughput", "visualMode":"diagram", "template":"separate-dimensions", "evidence":"source-stated", "label":"Delay board", "subject":"Delay board", "outcome":"latency separate from throughput", "startWord":0, "endWord":87, "setupWord":0, "actionWord":10, "responseWord":22, "checkWord":62, "resolveWord":81,
+        "entities":[{"label":"Aster","evidence":{"fromWord":0,"toWord":9}},{"label":"Beacon","evidence":{"fromWord":0,"toWord":9}}], "period":"May", "population":"jobs",
+        "records":[
+          {"actor":"Aster","dimension":"latency","quantity":{"actor":"Aster","claim":"latency","basis":{"unit":"second","period":"May","population":"jobs","denominator":{"numerator":20,"denominator":1}},"evidence":{"fromWord":10,"toWord":21},"state":"known","amount":{"kind":"rational","value":{"numerator":2,"denominator":1}}}},
+          {"actor":"Aster","dimension":"throughput","quantity":{"actor":"Aster","claim":"throughput","basis":{"unit":"item/second","period":"May","population":"jobs","denominator":{"numerator":20,"denominator":1}},"evidence":{"fromWord":22,"toWord":35},"state":"known","amount":{"kind":"rational","value":{"numerator":3,"denominator":1}}}},
+          {"actor":"Beacon","dimension":"latency","quantity":{"actor":"Beacon","claim":"latency","basis":{"unit":"second","period":"May","population":"jobs","denominator":{"numerator":20,"denominator":1}},"evidence":{"fromWord":36,"toWord":47},"state":"known","amount":{"kind":"rational","value":{"numerator":4,"denominator":1}}}},
+          {"actor":"Beacon","dimension":"throughput","quantity":{"actor":"Beacon","claim":"throughput","basis":{"unit":"item/second","period":"May","population":"jobs","denominator":{"numerator":20,"denominator":1}},"evidence":{"fromWord":48,"toWord":61},"state":"unknown","qualifier":"unknown"}}
+        ],
+        "relations":[{"from":"Aster","to":"Beacon","dimension":"latency","basis":{"unit":"second","period":"May","population":"jobs","denominator":{"numerator":20,"denominator":1}},"comparisonLabel":"qualitative comparison","order":"lower","state":"known","evidence":{"fromWord":62,"toWord":80}}]
+      },
+      "paraphrases":[{
+        "name":"independently worded",
+        "clauses":["During May among jobs, Delay board names Aster and Beacon.","During May, Aster reported latency of 2 seconds among jobs with denominator 20.","During May, Aster observed throughput at 3 items per second among jobs with denominator 20.","During May, Beacon recorded latency as 4 seconds among jobs with denominator 20.","During May, Beacon reported throughput of unknown items per second among jobs with denominator 20.","In this qualitative comparison, latency of Aster is lower than latency of Beacon in seconds during May among jobs with denominator 20.","Delay board preserves independent latency and throughput."],
+        "outcome":"independent latency"
+      }],
+      "negatives":[
+        {"name":"wrong actor","path":"records.0.quantity.actor","value":"Beacon"},
+        {"name":"wrong scope","path":"records.0.quantity.basis.population","value":"teams"},
+        {"name":"wrong source period","path":"records.0.quantity.basis.period","value":"June"},
+        {"name":"latency is not a rate","path":"records.0.quantity.basis.unit","value":"item/second"},
+        {"name":"made-up throughput","path":"records.1.quantity.amount.value.numerator","value":0.5},
+        {"name":"wrong basis denominator","path":"relations.0.basis.denominator.numerator","value":10},
+        {"name":"unknown promoted to known","path":"records.3.quantity.state","value":"known"},
+        {"name":"invented condition","path":"condition","value":"if demand rises"},
+        {"name":"invented result","path":"result","value":2},
+        {"name":"qualification omitted","path":"relations.0.comparisonLabel","value":"comparison"},
+        {"name":"wrong template","path":"template","value":"reciprocal-rate"},
+        {"name":"caller ID","path":"entities.0.id","value":"caller"},
+        {"name":"incomplete beat clause","path":"actionWord","value":11},
+        {"name":"wrong preset","path":"preset","value":"periodic-phase"},
+        {"name":"wrong mode","path":"visualMode","value":"3d"}
+      ]
+    },
+    {
+      "id":"46",
+      "sourceText":"Cycle board lists Aster and Beacon during May among clocks. Aster period is 2 seconds during May among clocks with denominator 2. Beacon period is 2 seconds during May among clocks with denominator 2. Aster cycles clockwise during May among clocks. Beacon cycles clockwise during May among clocks. Aster phase relative to Beacon is 90 degrees during May among clocks with denominator 2. Aster leads Beacon during May among clocks. Cycle board preserves supplied periods and phases.",
+      "words":[
+        {"text":"Cycle","start":0.25,"end":0.35}, {"text":"board","start":0.35,"end":0.45}, {"text":"lists","start":0.45,"end":0.55}, {"text":"Aster","start":0.55,"end":0.65}, {"text":"and","start":0.65,"end":0.75}, {"text":"Beacon","start":0.75,"end":0.85}, {"text":"during","start":0.85,"end":0.95}, {"text":"May","start":0.95,"end":1.05}, {"text":"among","start":1.05,"end":1.15}, {"text":"clocks.","start":1.15,"end":1.25},
+        {"text":"Aster","start":2.25,"end":2.35}, {"text":"period","start":2.35,"end":2.45}, {"text":"is","start":2.45,"end":2.55}, {"text":"2","start":2.55,"end":2.65}, {"text":"seconds","start":2.65,"end":2.75}, {"text":"during","start":2.75,"end":2.85}, {"text":"May","start":2.85,"end":2.95}, {"text":"among","start":2.95,"end":3.05}, {"text":"clocks","start":3.05,"end":3.15}, {"text":"with","start":3.15,"end":3.25}, {"text":"denominator","start":3.25,"end":3.35}, {"text":"2.","start":3.35,"end":3.45},
+        {"text":"Beacon","start":4.25,"end":4.325}, {"text":"period","start":4.325,"end":4.4}, {"text":"is","start":4.4,"end":4.475}, {"text":"2","start":4.475,"end":4.55}, {"text":"seconds","start":4.55,"end":4.625}, {"text":"during","start":4.625,"end":4.7}, {"text":"May","start":4.7,"end":4.775}, {"text":"among","start":4.775,"end":4.85}, {"text":"clocks","start":4.85,"end":4.925}, {"text":"with","start":4.925,"end":5}, {"text":"denominator","start":5,"end":5.075}, {"text":"2.","start":5.075,"end":5.15},
+        {"text":"Aster","start":5.15,"end":5.225}, {"text":"cycles","start":5.225,"end":5.3}, {"text":"clockwise","start":5.3,"end":5.375}, {"text":"during","start":5.375,"end":5.45}, {"text":"May","start":5.45,"end":5.525}, {"text":"among","start":5.525,"end":5.6}, {"text":"clocks.","start":5.6,"end":5.675},
+        {"text":"Beacon","start":5.675,"end":5.75}, {"text":"cycles","start":5.75,"end":5.825}, {"text":"clockwise","start":5.825,"end":5.9}, {"text":"during","start":5.9,"end":5.975}, {"text":"May","start":5.975,"end":6.05}, {"text":"among","start":6.05,"end":6.125}, {"text":"clocks.","start":6.125,"end":6.2},
+        {"text":"Aster","start":6.2,"end":6.275}, {"text":"phase","start":6.275,"end":6.35}, {"text":"relative","start":6.35,"end":6.425}, {"text":"to","start":6.425,"end":6.5}, {"text":"Beacon","start":6.5,"end":6.575}, {"text":"is","start":6.575,"end":6.65}, {"text":"90","start":6.65,"end":6.725}, {"text":"degrees","start":6.725,"end":6.8}, {"text":"during","start":6.8,"end":6.875}, {"text":"May","start":6.875,"end":6.95}, {"text":"among","start":6.95,"end":7.025}, {"text":"clocks","start":7.025,"end":7.1}, {"text":"with","start":7.1,"end":7.175}, {"text":"denominator","start":7.175,"end":7.25}, {"text":"2.","start":7.25,"end":7.325},
+        {"text":"Aster","start":8.25,"end":8.35}, {"text":"leads","start":8.35,"end":8.45}, {"text":"Beacon","start":8.45,"end":8.55}, {"text":"during","start":8.55,"end":8.65}, {"text":"May","start":8.65,"end":8.75}, {"text":"among","start":8.75,"end":8.85}, {"text":"clocks.","start":8.85,"end":8.95},
+        {"text":"Cycle","start":10.25,"end":10.45}, {"text":"board","start":10.45,"end":10.65}, {"text":"preserves","start":10.65,"end":10.85}, {"text":"supplied","start":10.85,"end":11.05}, {"text":"periods","start":11.05,"end":11.25}, {"text":"and","start":11.25,"end":11.45}, {"text":"phases.","start":11.45,"end":11.65}
+      ],
+      "window":{"startWord":0,"endWord":76,"startTime":0,"endTime":12},
+      "proposal":{
+        "kind":"synchronization", "preset":"periodic-phase", "visualMode":"diagram", "template":"bounded-cycles", "evidence":"source-stated", "label":"Cycle board", "subject":"Cycle board", "outcome":"supplied periods", "startWord":0, "endWord":76, "setupWord":0, "actionWord":10, "responseWord":22, "checkWord":63, "resolveWord":70,
+        "entities":[{"label":"Aster","evidence":{"fromWord":0,"toWord":9}},{"label":"Beacon","evidence":{"fromWord":0,"toWord":9}}], "period":"May", "population":"clocks",
+        "signals":[{"actor":"Aster","template":"cycle-dial","direction":"clockwise","state":"known","evidence":{"fromWord":34,"toWord":40}},{"actor":"Beacon","template":"cycle-dial","direction":"clockwise","state":"known","evidence":{"fromWord":41,"toWord":47}}],
+        "records":[
+          {"actor":"Aster","dimension":"period","quantity":{"actor":"Aster","claim":"period","basis":{"unit":"second","period":"May","population":"clocks","denominator":{"numerator":2,"denominator":1}},"evidence":{"fromWord":10,"toWord":21},"state":"known","amount":{"kind":"rational","value":{"numerator":2,"denominator":1}}}},
+          {"actor":"Beacon","dimension":"period","quantity":{"actor":"Beacon","claim":"period","basis":{"unit":"second","period":"May","population":"clocks","denominator":{"numerator":2,"denominator":1}},"evidence":{"fromWord":22,"toWord":33},"state":"known","amount":{"kind":"rational","value":{"numerator":2,"denominator":1}}}},
+          {"actor":"Aster","dimension":"phase","reference":"Beacon","quantity":{"actor":"Aster","claim":"phase relative to Beacon","basis":{"unit":"degree","period":"May","population":"clocks","denominator":{"numerator":2,"denominator":1}},"evidence":{"fromWord":48,"toWord":62},"state":"known","amount":{"kind":"rational","value":{"numerator":90,"denominator":1}}}}
+        ],
+        "relations":[{"from":"Aster","to":"Beacon","relationship":"leads","state":"known","evidence":{"fromWord":63,"toWord":69}}]
+      },
+      "paraphrases":[{
+        "name":"independently worded",
+        "clauses":["During May among clocks, Cycle board names Aster and Beacon.","During May, Aster recorded period as 2 seconds among clocks with denominator 2.","During May, Beacon observed period at 2 seconds among clocks with denominator 2.","During May among clocks, Aster repeats clockwise.","During May among clocks, Beacon repeats clockwise.","During May, Aster reported phase relative to Beacon of 90 degrees among clocks with denominator 2.","During May among clocks, Beacon lags behind Aster.","Cycle board keeps only stated periods and phases."],
+        "outcome":"only stated periods"
+      }],
+      "negatives":[
+        {"name":"wrong actor","path":"records.0.quantity.actor","value":"Beacon"},
+        {"name":"wrong scope","path":"records.0.quantity.basis.population","value":"jobs"},
+        {"name":"wrong source period","path":"records.0.quantity.basis.period","value":"June"},
+        {"name":"invented period value","path":"records.0.quantity.amount.value.numerator","value":3},
+        {"name":"rate is not a period","path":"records.0.quantity.basis.unit","value":"hertz"},
+        {"name":"wrong denominator","path":"records.2.quantity.basis.denominator.numerator","value":4},
+        {"name":"wrong phase value","path":"records.2.quantity.amount.value.numerator","value":-90},
+        {"name":"wrong phase unit","path":"records.2.quantity.basis.unit","value":"radian"},
+        {"name":"wrong phase endpoint","path":"records.2.reference","value":"Aster"},
+        {"name":"wrong direction","path":"signals.0.direction","value":"counterclockwise"},
+        {"name":"simulation promoted to measurement","path":"signals.0.state","value":"simulated"},
+        {"name":"invented condition","path":"condition","value":"if clocks reset"},
+        {"name":"invented result","path":"frequency","value":0.5},
+        {"name":"wrong analytic template","path":"signals.0.template","value":"custom-curve"},
+        {"name":"unqualified sine template","path":"signals.0.template","value":"sine"},
+        {"name":"arbitrary evaluator","path":"signals.0.expression","value":"sin(t)"},
+        {"name":"caller ID","path":"entities.0.id","value":"caller"},
+        {"name":"incomplete beat clause","path":"actionWord","value":11},
+        {"name":"wrong preset","path":"preset","value":"delay-throughput"},
+        {"name":"wrong mode","path":"visualMode","value":"3d"}
+      ]
+    }
+  ]
+}

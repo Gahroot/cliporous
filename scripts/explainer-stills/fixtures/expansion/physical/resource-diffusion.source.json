@@ -1,0 +1,4195 @@
+{
+  "version": 1,
+  "pack": "physical",
+  "stories": [
+    {
+      "id": "75",
+      "sourceText": "Pool is shared with Ada during June among batch. Pool limit is 10 count during June among batch with denominator 10. Ada Pool request is 3 count during June among batch with denominator 10. Ada has access to Pool only if approved during June among batch. Ada Pool decision is unknown and unresolved under if approved during June among batch.",
+      "words": [
+        {
+          "text": "Pool",
+          "start": 0.25,
+          "end": 0.416666667
+        },
+        {
+          "text": "is",
+          "start": 0.416666667,
+          "end": 0.583333333
+        },
+        {
+          "text": "shared",
+          "start": 0.583333333,
+          "end": 0.75
+        },
+        {
+          "text": "with",
+          "start": 0.75,
+          "end": 0.916666667
+        },
+        {
+          "text": "Ada",
+          "start": 0.916666667,
+          "end": 1.083333333
+        },
+        {
+          "text": "during",
+          "start": 1.083333333,
+          "end": 1.25
+        },
+        {
+          "text": "June",
+          "start": 1.25,
+          "end": 1.416666667
+        },
+        {
+          "text": "among",
+          "start": 1.416666667,
+          "end": 1.583333333
+        },
+        {
+          "text": "batch.",
+          "start": 1.583333333,
+          "end": 1.75
+        },
+        {
+          "text": "Pool",
+          "start": 2.1,
+          "end": 2.225
+        },
+        {
+          "text": "limit",
+          "start": 2.225,
+          "end": 2.35
+        },
+        {
+          "text": "is",
+          "start": 2.35,
+          "end": 2.475
+        },
+        {
+          "text": "10",
+          "start": 2.475,
+          "end": 2.6
+        },
+        {
+          "text": "count",
+          "start": 2.6,
+          "end": 2.725
+        },
+        {
+          "text": "during",
+          "start": 2.725,
+          "end": 2.85
+        },
+        {
+          "text": "June",
+          "start": 2.85,
+          "end": 2.975
+        },
+        {
+          "text": "among",
+          "start": 2.975,
+          "end": 3.1
+        },
+        {
+          "text": "batch",
+          "start": 3.1,
+          "end": 3.225
+        },
+        {
+          "text": "with",
+          "start": 3.225,
+          "end": 3.35
+        },
+        {
+          "text": "denominator",
+          "start": 3.35,
+          "end": 3.475
+        },
+        {
+          "text": "10.",
+          "start": 3.475,
+          "end": 3.6
+        },
+        {
+          "text": "Ada",
+          "start": 3.95,
+          "end": 4.065384615
+        },
+        {
+          "text": "Pool",
+          "start": 4.065384615,
+          "end": 4.180769231
+        },
+        {
+          "text": "request",
+          "start": 4.180769231,
+          "end": 4.296153846
+        },
+        {
+          "text": "is",
+          "start": 4.296153846,
+          "end": 4.411538462
+        },
+        {
+          "text": "3",
+          "start": 4.411538462,
+          "end": 4.526923077
+        },
+        {
+          "text": "count",
+          "start": 4.526923077,
+          "end": 4.642307692
+        },
+        {
+          "text": "during",
+          "start": 4.642307692,
+          "end": 4.757692308
+        },
+        {
+          "text": "June",
+          "start": 4.757692308,
+          "end": 4.873076923
+        },
+        {
+          "text": "among",
+          "start": 4.873076923,
+          "end": 4.988461538
+        },
+        {
+          "text": "batch",
+          "start": 4.988461538,
+          "end": 5.103846154
+        },
+        {
+          "text": "with",
+          "start": 5.103846154,
+          "end": 5.219230769
+        },
+        {
+          "text": "denominator",
+          "start": 5.219230769,
+          "end": 5.334615385
+        },
+        {
+          "text": "10.",
+          "start": 5.334615385,
+          "end": 5.45
+        },
+        {
+          "text": "Ada",
+          "start": 5.8,
+          "end": 5.925
+        },
+        {
+          "text": "has",
+          "start": 5.925,
+          "end": 6.05
+        },
+        {
+          "text": "access",
+          "start": 6.05,
+          "end": 6.175
+        },
+        {
+          "text": "to",
+          "start": 6.175,
+          "end": 6.3
+        },
+        {
+          "text": "Pool",
+          "start": 6.3,
+          "end": 6.425
+        },
+        {
+          "text": "only",
+          "start": 6.425,
+          "end": 6.55
+        },
+        {
+          "text": "if",
+          "start": 6.55,
+          "end": 6.675
+        },
+        {
+          "text": "approved",
+          "start": 6.675,
+          "end": 6.8
+        },
+        {
+          "text": "during",
+          "start": 6.8,
+          "end": 6.925
+        },
+        {
+          "text": "June",
+          "start": 6.925,
+          "end": 7.05
+        },
+        {
+          "text": "among",
+          "start": 7.05,
+          "end": 7.175
+        },
+        {
+          "text": "batch.",
+          "start": 7.175,
+          "end": 7.3
+        },
+        {
+          "text": "Ada",
+          "start": 7.65,
+          "end": 7.792857143
+        },
+        {
+          "text": "Pool",
+          "start": 7.792857143,
+          "end": 7.935714286
+        },
+        {
+          "text": "decision",
+          "start": 7.935714286,
+          "end": 8.078571429
+        },
+        {
+          "text": "is",
+          "start": 8.078571429,
+          "end": 8.221428571
+        },
+        {
+          "text": "unknown",
+          "start": 8.221428571,
+          "end": 8.364285714
+        },
+        {
+          "text": "and",
+          "start": 8.364285714,
+          "end": 8.507142857
+        },
+        {
+          "text": "unresolved",
+          "start": 8.507142857,
+          "end": 8.65
+        },
+        {
+          "text": "under",
+          "start": 8.65,
+          "end": 8.792857143
+        },
+        {
+          "text": "if",
+          "start": 8.792857143,
+          "end": 8.935714286
+        },
+        {
+          "text": "approved",
+          "start": 8.935714286,
+          "end": 9.078571429
+        },
+        {
+          "text": "during",
+          "start": 9.078571429,
+          "end": 9.221428571
+        },
+        {
+          "text": "June",
+          "start": 9.221428571,
+          "end": 9.364285714
+        },
+        {
+          "text": "among",
+          "start": 9.364285714,
+          "end": 9.507142857
+        },
+        {
+          "text": "batch.",
+          "start": 9.507142857,
+          "end": 9.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 59,
+        "startTime": 0,
+        "endTime": 10
+      },
+      "proposal": {
+        "kind": "resource-allocation",
+        "preset": "shared-resource",
+        "visualMode": "diagram",
+        "label": "Pool",
+        "subject": "Pool",
+        "outcome": "unresolved",
+        "evidence": "source-stated",
+        "period": "June",
+        "population": "batch",
+        "template": "single-request",
+        "startWord": 0,
+        "endWord": 59,
+        "layout": "stack",
+        "setupWord": 0,
+        "actionWord": 9,
+        "responseWord": 21,
+        "checkWord": 34,
+        "resolveWord": 46,
+        "entities": [
+          {
+            "label": "Pool",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 8
+            }
+          },
+          {
+            "label": "Ada",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 8
+            }
+          }
+        ],
+        "resource": "Pool",
+        "requester": "Ada",
+        "records": [
+          {
+            "actor": "Pool",
+            "role": "limit",
+            "quantity": {
+              "state": "known",
+              "actor": "Pool",
+              "claim": "limit",
+              "basis": {
+                "unit": "count",
+                "period": "June",
+                "population": "batch",
+                "denominator": {
+                  "numerator": 10,
+                  "denominator": 1
+                }
+              },
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 10,
+                  "denominator": 1
+                }
+              },
+              "evidence": {
+                "fromWord": 9,
+                "toWord": 20
+              }
+            }
+          },
+          {
+            "actor": "Ada",
+            "role": "request",
+            "quantity": {
+              "state": "known",
+              "actor": "Ada",
+              "claim": "Pool request",
+              "basis": {
+                "unit": "count",
+                "period": "June",
+                "population": "batch",
+                "denominator": {
+                  "numerator": 10,
+                  "denominator": 1
+                }
+              },
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 3,
+                  "denominator": 1
+                }
+              },
+              "evidence": {
+                "fromWord": 21,
+                "toWord": 33
+              }
+            }
+          }
+        ],
+        "access": {
+          "condition": "if approved",
+          "evidence": {
+            "fromWord": 34,
+            "toWord": 45
+          }
+        },
+        "decision": {
+          "state": "unknown",
+          "result": "unresolved",
+          "condition": "if approved",
+          "evidence": {
+            "fromWord": 46,
+            "toWord": 59
+          }
+        }
+      },
+      "negatives": [
+        {
+          "name": "wrong quantity actor",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "actor"
+              ],
+              "value": "Other"
+            }
+          ]
+        },
+        {
+          "name": "wrong claim",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "claim"
+              ],
+              "value": "effectiveness"
+            }
+          ]
+        },
+        {
+          "name": "wrong amount",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "amount",
+                "value",
+                "numerator"
+              ],
+              "value": 11
+            }
+          ]
+        },
+        {
+          "name": "wrong unit",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "basis",
+                "unit"
+              ],
+              "value": "percent"
+            }
+          ]
+        },
+        {
+          "name": "wrong denominator",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "basis",
+                "denominator",
+                "numerator"
+              ],
+              "value": 11
+            }
+          ]
+        },
+        {
+          "name": "wrong population",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "basis",
+                "population"
+              ],
+              "value": "other batch"
+            }
+          ]
+        },
+        {
+          "name": "wrong period",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "basis",
+                "period"
+              ],
+              "value": "July"
+            }
+          ]
+        },
+        {
+          "name": "wrong status",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "state"
+              ],
+              "value": "unknown"
+            }
+          ]
+        },
+        {
+          "name": "arbitrary template",
+          "edits": [
+            {
+              "path": [
+                "template"
+              ],
+              "value": "custom"
+            }
+          ]
+        },
+        {
+          "name": "wrong preset",
+          "edits": [
+            {
+              "path": [
+                "preset"
+              ],
+              "value": "state-cycle"
+            }
+          ]
+        },
+        {
+          "name": "wrong mode",
+          "edits": [
+            {
+              "path": [
+                "visualMode"
+              ],
+              "value": "webgl"
+            }
+          ]
+        },
+        {
+          "name": "wrong beat",
+          "edits": [
+            {
+              "path": [
+                "actionWord"
+              ],
+              "value": 0
+            }
+          ]
+        },
+        {
+          "name": "interior beat",
+          "edits": [
+            {
+              "path": [
+                "checkWord"
+              ],
+              "value": 35
+            }
+          ]
+        },
+        {
+          "name": "caller ID",
+          "edits": [
+            {
+              "path": [
+                "entities",
+                0,
+                "id"
+              ],
+              "value": "caller"
+            }
+          ]
+        },
+        {
+          "name": "caller geometry",
+          "edits": [
+            {
+              "path": [
+                "coordinates"
+              ],
+              "value": [
+                0,
+                1,
+                2
+              ]
+            }
+          ]
+        },
+        {
+          "name": "treatment",
+          "edits": [
+            {
+              "path": [
+                "treatment"
+              ],
+              "value": "glow"
+            }
+          ]
+        },
+        {
+          "name": "relation injection",
+          "edits": [
+            {
+              "path": [
+                "relations"
+              ],
+              "value": []
+            }
+          ]
+        },
+        {
+          "name": "records cap",
+          "edits": [
+            {
+              "path": [
+                "records"
+              ],
+              "value": [
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                },
+                {
+                  "actor": "Pool",
+                  "role": "limit",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Pool",
+                    "claim": "limit",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 9,
+                      "toWord": 20
+                    }
+                  }
+                },
+                {
+                  "actor": "Ada",
+                  "role": "request",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Ada",
+                    "claim": "Pool request",
+                    "basis": {
+                      "unit": "count",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 21,
+                      "toWord": 33
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "actors cap",
+          "edits": [
+            {
+              "path": [
+                "entities"
+              ],
+              "value": [
+                {
+                  "label": "Pool",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Ada",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Pool",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Ada",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Pool",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Ada",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Pool",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Ada",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Pool",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                },
+                {
+                  "label": "Ada",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 8
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "domain animation time",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "at"
+              ],
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "blanket condition",
+          "edits": [
+            {
+              "path": [
+                "condition"
+              ],
+              "value": "if approved"
+            }
+          ]
+        },
+        {
+          "name": "negated actor relation",
+          "clauses": {
+            "0": "Pool is not shared with Ada during June among batch."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local claim",
+          "clauses": {
+            "1": "Pool grant is 10 count during June among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local amount",
+          "clauses": {
+            "1": "Pool limit is 9 count during June among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local unit",
+          "clauses": {
+            "1": "Pool limit is 10 percent during June among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local period",
+          "clauses": {
+            "1": "Pool limit is 10 count during July among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local basis",
+          "clauses": {
+            "1": "Pool limit is 10 count during June among batch with denominator 11."
+          },
+          "edits": []
+        },
+        {
+          "name": "conditional stock promoted",
+          "clauses": {
+            "1": "If audited, pool limit is 10 count during June among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local condition",
+          "clauses": {
+            "3": "Ada has access to Pool only if rejected during June among batch."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong actor request or movement",
+          "clauses": {
+            "2": "Bea Pool request is 3 count during June among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong relation",
+          "clauses": {
+            "3": "Ada is denied access to Pool only if approved during June among batch."
+          },
+          "edits": []
+        },
+        {
+          "name": "invented result",
+          "clauses": {
+            "4": "Ada Pool decision is granted under if approved during June among batch."
+          },
+          "edits": []
+        },
+        {
+          "name": "HTML source",
+          "clauses": {
+            "0": "<Pool> is shared with Ada during June among batch."
+          },
+          "edits": []
+        },
+        {
+          "name": "URL source",
+          "clauses": {
+            "0": "https://pool.test is shared with Ada during June among batch."
+          },
+          "edits": []
+        },
+        {
+          "name": "short beat",
+          "intervals": [
+            [
+              0.25,
+              1.1
+            ],
+            [
+              1.2,
+              2.5
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "overlap",
+          "intervals": [
+            [
+              0.25,
+              2.2
+            ],
+            [
+              2.1,
+              3.6
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "zero word intervals",
+          "intervals": [
+            [
+              0.25,
+              1.75
+            ],
+            [
+              2.1,
+              2.1
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "lead padding",
+          "intervals": [
+            [
+              0.2,
+              1.75
+            ],
+            [
+              2.1,
+              3.6
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "tail padding",
+          "intervals": [
+            [
+              0.25,
+              1.75
+            ],
+            [
+              2.1,
+              3.6
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.7
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "short final hold",
+          "intervals": [
+            [
+              0.25,
+              1.75
+            ],
+            [
+              2.1,
+              3.6
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              9.3,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "wrong access condition",
+          "edits": [
+            {
+              "path": [
+                "access",
+                "condition"
+              ],
+              "value": "if rejected"
+            }
+          ]
+        },
+        {
+          "name": "wrong decision condition",
+          "edits": [
+            {
+              "path": [
+                "decision",
+                "condition"
+              ],
+              "value": "if rejected"
+            }
+          ]
+        },
+        {
+          "name": "unresolved is not grant",
+          "edits": [
+            {
+              "path": [
+                "decision",
+                "result"
+              ],
+              "value": "granted"
+            }
+          ]
+        },
+        {
+          "name": "invented allocation",
+          "edits": [
+            {
+              "path": [
+                "decision",
+                "state"
+              ],
+              "value": "granted"
+            }
+          ]
+        },
+        {
+          "name": "request not actual grant",
+          "clauses": {
+            "2": "Ada Pool grant is 3 count during June among batch with denominator 10."
+          },
+          "edits": []
+        }
+      ],
+      "paraphrases": [
+        {
+          "id": "75",
+          "sourceText": "Pool is available to Ada in June for batch. Pool reported limit of 10 items in June for batch with denominator 10. During June, Ada reported Pool request of 3 items for batch with denominator 10. Ada can access Pool only if approved in June for batch. Ada Pool decision remains unknown and unresolved under if approved in June for batch.",
+          "words": [
+            {
+              "text": "Pool",
+              "start": 0.25,
+              "end": 0.416666667
+            },
+            {
+              "text": "is",
+              "start": 0.416666667,
+              "end": 0.583333333
+            },
+            {
+              "text": "available",
+              "start": 0.583333333,
+              "end": 0.75
+            },
+            {
+              "text": "to",
+              "start": 0.75,
+              "end": 0.916666667
+            },
+            {
+              "text": "Ada",
+              "start": 0.916666667,
+              "end": 1.083333333
+            },
+            {
+              "text": "in",
+              "start": 1.083333333,
+              "end": 1.25
+            },
+            {
+              "text": "June",
+              "start": 1.25,
+              "end": 1.416666667
+            },
+            {
+              "text": "for",
+              "start": 1.416666667,
+              "end": 1.583333333
+            },
+            {
+              "text": "batch.",
+              "start": 1.583333333,
+              "end": 1.75
+            },
+            {
+              "text": "Pool",
+              "start": 2.1,
+              "end": 2.215384615
+            },
+            {
+              "text": "reported",
+              "start": 2.215384615,
+              "end": 2.330769231
+            },
+            {
+              "text": "limit",
+              "start": 2.330769231,
+              "end": 2.446153846
+            },
+            {
+              "text": "of",
+              "start": 2.446153846,
+              "end": 2.561538462
+            },
+            {
+              "text": "10",
+              "start": 2.561538462,
+              "end": 2.676923077
+            },
+            {
+              "text": "items",
+              "start": 2.676923077,
+              "end": 2.792307692
+            },
+            {
+              "text": "in",
+              "start": 2.792307692,
+              "end": 2.907692308
+            },
+            {
+              "text": "June",
+              "start": 2.907692308,
+              "end": 3.023076923
+            },
+            {
+              "text": "for",
+              "start": 3.023076923,
+              "end": 3.138461538
+            },
+            {
+              "text": "batch",
+              "start": 3.138461538,
+              "end": 3.253846154
+            },
+            {
+              "text": "with",
+              "start": 3.253846154,
+              "end": 3.369230769
+            },
+            {
+              "text": "denominator",
+              "start": 3.369230769,
+              "end": 3.484615385
+            },
+            {
+              "text": "10.",
+              "start": 3.484615385,
+              "end": 3.6
+            },
+            {
+              "text": "During",
+              "start": 3.95,
+              "end": 4.057142857
+            },
+            {
+              "text": "June,",
+              "start": 4.057142857,
+              "end": 4.164285714
+            },
+            {
+              "text": "Ada",
+              "start": 4.164285714,
+              "end": 4.271428571
+            },
+            {
+              "text": "reported",
+              "start": 4.271428571,
+              "end": 4.378571429
+            },
+            {
+              "text": "Pool",
+              "start": 4.378571429,
+              "end": 4.485714286
+            },
+            {
+              "text": "request",
+              "start": 4.485714286,
+              "end": 4.592857143
+            },
+            {
+              "text": "of",
+              "start": 4.592857143,
+              "end": 4.7
+            },
+            {
+              "text": "3",
+              "start": 4.7,
+              "end": 4.807142857
+            },
+            {
+              "text": "items",
+              "start": 4.807142857,
+              "end": 4.914285714
+            },
+            {
+              "text": "for",
+              "start": 4.914285714,
+              "end": 5.021428571
+            },
+            {
+              "text": "batch",
+              "start": 5.021428571,
+              "end": 5.128571429
+            },
+            {
+              "text": "with",
+              "start": 5.128571429,
+              "end": 5.235714286
+            },
+            {
+              "text": "denominator",
+              "start": 5.235714286,
+              "end": 5.342857143
+            },
+            {
+              "text": "10.",
+              "start": 5.342857143,
+              "end": 5.45
+            },
+            {
+              "text": "Ada",
+              "start": 5.8,
+              "end": 5.936363636
+            },
+            {
+              "text": "can",
+              "start": 5.936363636,
+              "end": 6.072727273
+            },
+            {
+              "text": "access",
+              "start": 6.072727273,
+              "end": 6.209090909
+            },
+            {
+              "text": "Pool",
+              "start": 6.209090909,
+              "end": 6.345454545
+            },
+            {
+              "text": "only",
+              "start": 6.345454545,
+              "end": 6.481818182
+            },
+            {
+              "text": "if",
+              "start": 6.481818182,
+              "end": 6.618181818
+            },
+            {
+              "text": "approved",
+              "start": 6.618181818,
+              "end": 6.754545455
+            },
+            {
+              "text": "in",
+              "start": 6.754545455,
+              "end": 6.890909091
+            },
+            {
+              "text": "June",
+              "start": 6.890909091,
+              "end": 7.027272727
+            },
+            {
+              "text": "for",
+              "start": 7.027272727,
+              "end": 7.163636364
+            },
+            {
+              "text": "batch.",
+              "start": 7.163636364,
+              "end": 7.3
+            },
+            {
+              "text": "Ada",
+              "start": 7.65,
+              "end": 7.792857143
+            },
+            {
+              "text": "Pool",
+              "start": 7.792857143,
+              "end": 7.935714286
+            },
+            {
+              "text": "decision",
+              "start": 7.935714286,
+              "end": 8.078571429
+            },
+            {
+              "text": "remains",
+              "start": 8.078571429,
+              "end": 8.221428571
+            },
+            {
+              "text": "unknown",
+              "start": 8.221428571,
+              "end": 8.364285714
+            },
+            {
+              "text": "and",
+              "start": 8.364285714,
+              "end": 8.507142857
+            },
+            {
+              "text": "unresolved",
+              "start": 8.507142857,
+              "end": 8.65
+            },
+            {
+              "text": "under",
+              "start": 8.65,
+              "end": 8.792857143
+            },
+            {
+              "text": "if",
+              "start": 8.792857143,
+              "end": 8.935714286
+            },
+            {
+              "text": "approved",
+              "start": 8.935714286,
+              "end": 9.078571429
+            },
+            {
+              "text": "in",
+              "start": 9.078571429,
+              "end": 9.221428571
+            },
+            {
+              "text": "June",
+              "start": 9.221428571,
+              "end": 9.364285714
+            },
+            {
+              "text": "for",
+              "start": 9.364285714,
+              "end": 9.507142857
+            },
+            {
+              "text": "batch.",
+              "start": 9.507142857,
+              "end": 9.65
+            }
+          ],
+          "window": {
+            "startWord": 0,
+            "endWord": 60,
+            "startTime": 0,
+            "endTime": 10
+          },
+          "proposal": {
+            "kind": "resource-allocation",
+            "preset": "shared-resource",
+            "visualMode": "diagram",
+            "label": "Pool",
+            "subject": "Pool",
+            "outcome": "unresolved",
+            "evidence": "source-stated",
+            "period": "June",
+            "population": "batch",
+            "template": "single-request",
+            "startWord": 0,
+            "endWord": 60,
+            "layout": "stack",
+            "setupWord": 0,
+            "actionWord": 9,
+            "responseWord": 22,
+            "checkWord": 36,
+            "resolveWord": 47,
+            "entities": [
+              {
+                "label": "Pool",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 8
+                }
+              },
+              {
+                "label": "Ada",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 8
+                }
+              }
+            ],
+            "resource": "Pool",
+            "requester": "Ada",
+            "records": [
+              {
+                "actor": "Pool",
+                "role": "limit",
+                "quantity": {
+                  "state": "known",
+                  "actor": "Pool",
+                  "claim": "limit",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "batch",
+                    "denominator": {
+                      "numerator": 10,
+                      "denominator": 1
+                    }
+                  },
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 10,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 9,
+                    "toWord": 21
+                  }
+                }
+              },
+              {
+                "actor": "Ada",
+                "role": "request",
+                "quantity": {
+                  "state": "known",
+                  "actor": "Ada",
+                  "claim": "Pool request",
+                  "basis": {
+                    "unit": "count",
+                    "period": "June",
+                    "population": "batch",
+                    "denominator": {
+                      "numerator": 10,
+                      "denominator": 1
+                    }
+                  },
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 3,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 22,
+                    "toWord": 35
+                  }
+                }
+              }
+            ],
+            "access": {
+              "condition": "if approved",
+              "evidence": {
+                "fromWord": 36,
+                "toWord": 46
+              }
+            },
+            "decision": {
+              "state": "unknown",
+              "result": "unresolved",
+              "condition": "if approved",
+              "evidence": {
+                "fromWord": 47,
+                "toWord": 60
+              }
+            }
+          },
+          "negatives": [],
+          "paraphrases": []
+        }
+      ]
+    },
+    {
+      "id": "76",
+      "sourceText": "In this qualitative illustrative model, Dye is in Tank with Mesh during June among batch. Dye inventory is 3 gram during June among batch with denominator 10. Dye spreads toward Mesh from Tank in this qualitative illustrative model. Mesh passes Dye under open pores in this qualitative illustrative model. Dye Mesh result is unresolved under open pores in this qualitative illustrative model.",
+      "words": [
+        {
+          "text": "In",
+          "start": 0.25,
+          "end": 0.35
+        },
+        {
+          "text": "this",
+          "start": 0.35,
+          "end": 0.45
+        },
+        {
+          "text": "qualitative",
+          "start": 0.45,
+          "end": 0.55
+        },
+        {
+          "text": "illustrative",
+          "start": 0.55,
+          "end": 0.65
+        },
+        {
+          "text": "model,",
+          "start": 0.65,
+          "end": 0.75
+        },
+        {
+          "text": "Dye",
+          "start": 0.75,
+          "end": 0.85
+        },
+        {
+          "text": "is",
+          "start": 0.85,
+          "end": 0.95
+        },
+        {
+          "text": "in",
+          "start": 0.95,
+          "end": 1.05
+        },
+        {
+          "text": "Tank",
+          "start": 1.05,
+          "end": 1.15
+        },
+        {
+          "text": "with",
+          "start": 1.15,
+          "end": 1.25
+        },
+        {
+          "text": "Mesh",
+          "start": 1.25,
+          "end": 1.35
+        },
+        {
+          "text": "during",
+          "start": 1.35,
+          "end": 1.45
+        },
+        {
+          "text": "June",
+          "start": 1.45,
+          "end": 1.55
+        },
+        {
+          "text": "among",
+          "start": 1.55,
+          "end": 1.65
+        },
+        {
+          "text": "batch.",
+          "start": 1.65,
+          "end": 1.75
+        },
+        {
+          "text": "Dye",
+          "start": 2.1,
+          "end": 2.225
+        },
+        {
+          "text": "inventory",
+          "start": 2.225,
+          "end": 2.35
+        },
+        {
+          "text": "is",
+          "start": 2.35,
+          "end": 2.475
+        },
+        {
+          "text": "3",
+          "start": 2.475,
+          "end": 2.6
+        },
+        {
+          "text": "gram",
+          "start": 2.6,
+          "end": 2.725
+        },
+        {
+          "text": "during",
+          "start": 2.725,
+          "end": 2.85
+        },
+        {
+          "text": "June",
+          "start": 2.85,
+          "end": 2.975
+        },
+        {
+          "text": "among",
+          "start": 2.975,
+          "end": 3.1
+        },
+        {
+          "text": "batch",
+          "start": 3.1,
+          "end": 3.225
+        },
+        {
+          "text": "with",
+          "start": 3.225,
+          "end": 3.35
+        },
+        {
+          "text": "denominator",
+          "start": 3.35,
+          "end": 3.475
+        },
+        {
+          "text": "10.",
+          "start": 3.475,
+          "end": 3.6
+        },
+        {
+          "text": "Dye",
+          "start": 3.95,
+          "end": 4.086363636
+        },
+        {
+          "text": "spreads",
+          "start": 4.086363636,
+          "end": 4.222727273
+        },
+        {
+          "text": "toward",
+          "start": 4.222727273,
+          "end": 4.359090909
+        },
+        {
+          "text": "Mesh",
+          "start": 4.359090909,
+          "end": 4.495454545
+        },
+        {
+          "text": "from",
+          "start": 4.495454545,
+          "end": 4.631818182
+        },
+        {
+          "text": "Tank",
+          "start": 4.631818182,
+          "end": 4.768181818
+        },
+        {
+          "text": "in",
+          "start": 4.768181818,
+          "end": 4.904545455
+        },
+        {
+          "text": "this",
+          "start": 4.904545455,
+          "end": 5.040909091
+        },
+        {
+          "text": "qualitative",
+          "start": 5.040909091,
+          "end": 5.177272727
+        },
+        {
+          "text": "illustrative",
+          "start": 5.177272727,
+          "end": 5.313636364
+        },
+        {
+          "text": "model.",
+          "start": 5.313636364,
+          "end": 5.45
+        },
+        {
+          "text": "Mesh",
+          "start": 5.8,
+          "end": 5.936363636
+        },
+        {
+          "text": "passes",
+          "start": 5.936363636,
+          "end": 6.072727273
+        },
+        {
+          "text": "Dye",
+          "start": 6.072727273,
+          "end": 6.209090909
+        },
+        {
+          "text": "under",
+          "start": 6.209090909,
+          "end": 6.345454545
+        },
+        {
+          "text": "open",
+          "start": 6.345454545,
+          "end": 6.481818182
+        },
+        {
+          "text": "pores",
+          "start": 6.481818182,
+          "end": 6.618181818
+        },
+        {
+          "text": "in",
+          "start": 6.618181818,
+          "end": 6.754545455
+        },
+        {
+          "text": "this",
+          "start": 6.754545455,
+          "end": 6.890909091
+        },
+        {
+          "text": "qualitative",
+          "start": 6.890909091,
+          "end": 7.027272727
+        },
+        {
+          "text": "illustrative",
+          "start": 7.027272727,
+          "end": 7.163636364
+        },
+        {
+          "text": "model.",
+          "start": 7.163636364,
+          "end": 7.3
+        },
+        {
+          "text": "Dye",
+          "start": 7.65,
+          "end": 7.803846154
+        },
+        {
+          "text": "Mesh",
+          "start": 7.803846154,
+          "end": 7.957692308
+        },
+        {
+          "text": "result",
+          "start": 7.957692308,
+          "end": 8.111538462
+        },
+        {
+          "text": "is",
+          "start": 8.111538462,
+          "end": 8.265384615
+        },
+        {
+          "text": "unresolved",
+          "start": 8.265384615,
+          "end": 8.419230769
+        },
+        {
+          "text": "under",
+          "start": 8.419230769,
+          "end": 8.573076923
+        },
+        {
+          "text": "open",
+          "start": 8.573076923,
+          "end": 8.726923077
+        },
+        {
+          "text": "pores",
+          "start": 8.726923077,
+          "end": 8.880769231
+        },
+        {
+          "text": "in",
+          "start": 8.880769231,
+          "end": 9.034615385
+        },
+        {
+          "text": "this",
+          "start": 9.034615385,
+          "end": 9.188461538
+        },
+        {
+          "text": "qualitative",
+          "start": 9.188461538,
+          "end": 9.342307692
+        },
+        {
+          "text": "illustrative",
+          "start": 9.342307692,
+          "end": 9.496153846
+        },
+        {
+          "text": "model.",
+          "start": 9.496153846,
+          "end": 9.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 61,
+        "startTime": 0,
+        "endTime": 10
+      },
+      "proposal": {
+        "kind": "material-process",
+        "preset": "diffusion-filter",
+        "visualMode": "diagram",
+        "label": "Dye",
+        "subject": "Dye",
+        "outcome": "unresolved",
+        "evidence": "illustrative",
+        "period": "June",
+        "population": "batch",
+        "template": "qualitative-filter",
+        "startWord": 0,
+        "endWord": 61,
+        "layout": "stack",
+        "setupWord": 0,
+        "actionWord": 15,
+        "responseWord": 27,
+        "checkWord": 38,
+        "resolveWord": 49,
+        "entities": [
+          {
+            "label": "Dye",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 14
+            }
+          },
+          {
+            "label": "Tank",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 14
+            }
+          },
+          {
+            "label": "Mesh",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 14
+            }
+          }
+        ],
+        "material": "Dye",
+        "reservoir": "Tank",
+        "filter": "Mesh",
+        "model": "illustrative",
+        "movement": "spreads toward",
+        "records": [
+          {
+            "actor": "Dye",
+            "role": "inventory",
+            "quantity": {
+              "state": "known",
+              "actor": "Dye",
+              "claim": "inventory",
+              "basis": {
+                "unit": "gram",
+                "period": "June",
+                "population": "batch",
+                "denominator": {
+                  "numerator": 10,
+                  "denominator": 1
+                }
+              },
+              "amount": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 3,
+                  "denominator": 1
+                }
+              },
+              "evidence": {
+                "fromWord": 15,
+                "toWord": 26
+              }
+            }
+          }
+        ],
+        "filterRule": {
+          "relation": "passes",
+          "condition": "open pores",
+          "evidence": {
+            "fromWord": 38,
+            "toWord": 48
+          }
+        },
+        "result": {
+          "state": "unresolved",
+          "relation": "unresolved",
+          "evidence": {
+            "fromWord": 49,
+            "toWord": 61
+          }
+        }
+      },
+      "negatives": [
+        {
+          "name": "wrong quantity actor",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "actor"
+              ],
+              "value": "Ada"
+            }
+          ]
+        },
+        {
+          "name": "wrong claim",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "claim"
+              ],
+              "value": "effectiveness"
+            }
+          ]
+        },
+        {
+          "name": "wrong amount",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "amount",
+                "value",
+                "numerator"
+              ],
+              "value": 11
+            }
+          ]
+        },
+        {
+          "name": "wrong unit",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "basis",
+                "unit"
+              ],
+              "value": "percent"
+            }
+          ]
+        },
+        {
+          "name": "wrong denominator",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "basis",
+                "denominator",
+                "numerator"
+              ],
+              "value": 11
+            }
+          ]
+        },
+        {
+          "name": "wrong population",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "basis",
+                "population"
+              ],
+              "value": "other batch"
+            }
+          ]
+        },
+        {
+          "name": "wrong period",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "basis",
+                "period"
+              ],
+              "value": "July"
+            }
+          ]
+        },
+        {
+          "name": "wrong status",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "state"
+              ],
+              "value": "unknown"
+            }
+          ]
+        },
+        {
+          "name": "arbitrary template",
+          "edits": [
+            {
+              "path": [
+                "template"
+              ],
+              "value": "custom"
+            }
+          ]
+        },
+        {
+          "name": "wrong preset",
+          "edits": [
+            {
+              "path": [
+                "preset"
+              ],
+              "value": "state-cycle"
+            }
+          ]
+        },
+        {
+          "name": "wrong mode",
+          "edits": [
+            {
+              "path": [
+                "visualMode"
+              ],
+              "value": "webgl"
+            }
+          ]
+        },
+        {
+          "name": "wrong beat",
+          "edits": [
+            {
+              "path": [
+                "actionWord"
+              ],
+              "value": 0
+            }
+          ]
+        },
+        {
+          "name": "interior beat",
+          "edits": [
+            {
+              "path": [
+                "checkWord"
+              ],
+              "value": 39
+            }
+          ]
+        },
+        {
+          "name": "caller ID",
+          "edits": [
+            {
+              "path": [
+                "entities",
+                0,
+                "id"
+              ],
+              "value": "caller"
+            }
+          ]
+        },
+        {
+          "name": "caller geometry",
+          "edits": [
+            {
+              "path": [
+                "coordinates"
+              ],
+              "value": [
+                0,
+                1,
+                2
+              ]
+            }
+          ]
+        },
+        {
+          "name": "treatment",
+          "edits": [
+            {
+              "path": [
+                "treatment"
+              ],
+              "value": "glow"
+            }
+          ]
+        },
+        {
+          "name": "relation injection",
+          "edits": [
+            {
+              "path": [
+                "relations"
+              ],
+              "value": []
+            }
+          ]
+        },
+        {
+          "name": "records cap",
+          "edits": [
+            {
+              "path": [
+                "records"
+              ],
+              "value": [
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                },
+                {
+                  "actor": "Dye",
+                  "role": "inventory",
+                  "quantity": {
+                    "state": "known",
+                    "actor": "Dye",
+                    "claim": "inventory",
+                    "basis": {
+                      "unit": "gram",
+                      "period": "June",
+                      "population": "batch",
+                      "denominator": {
+                        "numerator": 10,
+                        "denominator": 1
+                      }
+                    },
+                    "amount": {
+                      "kind": "rational",
+                      "value": {
+                        "numerator": 3,
+                        "denominator": 1
+                      }
+                    },
+                    "evidence": {
+                      "fromWord": 15,
+                      "toWord": 26
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "actors cap",
+          "edits": [
+            {
+              "path": [
+                "entities"
+              ],
+              "value": [
+                {
+                  "label": "Dye",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Tank",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Mesh",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Dye",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Tank",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Mesh",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Dye",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Tank",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Mesh",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Dye",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Tank",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Mesh",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Dye",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Tank",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                },
+                {
+                  "label": "Mesh",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 14
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "domain animation time",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "quantity",
+                "at"
+              ],
+              "value": 1
+            }
+          ]
+        },
+        {
+          "name": "blanket condition",
+          "edits": [
+            {
+              "path": [
+                "condition"
+              ],
+              "value": "if approved"
+            }
+          ]
+        },
+        {
+          "name": "negated actor relation",
+          "clauses": {
+            "0": "In this qualitative illustrative model, Dye is not in Tank with Mesh during June among batch."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local claim",
+          "clauses": {
+            "1": "Dye concentration is 3 gram during June among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local amount",
+          "clauses": {
+            "1": "Dye inventory is 9 gram during June among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local unit",
+          "clauses": {
+            "1": "Dye inventory is 3 percent during June among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local period",
+          "clauses": {
+            "1": "Dye inventory is 3 gram during July among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local basis",
+          "clauses": {
+            "1": "Dye inventory is 3 gram during June among batch with denominator 11."
+          },
+          "edits": []
+        },
+        {
+          "name": "conditional stock promoted",
+          "clauses": {
+            "1": "If audited, dye inventory is 3 gram during June among batch with denominator 10."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong local condition",
+          "clauses": {
+            "3": "Mesh passes Dye under closed pores in this qualitative illustrative model."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong actor request or movement",
+          "clauses": {
+            "2": "Dust spreads toward Mesh from Tank in this qualitative illustrative model."
+          },
+          "edits": []
+        },
+        {
+          "name": "wrong relation",
+          "clauses": {
+            "3": "Mesh retains Dye under open pores in this qualitative illustrative model."
+          },
+          "edits": []
+        },
+        {
+          "name": "invented result",
+          "clauses": {
+            "4": "Dye Mesh result is passes under open pores in this qualitative illustrative model."
+          },
+          "edits": []
+        },
+        {
+          "name": "HTML source",
+          "clauses": {
+            "0": "In this qualitative illustrative model, <Dye> is in Tank with Mesh during June among batch."
+          },
+          "edits": []
+        },
+        {
+          "name": "URL source",
+          "clauses": {
+            "0": "In this qualitative illustrative model, file:/Dye is in Tank with Mesh during June among batch."
+          },
+          "edits": []
+        },
+        {
+          "name": "short beat",
+          "intervals": [
+            [
+              0.25,
+              1.1
+            ],
+            [
+              1.2,
+              2.5
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "overlap",
+          "intervals": [
+            [
+              0.25,
+              2.2
+            ],
+            [
+              2.1,
+              3.6
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "zero word intervals",
+          "intervals": [
+            [
+              0.25,
+              1.75
+            ],
+            [
+              2.1,
+              2.1
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "lead padding",
+          "intervals": [
+            [
+              0.2,
+              1.75
+            ],
+            [
+              2.1,
+              3.6
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "tail padding",
+          "intervals": [
+            [
+              0.25,
+              1.75
+            ],
+            [
+              2.1,
+              3.6
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              7.65,
+              9.7
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "short final hold",
+          "intervals": [
+            [
+              0.25,
+              1.75
+            ],
+            [
+              2.1,
+              3.6
+            ],
+            [
+              3.95,
+              5.45
+            ],
+            [
+              5.8,
+              7.3
+            ],
+            [
+              9.3,
+              9.65
+            ]
+          ],
+          "edits": []
+        },
+        {
+          "name": "wrong model",
+          "edits": [
+            {
+              "path": [
+                "model"
+              ],
+              "value": "simulated"
+            }
+          ]
+        },
+        {
+          "name": "wrong filter relation",
+          "edits": [
+            {
+              "path": [
+                "filterRule",
+                "relation"
+              ],
+              "value": "retains"
+            }
+          ]
+        },
+        {
+          "name": "wrong filter condition",
+          "edits": [
+            {
+              "path": [
+                "filterRule",
+                "condition"
+              ],
+              "value": "closed pores"
+            }
+          ]
+        },
+        {
+          "name": "result promotion",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "state"
+              ],
+              "value": "stated"
+            }
+          ]
+        },
+        {
+          "name": "wrong result relation",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "relation"
+              ],
+              "value": "passes"
+            }
+          ]
+        },
+        {
+          "name": "numerical diffusion simulation",
+          "clauses": {
+            "2": "Dye concentration reaches 90 percent after Mesh removes 99 percent."
+          },
+          "edits": []
+        },
+        {
+          "name": "medical claim",
+          "clauses": {
+            "4": "Dye Mesh result is safe to drink and cures disease."
+          },
+          "edits": []
+        },
+        {
+          "name": "unqualified model",
+          "clauses": {
+            "0": "In this simulation, Dye is in Tank with Mesh during June among batch."
+          },
+          "edits": []
+        }
+      ],
+      "paraphrases": [
+        {
+          "id": "76",
+          "sourceText": "Within this qualitative illustrative model, Dye occupies Tank with Mesh in June for batch. During June, Dye reported inventory of 3 grams for batch with denominator 10. Dye disperses toward Mesh from Tank in this qualitative illustrative model. Mesh lets through Dye under open pores in this qualitative illustrative model. Dye Mesh result remains unresolved under open pores in this qualitative illustrative model.",
+          "words": [
+            {
+              "text": "Within",
+              "start": 0.25,
+              "end": 0.357142857
+            },
+            {
+              "text": "this",
+              "start": 0.357142857,
+              "end": 0.464285714
+            },
+            {
+              "text": "qualitative",
+              "start": 0.464285714,
+              "end": 0.571428571
+            },
+            {
+              "text": "illustrative",
+              "start": 0.571428571,
+              "end": 0.678571429
+            },
+            {
+              "text": "model,",
+              "start": 0.678571429,
+              "end": 0.785714286
+            },
+            {
+              "text": "Dye",
+              "start": 0.785714286,
+              "end": 0.892857143
+            },
+            {
+              "text": "occupies",
+              "start": 0.892857143,
+              "end": 1.0
+            },
+            {
+              "text": "Tank",
+              "start": 1.0,
+              "end": 1.107142857
+            },
+            {
+              "text": "with",
+              "start": 1.107142857,
+              "end": 1.214285714
+            },
+            {
+              "text": "Mesh",
+              "start": 1.214285714,
+              "end": 1.321428571
+            },
+            {
+              "text": "in",
+              "start": 1.321428571,
+              "end": 1.428571429
+            },
+            {
+              "text": "June",
+              "start": 1.428571429,
+              "end": 1.535714286
+            },
+            {
+              "text": "for",
+              "start": 1.535714286,
+              "end": 1.642857143
+            },
+            {
+              "text": "batch.",
+              "start": 1.642857143,
+              "end": 1.75
+            },
+            {
+              "text": "During",
+              "start": 2.1,
+              "end": 2.215384615
+            },
+            {
+              "text": "June,",
+              "start": 2.215384615,
+              "end": 2.330769231
+            },
+            {
+              "text": "Dye",
+              "start": 2.330769231,
+              "end": 2.446153846
+            },
+            {
+              "text": "reported",
+              "start": 2.446153846,
+              "end": 2.561538462
+            },
+            {
+              "text": "inventory",
+              "start": 2.561538462,
+              "end": 2.676923077
+            },
+            {
+              "text": "of",
+              "start": 2.676923077,
+              "end": 2.792307692
+            },
+            {
+              "text": "3",
+              "start": 2.792307692,
+              "end": 2.907692308
+            },
+            {
+              "text": "grams",
+              "start": 2.907692308,
+              "end": 3.023076923
+            },
+            {
+              "text": "for",
+              "start": 3.023076923,
+              "end": 3.138461538
+            },
+            {
+              "text": "batch",
+              "start": 3.138461538,
+              "end": 3.253846154
+            },
+            {
+              "text": "with",
+              "start": 3.253846154,
+              "end": 3.369230769
+            },
+            {
+              "text": "denominator",
+              "start": 3.369230769,
+              "end": 3.484615385
+            },
+            {
+              "text": "10.",
+              "start": 3.484615385,
+              "end": 3.6
+            },
+            {
+              "text": "Dye",
+              "start": 3.95,
+              "end": 4.086363636
+            },
+            {
+              "text": "disperses",
+              "start": 4.086363636,
+              "end": 4.222727273
+            },
+            {
+              "text": "toward",
+              "start": 4.222727273,
+              "end": 4.359090909
+            },
+            {
+              "text": "Mesh",
+              "start": 4.359090909,
+              "end": 4.495454545
+            },
+            {
+              "text": "from",
+              "start": 4.495454545,
+              "end": 4.631818182
+            },
+            {
+              "text": "Tank",
+              "start": 4.631818182,
+              "end": 4.768181818
+            },
+            {
+              "text": "in",
+              "start": 4.768181818,
+              "end": 4.904545455
+            },
+            {
+              "text": "this",
+              "start": 4.904545455,
+              "end": 5.040909091
+            },
+            {
+              "text": "qualitative",
+              "start": 5.040909091,
+              "end": 5.177272727
+            },
+            {
+              "text": "illustrative",
+              "start": 5.177272727,
+              "end": 5.313636364
+            },
+            {
+              "text": "model.",
+              "start": 5.313636364,
+              "end": 5.45
+            },
+            {
+              "text": "Mesh",
+              "start": 5.8,
+              "end": 5.925
+            },
+            {
+              "text": "lets",
+              "start": 5.925,
+              "end": 6.05
+            },
+            {
+              "text": "through",
+              "start": 6.05,
+              "end": 6.175
+            },
+            {
+              "text": "Dye",
+              "start": 6.175,
+              "end": 6.3
+            },
+            {
+              "text": "under",
+              "start": 6.3,
+              "end": 6.425
+            },
+            {
+              "text": "open",
+              "start": 6.425,
+              "end": 6.55
+            },
+            {
+              "text": "pores",
+              "start": 6.55,
+              "end": 6.675
+            },
+            {
+              "text": "in",
+              "start": 6.675,
+              "end": 6.8
+            },
+            {
+              "text": "this",
+              "start": 6.8,
+              "end": 6.925
+            },
+            {
+              "text": "qualitative",
+              "start": 6.925,
+              "end": 7.05
+            },
+            {
+              "text": "illustrative",
+              "start": 7.05,
+              "end": 7.175
+            },
+            {
+              "text": "model.",
+              "start": 7.175,
+              "end": 7.3
+            },
+            {
+              "text": "Dye",
+              "start": 7.65,
+              "end": 7.803846154
+            },
+            {
+              "text": "Mesh",
+              "start": 7.803846154,
+              "end": 7.957692308
+            },
+            {
+              "text": "result",
+              "start": 7.957692308,
+              "end": 8.111538462
+            },
+            {
+              "text": "remains",
+              "start": 8.111538462,
+              "end": 8.265384615
+            },
+            {
+              "text": "unresolved",
+              "start": 8.265384615,
+              "end": 8.419230769
+            },
+            {
+              "text": "under",
+              "start": 8.419230769,
+              "end": 8.573076923
+            },
+            {
+              "text": "open",
+              "start": 8.573076923,
+              "end": 8.726923077
+            },
+            {
+              "text": "pores",
+              "start": 8.726923077,
+              "end": 8.880769231
+            },
+            {
+              "text": "in",
+              "start": 8.880769231,
+              "end": 9.034615385
+            },
+            {
+              "text": "this",
+              "start": 9.034615385,
+              "end": 9.188461538
+            },
+            {
+              "text": "qualitative",
+              "start": 9.188461538,
+              "end": 9.342307692
+            },
+            {
+              "text": "illustrative",
+              "start": 9.342307692,
+              "end": 9.496153846
+            },
+            {
+              "text": "model.",
+              "start": 9.496153846,
+              "end": 9.65
+            }
+          ],
+          "window": {
+            "startWord": 0,
+            "endWord": 62,
+            "startTime": 0,
+            "endTime": 10
+          },
+          "proposal": {
+            "kind": "material-process",
+            "preset": "diffusion-filter",
+            "visualMode": "diagram",
+            "label": "Dye",
+            "subject": "Dye",
+            "outcome": "unresolved",
+            "evidence": "illustrative",
+            "period": "June",
+            "population": "batch",
+            "template": "qualitative-filter",
+            "startWord": 0,
+            "endWord": 62,
+            "layout": "stack",
+            "setupWord": 0,
+            "actionWord": 14,
+            "responseWord": 27,
+            "checkWord": 38,
+            "resolveWord": 50,
+            "entities": [
+              {
+                "label": "Dye",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 13
+                }
+              },
+              {
+                "label": "Tank",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 13
+                }
+              },
+              {
+                "label": "Mesh",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 13
+                }
+              }
+            ],
+            "material": "Dye",
+            "reservoir": "Tank",
+            "filter": "Mesh",
+            "model": "illustrative",
+            "movement": "spreads toward",
+            "records": [
+              {
+                "actor": "Dye",
+                "role": "inventory",
+                "quantity": {
+                  "state": "known",
+                  "actor": "Dye",
+                  "claim": "inventory",
+                  "basis": {
+                    "unit": "gram",
+                    "period": "June",
+                    "population": "batch",
+                    "denominator": {
+                      "numerator": 10,
+                      "denominator": 1
+                    }
+                  },
+                  "amount": {
+                    "kind": "rational",
+                    "value": {
+                      "numerator": 3,
+                      "denominator": 1
+                    }
+                  },
+                  "evidence": {
+                    "fromWord": 14,
+                    "toWord": 26
+                  }
+                }
+              }
+            ],
+            "filterRule": {
+              "relation": "passes",
+              "condition": "open pores",
+              "evidence": {
+                "fromWord": 38,
+                "toWord": 49
+              }
+            },
+            "result": {
+              "state": "unresolved",
+              "relation": "unresolved",
+              "evidence": {
+                "fromWord": 50,
+                "toWord": 62
+              }
+            }
+          },
+          "negatives": [],
+          "paraphrases": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3183 @@
+{
+  "version": 1,
+  "pack": "geometry",
+  "stories": [
+    {
+      "id": "57",
+      "name": "canonical",
+      "sourceText": "Device lists Ada as actor with gadget template for Harbor during May. Ada states Device board visibility is hidden for Harbor during May. Ada states Device section intersects board for Harbor during May. Ada Device board width is 2 centimetres during May among Harbor. Ada states Device result is revealed for Harbor during May.",
+      "words": [
+        {
+          "text": "Device",
+          "start": 0.25,
+          "end": 0.358333333
+        },
+        {
+          "text": "lists",
+          "start": 0.358333333,
+          "end": 0.466666667
+        },
+        {
+          "text": "Ada",
+          "start": 0.466666667,
+          "end": 0.575
+        },
+        {
+          "text": "as",
+          "start": 0.575,
+          "end": 0.683333333
+        },
+        {
+          "text": "actor",
+          "start": 0.683333333,
+          "end": 0.791666667
+        },
+        {
+          "text": "with",
+          "start": 0.791666667,
+          "end": 0.9
+        },
+        {
+          "text": "gadget",
+          "start": 0.9,
+          "end": 1.008333333
+        },
+        {
+          "text": "template",
+          "start": 1.008333333,
+          "end": 1.116666667
+        },
+        {
+          "text": "for",
+          "start": 1.116666667,
+          "end": 1.225
+        },
+        {
+          "text": "Harbor",
+          "start": 1.225,
+          "end": 1.333333333
+        },
+        {
+          "text": "during",
+          "start": 1.333333333,
+          "end": 1.441666667
+        },
+        {
+          "text": "May.",
+          "start": 1.441666667,
+          "end": 1.55
+        },
+        {
+          "text": "Ada",
+          "start": 2,
+          "end": 2.15
+        },
+        {
+          "text": "states",
+          "start": 2.15,
+          "end": 2.3
+        },
+        {
+          "text": "Device",
+          "start": 2.3,
+          "end": 2.45
+        },
+        {
+          "text": "board",
+          "start": 2.45,
+          "end": 2.6
+        },
+        {
+          "text": "visibility",
+          "start": 2.6,
+          "end": 2.75
+        },
+        {
+          "text": "is",
+          "start": 2.75,
+          "end": 2.9
+        },
+        {
+          "text": "hidden",
+          "start": 2.9,
+          "end": 3.05
+        },
+        {
+          "text": "for",
+          "start": 3.05,
+          "end": 3.2
+        },
+        {
+          "text": "Harbor",
+          "start": 3.2,
+          "end": 3.35
+        },
+        {
+          "text": "during",
+          "start": 3.35,
+          "end": 3.5
+        },
+        {
+          "text": "May.",
+          "start": 3.5,
+          "end": 3.65
+        },
+        {
+          "text": "Ada",
+          "start": 4,
+          "end": 4.165
+        },
+        {
+          "text": "states",
+          "start": 4.165,
+          "end": 4.33
+        },
+        {
+          "text": "Device",
+          "start": 4.33,
+          "end": 4.495
+        },
+        {
+          "text": "section",
+          "start": 4.495,
+          "end": 4.66
+        },
+        {
+          "text": "intersects",
+          "start": 4.66,
+          "end": 4.825
+        },
+        {
+          "text": "board",
+          "start": 4.825,
+          "end": 4.99
+        },
+        {
+          "text": "for",
+          "start": 4.99,
+          "end": 5.155
+        },
+        {
+          "text": "Harbor",
+          "start": 5.155,
+          "end": 5.32
+        },
+        {
+          "text": "during",
+          "start": 5.32,
+          "end": 5.485
+        },
+        {
+          "text": "May.",
+          "start": 5.485,
+          "end": 5.65
+        },
+        {
+          "text": "Ada",
+          "start": 6,
+          "end": 6.240909091
+        },
+        {
+          "text": "Device",
+          "start": 6.240909091,
+          "end": 6.481818182
+        },
+        {
+          "text": "board",
+          "start": 6.481818182,
+          "end": 6.722727273
+        },
+        {
+          "text": "width",
+          "start": 6.722727273,
+          "end": 6.963636364
+        },
+        {
+          "text": "is",
+          "start": 6.963636364,
+          "end": 7.204545455
+        },
+        {
+          "text": "2",
+          "start": 7.204545455,
+          "end": 7.445454545
+        },
+        {
+          "text": "centimetres",
+          "start": 7.445454545,
+          "end": 7.686363636
+        },
+        {
+          "text": "during",
+          "start": 7.686363636,
+          "end": 7.927272727
+        },
+        {
+          "text": "May",
+          "start": 7.927272727,
+          "end": 8.168181818
+        },
+        {
+          "text": "among",
+          "start": 8.168181818,
+          "end": 8.409090909
+        },
+        {
+          "text": "Harbor.",
+          "start": 8.409090909,
+          "end": 8.65
+        },
+        {
+          "text": "Ada",
+          "start": 9.5,
+          "end": 9.715
+        },
+        {
+          "text": "states",
+          "start": 9.715,
+          "end": 9.93
+        },
+        {
+          "text": "Device",
+          "start": 9.93,
+          "end": 10.145
+        },
+        {
+          "text": "result",
+          "start": 10.145,
+          "end": 10.36
+        },
+        {
+          "text": "is",
+          "start": 10.36,
+          "end": 10.575
+        },
+        {
+          "text": "revealed",
+          "start": 10.575,
+          "end": 10.79
+        },
+        {
+          "text": "for",
+          "start": 10.79,
+          "end": 11.005
+        },
+        {
+          "text": "Harbor",
+          "start": 11.005,
+          "end": 11.22
+        },
+        {
+          "text": "during",
+          "start": 11.22,
+          "end": 11.435
+        },
+        {
+          "text": "May.",
+          "start": 11.435,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 53,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "section-view",
+        "preset": "scan",
+        "visualMode": "diagram",
+        "template": "gadget",
+        "label": "Device",
+        "subject": "Ada",
+        "outcome": "revealed",
+        "evidence": "source-stated",
+        "actors": [
+          {
+            "label": "Ada",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 11
+            }
+          }
+        ],
+        "identity": "Device",
+        "scope": "Harbor",
+        "period": "May",
+        "startWord": 0,
+        "endWord": 53,
+        "setupWord": 0,
+        "actionWord": 12,
+        "responseWord": 23,
+        "checkWord": 33,
+        "resolveWord": 44,
+        "parts": [
+          {
+            "actor": "Ada",
+            "identity": "Device",
+            "claim": "visibility",
+            "scope": "Harbor",
+            "period": "May",
+            "evidence": {
+              "fromWord": 12,
+              "toWord": 22
+            },
+            "state": "known",
+            "value": "hidden",
+            "part": "board"
+          }
+        ],
+        "section": {
+          "actor": "Ada",
+          "identity": "Device",
+          "claim": "section",
+          "scope": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 23,
+            "toWord": 32
+          },
+          "state": "known",
+          "value": "intersects",
+          "part": "board"
+        },
+        "measurement": {
+          "actor": "Ada",
+          "claim": "Device board width",
+          "basis": {
+            "unit": "centimetre",
+            "period": "May",
+            "population": "Harbor"
+          },
+          "state": "known",
+          "amount": {
+            "kind": "rational",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            }
+          },
+          "evidence": {
+            "fromWord": 33,
+            "toWord": 43
+          }
+        },
+        "result": {
+          "actor": "Ada",
+          "identity": "Device",
+          "claim": "result",
+          "scope": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 44,
+            "toWord": 53
+          },
+          "state": "known",
+          "value": "revealed"
+        }
+      },
+      "negatives": [
+        {
+          "name": "wrong actor",
+          "edits": [
+            {
+              "path": [
+                "parts",
+                0,
+                "actor"
+              ],
+              "value": "Bea"
+            }
+          ]
+        },
+        {
+          "name": "wrong part owner",
+          "edits": [
+            {
+              "path": [
+                "section",
+                "actor"
+              ],
+              "value": "Bea"
+            }
+          ]
+        },
+        {
+          "name": "wrong part scope",
+          "edits": [
+            {
+              "path": [
+                "parts",
+                0,
+                "scope"
+              ],
+              "value": "Atlas"
+            }
+          ]
+        },
+        {
+          "name": "wrong measurement period",
+          "edits": [
+            {
+              "path": [
+                "measurement",
+                "basis",
+                "period"
+              ],
+              "value": "June"
+            }
+          ]
+        },
+        {
+          "name": "invented interior part",
+          "edits": [
+            {
+              "path": [
+                "parts",
+                0,
+                "part"
+              ],
+              "value": "motor"
+            }
+          ]
+        },
+        {
+          "name": "part from another template",
+          "edits": [
+            {
+              "path": [
+                "parts",
+                0,
+                "part"
+              ],
+              "value": "shaft"
+            }
+          ]
+        },
+        {
+          "name": "hidden turned into absent",
+          "edits": [
+            {
+              "path": [
+                "parts",
+                0,
+                "value"
+              ],
+              "value": "absent"
+            }
+          ]
+        },
+        {
+          "name": "invented section relation",
+          "edits": [
+            {
+              "path": [
+                "section",
+                "value"
+              ],
+              "value": "misses"
+            }
+          ]
+        },
+        {
+          "name": "invented numeric measure",
+          "edits": [
+            {
+              "path": [
+                "measurement",
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 3,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "incompatible measured unit",
+          "edits": [
+            {
+              "path": [
+                "measurement",
+                "basis",
+                "unit"
+              ],
+              "value": "radian"
+            }
+          ],
+          "clauses": {
+            "3": "Ada Device board width is 2 radians during May among Harbor."
+          }
+        },
+        {
+          "name": "condition omitted",
+          "edits": [],
+          "clauses": {
+            "2": "If access opens, Ada states Device section intersects board for Harbor during May."
+          }
+        },
+        {
+          "name": "unqualified simulation",
+          "edits": [
+            {
+              "path": [
+                "parts",
+                0,
+                "state"
+              ],
+              "value": "simulated"
+            }
+          ]
+        },
+        {
+          "name": "unsourced result",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "value"
+              ],
+              "value": "not-revealed"
+            },
+            {
+              "path": [
+                "outcome"
+              ],
+              "value": "not-revealed"
+            }
+          ]
+        },
+        {
+          "name": "template not authored",
+          "edits": [
+            {
+              "path": [
+                "template"
+              ],
+              "value": "sphere"
+            }
+          ]
+        },
+        {
+          "name": "too many gadget parts",
+          "edits": [
+            {
+              "path": [
+                "parts"
+              ],
+              "value": [
+                {
+                  "actor": "Ada",
+                  "identity": "Device",
+                  "claim": "visibility",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 12,
+                    "toWord": 22
+                  },
+                  "state": "known",
+                  "value": "hidden",
+                  "part": "board"
+                },
+                {
+                  "actor": "Ada",
+                  "identity": "Device",
+                  "claim": "visibility",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 12,
+                    "toWord": 22
+                  },
+                  "state": "known",
+                  "value": "hidden",
+                  "part": "board"
+                },
+                {
+                  "actor": "Ada",
+                  "identity": "Device",
+                  "claim": "visibility",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 12,
+                    "toWord": 22
+                  },
+                  "state": "known",
+                  "value": "hidden",
+                  "part": "board"
+                },
+                {
+                  "actor": "Ada",
+                  "identity": "Device",
+                  "claim": "visibility",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 12,
+                    "toWord": 22
+                  },
+                  "state": "known",
+                  "value": "hidden",
+                  "part": "board"
+                },
+                {
+                  "actor": "Ada",
+                  "identity": "Device",
+                  "claim": "visibility",
+                  "scope": "Harbor",
+                  "period": "May",
+                  "evidence": {
+                    "fromWord": 12,
+                    "toWord": 22
+                  },
+                  "state": "known",
+                  "value": "hidden",
+                  "part": "board"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "geometry injected",
+          "edits": [
+            {
+              "path": [
+                "cutplane"
+              ],
+              "value": [
+                0,
+                1,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "57",
+      "name": "paraphrase",
+      "sourceText": "Within Atlas in June, Home records Selene as actor with house template. Within Atlas in June, Selene reports Home beam visibility is unknown. If access opens, within Atlas in June, Selene reports Home section intersects beam. During June, Selene Home beam width is unknown metres among Atlas. If access opens, within Atlas in June, Selene reports Home result is unresolved.",
+      "words": [
+        {
+          "text": "Within",
+          "start": 0.25,
+          "end": 0.358333333
+        },
+        {
+          "text": "Atlas",
+          "start": 0.358333333,
+          "end": 0.466666667
+        },
+        {
+          "text": "in",
+          "start": 0.466666667,
+          "end": 0.575
+        },
+        {
+          "text": "June,",
+          "start": 0.575,
+          "end": 0.683333333
+        },
+        {
+          "text": "Home",
+          "start": 0.683333333,
+          "end": 0.791666667
+        },
+        {
+          "text": "records",
+          "start": 0.791666667,
+          "end": 0.9
+        },
+        {
+          "text": "Selene",
+          "start": 0.9,
+          "end": 1.008333333
+        },
+        {
+          "text": "as",
+          "start": 1.008333333,
+          "end": 1.116666667
+        },
+        {
+          "text": "actor",
+          "start": 1.116666667,
+          "end": 1.225
+        },
+        {
+          "text": "with",
+          "start": 1.225,
+          "end": 1.333333333
+        },
+        {
+          "text": "house",
+          "start": 1.333333333,
+          "end": 1.441666667
+        },
+        {
+          "text": "template.",
+          "start": 1.441666667,
+          "end": 1.55
+        },
+        {
+          "text": "Within",
+          "start": 2,
+          "end": 2.15
+        },
+        {
+          "text": "Atlas",
+          "start": 2.15,
+          "end": 2.3
+        },
+        {
+          "text": "in",
+          "start": 2.3,
+          "end": 2.45
+        },
+        {
+          "text": "June,",
+          "start": 2.45,
+          "end": 2.6
+        },
+        {
+          "text": "Selene",
+          "start": 2.6,
+          "end": 2.75
+        },
+        {
+          "text": "reports",
+          "start": 2.75,
+          "end": 2.9
+        },
+        {
+          "text": "Home",
+          "start": 2.9,
+          "end": 3.05
+        },
+        {
+          "text": "beam",
+          "start": 3.05,
+          "end": 3.2
+        },
+        {
+          "text": "visibility",
+          "start": 3.2,
+          "end": 3.35
+        },
+        {
+          "text": "is",
+          "start": 3.35,
+          "end": 3.5
+        },
+        {
+          "text": "unknown.",
+          "start": 3.5,
+          "end": 3.65
+        },
+        {
+          "text": "If",
+          "start": 4,
+          "end": 4.126923077
+        },
+        {
+          "text": "access",
+          "start": 4.126923077,
+          "end": 4.253846154
+        },
+        {
+          "text": "opens,",
+          "start": 4.253846154,
+          "end": 4.380769231
+        },
+        {
+          "text": "within",
+          "start": 4.380769231,
+          "end": 4.507692308
+        },
+        {
+          "text": "Atlas",
+          "start": 4.507692308,
+          "end": 4.634615385
+        },
+        {
+          "text": "in",
+          "start": 4.634615385,
+          "end": 4.761538462
+        },
+        {
+          "text": "June,",
+          "start": 4.761538462,
+          "end": 4.888461538
+        },
+        {
+          "text": "Selene",
+          "start": 4.888461538,
+          "end": 5.015384615
+        },
+        {
+          "text": "reports",
+          "start": 5.015384615,
+          "end": 5.142307692
+        },
+        {
+          "text": "Home",
+          "start": 5.142307692,
+          "end": 5.269230769
+        },
+        {
+          "text": "section",
+          "start": 5.269230769,
+          "end": 5.396153846
+        },
+        {
+          "text": "intersects",
+          "start": 5.396153846,
+          "end": 5.523076923
+        },
+        {
+          "text": "beam.",
+          "start": 5.523076923,
+          "end": 5.65
+        },
+        {
+          "text": "During",
+          "start": 6,
+          "end": 6.240909091
+        },
+        {
+          "text": "June,",
+          "start": 6.240909091,
+          "end": 6.481818182
+        },
+        {
+          "text": "Selene",
+          "start": 6.481818182,
+          "end": 6.722727273
+        },
+        {
+          "text": "Home",
+          "start": 6.722727273,
+          "end": 6.963636364
+        },
+        {
+          "text": "beam",
+          "start": 6.963636364,
+          "end": 7.204545455
+        },
+        {
+          "text": "width",
+          "start": 7.204545455,
+          "end": 7.445454545
+        },
+        {
+          "text": "is",
+          "start": 7.445454545,
+          "end": 7.686363636
+        },
+        {
+          "text": "unknown",
+          "start": 7.686363636,
+          "end": 7.927272727
+        },
+        {
+          "text": "metres",
+          "start": 7.927272727,
+          "end": 8.168181818
+        },
+        {
+          "text": "among",
+          "start": 8.168181818,
+          "end": 8.409090909
+        },
+        {
+          "text": "Atlas.",
+          "start": 8.409090909,
+          "end": 8.65
+        },
+        {
+          "text": "If",
+          "start": 9.5,
+          "end": 9.665384615
+        },
+        {
+          "text": "access",
+          "start": 9.665384615,
+          "end": 9.830769231
+        },
+        {
+          "text": "opens,",
+          "start": 9.830769231,
+          "end": 9.996153846
+        },
+        {
+          "text": "within",
+          "start": 9.996153846,
+          "end": 10.161538462
+        },
+        {
+          "text": "Atlas",
+          "start": 10.161538462,
+          "end": 10.326923077
+        },
+        {
+          "text": "in",
+          "start": 10.326923077,
+          "end": 10.492307692
+        },
+        {
+          "text": "June,",
+          "start": 10.492307692,
+          "end": 10.657692308
+        },
+        {
+          "text": "Selene",
+          "start": 10.657692308,
+          "end": 10.823076923
+        },
+        {
+          "text": "reports",
+          "start": 10.823076923,
+          "end": 10.988461538
+        },
+        {
+          "text": "Home",
+          "start": 10.988461538,
+          "end": 11.153846154
+        },
+        {
+          "text": "result",
+          "start": 11.153846154,
+          "end": 11.319230769
+        },
+        {
+          "text": "is",
+          "start": 11.319230769,
+          "end": 11.484615385
+        },
+        {
+          "text": "unresolved.",
+          "start": 11.484615385,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 59,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "section-view",
+        "preset": "scan",
+        "visualMode": "diagram",
+        "template": "house",
+        "label": "Home",
+        "subject": "Selene",
+        "outcome": "unresolved",
+        "evidence": "source-stated",
+        "actors": [
+          {
+            "label": "Selene",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 11
+            }
+          }
+        ],
+        "identity": "Home",
+        "scope": "Atlas",
+        "period": "June",
+        "startWord": 0,
+        "endWord": 59,
+        "setupWord": 0,
+        "actionWord": 12,
+        "responseWord": 23,
+        "checkWord": 36,
+        "resolveWord": 47,
+        "parts": [
+          {
+            "actor": "Selene",
+            "identity": "Home",
+            "claim": "visibility",
+            "scope": "Atlas",
+            "period": "June",
+            "evidence": {
+              "fromWord": 12,
+              "toWord": 22
+            },
+            "state": "unknown",
+            "qualifier": "unknown",
+            "part": "beam"
+          }
+        ],
+        "section": {
+          "actor": "Selene",
+          "identity": "Home",
+          "claim": "section",
+          "scope": "Atlas",
+          "period": "June",
+          "evidence": {
+            "fromWord": 23,
+            "toWord": 35
+          },
+          "state": "conditional",
+          "value": "intersects",
+          "condition": "If access opens",
+          "part": "beam"
+        },
+        "measurement": {
+          "actor": "Selene",
+          "claim": "Home beam width",
+          "basis": {
+            "unit": "metre",
+            "period": "June",
+            "population": "Atlas"
+          },
+          "state": "unknown",
+          "qualifier": "unknown",
+          "evidence": {
+            "fromWord": 36,
+            "toWord": 46
+          }
+        },
+        "result": {
+          "actor": "Selene",
+          "identity": "Home",
+          "claim": "result",
+          "scope": "Atlas",
+          "period": "June",
+          "evidence": {
+            "fromWord": 47,
+            "toWord": 59
+          },
+          "state": "conditional",
+          "value": "unresolved",
+          "condition": "If access opens"
+        }
+      },
+      "negatives": [
+        {
+          "name": "unknown visibility promoted to hidden",
+          "edits": [
+            {
+              "path": [
+                "parts",
+                0,
+                "state"
+              ],
+              "value": "known"
+            },
+            {
+              "path": [
+                "parts",
+                0,
+                "value"
+              ],
+              "value": "hidden"
+            },
+            {
+              "path": [
+                "parts",
+                0,
+                "qualifier"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "unknown width promoted to zero",
+          "edits": [
+            {
+              "path": [
+                "measurement",
+                "state"
+              ],
+              "value": "known"
+            },
+            {
+              "path": [
+                "measurement",
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            },
+            {
+              "path": [
+                "measurement",
+                "qualifier"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "condition dropped from section",
+          "edits": [
+            {
+              "path": [
+                "section",
+                "condition"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "condition dropped from result",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "condition"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "condition invented",
+          "edits": [
+            {
+              "path": [
+                "section",
+                "condition"
+              ],
+              "value": "If money arrives"
+            }
+          ]
+        },
+        {
+          "name": "missing conflated with unknown",
+          "edits": [
+            {
+              "path": [
+                "parts",
+                0,
+                "state"
+              ],
+              "value": "missing"
+            },
+            {
+              "path": [
+                "parts",
+                0,
+                "qualifier"
+              ],
+              "value": "missing"
+            }
+          ]
+        },
+        {
+          "name": "house part substituted with gadget part",
+          "edits": [
+            {
+              "path": [
+                "parts",
+                0,
+                "part"
+              ],
+              "value": "board"
+            }
+          ]
+        },
+        {
+          "name": "caller actor ID",
+          "edits": [
+            {
+              "path": [
+                "actors",
+                0,
+                "id"
+              ],
+              "value": "caller"
+            }
+          ]
+        },
+        {
+          "name": "nine actors",
+          "edits": [
+            {
+              "path": [
+                "actors"
+              ],
+              "value": [
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                },
+                {
+                  "label": "Selene",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 11
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "thirteen records",
+          "edits": [
+            {
+              "path": [
+                "records"
+              ],
+              "value": [
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
+              ]
+            }
+          ]
+        },
+        {
+          "name": "seventeen relations",
+          "edits": [
+            {
+              "path": [
+                "relations"
+              ],
+              "value": [
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
+              ]
+            }
+          ]
+        },
+        {
+          "name": "wrong preset",
+          "edits": [
+            {
+              "path": [
+                "preset"
+              ],
+              "value": "unfold"
+            }
+          ]
+        },
+        {
+          "name": "wrong mode",
+          "edits": [
+            {
+              "path": [
+                "visualMode"
+              ],
+              "value": "camera"
+            }
+          ]
+        },
+        {
+          "name": "same clause reused",
+          "edits": [
+            {
+              "path": [
+                "checkWord"
+              ],
+              "value": 23
+            }
+          ]
+        },
+        {
+          "name": "compressed beats",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              1.1
+            ],
+            [
+              1.25,
+              3.65
+            ],
+            [
+              4,
+              5.65
+            ],
+            [
+              6,
+              8.65
+            ],
+            [
+              9.5,
+              11.65
+            ]
+          ]
+        },
+        {
+          "name": "unresolved result promoted to revealed",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "value"
+              ],
+              "value": "revealed"
+            },
+            {
+              "path": [
+                "outcome"
+              ],
+              "value": "revealed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "58",
+      "name": "canonical",
+      "sourceText": "Cube lists Ada as actor with cube template and front, right, left, top, bottom and back faces for Harbor during May. Ada Cube edge is 2 metres during May among Harbor. Ada states Cube unfolding is cube-cross for Harbor during May. Ada states Cube correspondence is matched with front matches front, right matches right, left matches left, top matches top, bottom matches bottom and back matches back on cube-cross for Harbor during May. Ada states Cube result is unfolded for Harbor during May.",
+      "words": [
+        {
+          "text": "Cube",
+          "start": 0.25,
+          "end": 0.311904762
+        },
+        {
+          "text": "lists",
+          "start": 0.311904762,
+          "end": 0.373809524
+        },
+        {
+          "text": "Ada",
+          "start": 0.373809524,
+          "end": 0.435714286
+        },
+        {
+          "text": "as",
+          "start": 0.435714286,
+          "end": 0.497619048
+        },
+        {
+          "text": "actor",
+          "start": 0.497619048,
+          "end": 0.55952381
+        },
+        {
+          "text": "with",
+          "start": 0.55952381,
+          "end": 0.621428571
+        },
+        {
+          "text": "cube",
+          "start": 0.621428571,
+          "end": 0.683333333
+        },
+        {
+          "text": "template",
+          "start": 0.683333333,
+          "end": 0.745238095
+        },
+        {
+          "text": "and",
+          "start": 0.745238095,
+          "end": 0.807142857
+        },
+        {
+          "text": "front,",
+          "start": 0.807142857,
+          "end": 0.869047619
+        },
+        {
+          "text": "right,",
+          "start": 0.869047619,
+          "end": 0.930952381
+        },
+        {
+          "text": "left,",
+          "start": 0.930952381,
+          "end": 0.992857143
+        },
+        {
+          "text": "top,",
+          "start": 0.992857143,
+          "end": 1.054761905
+        },
+        {
+          "text": "bottom",
+          "start": 1.054761905,
+          "end": 1.116666667
+        },
+        {
+          "text": "and",
+          "start": 1.116666667,
+          "end": 1.178571429
+        },
+        {
+          "text": "back",
+          "start": 1.178571429,
+          "end": 1.24047619
+        },
+        {
+          "text": "faces",
+          "start": 1.24047619,
+          "end": 1.302380952
+        },
+        {
+          "text": "for",
+          "start": 1.302380952,
+          "end": 1.364285714
+        },
+        {
+          "text": "Harbor",
+          "start": 1.364285714,
+          "end": 1.426190476
+        },
+        {
+          "text": "during",
+          "start": 1.426190476,
+          "end": 1.488095238
+        },
+        {
+          "text": "May.",
+          "start": 1.488095238,
+          "end": 1.55
+        },
+        {
+          "text": "Ada",
+          "start": 2,
+          "end": 2.165
+        },
+        {
+          "text": "Cube",
+          "start": 2.165,
+          "end": 2.33
+        },
+        {
+          "text": "edge",
+          "start": 2.33,
+          "end": 2.495
+        },
+        {
+          "text": "is",
+          "start": 2.495,
+          "end": 2.66
+        },
+        {
+          "text": "2",
+          "start": 2.66,
+          "end": 2.825
+        },
+        {
+          "text": "metres",
+          "start": 2.825,
+          "end": 2.99
+        },
+        {
+          "text": "during",
+          "start": 2.99,
+          "end": 3.155
+        },
+        {
+          "text": "May",
+          "start": 3.155,
+          "end": 3.32
+        },
+        {
+          "text": "among",
+          "start": 3.32,
+          "end": 3.485
+        },
+        {
+          "text": "Harbor.",
+          "start": 3.485,
+          "end": 3.65
+        },
+        {
+          "text": "Ada",
+          "start": 4,
+          "end": 4.165
+        },
+        {
+          "text": "states",
+          "start": 4.165,
+          "end": 4.33
+        },
+        {
+          "text": "Cube",
+          "start": 4.33,
+          "end": 4.495
+        },
+        {
+          "text": "unfolding",
+          "start": 4.495,
+          "end": 4.66
+        },
+        {
+          "text": "is",
+          "start": 4.66,
+          "end": 4.825
+        },
+        {
+          "text": "cube-cross",
+          "start": 4.825,
+          "end": 4.99
+        },
+        {
+          "text": "for",
+          "start": 4.99,
+          "end": 5.155
+        },
+        {
+          "text": "Harbor",
+          "start": 5.155,
+          "end": 5.32
+        },
+        {
+          "text": "during",
+          "start": 5.32,
+          "end": 5.485
+        },
+        {
+          "text": "May.",
+          "start": 5.485,
+          "end": 5.65
+        },
+        {
+          "text": "Ada",
+          "start": 6,
+          "end": 6.0828125
+        },
+        {
+          "text": "states",
+          "start": 6.0828125,
+          "end": 6.165625
+        },
+        {
+          "text": "Cube",
+          "start": 6.165625,
+          "end": 6.2484375
+        },
+        {
+          "text": "correspondence",
+          "start": 6.2484375,
+          "end": 6.33125
+        },
+        {
+          "text": "is",
+          "start": 6.33125,
+          "end": 6.4140625
+        },
+        {
+          "text": "matched",
+          "start": 6.4140625,
+          "end": 6.496875
+        },
+        {
+          "text": "with",
+          "start": 6.496875,
+          "end": 6.5796875
+        },
+        {
+          "text": "front",
+          "start": 6.5796875,
+          "end": 6.6625
+        },
+        {
+          "text": "matches",
+          "start": 6.6625,
+          "end": 6.7453125
+        },
+        {
+          "text": "front,",
+          "start": 6.7453125,
+          "end": 6.828125
+        },
+        {
+          "text": "right",
+          "start": 6.828125,
+          "end": 6.9109375
+        },
+        {
+          "text": "matches",
+          "start": 6.9109375,
+          "end": 6.99375
+        },
+        {
+          "text": "right,",
+          "start": 6.99375,
+          "end": 7.0765625
+        },
+        {
+          "text": "left",
+          "start": 7.0765625,
+          "end": 7.159375
+        },
+        {
+          "text": "matches",
+          "start": 7.159375,
+          "end": 7.2421875
+        },
+        {
+          "text": "left,",
+          "start": 7.2421875,
+          "end": 7.325
+        },
+        {
+          "text": "top",
+          "start": 7.325,
+          "end": 7.4078125
+        },
+        {
+          "text": "matches",
+          "start": 7.4078125,
+          "end": 7.490625
+        },
+        {
+          "text": "top,",
+          "start": 7.490625,
+          "end": 7.5734375
+        },
+        {
+          "text": "bottom",
+          "start": 7.5734375,
+          "end": 7.65625
+        },
+        {
+          "text": "matches",
+          "start": 7.65625,
+          "end": 7.7390625
+        },
+        {
+          "text": "bottom",
+          "start": 7.7390625,
+          "end": 7.821875
+        },
+        {
+          "text": "and",
+          "start": 7.821875,
+          "end": 7.9046875
+        },
+        {
+          "text": "back",
+          "start": 7.9046875,
+          "end": 7.9875
+        },
+        {
+          "text": "matches",
+          "start": 7.9875,
+          "end": 8.0703125
+        },
+        {
+          "text": "back",
+          "start": 8.0703125,
+          "end": 8.153125
+        },
+        {
+          "text": "on",
+          "start": 8.153125,
+          "end": 8.2359375
+        },
+        {
+          "text": "cube-cross",
+          "start": 8.2359375,
+          "end": 8.31875
+        },
+        {
+          "text": "for",
+          "start": 8.31875,
+          "end": 8.4015625
+        },
+        {
+          "text": "Harbor",
+          "start": 8.4015625,
+          "end": 8.484375
+        },
+        {
+          "text": "during",
+          "start": 8.484375,
+          "end": 8.5671875
+        },
+        {
+          "text": "May.",
+          "start": 8.5671875,
+          "end": 8.65
+        },
+        {
+          "text": "Ada",
+          "start": 9.5,
+          "end": 9.715
+        },
+        {
+          "text": "states",
+          "start": 9.715,
+          "end": 9.93
+        },
+        {
+          "text": "Cube",
+          "start": 9.93,
+          "end": 10.145
+        },
+        {
+          "text": "result",
+          "start": 10.145,
+          "end": 10.36
+        },
+        {
+          "text": "is",
+          "start": 10.36,
+          "end": 10.575
+        },
+        {
+          "text": "unfolded",
+          "start": 10.575,
+          "end": 10.79
+        },
+        {
+          "text": "for",
+          "start": 10.79,
+          "end": 11.005
+        },
+        {
+          "text": "Harbor",
+          "start": 11.005,
+          "end": 11.22
+        },
+        {
+          "text": "during",
+          "start": 11.22,
+          "end": 11.435
+        },
+        {
+          "text": "May.",
+          "start": 11.435,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 82,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "geometry-projection",
+        "preset": "unfold",
+        "visualMode": "diagram",
+        "template": "cube",
+        "label": "Cube",
+        "subject": "Ada",
+        "outcome": "unfolded",
+        "evidence": "source-stated",
+        "actors": [
+          {
+            "label": "Ada",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 20
+            }
+          }
+        ],
+        "identity": "Cube",
+        "scope": "Harbor",
+        "period": "May",
+        "startWord": 0,
+        "endWord": 82,
+        "setupWord": 0,
+        "actionWord": 21,
+        "responseWord": 31,
+        "checkWord": 41,
+        "resolveWord": 73,
+        "net": "cube-cross",
+        "faces": [
+          "front",
+          "right",
+          "left",
+          "top",
+          "bottom",
+          "back"
+        ],
+        "measurement": {
+          "actor": "Ada",
+          "claim": "Cube edge",
+          "basis": {
+            "unit": "metre",
+            "period": "May",
+            "population": "Harbor"
+          },
+          "state": "known",
+          "amount": {
+            "kind": "rational",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            }
+          },
+          "evidence": {
+            "fromWord": 21,
+            "toWord": 30
+          }
+        },
+        "unfolding": {
+          "actor": "Ada",
+          "identity": "Cube",
+          "claim": "unfolding",
+          "scope": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 31,
+            "toWord": 40
+          },
+          "state": "known",
+          "value": "cube-cross"
+        },
+        "correspondence": {
+          "actor": "Ada",
+          "identity": "Cube",
+          "claim": "correspondence",
+          "scope": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 41,
+            "toWord": 72
+          },
+          "state": "known",
+          "value": "matched",
+          "links": [
+            {
+              "from": "front",
+              "to": "front"
+            },
+            {
+              "from": "right",
+              "to": "right"
+            },
+            {
+              "from": "left",
+              "to": "left"
+            },
+            {
+              "from": "top",
+              "to": "top"
+            },
+            {
+              "from": "bottom",
+              "to": "bottom"
+            },
+            {
+              "from": "back",
+              "to": "back"
+            }
+          ]
+        },
+        "result": {
+          "actor": "Ada",
+          "identity": "Cube",
+          "claim": "result",
+          "scope": "Harbor",
+          "period": "May",
+          "evidence": {
+            "fromWord": 73,
+            "toWord": 82
+          },
+          "state": "known",
+          "value": "unfolded"
+        }
+      },
+      "negatives": [
+        {
+          "name": "unknown solid",
+          "edits": [
+            {
+              "path": [
+                "template"
+              ],
+              "value": "tetrahedron"
+            }
+          ]
+        },
+        {
+          "name": "unsupported net",
+          "edits": [
+            {
+              "path": [
+                "net"
+              ],
+              "value": "cube-strip"
+            }
+          ]
+        },
+        {
+          "name": "missing face",
+          "edits": [
+            {
+              "path": [
+                "faces"
+              ],
+              "value": [
+                "front",
+                "right",
+                "left",
+                "top",
+                "bottom"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "invented face",
+          "edits": [
+            {
+              "path": [
+                "faces"
+              ],
+              "value": [
+                "front",
+                "right",
+                "left",
+                "top",
+                "bottom",
+                "lid"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "duplicate face",
+          "edits": [
+            {
+              "path": [
+                "faces"
+              ],
+              "value": [
+                "front",
+                "right",
+                "left",
+                "top",
+                "bottom",
+                "front"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "five correspondences",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "links"
+              ],
+              "value": [
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "right",
+                  "to": "right"
+                },
+                {
+                  "from": "left",
+                  "to": "left"
+                },
+                {
+                  "from": "top",
+                  "to": "top"
+                },
+                {
+                  "from": "bottom",
+                  "to": "bottom"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "wrong correspondence",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "links",
+                0,
+                "to"
+              ],
+              "value": "back"
+            }
+          ]
+        },
+        {
+          "name": "duplicate correspondence",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "links",
+                5
+              ],
+              "value": {
+                "from": "front",
+                "to": "front"
+              }
+            }
+          ]
+        },
+        {
+          "name": "invented face correspondence",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "links",
+                0,
+                "from"
+              ],
+              "value": "lid"
+            },
+            {
+              "path": [
+                "correspondence",
+                "links",
+                0,
+                "to"
+              ],
+              "value": "lid"
+            }
+          ]
+        },
+        {
+          "name": "caller link ID",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "links",
+                0,
+                "id"
+              ],
+              "value": "caller"
+            }
+          ]
+        },
+        {
+          "name": "wrong source actor",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "actor"
+              ],
+              "value": "Bea"
+            }
+          ]
+        },
+        {
+          "name": "wrong scope",
+          "edits": [
+            {
+              "path": [
+                "unfolding",
+                "scope"
+              ],
+              "value": "Cedar"
+            }
+          ]
+        },
+        {
+          "name": "wrong measurement unit",
+          "edits": [
+            {
+              "path": [
+                "measurement",
+                "basis",
+                "unit"
+              ],
+              "value": "square-metre"
+            }
+          ],
+          "clauses": {
+            "1": "Ada Cube edge is 2 square metres during May among Harbor."
+          }
+        },
+        {
+          "name": "derived area supplied",
+          "edits": [
+            {
+              "path": [
+                "area"
+              ],
+              "value": {
+                "numerator": 24,
+                "denominator": 1
+              }
+            }
+          ]
+        },
+        {
+          "name": "invented face source",
+          "edits": [],
+          "clauses": {
+            "3": "Ada states Cube correspondence is matched with front matches back, right matches right, left matches left, top matches top, bottom matches bottom and back matches front on cube-cross for Harbor during May."
+          }
+        },
+        {
+          "name": "zero rational denominator",
+          "edits": [
+            {
+              "path": [
+                "measurement",
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 0
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "58",
+      "name": "paraphrase",
+      "sourceText": "Within Cedar in July, Net records Inez as actor with cube template and front, right, left, top, bottom and back faces. In this simulated sample, during July, Inez recorded Net edge of 1.5 centimetres among Cedar. In this illustrative example, within Cedar in July, Inez records Net unfolding is cube-cross. In this illustrative example, within Cedar in July, Inez records Net correspondence is matched with front matches front, right matches right, left matches left, top matches top, bottom matches bottom and back matches back on cube-cross. In this illustrative example, within Cedar in July, Inez records Net result is unfolded.",
+      "words": [
+        {
+          "text": "Within",
+          "start": 0.25,
+          "end": 0.311904762
+        },
+        {
+          "text": "Cedar",
+          "start": 0.311904762,
+          "end": 0.373809524
+        },
+        {
+          "text": "in",
+          "start": 0.373809524,
+          "end": 0.435714286
+        },
+        {
+          "text": "July,",
+          "start": 0.435714286,
+          "end": 0.497619048
+        },
+        {
+          "text": "Net",
+          "start": 0.497619048,
+          "end": 0.55952381
+        },
+        {
+          "text": "records",
+          "start": 0.55952381,
+          "end": 0.621428571
+        },
+        {
+          "text": "Inez",
+          "start": 0.621428571,
+          "end": 0.683333333
+        },
+        {
+          "text": "as",
+          "start": 0.683333333,
+          "end": 0.745238095
+        },
+        {
+          "text": "actor",
+          "start": 0.745238095,
+          "end": 0.807142857
+        },
+        {
+          "text": "with",
+          "start": 0.807142857,
+          "end": 0.869047619
+        },
+        {
+          "text": "cube",
+          "start": 0.869047619,
+          "end": 0.930952381
+        },
+        {
+          "text": "template",
+          "start": 0.930952381,
+          "end": 0.992857143
+        },
+        {
+          "text": "and",
+          "start": 0.992857143,
+          "end": 1.054761905
+        },
+        {
+          "text": "front,",
+          "start": 1.054761905,
+          "end": 1.116666667
+        },
+        {
+          "text": "right,",
+          "start": 1.116666667,
+          "end": 1.178571429
+        },
+        {
+          "text": "left,",
+          "start": 1.178571429,
+          "end": 1.24047619
+        },
+        {
+          "text": "top,",
+          "start": 1.24047619,
+          "end": 1.302380952
+        },
+        {
+          "text": "bottom",
+          "start": 1.302380952,
+          "end": 1.364285714
+        },
+        {
+          "text": "and",
+          "start": 1.364285714,
+          "end": 1.426190476
+        },
+        {
+          "text": "back",
+          "start": 1.426190476,
+          "end": 1.488095238
+        },
+        {
+          "text": "faces.",
+          "start": 1.488095238,
+          "end": 1.55
+        },
+        {
+          "text": "In",
+          "start": 2,
+          "end": 2.11
+        },
+        {
+          "text": "this",
+          "start": 2.11,
+          "end": 2.22
+        },
+        {
+          "text": "simulated",
+          "start": 2.22,
+          "end": 2.33
+        },
+        {
+          "text": "sample,",
+          "start": 2.33,
+          "end": 2.44
+        },
+        {
+          "text": "during",
+          "start": 2.44,
+          "end": 2.55
+        },
+        {
+          "text": "July,",
+          "start": 2.55,
+          "end": 2.66
+        },
+        {
+          "text": "Inez",
+          "start": 2.66,
+          "end": 2.77
+        },
+        {
+          "text": "recorded",
+          "start": 2.77,
+          "end": 2.88
+        },
+        {
+          "text": "Net",
+          "start": 2.88,
+          "end": 2.99
+        },
+        {
+          "text": "edge",
+          "start": 2.99,
+          "end": 3.1
+        },
+        {
+          "text": "of",
+          "start": 3.1,
+          "end": 3.21
+        },
+        {
+          "text": "1.5",
+          "start": 3.21,
+          "end": 3.32
+        },
+        {
+          "text": "centimetres",
+          "start": 3.32,
+          "end": 3.43
+        },
+        {
+          "text": "among",
+          "start": 3.43,
+          "end": 3.54
+        },
+        {
+          "text": "Cedar.",
+          "start": 3.54,
+          "end": 3.65
+        },
+        {
+          "text": "In",
+          "start": 4,
+          "end": 4.117857143
+        },
+        {
+          "text": "this",
+          "start": 4.117857143,
+          "end": 4.235714286
+        },
+        {
+          "text": "illustrative",
+          "start": 4.235714286,
+          "end": 4.353571429
+        },
+        {
+          "text": "example,",
+          "start": 4.353571429,
+          "end": 4.471428571
+        },
+        {
+          "text": "within",
+          "start": 4.471428571,
+          "end": 4.589285714
+        },
+        {
+          "text": "Cedar",
+          "start": 4.589285714,
+          "end": 4.707142857
+        },
+        {
+          "text": "in",
+          "start": 4.707142857,
+          "end": 4.825
+        },
+        {
+          "text": "July,",
+          "start": 4.825,
+          "end": 4.942857143
+        },
+        {
+          "text": "Inez",
+          "start": 4.942857143,
+          "end": 5.060714286
+        },
+        {
+          "text": "records",
+          "start": 5.060714286,
+          "end": 5.178571429
+        },
+        {
+          "text": "Net",
+          "start": 5.178571429,
+          "end": 5.296428571
+        },
+        {
+          "text": "unfolding",
+          "start": 5.296428571,
+          "end": 5.414285714
+        },
+        {
+          "text": "is",
+          "start": 5.414285714,
+          "end": 5.532142857
+        },
+        {
+          "text": "cube-cross.",
+          "start": 5.532142857,
+          "end": 5.65
+        },
+        {
+          "text": "In",
+          "start": 6,
+          "end": 6.073611111
+        },
+        {
+          "text": "this",
+          "start": 6.073611111,
+          "end": 6.147222222
+        },
+        {
+          "text": "illustrative",
+          "start": 6.147222222,
+          "end": 6.220833333
+        },
+        {
+          "text": "example,",
+          "start": 6.220833333,
+          "end": 6.294444444
+        },
+        {
+          "text": "within",
+          "start": 6.294444444,
+          "end": 6.368055556
+        },
+        {
+          "text": "Cedar",
+          "start": 6.368055556,
+          "end": 6.441666667
+        },
+        {
+          "text": "in",
+          "start": 6.441666667,
+          "end": 6.515277778
+        },
+        {
+          "text": "July,",
+          "start": 6.515277778,
+          "end": 6.588888889
+        },
+        {
+          "text": "Inez",
+          "start": 6.588888889,
+          "end": 6.6625
+        },
+        {
+          "text": "records",
+          "start": 6.6625,
+          "end": 6.736111111
+        },
+        {
+          "text": "Net",
+          "start": 6.736111111,
+          "end": 6.809722222
+        },
+        {
+          "text": "correspondence",
+          "start": 6.809722222,
+          "end": 6.883333333
+        },
+        {
+          "text": "is",
+          "start": 6.883333333,
+          "end": 6.956944444
+        },
+        {
+          "text": "matched",
+          "start": 6.956944444,
+          "end": 7.030555556
+        },
+        {
+          "text": "with",
+          "start": 7.030555556,
+          "end": 7.104166667
+        },
+        {
+          "text": "front",
+          "start": 7.104166667,
+          "end": 7.177777778
+        },
+        {
+          "text": "matches",
+          "start": 7.177777778,
+          "end": 7.251388889
+        },
+        {
+          "text": "front,",
+          "start": 7.251388889,
+          "end": 7.325
+        },
+        {
+          "text": "right",
+          "start": 7.325,
+          "end": 7.398611111
+        },
+        {
+          "text": "matches",
+          "start": 7.398611111,
+          "end": 7.472222222
+        },
+        {
+          "text": "right,",
+          "start": 7.472222222,
+          "end": 7.545833333
+        },
+        {
+          "text": "left",
+          "start": 7.545833333,
+          "end": 7.619444444
+        },
+        {
+          "text": "matches",
+          "start": 7.619444444,
+          "end": 7.693055556
+        },
+        {
+          "text": "left,",
+          "start": 7.693055556,
+          "end": 7.766666667
+        },
+        {
+          "text": "top",
+          "start": 7.766666667,
+          "end": 7.840277778
+        },
+        {
+          "text": "matches",
+          "start": 7.840277778,
+          "end": 7.913888889
+        },
+        {
+          "text": "top,",
+          "start": 7.913888889,
+          "end": 7.9875
+        },
+        {
+          "text": "bottom",
+          "start": 7.9875,
+          "end": 8.061111111
+        },
+        {
+          "text": "matches",
+          "start": 8.061111111,
+          "end": 8.134722222
+        },
+        {
+          "text": "bottom",
+          "start": 8.134722222,
+          "end": 8.208333333
+        },
+        {
+          "text": "and",
+          "start": 8.208333333,
+          "end": 8.281944444
+        },
+        {
+          "text": "back",
+          "start": 8.281944444,
+          "end": 8.355555556
+        },
+        {
+          "text": "matches",
+          "start": 8.355555556,
+          "end": 8.429166667
+        },
+        {
+          "text": "back",
+          "start": 8.429166667,
+          "end": 8.502777778
+        },
+        {
+          "text": "on",
+          "start": 8.502777778,
+          "end": 8.576388889
+        },
+        {
+          "text": "cube-cross.",
+          "start": 8.576388889,
+          "end": 8.65
+        },
+        {
+          "text": "In",
+          "start": 9.5,
+          "end": 9.653571429
+        },
+        {
+          "text": "this",
+          "start": 9.653571429,
+          "end": 9.807142857
+        },
+        {
+          "text": "illustrative",
+          "start": 9.807142857,
+          "end": 9.960714286
+        },
+        {
+          "text": "example,",
+          "start": 9.960714286,
+          "end": 10.114285714
+        },
+        {
+          "text": "within",
+          "start": 10.114285714,
+          "end": 10.267857143
+        },
+        {
+          "text": "Cedar",
+          "start": 10.267857143,
+          "end": 10.421428571
+        },
+        {
+          "text": "in",
+          "start": 10.421428571,
+          "end": 10.575
+        },
+        {
+          "text": "July,",
+          "start": 10.575,
+          "end": 10.728571429
+        },
+        {
+          "text": "Inez",
+          "start": 10.728571429,
+          "end": 10.882142857
+        },
+        {
+          "text": "records",
+          "start": 10.882142857,
+          "end": 11.035714286
+        },
+        {
+          "text": "Net",
+          "start": 11.035714286,
+          "end": 11.189285714
+        },
+        {
+          "text": "result",
+          "start": 11.189285714,
+          "end": 11.342857143
+        },
+        {
+          "text": "is",
+          "start": 11.342857143,
+          "end": 11.496428571
+        },
+        {
+          "text": "unfolded.",
+          "start": 11.496428571,
+          "end": 11.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 99,
+        "startTime": 0,
+        "endTime": 12
+      },
+      "proposal": {
+        "kind": "geometry-projection",
+        "preset": "unfold",
+        "visualMode": "diagram",
+        "template": "cube",
+        "label": "Net",
+        "subject": "Inez",
+        "outcome": "unfolded",
+        "evidence": "source-stated",
+        "actors": [
+          {
+            "label": "Inez",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 20
+            }
+          }
+        ],
+        "identity": "Net",
+        "scope": "Cedar",
+        "period": "July",
+        "startWord": 0,
+        "endWord": 99,
+        "setupWord": 0,
+        "actionWord": 21,
+        "responseWord": 36,
+        "checkWord": 50,
+        "resolveWord": 86,
+        "net": "cube-cross",
+        "faces": [
+          "front",
+          "right",
+          "left",
+          "top",
+          "bottom",
+          "back"
+        ],
+        "measurement": {
+          "actor": "Inez",
+          "claim": "Net edge",
+          "basis": {
+            "unit": "centimetre",
+            "period": "July",
+            "population": "Cedar"
+          },
+          "state": "simulated",
+          "amount": {
+            "kind": "rational",
+            "value": {
+              "numerator": 3,
+              "denominator": 2
+            }
+          },
+          "evidence": {
+            "fromWord": 21,
+            "toWord": 35
+          },
+          "qualifier": "simulated sample"
+        },
+        "unfolding": {
+          "actor": "Inez",
+          "identity": "Net",
+          "claim": "unfolding",
+          "scope": "Cedar",
+          "period": "July",
+          "evidence": {
+            "fromWord": 36,
+            "toWord": 49
+          },
+          "state": "illustrative",
+          "value": "cube-cross",
+          "qualifier": "illustrative example"
+        },
+        "correspondence": {
+          "actor": "Inez",
+          "identity": "Net",
+          "claim": "correspondence",
+          "scope": "Cedar",
+          "period": "July",
+          "evidence": {
+            "fromWord": 50,
+            "toWord": 85
+          },
+          "state": "illustrative",
+          "value": "matched",
+          "qualifier": "illustrative example",
+          "links": [
+            {
+              "from": "front",
+              "to": "front"
+            },
+            {
+              "from": "right",
+              "to": "right"
+            },
+            {
+              "from": "left",
+              "to": "left"
+            },
+            {
+              "from": "top",
+              "to": "top"
+            },
+            {
+              "from": "bottom",
+              "to": "bottom"
+            },
+            {
+              "from": "back",
+              "to": "back"
+            }
+          ]
+        },
+        "result": {
+          "actor": "Inez",
+          "identity": "Net",
+          "claim": "result",
+          "scope": "Cedar",
+          "period": "July",
+          "evidence": {
+            "fromWord": 86,
+            "toWord": 99
+          },
+          "state": "illustrative",
+          "value": "unfolded",
+          "qualifier": "illustrative example"
+        }
+      },
+      "negatives": [
+        {
+          "name": "illustration promoted to known",
+          "edits": [
+            {
+              "path": [
+                "unfolding",
+                "state"
+              ],
+              "value": "known"
+            },
+            {
+              "path": [
+                "unfolding",
+                "qualifier"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "unqualified illustration",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "qualifier"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "simulation promoted to known",
+          "edits": [
+            {
+              "path": [
+                "measurement",
+                "state"
+              ],
+              "value": "known"
+            },
+            {
+              "path": [
+                "measurement",
+                "qualifier"
+              ],
+              "remove": true
+            }
+          ]
+        },
+        {
+          "name": "invented measurement sign",
+          "edits": [
+            {
+              "path": [
+                "measurement",
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": -3,
+                  "denominator": 2
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "invented result",
+          "edits": [
+            {
+              "path": [
+                "result",
+                "value"
+              ],
+              "value": "unresolved"
+            },
+            {
+              "path": [
+                "outcome"
+              ],
+              "value": "unresolved"
+            }
+          ]
+        },
+        {
+          "name": "condition not retained",
+          "edits": [],
+          "clauses": {
+            "2": "If access opens, in this illustrative example, within Cedar in July, Inez records Net unfolding is cube-cross."
+          }
+        },
+        {
+          "name": "claim changed",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "claim"
+              ],
+              "value": "selection"
+            }
+          ]
+        },
+        {
+          "name": "unknown correspondence with fabricated links",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "state"
+              ],
+              "value": "unknown"
+            },
+            {
+              "path": [
+                "correspondence",
+                "qualifier"
+              ],
+              "value": "unknown"
+            },
+            {
+              "path": [
+                "correspondence",
+                "value"
+              ],
+              "remove": true
+            }
+          ],
+          "clauses": {
+            "3": "Within Cedar in July, Inez records Net correspondence is unknown."
+          }
+        },
+        {
+          "name": "overflow measurement",
+          "edits": [
+            {
+              "path": [
+                "measurement",
+                "amount"
+              ],
+              "value": {
+                "kind": "rational",
+                "value": {
+                  "numerator": 1000000001,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "too many links",
+          "edits": [
+            {
+              "path": [
+                "correspondence",
+                "links"
+              ],
+              "value": [
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                },
+                {
+                  "from": "front",
+                  "to": "front"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "caller face ID",
+          "edits": [
+            {
+              "path": [
+                "faces",
+                0
+              ],
+              "value": {
+                "face": "front",
+                "id": "caller"
+              }
+            }
+          ]
+        },
+        {
+          "name": "camera injected",
+          "edits": [
+            {
+              "path": [
+                "camera"
+              ],
+              "value": {
+                "position": [
+                  0,
+                  0,
+                  1
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SVG injected",
+          "edits": [
+            {
+              "path": [
+                "label"
+              ],
+              "value": "<svg/>"
+            }
+          ]
+        },
+        {
+          "name": "overlong window",
+          "edits": [
+            {
+              "path": [
+                "window",
+                "endTime"
+              ],
+              "value": 13
+            }
+          ]
+        },
+        {
+          "name": "word overlap",
+          "edits": [
+            {
+              "path": [
+                "words",
+                1,
+                "start"
+              ],
+              "value": 0.2
+            }
+          ]
+        },
+        {
+          "name": "same beat clause",
+          "edits": [
+            {
+              "path": [
+                "resolveWord"
+              ],
+              "value": 50
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

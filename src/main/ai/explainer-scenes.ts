@@ -45,6 +45,7 @@ import {
   stampSupported,
   suppressEditorialExtras,
 } from './explainer/editorial-contract';
+import { getExpansionPresetSpec, getRegisteredSceneSpec } from './explainer/expansion-registry';
 import {
   isRec,
   type KindFamily,
@@ -390,6 +391,7 @@ function parseWindow(
 
 /** Number of addressable elements for emphasis `item` targets. */
 export function reactionTargetCount(scene: ExplainerSceneBody): number {
+  if ('storyId' in scene) return 0;
   switch (scene.kind) {
     case 'checklist':
       return scene.items.length;
@@ -546,7 +548,7 @@ function parseCandidate(
   onDiagnostic?: PlanningObserver,
   preserveFullWindow = false,
 ): CandidateResult {
-  const spec = typeof raw.kind === 'string' ? getKindSpec(raw.kind) : undefined;
+  const spec = getRegisteredSceneSpec(raw);
   if (!spec)
     return {
       ok: false,
@@ -564,10 +566,7 @@ function parseCandidate(
     };
   }
   const ctx = makeParseContext(words, win);
-  // Each spec narrows its own kind; the registry erases K, so call through a
-  // widened signature (the spec only ever returns its own kind).
-  const parse = spec.parse as (r: Rec, c: ParseContext) => ExplainerSceneBody | null;
-  const body = parse(raw, ctx);
+  const body = spec.parse(raw, ctx);
   if (!body) {
     const problems =
       ctx.issues.length > 0
@@ -678,14 +677,28 @@ export function parseLongformSceneSpec(
 
 /** Sound cues for a scene: the kind's own cues + extras. Absolute times. */
 export function sceneCues(planned: Pick<PlannedExplainerScene, 'scene' | 'chained'>): SceneCue[] {
+  const expansion =
+    'storyId' in planned.scene
+      ? getExpansionPresetSpec(planned.scene.kind, planned.scene.preset)
+      : undefined;
   const spec = getKindSpec(planned.scene.kind);
   const cuesOf = spec?.cues as ((s: ExplainerSceneBody) => SceneCue[]) | undefined;
   const kindCues =
-    planned.scene.kind === 'stamp' && planned.scene.finish
-      ? [{ kind: 'thump' as const, at: planned.scene.stampAt + STAMP_CONTACT_SECONDS, gain: 0.65 }]
-      : cuesOf
-        ? cuesOf(planned.scene)
-        : [];
+    'storyId' in planned.scene
+      ? expansion?.storyId === planned.scene.storyId
+        ? expansion.cues(planned.scene)
+        : []
+      : planned.scene.kind === 'stamp' && planned.scene.finish
+        ? [
+            {
+              kind: 'thump' as const,
+              at: planned.scene.stampAt + STAMP_CONTACT_SECONDS,
+              gain: 0.65,
+            },
+          ]
+        : cuesOf
+          ? cuesOf(planned.scene)
+          : [];
   const extra: SceneCue[] = [];
   if (planned.scene.overlayStamp) {
     extra.push({ kind: 'thump', at: planned.scene.overlayStamp.at + STAMP_CONTACT_SECONDS });

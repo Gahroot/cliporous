@@ -1,0 +1,6534 @@
+{
+  "version": 1,
+  "pack": "physical",
+  "stories": [
+    {
+      "id": "73",
+      "name": "canonical",
+      "sourceText": "Maker identifies route toward Depot at stage production as scheduled with stated state for Trial during Today. Depot holds stock toward Shop at stage storage as available with stated state for Trial during Today. Maker transfers shipment toward Depot at stage transport as dispatched with stated state for Trial during Today. Shop replaces refill toward Depot at stage replacement as requested with stated state for Trial during Today. Depot reports status toward Shop at stage review as pending with stated state for Trial during Today.",
+      "words": [
+        {
+          "text": "Maker",
+          "start": 0.25,
+          "end": 0.360588235
+        },
+        {
+          "text": "identifies",
+          "start": 0.360588235,
+          "end": 0.471176471
+        },
+        {
+          "text": "route",
+          "start": 0.471176471,
+          "end": 0.581764706
+        },
+        {
+          "text": "toward",
+          "start": 0.581764706,
+          "end": 0.692352941
+        },
+        {
+          "text": "Depot",
+          "start": 0.692352941,
+          "end": 0.802941176
+        },
+        {
+          "text": "at",
+          "start": 0.802941176,
+          "end": 0.913529412
+        },
+        {
+          "text": "stage",
+          "start": 0.913529412,
+          "end": 1.024117647
+        },
+        {
+          "text": "production",
+          "start": 1.024117647,
+          "end": 1.134705882
+        },
+        {
+          "text": "as",
+          "start": 1.134705882,
+          "end": 1.245294118
+        },
+        {
+          "text": "scheduled",
+          "start": 1.245294118,
+          "end": 1.355882353
+        },
+        {
+          "text": "with",
+          "start": 1.355882353,
+          "end": 1.466470588
+        },
+        {
+          "text": "stated",
+          "start": 1.466470588,
+          "end": 1.577058824
+        },
+        {
+          "text": "state",
+          "start": 1.577058824,
+          "end": 1.687647059
+        },
+        {
+          "text": "for",
+          "start": 1.687647059,
+          "end": 1.798235294
+        },
+        {
+          "text": "Trial",
+          "start": 1.798235294,
+          "end": 1.908823529
+        },
+        {
+          "text": "during",
+          "start": 1.908823529,
+          "end": 2.019411765
+        },
+        {
+          "text": "Today.",
+          "start": 2.019411765,
+          "end": 2.13
+        },
+        {
+          "text": "Depot",
+          "start": 2.13,
+          "end": 2.240588235
+        },
+        {
+          "text": "holds",
+          "start": 2.240588235,
+          "end": 2.351176471
+        },
+        {
+          "text": "stock",
+          "start": 2.351176471,
+          "end": 2.461764706
+        },
+        {
+          "text": "toward",
+          "start": 2.461764706,
+          "end": 2.572352941
+        },
+        {
+          "text": "Shop",
+          "start": 2.572352941,
+          "end": 2.682941176
+        },
+        {
+          "text": "at",
+          "start": 2.682941176,
+          "end": 2.793529412
+        },
+        {
+          "text": "stage",
+          "start": 2.793529412,
+          "end": 2.904117647
+        },
+        {
+          "text": "storage",
+          "start": 2.904117647,
+          "end": 3.014705882
+        },
+        {
+          "text": "as",
+          "start": 3.014705882,
+          "end": 3.125294118
+        },
+        {
+          "text": "available",
+          "start": 3.125294118,
+          "end": 3.235882353
+        },
+        {
+          "text": "with",
+          "start": 3.235882353,
+          "end": 3.346470588
+        },
+        {
+          "text": "stated",
+          "start": 3.346470588,
+          "end": 3.457058824
+        },
+        {
+          "text": "state",
+          "start": 3.457058824,
+          "end": 3.567647059
+        },
+        {
+          "text": "for",
+          "start": 3.567647059,
+          "end": 3.678235294
+        },
+        {
+          "text": "Trial",
+          "start": 3.678235294,
+          "end": 3.788823529
+        },
+        {
+          "text": "during",
+          "start": 3.788823529,
+          "end": 3.899411765
+        },
+        {
+          "text": "Today.",
+          "start": 3.899411765,
+          "end": 4.01
+        },
+        {
+          "text": "Maker",
+          "start": 4.01,
+          "end": 4.120588235
+        },
+        {
+          "text": "transfers",
+          "start": 4.120588235,
+          "end": 4.231176471
+        },
+        {
+          "text": "shipment",
+          "start": 4.231176471,
+          "end": 4.341764706
+        },
+        {
+          "text": "toward",
+          "start": 4.341764706,
+          "end": 4.452352941
+        },
+        {
+          "text": "Depot",
+          "start": 4.452352941,
+          "end": 4.562941176
+        },
+        {
+          "text": "at",
+          "start": 4.562941176,
+          "end": 4.673529412
+        },
+        {
+          "text": "stage",
+          "start": 4.673529412,
+          "end": 4.784117647
+        },
+        {
+          "text": "transport",
+          "start": 4.784117647,
+          "end": 4.894705882
+        },
+        {
+          "text": "as",
+          "start": 4.894705882,
+          "end": 5.005294118
+        },
+        {
+          "text": "dispatched",
+          "start": 5.005294118,
+          "end": 5.115882353
+        },
+        {
+          "text": "with",
+          "start": 5.115882353,
+          "end": 5.226470588
+        },
+        {
+          "text": "stated",
+          "start": 5.226470588,
+          "end": 5.337058824
+        },
+        {
+          "text": "state",
+          "start": 5.337058824,
+          "end": 5.447647059
+        },
+        {
+          "text": "for",
+          "start": 5.447647059,
+          "end": 5.558235294
+        },
+        {
+          "text": "Trial",
+          "start": 5.558235294,
+          "end": 5.668823529
+        },
+        {
+          "text": "during",
+          "start": 5.668823529,
+          "end": 5.779411765
+        },
+        {
+          "text": "Today.",
+          "start": 5.779411765,
+          "end": 5.89
+        },
+        {
+          "text": "Shop",
+          "start": 5.89,
+          "end": 6.000588235
+        },
+        {
+          "text": "replaces",
+          "start": 6.000588235,
+          "end": 6.111176471
+        },
+        {
+          "text": "refill",
+          "start": 6.111176471,
+          "end": 6.221764706
+        },
+        {
+          "text": "toward",
+          "start": 6.221764706,
+          "end": 6.332352941
+        },
+        {
+          "text": "Depot",
+          "start": 6.332352941,
+          "end": 6.442941176
+        },
+        {
+          "text": "at",
+          "start": 6.442941176,
+          "end": 6.553529412
+        },
+        {
+          "text": "stage",
+          "start": 6.553529412,
+          "end": 6.664117647
+        },
+        {
+          "text": "replacement",
+          "start": 6.664117647,
+          "end": 6.774705882
+        },
+        {
+          "text": "as",
+          "start": 6.774705882,
+          "end": 6.885294118
+        },
+        {
+          "text": "requested",
+          "start": 6.885294118,
+          "end": 6.995882353
+        },
+        {
+          "text": "with",
+          "start": 6.995882353,
+          "end": 7.106470588
+        },
+        {
+          "text": "stated",
+          "start": 7.106470588,
+          "end": 7.217058824
+        },
+        {
+          "text": "state",
+          "start": 7.217058824,
+          "end": 7.327647059
+        },
+        {
+          "text": "for",
+          "start": 7.327647059,
+          "end": 7.438235294
+        },
+        {
+          "text": "Trial",
+          "start": 7.438235294,
+          "end": 7.548823529
+        },
+        {
+          "text": "during",
+          "start": 7.548823529,
+          "end": 7.659411765
+        },
+        {
+          "text": "Today.",
+          "start": 7.659411765,
+          "end": 7.77
+        },
+        {
+          "text": "Depot",
+          "start": 7.77,
+          "end": 7.880588235
+        },
+        {
+          "text": "reports",
+          "start": 7.880588235,
+          "end": 7.991176471
+        },
+        {
+          "text": "status",
+          "start": 7.991176471,
+          "end": 8.101764706
+        },
+        {
+          "text": "toward",
+          "start": 8.101764706,
+          "end": 8.212352941
+        },
+        {
+          "text": "Shop",
+          "start": 8.212352941,
+          "end": 8.322941176
+        },
+        {
+          "text": "at",
+          "start": 8.322941176,
+          "end": 8.433529412
+        },
+        {
+          "text": "stage",
+          "start": 8.433529412,
+          "end": 8.544117647
+        },
+        {
+          "text": "review",
+          "start": 8.544117647,
+          "end": 8.654705882
+        },
+        {
+          "text": "as",
+          "start": 8.654705882,
+          "end": 8.765294118
+        },
+        {
+          "text": "pending",
+          "start": 8.765294118,
+          "end": 8.875882353
+        },
+        {
+          "text": "with",
+          "start": 8.875882353,
+          "end": 8.986470588
+        },
+        {
+          "text": "stated",
+          "start": 8.986470588,
+          "end": 9.097058824
+        },
+        {
+          "text": "state",
+          "start": 9.097058824,
+          "end": 9.207647059
+        },
+        {
+          "text": "for",
+          "start": 9.207647059,
+          "end": 9.318235294
+        },
+        {
+          "text": "Trial",
+          "start": 9.318235294,
+          "end": 9.428823529
+        },
+        {
+          "text": "during",
+          "start": 9.428823529,
+          "end": 9.539411765
+        },
+        {
+          "text": "Today.",
+          "start": 9.539411765,
+          "end": 9.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 84,
+        "startTime": 0,
+        "endTime": 10
+      },
+      "proposal": {
+        "kind": "inventory-demand",
+        "preset": "supply-chain",
+        "template": "supply-modules",
+        "visualMode": "diagram",
+        "evidence": "source-stated",
+        "label": "route",
+        "subject": "production",
+        "outcome": "pending",
+        "scope": "Trial",
+        "period": "Today",
+        "entities": [
+          {
+            "label": "Maker",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 16
+            }
+          },
+          {
+            "label": "Depot",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 16
+            }
+          },
+          {
+            "label": "Shop",
+            "evidence": {
+              "fromWord": 17,
+              "toWord": 33
+            }
+          }
+        ],
+        "records": [
+          {
+            "actor": "Maker",
+            "target": "Depot",
+            "stage": "production",
+            "role": "stage",
+            "claim": "route",
+            "value": "scheduled",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 16
+            }
+          },
+          {
+            "actor": "Depot",
+            "target": "Shop",
+            "stage": "storage",
+            "role": "inventory",
+            "claim": "stock",
+            "value": "available",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 17,
+              "toWord": 33
+            }
+          },
+          {
+            "actor": "Maker",
+            "target": "Depot",
+            "stage": "transport",
+            "role": "transfer",
+            "claim": "shipment",
+            "value": "dispatched",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 34,
+              "toWord": 50
+            }
+          },
+          {
+            "actor": "Shop",
+            "target": "Depot",
+            "stage": "replacement",
+            "role": "replacement",
+            "claim": "refill",
+            "value": "requested",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 51,
+              "toWord": 67
+            }
+          },
+          {
+            "actor": "Depot",
+            "target": "Shop",
+            "stage": "review",
+            "role": "result",
+            "claim": "status",
+            "value": "pending",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 68,
+              "toWord": 84
+            }
+          }
+        ],
+        "relations": [
+          {
+            "from": "Maker",
+            "to": "Depot",
+            "role": "stage",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 16
+            }
+          },
+          {
+            "from": "Depot",
+            "to": "Shop",
+            "role": "inventory",
+            "evidence": {
+              "fromWord": 17,
+              "toWord": 33
+            }
+          },
+          {
+            "from": "Maker",
+            "to": "Depot",
+            "role": "transfer",
+            "evidence": {
+              "fromWord": 34,
+              "toWord": 50
+            }
+          },
+          {
+            "from": "Shop",
+            "to": "Depot",
+            "role": "replacement",
+            "evidence": {
+              "fromWord": 51,
+              "toWord": 67
+            }
+          },
+          {
+            "from": "Depot",
+            "to": "Shop",
+            "role": "result",
+            "evidence": {
+              "fromWord": 68,
+              "toWord": 84
+            }
+          }
+        ],
+        "quantities": [],
+        "setupWord": 0,
+        "actionWord": 17,
+        "responseWord": 34,
+        "checkWord": 51,
+        "resolveWord": 68
+      },
+      "negatives": [
+        {
+          "name": "wrong actor",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "actor"
+              ],
+              "value": "Shop"
+            }
+          ]
+        },
+        {
+          "name": "wrong scope",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "scope"
+              ],
+              "value": "Other"
+            }
+          ]
+        },
+        {
+          "name": "wrong period",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "period"
+              ],
+              "value": "Tomorrow"
+            }
+          ]
+        },
+        {
+          "name": "wrong value",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "value"
+              ],
+              "value": "invented"
+            }
+          ]
+        },
+        {
+          "name": "wrong relation",
+          "edits": [
+            {
+              "path": [
+                "relations",
+                2,
+                "to"
+              ],
+              "value": "Shop"
+            }
+          ]
+        },
+        {
+          "name": "wrong unit",
+          "edits": [
+            {
+              "path": [
+                "records",
+                1,
+                "unit"
+              ],
+              "value": "kilogram"
+            }
+          ]
+        },
+        {
+          "name": "wrong basis",
+          "edits": [
+            {
+              "path": [
+                "records",
+                1,
+                "basis"
+              ],
+              "value": {
+                "population": "Other"
+              }
+            }
+          ]
+        },
+        {
+          "name": "missing condition",
+          "edits": [
+            {
+              "path": [
+                "records",
+                3,
+                "state"
+              ],
+              "value": "conditional"
+            }
+          ]
+        },
+        {
+          "name": "wrong result",
+          "edits": [
+            {
+              "path": [
+                "outcome"
+              ],
+              "value": "winner"
+            }
+          ]
+        },
+        {
+          "name": "wrong template",
+          "edits": [
+            {
+              "path": [
+                "template"
+              ],
+              "value": "authored-field"
+            }
+          ]
+        },
+        {
+          "name": "actor caps",
+          "edits": [
+            {
+              "path": [
+                "entities"
+              ],
+              "value": [
+                {
+                  "label": "Maker",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "label": "Depot",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "label": "Shop",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                },
+                {
+                  "label": "Maker",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "label": "Depot",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "label": "Shop",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                },
+                {
+                  "label": "Maker",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "label": "Depot",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "label": "Shop",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "record caps",
+          "edits": [
+            {
+              "path": [
+                "records"
+              ],
+              "value": [
+                {
+                  "actor": "Maker",
+                  "target": "Depot",
+                  "stage": "production",
+                  "role": "stage",
+                  "claim": "route",
+                  "value": "scheduled",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "actor": "Depot",
+                  "target": "Shop",
+                  "stage": "storage",
+                  "role": "inventory",
+                  "claim": "stock",
+                  "value": "available",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                },
+                {
+                  "actor": "Maker",
+                  "target": "Depot",
+                  "stage": "transport",
+                  "role": "transfer",
+                  "claim": "shipment",
+                  "value": "dispatched",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 34,
+                    "toWord": 50
+                  }
+                },
+                {
+                  "actor": "Shop",
+                  "target": "Depot",
+                  "stage": "replacement",
+                  "role": "replacement",
+                  "claim": "refill",
+                  "value": "requested",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 51,
+                    "toWord": 67
+                  }
+                },
+                {
+                  "actor": "Depot",
+                  "target": "Shop",
+                  "stage": "review",
+                  "role": "result",
+                  "claim": "status",
+                  "value": "pending",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 68,
+                    "toWord": 84
+                  }
+                },
+                {
+                  "actor": "Maker",
+                  "target": "Depot",
+                  "stage": "production",
+                  "role": "stage",
+                  "claim": "route",
+                  "value": "scheduled",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "actor": "Depot",
+                  "target": "Shop",
+                  "stage": "storage",
+                  "role": "inventory",
+                  "claim": "stock",
+                  "value": "available",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                },
+                {
+                  "actor": "Maker",
+                  "target": "Depot",
+                  "stage": "transport",
+                  "role": "transfer",
+                  "claim": "shipment",
+                  "value": "dispatched",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 34,
+                    "toWord": 50
+                  }
+                },
+                {
+                  "actor": "Shop",
+                  "target": "Depot",
+                  "stage": "replacement",
+                  "role": "replacement",
+                  "claim": "refill",
+                  "value": "requested",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 51,
+                    "toWord": 67
+                  }
+                },
+                {
+                  "actor": "Depot",
+                  "target": "Shop",
+                  "stage": "review",
+                  "role": "result",
+                  "claim": "status",
+                  "value": "pending",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 68,
+                    "toWord": 84
+                  }
+                },
+                {
+                  "actor": "Maker",
+                  "target": "Depot",
+                  "stage": "production",
+                  "role": "stage",
+                  "claim": "route",
+                  "value": "scheduled",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "actor": "Depot",
+                  "target": "Shop",
+                  "stage": "storage",
+                  "role": "inventory",
+                  "claim": "stock",
+                  "value": "available",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                },
+                {
+                  "actor": "Maker",
+                  "target": "Depot",
+                  "stage": "transport",
+                  "role": "transfer",
+                  "claim": "shipment",
+                  "value": "dispatched",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 34,
+                    "toWord": 50
+                  }
+                },
+                {
+                  "actor": "Shop",
+                  "target": "Depot",
+                  "stage": "replacement",
+                  "role": "replacement",
+                  "claim": "refill",
+                  "value": "requested",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 51,
+                    "toWord": 67
+                  }
+                },
+                {
+                  "actor": "Depot",
+                  "target": "Shop",
+                  "stage": "review",
+                  "role": "result",
+                  "claim": "status",
+                  "value": "pending",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 68,
+                    "toWord": 84
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "relation caps",
+          "edits": [
+            {
+              "path": [
+                "relations"
+              ],
+              "value": [
+                {
+                  "from": "Maker",
+                  "to": "Depot",
+                  "role": "stage",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "from": "Depot",
+                  "to": "Shop",
+                  "role": "inventory",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                },
+                {
+                  "from": "Maker",
+                  "to": "Depot",
+                  "role": "transfer",
+                  "evidence": {
+                    "fromWord": 34,
+                    "toWord": 50
+                  }
+                },
+                {
+                  "from": "Shop",
+                  "to": "Depot",
+                  "role": "replacement",
+                  "evidence": {
+                    "fromWord": 51,
+                    "toWord": 67
+                  }
+                },
+                {
+                  "from": "Depot",
+                  "to": "Shop",
+                  "role": "result",
+                  "evidence": {
+                    "fromWord": 68,
+                    "toWord": 84
+                  }
+                },
+                {
+                  "from": "Maker",
+                  "to": "Depot",
+                  "role": "stage",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "from": "Depot",
+                  "to": "Shop",
+                  "role": "inventory",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                },
+                {
+                  "from": "Maker",
+                  "to": "Depot",
+                  "role": "transfer",
+                  "evidence": {
+                    "fromWord": 34,
+                    "toWord": 50
+                  }
+                },
+                {
+                  "from": "Shop",
+                  "to": "Depot",
+                  "role": "replacement",
+                  "evidence": {
+                    "fromWord": 51,
+                    "toWord": 67
+                  }
+                },
+                {
+                  "from": "Depot",
+                  "to": "Shop",
+                  "role": "result",
+                  "evidence": {
+                    "fromWord": 68,
+                    "toWord": 84
+                  }
+                },
+                {
+                  "from": "Maker",
+                  "to": "Depot",
+                  "role": "stage",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "from": "Depot",
+                  "to": "Shop",
+                  "role": "inventory",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                },
+                {
+                  "from": "Maker",
+                  "to": "Depot",
+                  "role": "transfer",
+                  "evidence": {
+                    "fromWord": 34,
+                    "toWord": 50
+                  }
+                },
+                {
+                  "from": "Shop",
+                  "to": "Depot",
+                  "role": "replacement",
+                  "evidence": {
+                    "fromWord": 51,
+                    "toWord": 67
+                  }
+                },
+                {
+                  "from": "Depot",
+                  "to": "Shop",
+                  "role": "result",
+                  "evidence": {
+                    "fromWord": 68,
+                    "toWord": 84
+                  }
+                },
+                {
+                  "from": "Maker",
+                  "to": "Depot",
+                  "role": "stage",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 16
+                  }
+                },
+                {
+                  "from": "Depot",
+                  "to": "Shop",
+                  "role": "inventory",
+                  "evidence": {
+                    "fromWord": 17,
+                    "toWord": 33
+                  }
+                },
+                {
+                  "from": "Maker",
+                  "to": "Depot",
+                  "role": "transfer",
+                  "evidence": {
+                    "fromWord": 34,
+                    "toWord": 50
+                  }
+                },
+                {
+                  "from": "Shop",
+                  "to": "Depot",
+                  "role": "replacement",
+                  "evidence": {
+                    "fromWord": 51,
+                    "toWord": 67
+                  }
+                },
+                {
+                  "from": "Depot",
+                  "to": "Shop",
+                  "role": "result",
+                  "evidence": {
+                    "fromWord": 68,
+                    "toWord": 84
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "quantity caps",
+          "edits": [
+            {
+              "path": [
+                "quantities"
+              ],
+              "value": [
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
+              ]
+            }
+          ]
+        },
+        {
+          "name": "wrong preset",
+          "edits": [
+            {
+              "path": [
+                "preset"
+              ],
+              "value": "other"
+            }
+          ]
+        },
+        {
+          "name": "wrong mode",
+          "edits": [
+            {
+              "path": [
+                "visualMode"
+              ],
+              "value": "3d"
+            }
+          ]
+        },
+        {
+          "name": "wrong beats",
+          "edits": [
+            {
+              "path": [
+                "responseWord"
+              ],
+              "value": 17
+            }
+          ]
+        },
+        {
+          "name": "caller ID",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "id"
+              ],
+              "value": "custom"
+            }
+          ]
+        },
+        {
+          "name": "coordinates",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "x"
+              ],
+              "value": 10
+            }
+          ]
+        },
+        {
+          "name": "domain time",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "at"
+              ],
+              "value": 2
+            }
+          ]
+        },
+        {
+          "name": "simulation",
+          "edits": [
+            {
+              "path": [
+                "simulation"
+              ],
+              "value": true
+            }
+          ]
+        },
+        {
+          "name": "zero promotion",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "value"
+              ],
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "name": "stage mismatch",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "stage"
+              ],
+              "value": "storage"
+            }
+          ]
+        },
+        {
+          "name": "known promotion",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "state"
+              ],
+              "value": "known"
+            }
+          ]
+        },
+        {
+          "name": "partial evidence",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "evidence"
+              ],
+              "value": {
+                "fromWord": 35,
+                "toWord": 50
+              }
+            }
+          ]
+        },
+        {
+          "name": "source missing condition",
+          "edits": [],
+          "clauses": {
+            "3": "Shop replaces refill toward Depot at stage replacement as requested with stated state for Trial during Today if inspected."
+          }
+        },
+        {
+          "name": "source wrong actor",
+          "edits": [],
+          "clauses": {
+            "2": "Shop transfers shipment toward Depot at stage transport as dispatched with stated state for Trial during Today."
+          }
+        },
+        {
+          "name": "source wrong relation",
+          "edits": [],
+          "clauses": {
+            "2": "Maker contradicts shipment toward Depot at stage transport as dispatched with stated state for Trial during Today."
+          }
+        },
+        {
+          "name": "source negation",
+          "edits": [],
+          "clauses": {
+            "2": "Not Maker transfers shipment toward Depot at stage transport as dispatched with stated state for Trial during Today."
+          }
+        },
+        {
+          "name": "unsafe source",
+          "edits": [],
+          "clauses": {
+            "2": "Maker transfers shipment toward Depot at stage transport as <svg> with stated state for Trial during Today."
+          }
+        },
+        {
+          "name": "nonpositive word",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              0.25
+            ],
+            [
+              2.13,
+              4.01
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              7.77,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "overlap",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              2.13
+            ],
+            [
+              2.03,
+              4.01
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              7.77,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "missing lead padding",
+          "edits": [],
+          "intervals": [
+            [
+              0.24,
+              2.13
+            ],
+            [
+              2.13,
+              4.01
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              7.77,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "subsecond beat gap",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              1
+            ],
+            [
+              1.1,
+              3
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              7.77,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "short final hold",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              2.13
+            ],
+            [
+              2.13,
+              4.01
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              9.3,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "nonfinite source word",
+          "edits": [
+            {
+              "path": [
+                "words",
+                0,
+                "start"
+              ],
+              "value": null
+            }
+          ]
+        },
+        {
+          "name": "short window",
+          "edits": [
+            {
+              "path": [
+                "window",
+                "endTime"
+              ],
+              "value": 4.9
+            }
+          ]
+        },
+        {
+          "name": "long window",
+          "edits": [
+            {
+              "path": [
+                "window",
+                "endTime"
+              ],
+              "value": 12.1
+            }
+          ]
+        },
+        {
+          "name": "boundary cuts final clause",
+          "edits": [
+            {
+              "path": [
+                "window",
+                "endWord"
+              ],
+              "value": 83
+            }
+          ]
+        },
+        {
+          "name": "caller URL",
+          "edits": [
+            {
+              "path": [
+                "url"
+              ],
+              "value": "https://example.test"
+            }
+          ]
+        }
+      ],
+      "paraphrases": [
+        {
+          "id": "73",
+          "name": "paraphrase",
+          "sourceText": "Grower names route toward Store at stage production as scheduled with stated state for Trial during Today. Store retains stock toward Market at stage storage as available with stated state for Trial during Today. Grower sends shipment toward Store at stage transport as dispatched with stated state for Trial during Today. Market restocks refill toward Store at stage replacement as requested with stated state for Trial during Today. Store describes status toward Market at stage review as pending with stated state for Trial during Today.",
+          "words": [
+            {
+              "text": "Grower",
+              "start": 0.25,
+              "end": 0.360588235
+            },
+            {
+              "text": "names",
+              "start": 0.360588235,
+              "end": 0.471176471
+            },
+            {
+              "text": "route",
+              "start": 0.471176471,
+              "end": 0.581764706
+            },
+            {
+              "text": "toward",
+              "start": 0.581764706,
+              "end": 0.692352941
+            },
+            {
+              "text": "Store",
+              "start": 0.692352941,
+              "end": 0.802941176
+            },
+            {
+              "text": "at",
+              "start": 0.802941176,
+              "end": 0.913529412
+            },
+            {
+              "text": "stage",
+              "start": 0.913529412,
+              "end": 1.024117647
+            },
+            {
+              "text": "production",
+              "start": 1.024117647,
+              "end": 1.134705882
+            },
+            {
+              "text": "as",
+              "start": 1.134705882,
+              "end": 1.245294118
+            },
+            {
+              "text": "scheduled",
+              "start": 1.245294118,
+              "end": 1.355882353
+            },
+            {
+              "text": "with",
+              "start": 1.355882353,
+              "end": 1.466470588
+            },
+            {
+              "text": "stated",
+              "start": 1.466470588,
+              "end": 1.577058824
+            },
+            {
+              "text": "state",
+              "start": 1.577058824,
+              "end": 1.687647059
+            },
+            {
+              "text": "for",
+              "start": 1.687647059,
+              "end": 1.798235294
+            },
+            {
+              "text": "Trial",
+              "start": 1.798235294,
+              "end": 1.908823529
+            },
+            {
+              "text": "during",
+              "start": 1.908823529,
+              "end": 2.019411765
+            },
+            {
+              "text": "Today.",
+              "start": 2.019411765,
+              "end": 2.13
+            },
+            {
+              "text": "Store",
+              "start": 2.13,
+              "end": 2.240588235
+            },
+            {
+              "text": "retains",
+              "start": 2.240588235,
+              "end": 2.351176471
+            },
+            {
+              "text": "stock",
+              "start": 2.351176471,
+              "end": 2.461764706
+            },
+            {
+              "text": "toward",
+              "start": 2.461764706,
+              "end": 2.572352941
+            },
+            {
+              "text": "Market",
+              "start": 2.572352941,
+              "end": 2.682941176
+            },
+            {
+              "text": "at",
+              "start": 2.682941176,
+              "end": 2.793529412
+            },
+            {
+              "text": "stage",
+              "start": 2.793529412,
+              "end": 2.904117647
+            },
+            {
+              "text": "storage",
+              "start": 2.904117647,
+              "end": 3.014705882
+            },
+            {
+              "text": "as",
+              "start": 3.014705882,
+              "end": 3.125294118
+            },
+            {
+              "text": "available",
+              "start": 3.125294118,
+              "end": 3.235882353
+            },
+            {
+              "text": "with",
+              "start": 3.235882353,
+              "end": 3.346470588
+            },
+            {
+              "text": "stated",
+              "start": 3.346470588,
+              "end": 3.457058824
+            },
+            {
+              "text": "state",
+              "start": 3.457058824,
+              "end": 3.567647059
+            },
+            {
+              "text": "for",
+              "start": 3.567647059,
+              "end": 3.678235294
+            },
+            {
+              "text": "Trial",
+              "start": 3.678235294,
+              "end": 3.788823529
+            },
+            {
+              "text": "during",
+              "start": 3.788823529,
+              "end": 3.899411765
+            },
+            {
+              "text": "Today.",
+              "start": 3.899411765,
+              "end": 4.01
+            },
+            {
+              "text": "Grower",
+              "start": 4.01,
+              "end": 4.120588235
+            },
+            {
+              "text": "sends",
+              "start": 4.120588235,
+              "end": 4.231176471
+            },
+            {
+              "text": "shipment",
+              "start": 4.231176471,
+              "end": 4.341764706
+            },
+            {
+              "text": "toward",
+              "start": 4.341764706,
+              "end": 4.452352941
+            },
+            {
+              "text": "Store",
+              "start": 4.452352941,
+              "end": 4.562941176
+            },
+            {
+              "text": "at",
+              "start": 4.562941176,
+              "end": 4.673529412
+            },
+            {
+              "text": "stage",
+              "start": 4.673529412,
+              "end": 4.784117647
+            },
+            {
+              "text": "transport",
+              "start": 4.784117647,
+              "end": 4.894705882
+            },
+            {
+              "text": "as",
+              "start": 4.894705882,
+              "end": 5.005294118
+            },
+            {
+              "text": "dispatched",
+              "start": 5.005294118,
+              "end": 5.115882353
+            },
+            {
+              "text": "with",
+              "start": 5.115882353,
+              "end": 5.226470588
+            },
+            {
+              "text": "stated",
+              "start": 5.226470588,
+              "end": 5.337058824
+            },
+            {
+              "text": "state",
+              "start": 5.337058824,
+              "end": 5.447647059
+            },
+            {
+              "text": "for",
+              "start": 5.447647059,
+              "end": 5.558235294
+            },
+            {
+              "text": "Trial",
+              "start": 5.558235294,
+              "end": 5.668823529
+            },
+            {
+              "text": "during",
+              "start": 5.668823529,
+              "end": 5.779411765
+            },
+            {
+              "text": "Today.",
+              "start": 5.779411765,
+              "end": 5.89
+            },
+            {
+              "text": "Market",
+              "start": 5.89,
+              "end": 6.000588235
+            },
+            {
+              "text": "restocks",
+              "start": 6.000588235,
+              "end": 6.111176471
+            },
+            {
+              "text": "refill",
+              "start": 6.111176471,
+              "end": 6.221764706
+            },
+            {
+              "text": "toward",
+              "start": 6.221764706,
+              "end": 6.332352941
+            },
+            {
+              "text": "Store",
+              "start": 6.332352941,
+              "end": 6.442941176
+            },
+            {
+              "text": "at",
+              "start": 6.442941176,
+              "end": 6.553529412
+            },
+            {
+              "text": "stage",
+              "start": 6.553529412,
+              "end": 6.664117647
+            },
+            {
+              "text": "replacement",
+              "start": 6.664117647,
+              "end": 6.774705882
+            },
+            {
+              "text": "as",
+              "start": 6.774705882,
+              "end": 6.885294118
+            },
+            {
+              "text": "requested",
+              "start": 6.885294118,
+              "end": 6.995882353
+            },
+            {
+              "text": "with",
+              "start": 6.995882353,
+              "end": 7.106470588
+            },
+            {
+              "text": "stated",
+              "start": 7.106470588,
+              "end": 7.217058824
+            },
+            {
+              "text": "state",
+              "start": 7.217058824,
+              "end": 7.327647059
+            },
+            {
+              "text": "for",
+              "start": 7.327647059,
+              "end": 7.438235294
+            },
+            {
+              "text": "Trial",
+              "start": 7.438235294,
+              "end": 7.548823529
+            },
+            {
+              "text": "during",
+              "start": 7.548823529,
+              "end": 7.659411765
+            },
+            {
+              "text": "Today.",
+              "start": 7.659411765,
+              "end": 7.77
+            },
+            {
+              "text": "Store",
+              "start": 7.77,
+              "end": 7.880588235
+            },
+            {
+              "text": "describes",
+              "start": 7.880588235,
+              "end": 7.991176471
+            },
+            {
+              "text": "status",
+              "start": 7.991176471,
+              "end": 8.101764706
+            },
+            {
+              "text": "toward",
+              "start": 8.101764706,
+              "end": 8.212352941
+            },
+            {
+              "text": "Market",
+              "start": 8.212352941,
+              "end": 8.322941176
+            },
+            {
+              "text": "at",
+              "start": 8.322941176,
+              "end": 8.433529412
+            },
+            {
+              "text": "stage",
+              "start": 8.433529412,
+              "end": 8.544117647
+            },
+            {
+              "text": "review",
+              "start": 8.544117647,
+              "end": 8.654705882
+            },
+            {
+              "text": "as",
+              "start": 8.654705882,
+              "end": 8.765294118
+            },
+            {
+              "text": "pending",
+              "start": 8.765294118,
+              "end": 8.875882353
+            },
+            {
+              "text": "with",
+              "start": 8.875882353,
+              "end": 8.986470588
+            },
+            {
+              "text": "stated",
+              "start": 8.986470588,
+              "end": 9.097058824
+            },
+            {
+              "text": "state",
+              "start": 9.097058824,
+              "end": 9.207647059
+            },
+            {
+              "text": "for",
+              "start": 9.207647059,
+              "end": 9.318235294
+            },
+            {
+              "text": "Trial",
+              "start": 9.318235294,
+              "end": 9.428823529
+            },
+            {
+              "text": "during",
+              "start": 9.428823529,
+              "end": 9.539411765
+            },
+            {
+              "text": "Today.",
+              "start": 9.539411765,
+              "end": 9.65
+            }
+          ],
+          "window": {
+            "startWord": 0,
+            "endWord": 84,
+            "startTime": 0,
+            "endTime": 10
+          },
+          "proposal": {
+            "kind": "inventory-demand",
+            "preset": "supply-chain",
+            "template": "supply-modules",
+            "visualMode": "diagram",
+            "evidence": "source-stated",
+            "label": "route",
+            "subject": "production",
+            "outcome": "pending",
+            "scope": "Trial",
+            "period": "Today",
+            "entities": [
+              {
+                "label": "Grower",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 16
+                }
+              },
+              {
+                "label": "Store",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 16
+                }
+              },
+              {
+                "label": "Market",
+                "evidence": {
+                  "fromWord": 17,
+                  "toWord": 33
+                }
+              }
+            ],
+            "records": [
+              {
+                "actor": "Grower",
+                "target": "Store",
+                "stage": "production",
+                "role": "stage",
+                "claim": "route",
+                "value": "scheduled",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 16
+                }
+              },
+              {
+                "actor": "Store",
+                "target": "Market",
+                "stage": "storage",
+                "role": "inventory",
+                "claim": "stock",
+                "value": "available",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 17,
+                  "toWord": 33
+                }
+              },
+              {
+                "actor": "Grower",
+                "target": "Store",
+                "stage": "transport",
+                "role": "transfer",
+                "claim": "shipment",
+                "value": "dispatched",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 34,
+                  "toWord": 50
+                }
+              },
+              {
+                "actor": "Market",
+                "target": "Store",
+                "stage": "replacement",
+                "role": "replacement",
+                "claim": "refill",
+                "value": "requested",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 51,
+                  "toWord": 67
+                }
+              },
+              {
+                "actor": "Store",
+                "target": "Market",
+                "stage": "review",
+                "role": "result",
+                "claim": "status",
+                "value": "pending",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 68,
+                  "toWord": 84
+                }
+              }
+            ],
+            "relations": [
+              {
+                "from": "Grower",
+                "to": "Store",
+                "role": "stage",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 16
+                }
+              },
+              {
+                "from": "Store",
+                "to": "Market",
+                "role": "inventory",
+                "evidence": {
+                  "fromWord": 17,
+                  "toWord": 33
+                }
+              },
+              {
+                "from": "Grower",
+                "to": "Store",
+                "role": "transfer",
+                "evidence": {
+                  "fromWord": 34,
+                  "toWord": 50
+                }
+              },
+              {
+                "from": "Market",
+                "to": "Store",
+                "role": "replacement",
+                "evidence": {
+                  "fromWord": 51,
+                  "toWord": 67
+                }
+              },
+              {
+                "from": "Store",
+                "to": "Market",
+                "role": "result",
+                "evidence": {
+                  "fromWord": 68,
+                  "toWord": 84
+                }
+              }
+            ],
+            "quantities": [],
+            "setupWord": 0,
+            "actionWord": 17,
+            "responseWord": 34,
+            "checkWord": 51,
+            "resolveWord": 68
+          },
+          "negatives": [
+            {
+              "name": "wrong actor",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "actor"
+                  ],
+                  "value": "Market"
+                }
+              ]
+            },
+            {
+              "name": "wrong scope",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "scope"
+                  ],
+                  "value": "Other"
+                }
+              ]
+            },
+            {
+              "name": "wrong period",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "period"
+                  ],
+                  "value": "Tomorrow"
+                }
+              ]
+            },
+            {
+              "name": "wrong value",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "value"
+                  ],
+                  "value": "invented"
+                }
+              ]
+            },
+            {
+              "name": "wrong relation",
+              "edits": [
+                {
+                  "path": [
+                    "relations",
+                    2,
+                    "to"
+                  ],
+                  "value": "Market"
+                }
+              ]
+            },
+            {
+              "name": "wrong unit",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    1,
+                    "unit"
+                  ],
+                  "value": "kilogram"
+                }
+              ]
+            },
+            {
+              "name": "wrong basis",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    1,
+                    "basis"
+                  ],
+                  "value": {
+                    "population": "Other"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "missing condition",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    3,
+                    "state"
+                  ],
+                  "value": "conditional"
+                }
+              ]
+            },
+            {
+              "name": "wrong result",
+              "edits": [
+                {
+                  "path": [
+                    "outcome"
+                  ],
+                  "value": "winner"
+                }
+              ]
+            },
+            {
+              "name": "wrong template",
+              "edits": [
+                {
+                  "path": [
+                    "template"
+                  ],
+                  "value": "authored-field"
+                }
+              ]
+            },
+            {
+              "name": "actor caps",
+              "edits": [
+                {
+                  "path": [
+                    "entities"
+                  ],
+                  "value": [
+                    {
+                      "label": "Grower",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "label": "Store",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "label": "Market",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    },
+                    {
+                      "label": "Grower",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "label": "Store",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "label": "Market",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    },
+                    {
+                      "label": "Grower",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "label": "Store",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "label": "Market",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "record caps",
+              "edits": [
+                {
+                  "path": [
+                    "records"
+                  ],
+                  "value": [
+                    {
+                      "actor": "Grower",
+                      "target": "Store",
+                      "stage": "production",
+                      "role": "stage",
+                      "claim": "route",
+                      "value": "scheduled",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "actor": "Store",
+                      "target": "Market",
+                      "stage": "storage",
+                      "role": "inventory",
+                      "claim": "stock",
+                      "value": "available",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    },
+                    {
+                      "actor": "Grower",
+                      "target": "Store",
+                      "stage": "transport",
+                      "role": "transfer",
+                      "claim": "shipment",
+                      "value": "dispatched",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 34,
+                        "toWord": 50
+                      }
+                    },
+                    {
+                      "actor": "Market",
+                      "target": "Store",
+                      "stage": "replacement",
+                      "role": "replacement",
+                      "claim": "refill",
+                      "value": "requested",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 51,
+                        "toWord": 67
+                      }
+                    },
+                    {
+                      "actor": "Store",
+                      "target": "Market",
+                      "stage": "review",
+                      "role": "result",
+                      "claim": "status",
+                      "value": "pending",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 68,
+                        "toWord": 84
+                      }
+                    },
+                    {
+                      "actor": "Grower",
+                      "target": "Store",
+                      "stage": "production",
+                      "role": "stage",
+                      "claim": "route",
+                      "value": "scheduled",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "actor": "Store",
+                      "target": "Market",
+                      "stage": "storage",
+                      "role": "inventory",
+                      "claim": "stock",
+                      "value": "available",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    },
+                    {
+                      "actor": "Grower",
+                      "target": "Store",
+                      "stage": "transport",
+                      "role": "transfer",
+                      "claim": "shipment",
+                      "value": "dispatched",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 34,
+                        "toWord": 50
+                      }
+                    },
+                    {
+                      "actor": "Market",
+                      "target": "Store",
+                      "stage": "replacement",
+                      "role": "replacement",
+                      "claim": "refill",
+                      "value": "requested",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 51,
+                        "toWord": 67
+                      }
+                    },
+                    {
+                      "actor": "Store",
+                      "target": "Market",
+                      "stage": "review",
+                      "role": "result",
+                      "claim": "status",
+                      "value": "pending",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 68,
+                        "toWord": 84
+                      }
+                    },
+                    {
+                      "actor": "Grower",
+                      "target": "Store",
+                      "stage": "production",
+                      "role": "stage",
+                      "claim": "route",
+                      "value": "scheduled",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "actor": "Store",
+                      "target": "Market",
+                      "stage": "storage",
+                      "role": "inventory",
+                      "claim": "stock",
+                      "value": "available",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    },
+                    {
+                      "actor": "Grower",
+                      "target": "Store",
+                      "stage": "transport",
+                      "role": "transfer",
+                      "claim": "shipment",
+                      "value": "dispatched",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 34,
+                        "toWord": 50
+                      }
+                    },
+                    {
+                      "actor": "Market",
+                      "target": "Store",
+                      "stage": "replacement",
+                      "role": "replacement",
+                      "claim": "refill",
+                      "value": "requested",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 51,
+                        "toWord": 67
+                      }
+                    },
+                    {
+                      "actor": "Store",
+                      "target": "Market",
+                      "stage": "review",
+                      "role": "result",
+                      "claim": "status",
+                      "value": "pending",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 68,
+                        "toWord": 84
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "relation caps",
+              "edits": [
+                {
+                  "path": [
+                    "relations"
+                  ],
+                  "value": [
+                    {
+                      "from": "Grower",
+                      "to": "Store",
+                      "role": "stage",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "from": "Store",
+                      "to": "Market",
+                      "role": "inventory",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    },
+                    {
+                      "from": "Grower",
+                      "to": "Store",
+                      "role": "transfer",
+                      "evidence": {
+                        "fromWord": 34,
+                        "toWord": 50
+                      }
+                    },
+                    {
+                      "from": "Market",
+                      "to": "Store",
+                      "role": "replacement",
+                      "evidence": {
+                        "fromWord": 51,
+                        "toWord": 67
+                      }
+                    },
+                    {
+                      "from": "Store",
+                      "to": "Market",
+                      "role": "result",
+                      "evidence": {
+                        "fromWord": 68,
+                        "toWord": 84
+                      }
+                    },
+                    {
+                      "from": "Grower",
+                      "to": "Store",
+                      "role": "stage",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "from": "Store",
+                      "to": "Market",
+                      "role": "inventory",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    },
+                    {
+                      "from": "Grower",
+                      "to": "Store",
+                      "role": "transfer",
+                      "evidence": {
+                        "fromWord": 34,
+                        "toWord": 50
+                      }
+                    },
+                    {
+                      "from": "Market",
+                      "to": "Store",
+                      "role": "replacement",
+                      "evidence": {
+                        "fromWord": 51,
+                        "toWord": 67
+                      }
+                    },
+                    {
+                      "from": "Store",
+                      "to": "Market",
+                      "role": "result",
+                      "evidence": {
+                        "fromWord": 68,
+                        "toWord": 84
+                      }
+                    },
+                    {
+                      "from": "Grower",
+                      "to": "Store",
+                      "role": "stage",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "from": "Store",
+                      "to": "Market",
+                      "role": "inventory",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    },
+                    {
+                      "from": "Grower",
+                      "to": "Store",
+                      "role": "transfer",
+                      "evidence": {
+                        "fromWord": 34,
+                        "toWord": 50
+                      }
+                    },
+                    {
+                      "from": "Market",
+                      "to": "Store",
+                      "role": "replacement",
+                      "evidence": {
+                        "fromWord": 51,
+                        "toWord": 67
+                      }
+                    },
+                    {
+                      "from": "Store",
+                      "to": "Market",
+                      "role": "result",
+                      "evidence": {
+                        "fromWord": 68,
+                        "toWord": 84
+                      }
+                    },
+                    {
+                      "from": "Grower",
+                      "to": "Store",
+                      "role": "stage",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 16
+                      }
+                    },
+                    {
+                      "from": "Store",
+                      "to": "Market",
+                      "role": "inventory",
+                      "evidence": {
+                        "fromWord": 17,
+                        "toWord": 33
+                      }
+                    },
+                    {
+                      "from": "Grower",
+                      "to": "Store",
+                      "role": "transfer",
+                      "evidence": {
+                        "fromWord": 34,
+                        "toWord": 50
+                      }
+                    },
+                    {
+                      "from": "Market",
+                      "to": "Store",
+                      "role": "replacement",
+                      "evidence": {
+                        "fromWord": 51,
+                        "toWord": 67
+                      }
+                    },
+                    {
+                      "from": "Store",
+                      "to": "Market",
+                      "role": "result",
+                      "evidence": {
+                        "fromWord": 68,
+                        "toWord": 84
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "quantity caps",
+              "edits": [
+                {
+                  "path": [
+                    "quantities"
+                  ],
+                  "value": [
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "wrong preset",
+              "edits": [
+                {
+                  "path": [
+                    "preset"
+                  ],
+                  "value": "other"
+                }
+              ]
+            },
+            {
+              "name": "wrong mode",
+              "edits": [
+                {
+                  "path": [
+                    "visualMode"
+                  ],
+                  "value": "3d"
+                }
+              ]
+            },
+            {
+              "name": "wrong beats",
+              "edits": [
+                {
+                  "path": [
+                    "responseWord"
+                  ],
+                  "value": 17
+                }
+              ]
+            },
+            {
+              "name": "caller ID",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    0,
+                    "id"
+                  ],
+                  "value": "custom"
+                }
+              ]
+            },
+            {
+              "name": "coordinates",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    0,
+                    "x"
+                  ],
+                  "value": 10
+                }
+              ]
+            },
+            {
+              "name": "domain time",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    0,
+                    "at"
+                  ],
+                  "value": 2
+                }
+              ]
+            },
+            {
+              "name": "simulation",
+              "edits": [
+                {
+                  "path": [
+                    "simulation"
+                  ],
+                  "value": true
+                }
+              ]
+            },
+            {
+              "name": "zero promotion",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "value"
+                  ],
+                  "value": "0"
+                }
+              ]
+            },
+            {
+              "name": "stage mismatch",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "stage"
+                  ],
+                  "value": "storage"
+                }
+              ]
+            },
+            {
+              "name": "known promotion",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "state"
+                  ],
+                  "value": "known"
+                }
+              ]
+            },
+            {
+              "name": "partial evidence",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "evidence"
+                  ],
+                  "value": {
+                    "fromWord": 35,
+                    "toWord": 50
+                  }
+                }
+              ]
+            },
+            {
+              "name": "source missing condition",
+              "edits": [],
+              "clauses": {
+                "3": "Market restocks refill toward Store at stage replacement as requested with stated state for Trial during Today if inspected."
+              }
+            },
+            {
+              "name": "source wrong actor",
+              "edits": [],
+              "clauses": {
+                "2": "Market sends shipment toward Store at stage transport as dispatched with stated state for Trial during Today."
+              }
+            },
+            {
+              "name": "source wrong relation",
+              "edits": [],
+              "clauses": {
+                "2": "Grower contradicts shipment toward Store at stage transport as dispatched with stated state for Trial during Today."
+              }
+            },
+            {
+              "name": "source negation",
+              "edits": [],
+              "clauses": {
+                "2": "Not Grower sends shipment toward Store at stage transport as dispatched with stated state for Trial during Today."
+              }
+            },
+            {
+              "name": "unsafe source",
+              "edits": [],
+              "clauses": {
+                "2": "Grower sends shipment toward Store at stage transport as <svg> with stated state for Trial during Today."
+              }
+            },
+            {
+              "name": "nonpositive word",
+              "edits": [],
+              "intervals": [
+                [
+                  0.25,
+                  0.25
+                ],
+                [
+                  2.13,
+                  4.01
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  7.77,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "overlap",
+              "edits": [],
+              "intervals": [
+                [
+                  0.25,
+                  2.13
+                ],
+                [
+                  2.03,
+                  4.01
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  7.77,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "missing lead padding",
+              "edits": [],
+              "intervals": [
+                [
+                  0.24,
+                  2.13
+                ],
+                [
+                  2.13,
+                  4.01
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  7.77,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "subsecond beat gap",
+              "edits": [],
+              "intervals": [
+                [
+                  0.25,
+                  1
+                ],
+                [
+                  1.1,
+                  3
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  7.77,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "short final hold",
+              "edits": [],
+              "intervals": [
+                [
+                  0.25,
+                  2.13
+                ],
+                [
+                  2.13,
+                  4.01
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  9.3,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "nonfinite source word",
+              "edits": [
+                {
+                  "path": [
+                    "words",
+                    0,
+                    "start"
+                  ],
+                  "value": null
+                }
+              ]
+            },
+            {
+              "name": "short window",
+              "edits": [
+                {
+                  "path": [
+                    "window",
+                    "endTime"
+                  ],
+                  "value": 4.9
+                }
+              ]
+            },
+            {
+              "name": "long window",
+              "edits": [
+                {
+                  "path": [
+                    "window",
+                    "endTime"
+                  ],
+                  "value": 12.1
+                }
+              ]
+            },
+            {
+              "name": "boundary cuts final clause",
+              "edits": [
+                {
+                  "path": [
+                    "window",
+                    "endWord"
+                  ],
+                  "value": 83
+                }
+              ]
+            },
+            {
+              "name": "caller URL",
+              "edits": [
+                {
+                  "path": [
+                    "url"
+                  ],
+                  "value": "https://example.test"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "74",
+      "name": "canonical",
+      "sourceText": "Buyer identifies exchange trade toward Seller at stage agreement as agreed with stated state for Trial during Today. Buyer pays fee toward Seller at stage payment as charged with stated state for Trial during Today. Seller receives proceeds toward Buyer at stage receipt as received with stated state for Trial during Today. Seller reports external effect noise toward Neighbor at stage neighborhood as audible with stated state for Trial during Today. Neighbor reports status toward Buyer at stage review as unresolved with stated state for Trial during Today.",
+      "words": [
+        {
+          "text": "Buyer",
+          "start": 0.25,
+          "end": 0.354444444
+        },
+        {
+          "text": "identifies",
+          "start": 0.354444444,
+          "end": 0.458888889
+        },
+        {
+          "text": "exchange",
+          "start": 0.458888889,
+          "end": 0.563333333
+        },
+        {
+          "text": "trade",
+          "start": 0.563333333,
+          "end": 0.667777778
+        },
+        {
+          "text": "toward",
+          "start": 0.667777778,
+          "end": 0.772222222
+        },
+        {
+          "text": "Seller",
+          "start": 0.772222222,
+          "end": 0.876666667
+        },
+        {
+          "text": "at",
+          "start": 0.876666667,
+          "end": 0.981111111
+        },
+        {
+          "text": "stage",
+          "start": 0.981111111,
+          "end": 1.085555556
+        },
+        {
+          "text": "agreement",
+          "start": 1.085555556,
+          "end": 1.19
+        },
+        {
+          "text": "as",
+          "start": 1.19,
+          "end": 1.294444444
+        },
+        {
+          "text": "agreed",
+          "start": 1.294444444,
+          "end": 1.398888889
+        },
+        {
+          "text": "with",
+          "start": 1.398888889,
+          "end": 1.503333333
+        },
+        {
+          "text": "stated",
+          "start": 1.503333333,
+          "end": 1.607777778
+        },
+        {
+          "text": "state",
+          "start": 1.607777778,
+          "end": 1.712222222
+        },
+        {
+          "text": "for",
+          "start": 1.712222222,
+          "end": 1.816666667
+        },
+        {
+          "text": "Trial",
+          "start": 1.816666667,
+          "end": 1.921111111
+        },
+        {
+          "text": "during",
+          "start": 1.921111111,
+          "end": 2.025555556
+        },
+        {
+          "text": "Today.",
+          "start": 2.025555556,
+          "end": 2.13
+        },
+        {
+          "text": "Buyer",
+          "start": 2.13,
+          "end": 2.240588235
+        },
+        {
+          "text": "pays",
+          "start": 2.240588235,
+          "end": 2.351176471
+        },
+        {
+          "text": "fee",
+          "start": 2.351176471,
+          "end": 2.461764706
+        },
+        {
+          "text": "toward",
+          "start": 2.461764706,
+          "end": 2.572352941
+        },
+        {
+          "text": "Seller",
+          "start": 2.572352941,
+          "end": 2.682941176
+        },
+        {
+          "text": "at",
+          "start": 2.682941176,
+          "end": 2.793529412
+        },
+        {
+          "text": "stage",
+          "start": 2.793529412,
+          "end": 2.904117647
+        },
+        {
+          "text": "payment",
+          "start": 2.904117647,
+          "end": 3.014705882
+        },
+        {
+          "text": "as",
+          "start": 3.014705882,
+          "end": 3.125294118
+        },
+        {
+          "text": "charged",
+          "start": 3.125294118,
+          "end": 3.235882353
+        },
+        {
+          "text": "with",
+          "start": 3.235882353,
+          "end": 3.346470588
+        },
+        {
+          "text": "stated",
+          "start": 3.346470588,
+          "end": 3.457058824
+        },
+        {
+          "text": "state",
+          "start": 3.457058824,
+          "end": 3.567647059
+        },
+        {
+          "text": "for",
+          "start": 3.567647059,
+          "end": 3.678235294
+        },
+        {
+          "text": "Trial",
+          "start": 3.678235294,
+          "end": 3.788823529
+        },
+        {
+          "text": "during",
+          "start": 3.788823529,
+          "end": 3.899411765
+        },
+        {
+          "text": "Today.",
+          "start": 3.899411765,
+          "end": 4.01
+        },
+        {
+          "text": "Seller",
+          "start": 4.01,
+          "end": 4.120588235
+        },
+        {
+          "text": "receives",
+          "start": 4.120588235,
+          "end": 4.231176471
+        },
+        {
+          "text": "proceeds",
+          "start": 4.231176471,
+          "end": 4.341764706
+        },
+        {
+          "text": "toward",
+          "start": 4.341764706,
+          "end": 4.452352941
+        },
+        {
+          "text": "Buyer",
+          "start": 4.452352941,
+          "end": 4.562941176
+        },
+        {
+          "text": "at",
+          "start": 4.562941176,
+          "end": 4.673529412
+        },
+        {
+          "text": "stage",
+          "start": 4.673529412,
+          "end": 4.784117647
+        },
+        {
+          "text": "receipt",
+          "start": 4.784117647,
+          "end": 4.894705882
+        },
+        {
+          "text": "as",
+          "start": 4.894705882,
+          "end": 5.005294118
+        },
+        {
+          "text": "received",
+          "start": 5.005294118,
+          "end": 5.115882353
+        },
+        {
+          "text": "with",
+          "start": 5.115882353,
+          "end": 5.226470588
+        },
+        {
+          "text": "stated",
+          "start": 5.226470588,
+          "end": 5.337058824
+        },
+        {
+          "text": "state",
+          "start": 5.337058824,
+          "end": 5.447647059
+        },
+        {
+          "text": "for",
+          "start": 5.447647059,
+          "end": 5.558235294
+        },
+        {
+          "text": "Trial",
+          "start": 5.558235294,
+          "end": 5.668823529
+        },
+        {
+          "text": "during",
+          "start": 5.668823529,
+          "end": 5.779411765
+        },
+        {
+          "text": "Today.",
+          "start": 5.779411765,
+          "end": 5.89
+        },
+        {
+          "text": "Seller",
+          "start": 5.89,
+          "end": 5.988947368
+        },
+        {
+          "text": "reports",
+          "start": 5.988947368,
+          "end": 6.087894737
+        },
+        {
+          "text": "external",
+          "start": 6.087894737,
+          "end": 6.186842105
+        },
+        {
+          "text": "effect",
+          "start": 6.186842105,
+          "end": 6.285789474
+        },
+        {
+          "text": "noise",
+          "start": 6.285789474,
+          "end": 6.384736842
+        },
+        {
+          "text": "toward",
+          "start": 6.384736842,
+          "end": 6.483684211
+        },
+        {
+          "text": "Neighbor",
+          "start": 6.483684211,
+          "end": 6.582631579
+        },
+        {
+          "text": "at",
+          "start": 6.582631579,
+          "end": 6.681578947
+        },
+        {
+          "text": "stage",
+          "start": 6.681578947,
+          "end": 6.780526316
+        },
+        {
+          "text": "neighborhood",
+          "start": 6.780526316,
+          "end": 6.879473684
+        },
+        {
+          "text": "as",
+          "start": 6.879473684,
+          "end": 6.978421053
+        },
+        {
+          "text": "audible",
+          "start": 6.978421053,
+          "end": 7.077368421
+        },
+        {
+          "text": "with",
+          "start": 7.077368421,
+          "end": 7.176315789
+        },
+        {
+          "text": "stated",
+          "start": 7.176315789,
+          "end": 7.275263158
+        },
+        {
+          "text": "state",
+          "start": 7.275263158,
+          "end": 7.374210526
+        },
+        {
+          "text": "for",
+          "start": 7.374210526,
+          "end": 7.473157895
+        },
+        {
+          "text": "Trial",
+          "start": 7.473157895,
+          "end": 7.572105263
+        },
+        {
+          "text": "during",
+          "start": 7.572105263,
+          "end": 7.671052632
+        },
+        {
+          "text": "Today.",
+          "start": 7.671052632,
+          "end": 7.77
+        },
+        {
+          "text": "Neighbor",
+          "start": 7.77,
+          "end": 7.880588235
+        },
+        {
+          "text": "reports",
+          "start": 7.880588235,
+          "end": 7.991176471
+        },
+        {
+          "text": "status",
+          "start": 7.991176471,
+          "end": 8.101764706
+        },
+        {
+          "text": "toward",
+          "start": 8.101764706,
+          "end": 8.212352941
+        },
+        {
+          "text": "Buyer",
+          "start": 8.212352941,
+          "end": 8.322941176
+        },
+        {
+          "text": "at",
+          "start": 8.322941176,
+          "end": 8.433529412
+        },
+        {
+          "text": "stage",
+          "start": 8.433529412,
+          "end": 8.544117647
+        },
+        {
+          "text": "review",
+          "start": 8.544117647,
+          "end": 8.654705882
+        },
+        {
+          "text": "as",
+          "start": 8.654705882,
+          "end": 8.765294118
+        },
+        {
+          "text": "unresolved",
+          "start": 8.765294118,
+          "end": 8.875882353
+        },
+        {
+          "text": "with",
+          "start": 8.875882353,
+          "end": 8.986470588
+        },
+        {
+          "text": "stated",
+          "start": 8.986470588,
+          "end": 9.097058824
+        },
+        {
+          "text": "state",
+          "start": 9.097058824,
+          "end": 9.207647059
+        },
+        {
+          "text": "for",
+          "start": 9.207647059,
+          "end": 9.318235294
+        },
+        {
+          "text": "Trial",
+          "start": 9.318235294,
+          "end": 9.428823529
+        },
+        {
+          "text": "during",
+          "start": 9.428823529,
+          "end": 9.539411765
+        },
+        {
+          "text": "Today.",
+          "start": 9.539411765,
+          "end": 9.65
+        }
+      ],
+      "window": {
+        "startWord": 0,
+        "endWord": 87,
+        "startTime": 0,
+        "endTime": 10
+      },
+      "proposal": {
+        "kind": "market-exchange",
+        "preset": "incentive-externality",
+        "template": "incentive-board",
+        "visualMode": "diagram",
+        "evidence": "source-stated",
+        "label": "trade",
+        "subject": "agreement",
+        "outcome": "unresolved",
+        "scope": "Trial",
+        "period": "Today",
+        "entities": [
+          {
+            "label": "Buyer",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 17
+            }
+          },
+          {
+            "label": "Seller",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 17
+            }
+          },
+          {
+            "label": "Neighbor",
+            "evidence": {
+              "fromWord": 52,
+              "toWord": 70
+            }
+          }
+        ],
+        "records": [
+          {
+            "actor": "Buyer",
+            "target": "Seller",
+            "stage": "agreement",
+            "role": "exchange",
+            "claim": "trade",
+            "value": "agreed",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 17
+            }
+          },
+          {
+            "actor": "Buyer",
+            "target": "Seller",
+            "stage": "payment",
+            "role": "payment",
+            "claim": "fee",
+            "value": "charged",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 18,
+              "toWord": 34
+            }
+          },
+          {
+            "actor": "Seller",
+            "target": "Buyer",
+            "stage": "receipt",
+            "role": "benefit",
+            "claim": "proceeds",
+            "value": "received",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 35,
+              "toWord": 51
+            }
+          },
+          {
+            "actor": "Seller",
+            "target": "Neighbor",
+            "stage": "neighborhood",
+            "role": "external-effect",
+            "claim": "noise",
+            "value": "audible",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 52,
+              "toWord": 70
+            }
+          },
+          {
+            "actor": "Neighbor",
+            "target": "Buyer",
+            "stage": "review",
+            "role": "result",
+            "claim": "status",
+            "value": "unresolved",
+            "state": "stated",
+            "scope": "Trial",
+            "period": "Today",
+            "evidence": {
+              "fromWord": 71,
+              "toWord": 87
+            }
+          }
+        ],
+        "relations": [
+          {
+            "from": "Buyer",
+            "to": "Seller",
+            "role": "exchange",
+            "evidence": {
+              "fromWord": 0,
+              "toWord": 17
+            }
+          },
+          {
+            "from": "Buyer",
+            "to": "Seller",
+            "role": "payment",
+            "evidence": {
+              "fromWord": 18,
+              "toWord": 34
+            }
+          },
+          {
+            "from": "Seller",
+            "to": "Buyer",
+            "role": "benefit",
+            "evidence": {
+              "fromWord": 35,
+              "toWord": 51
+            }
+          },
+          {
+            "from": "Seller",
+            "to": "Neighbor",
+            "role": "external-effect",
+            "evidence": {
+              "fromWord": 52,
+              "toWord": 70
+            }
+          },
+          {
+            "from": "Neighbor",
+            "to": "Buyer",
+            "role": "result",
+            "evidence": {
+              "fromWord": 71,
+              "toWord": 87
+            }
+          }
+        ],
+        "quantities": [],
+        "setupWord": 0,
+        "actionWord": 18,
+        "responseWord": 35,
+        "checkWord": 52,
+        "resolveWord": 71
+      },
+      "negatives": [
+        {
+          "name": "wrong actor",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "actor"
+              ],
+              "value": "Neighbor"
+            }
+          ]
+        },
+        {
+          "name": "wrong scope",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "scope"
+              ],
+              "value": "Other"
+            }
+          ]
+        },
+        {
+          "name": "wrong period",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "period"
+              ],
+              "value": "Tomorrow"
+            }
+          ]
+        },
+        {
+          "name": "wrong value",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "value"
+              ],
+              "value": "invented"
+            }
+          ]
+        },
+        {
+          "name": "wrong relation",
+          "edits": [
+            {
+              "path": [
+                "relations",
+                2,
+                "to"
+              ],
+              "value": "Neighbor"
+            }
+          ]
+        },
+        {
+          "name": "wrong unit",
+          "edits": [
+            {
+              "path": [
+                "records",
+                1,
+                "unit"
+              ],
+              "value": "kilogram"
+            }
+          ]
+        },
+        {
+          "name": "wrong basis",
+          "edits": [
+            {
+              "path": [
+                "records",
+                1,
+                "basis"
+              ],
+              "value": {
+                "population": "Other"
+              }
+            }
+          ]
+        },
+        {
+          "name": "missing condition",
+          "edits": [
+            {
+              "path": [
+                "records",
+                3,
+                "state"
+              ],
+              "value": "conditional"
+            }
+          ]
+        },
+        {
+          "name": "wrong result",
+          "edits": [
+            {
+              "path": [
+                "outcome"
+              ],
+              "value": "winner"
+            }
+          ]
+        },
+        {
+          "name": "wrong template",
+          "edits": [
+            {
+              "path": [
+                "template"
+              ],
+              "value": "authored-field"
+            }
+          ]
+        },
+        {
+          "name": "actor caps",
+          "edits": [
+            {
+              "path": [
+                "entities"
+              ],
+              "value": [
+                {
+                  "label": "Buyer",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "label": "Seller",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "label": "Neighbor",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                },
+                {
+                  "label": "Buyer",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "label": "Seller",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "label": "Neighbor",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                },
+                {
+                  "label": "Buyer",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "label": "Seller",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "label": "Neighbor",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "record caps",
+          "edits": [
+            {
+              "path": [
+                "records"
+              ],
+              "value": [
+                {
+                  "actor": "Buyer",
+                  "target": "Seller",
+                  "stage": "agreement",
+                  "role": "exchange",
+                  "claim": "trade",
+                  "value": "agreed",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "actor": "Buyer",
+                  "target": "Seller",
+                  "stage": "payment",
+                  "role": "payment",
+                  "claim": "fee",
+                  "value": "charged",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 18,
+                    "toWord": 34
+                  }
+                },
+                {
+                  "actor": "Seller",
+                  "target": "Buyer",
+                  "stage": "receipt",
+                  "role": "benefit",
+                  "claim": "proceeds",
+                  "value": "received",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 35,
+                    "toWord": 51
+                  }
+                },
+                {
+                  "actor": "Seller",
+                  "target": "Neighbor",
+                  "stage": "neighborhood",
+                  "role": "external-effect",
+                  "claim": "noise",
+                  "value": "audible",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                },
+                {
+                  "actor": "Neighbor",
+                  "target": "Buyer",
+                  "stage": "review",
+                  "role": "result",
+                  "claim": "status",
+                  "value": "unresolved",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 71,
+                    "toWord": 87
+                  }
+                },
+                {
+                  "actor": "Buyer",
+                  "target": "Seller",
+                  "stage": "agreement",
+                  "role": "exchange",
+                  "claim": "trade",
+                  "value": "agreed",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "actor": "Buyer",
+                  "target": "Seller",
+                  "stage": "payment",
+                  "role": "payment",
+                  "claim": "fee",
+                  "value": "charged",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 18,
+                    "toWord": 34
+                  }
+                },
+                {
+                  "actor": "Seller",
+                  "target": "Buyer",
+                  "stage": "receipt",
+                  "role": "benefit",
+                  "claim": "proceeds",
+                  "value": "received",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 35,
+                    "toWord": 51
+                  }
+                },
+                {
+                  "actor": "Seller",
+                  "target": "Neighbor",
+                  "stage": "neighborhood",
+                  "role": "external-effect",
+                  "claim": "noise",
+                  "value": "audible",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                },
+                {
+                  "actor": "Neighbor",
+                  "target": "Buyer",
+                  "stage": "review",
+                  "role": "result",
+                  "claim": "status",
+                  "value": "unresolved",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 71,
+                    "toWord": 87
+                  }
+                },
+                {
+                  "actor": "Buyer",
+                  "target": "Seller",
+                  "stage": "agreement",
+                  "role": "exchange",
+                  "claim": "trade",
+                  "value": "agreed",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "actor": "Buyer",
+                  "target": "Seller",
+                  "stage": "payment",
+                  "role": "payment",
+                  "claim": "fee",
+                  "value": "charged",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 18,
+                    "toWord": 34
+                  }
+                },
+                {
+                  "actor": "Seller",
+                  "target": "Buyer",
+                  "stage": "receipt",
+                  "role": "benefit",
+                  "claim": "proceeds",
+                  "value": "received",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 35,
+                    "toWord": 51
+                  }
+                },
+                {
+                  "actor": "Seller",
+                  "target": "Neighbor",
+                  "stage": "neighborhood",
+                  "role": "external-effect",
+                  "claim": "noise",
+                  "value": "audible",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                },
+                {
+                  "actor": "Neighbor",
+                  "target": "Buyer",
+                  "stage": "review",
+                  "role": "result",
+                  "claim": "status",
+                  "value": "unresolved",
+                  "state": "stated",
+                  "scope": "Trial",
+                  "period": "Today",
+                  "evidence": {
+                    "fromWord": 71,
+                    "toWord": 87
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "relation caps",
+          "edits": [
+            {
+              "path": [
+                "relations"
+              ],
+              "value": [
+                {
+                  "from": "Buyer",
+                  "to": "Seller",
+                  "role": "exchange",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "from": "Buyer",
+                  "to": "Seller",
+                  "role": "payment",
+                  "evidence": {
+                    "fromWord": 18,
+                    "toWord": 34
+                  }
+                },
+                {
+                  "from": "Seller",
+                  "to": "Buyer",
+                  "role": "benefit",
+                  "evidence": {
+                    "fromWord": 35,
+                    "toWord": 51
+                  }
+                },
+                {
+                  "from": "Seller",
+                  "to": "Neighbor",
+                  "role": "external-effect",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                },
+                {
+                  "from": "Neighbor",
+                  "to": "Buyer",
+                  "role": "result",
+                  "evidence": {
+                    "fromWord": 71,
+                    "toWord": 87
+                  }
+                },
+                {
+                  "from": "Buyer",
+                  "to": "Seller",
+                  "role": "exchange",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "from": "Buyer",
+                  "to": "Seller",
+                  "role": "payment",
+                  "evidence": {
+                    "fromWord": 18,
+                    "toWord": 34
+                  }
+                },
+                {
+                  "from": "Seller",
+                  "to": "Buyer",
+                  "role": "benefit",
+                  "evidence": {
+                    "fromWord": 35,
+                    "toWord": 51
+                  }
+                },
+                {
+                  "from": "Seller",
+                  "to": "Neighbor",
+                  "role": "external-effect",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                },
+                {
+                  "from": "Neighbor",
+                  "to": "Buyer",
+                  "role": "result",
+                  "evidence": {
+                    "fromWord": 71,
+                    "toWord": 87
+                  }
+                },
+                {
+                  "from": "Buyer",
+                  "to": "Seller",
+                  "role": "exchange",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "from": "Buyer",
+                  "to": "Seller",
+                  "role": "payment",
+                  "evidence": {
+                    "fromWord": 18,
+                    "toWord": 34
+                  }
+                },
+                {
+                  "from": "Seller",
+                  "to": "Buyer",
+                  "role": "benefit",
+                  "evidence": {
+                    "fromWord": 35,
+                    "toWord": 51
+                  }
+                },
+                {
+                  "from": "Seller",
+                  "to": "Neighbor",
+                  "role": "external-effect",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                },
+                {
+                  "from": "Neighbor",
+                  "to": "Buyer",
+                  "role": "result",
+                  "evidence": {
+                    "fromWord": 71,
+                    "toWord": 87
+                  }
+                },
+                {
+                  "from": "Buyer",
+                  "to": "Seller",
+                  "role": "exchange",
+                  "evidence": {
+                    "fromWord": 0,
+                    "toWord": 17
+                  }
+                },
+                {
+                  "from": "Buyer",
+                  "to": "Seller",
+                  "role": "payment",
+                  "evidence": {
+                    "fromWord": 18,
+                    "toWord": 34
+                  }
+                },
+                {
+                  "from": "Seller",
+                  "to": "Buyer",
+                  "role": "benefit",
+                  "evidence": {
+                    "fromWord": 35,
+                    "toWord": 51
+                  }
+                },
+                {
+                  "from": "Seller",
+                  "to": "Neighbor",
+                  "role": "external-effect",
+                  "evidence": {
+                    "fromWord": 52,
+                    "toWord": 70
+                  }
+                },
+                {
+                  "from": "Neighbor",
+                  "to": "Buyer",
+                  "role": "result",
+                  "evidence": {
+                    "fromWord": 71,
+                    "toWord": 87
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "quantity caps",
+          "edits": [
+            {
+              "path": [
+                "quantities"
+              ],
+              "value": [
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
+              ]
+            }
+          ]
+        },
+        {
+          "name": "wrong preset",
+          "edits": [
+            {
+              "path": [
+                "preset"
+              ],
+              "value": "other"
+            }
+          ]
+        },
+        {
+          "name": "wrong mode",
+          "edits": [
+            {
+              "path": [
+                "visualMode"
+              ],
+              "value": "3d"
+            }
+          ]
+        },
+        {
+          "name": "wrong beats",
+          "edits": [
+            {
+              "path": [
+                "responseWord"
+              ],
+              "value": 18
+            }
+          ]
+        },
+        {
+          "name": "caller ID",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "id"
+              ],
+              "value": "custom"
+            }
+          ]
+        },
+        {
+          "name": "coordinates",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "x"
+              ],
+              "value": 10
+            }
+          ]
+        },
+        {
+          "name": "domain time",
+          "edits": [
+            {
+              "path": [
+                "records",
+                0,
+                "at"
+              ],
+              "value": 2
+            }
+          ]
+        },
+        {
+          "name": "simulation",
+          "edits": [
+            {
+              "path": [
+                "simulation"
+              ],
+              "value": true
+            }
+          ]
+        },
+        {
+          "name": "zero promotion",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "value"
+              ],
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "name": "stage mismatch",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "stage"
+              ],
+              "value": "payment"
+            }
+          ]
+        },
+        {
+          "name": "known promotion",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "state"
+              ],
+              "value": "known"
+            }
+          ]
+        },
+        {
+          "name": "partial evidence",
+          "edits": [
+            {
+              "path": [
+                "records",
+                2,
+                "evidence"
+              ],
+              "value": {
+                "fromWord": 36,
+                "toWord": 51
+              }
+            }
+          ]
+        },
+        {
+          "name": "source missing condition",
+          "edits": [],
+          "clauses": {
+            "3": "Seller reports external effect noise toward Neighbor at stage neighborhood as audible with stated state for Trial during Today if inspected."
+          }
+        },
+        {
+          "name": "source wrong actor",
+          "edits": [],
+          "clauses": {
+            "2": "Neighbor receives proceeds toward Buyer at stage receipt as received with stated state for Trial during Today."
+          }
+        },
+        {
+          "name": "source wrong relation",
+          "edits": [],
+          "clauses": {
+            "2": "Seller contradicts proceeds toward Buyer at stage receipt as received with stated state for Trial during Today."
+          }
+        },
+        {
+          "name": "source negation",
+          "edits": [],
+          "clauses": {
+            "2": "Not Seller receives proceeds toward Buyer at stage receipt as received with stated state for Trial during Today."
+          }
+        },
+        {
+          "name": "unsafe source",
+          "edits": [],
+          "clauses": {
+            "2": "Seller receives proceeds toward Buyer at stage receipt as <svg> with stated state for Trial during Today."
+          }
+        },
+        {
+          "name": "nonpositive word",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              0.25
+            ],
+            [
+              2.13,
+              4.01
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              7.77,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "overlap",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              2.13
+            ],
+            [
+              2.03,
+              4.01
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              7.77,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "missing lead padding",
+          "edits": [],
+          "intervals": [
+            [
+              0.24,
+              2.13
+            ],
+            [
+              2.13,
+              4.01
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              7.77,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "missing explicit external effect",
+          "edits": [],
+          "clauses": {
+            "3": "Seller reports noise toward Neighbor at stage neighborhood as audible with stated state for Trial during Today."
+          }
+        },
+        {
+          "name": "subsecond beat gap",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              1
+            ],
+            [
+              1.1,
+              3
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              7.77,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "short final hold",
+          "edits": [],
+          "intervals": [
+            [
+              0.25,
+              2.13
+            ],
+            [
+              2.13,
+              4.01
+            ],
+            [
+              4.01,
+              5.89
+            ],
+            [
+              5.89,
+              7.77
+            ],
+            [
+              9.3,
+              9.65
+            ]
+          ]
+        },
+        {
+          "name": "nonfinite source word",
+          "edits": [
+            {
+              "path": [
+                "words",
+                0,
+                "start"
+              ],
+              "value": null
+            }
+          ]
+        },
+        {
+          "name": "short window",
+          "edits": [
+            {
+              "path": [
+                "window",
+                "endTime"
+              ],
+              "value": 4.9
+            }
+          ]
+        },
+        {
+          "name": "long window",
+          "edits": [
+            {
+              "path": [
+                "window",
+                "endTime"
+              ],
+              "value": 12.1
+            }
+          ]
+        },
+        {
+          "name": "boundary cuts final clause",
+          "edits": [
+            {
+              "path": [
+                "window",
+                "endWord"
+              ],
+              "value": 86
+            }
+          ]
+        },
+        {
+          "name": "caller URL",
+          "edits": [
+            {
+              "path": [
+                "url"
+              ],
+              "value": "https://example.test"
+            }
+          ]
+        }
+      ],
+      "paraphrases": [
+        {
+          "id": "74",
+          "name": "paraphrase",
+          "sourceText": "Client names exchange trade toward Vendor at stage agreement as agreed with stated state for Trial during Today. Client provides fee toward Vendor at stage payment as charged with stated state for Trial during Today. Vendor obtains proceeds toward Client at stage receipt as received with stated state for Trial during Today. Vendor describes external effect noise toward Resident at stage neighborhood as audible with stated state for Trial during Today. Resident describes status toward Client at stage review as unresolved with stated state for Trial during Today.",
+          "words": [
+            {
+              "text": "Client",
+              "start": 0.25,
+              "end": 0.354444444
+            },
+            {
+              "text": "names",
+              "start": 0.354444444,
+              "end": 0.458888889
+            },
+            {
+              "text": "exchange",
+              "start": 0.458888889,
+              "end": 0.563333333
+            },
+            {
+              "text": "trade",
+              "start": 0.563333333,
+              "end": 0.667777778
+            },
+            {
+              "text": "toward",
+              "start": 0.667777778,
+              "end": 0.772222222
+            },
+            {
+              "text": "Vendor",
+              "start": 0.772222222,
+              "end": 0.876666667
+            },
+            {
+              "text": "at",
+              "start": 0.876666667,
+              "end": 0.981111111
+            },
+            {
+              "text": "stage",
+              "start": 0.981111111,
+              "end": 1.085555556
+            },
+            {
+              "text": "agreement",
+              "start": 1.085555556,
+              "end": 1.19
+            },
+            {
+              "text": "as",
+              "start": 1.19,
+              "end": 1.294444444
+            },
+            {
+              "text": "agreed",
+              "start": 1.294444444,
+              "end": 1.398888889
+            },
+            {
+              "text": "with",
+              "start": 1.398888889,
+              "end": 1.503333333
+            },
+            {
+              "text": "stated",
+              "start": 1.503333333,
+              "end": 1.607777778
+            },
+            {
+              "text": "state",
+              "start": 1.607777778,
+              "end": 1.712222222
+            },
+            {
+              "text": "for",
+              "start": 1.712222222,
+              "end": 1.816666667
+            },
+            {
+              "text": "Trial",
+              "start": 1.816666667,
+              "end": 1.921111111
+            },
+            {
+              "text": "during",
+              "start": 1.921111111,
+              "end": 2.025555556
+            },
+            {
+              "text": "Today.",
+              "start": 2.025555556,
+              "end": 2.13
+            },
+            {
+              "text": "Client",
+              "start": 2.13,
+              "end": 2.240588235
+            },
+            {
+              "text": "provides",
+              "start": 2.240588235,
+              "end": 2.351176471
+            },
+            {
+              "text": "fee",
+              "start": 2.351176471,
+              "end": 2.461764706
+            },
+            {
+              "text": "toward",
+              "start": 2.461764706,
+              "end": 2.572352941
+            },
+            {
+              "text": "Vendor",
+              "start": 2.572352941,
+              "end": 2.682941176
+            },
+            {
+              "text": "at",
+              "start": 2.682941176,
+              "end": 2.793529412
+            },
+            {
+              "text": "stage",
+              "start": 2.793529412,
+              "end": 2.904117647
+            },
+            {
+              "text": "payment",
+              "start": 2.904117647,
+              "end": 3.014705882
+            },
+            {
+              "text": "as",
+              "start": 3.014705882,
+              "end": 3.125294118
+            },
+            {
+              "text": "charged",
+              "start": 3.125294118,
+              "end": 3.235882353
+            },
+            {
+              "text": "with",
+              "start": 3.235882353,
+              "end": 3.346470588
+            },
+            {
+              "text": "stated",
+              "start": 3.346470588,
+              "end": 3.457058824
+            },
+            {
+              "text": "state",
+              "start": 3.457058824,
+              "end": 3.567647059
+            },
+            {
+              "text": "for",
+              "start": 3.567647059,
+              "end": 3.678235294
+            },
+            {
+              "text": "Trial",
+              "start": 3.678235294,
+              "end": 3.788823529
+            },
+            {
+              "text": "during",
+              "start": 3.788823529,
+              "end": 3.899411765
+            },
+            {
+              "text": "Today.",
+              "start": 3.899411765,
+              "end": 4.01
+            },
+            {
+              "text": "Vendor",
+              "start": 4.01,
+              "end": 4.120588235
+            },
+            {
+              "text": "obtains",
+              "start": 4.120588235,
+              "end": 4.231176471
+            },
+            {
+              "text": "proceeds",
+              "start": 4.231176471,
+              "end": 4.341764706
+            },
+            {
+              "text": "toward",
+              "start": 4.341764706,
+              "end": 4.452352941
+            },
+            {
+              "text": "Client",
+              "start": 4.452352941,
+              "end": 4.562941176
+            },
+            {
+              "text": "at",
+              "start": 4.562941176,
+              "end": 4.673529412
+            },
+            {
+              "text": "stage",
+              "start": 4.673529412,
+              "end": 4.784117647
+            },
+            {
+              "text": "receipt",
+              "start": 4.784117647,
+              "end": 4.894705882
+            },
+            {
+              "text": "as",
+              "start": 4.894705882,
+              "end": 5.005294118
+            },
+            {
+              "text": "received",
+              "start": 5.005294118,
+              "end": 5.115882353
+            },
+            {
+              "text": "with",
+              "start": 5.115882353,
+              "end": 5.226470588
+            },
+            {
+              "text": "stated",
+              "start": 5.226470588,
+              "end": 5.337058824
+            },
+            {
+              "text": "state",
+              "start": 5.337058824,
+              "end": 5.447647059
+            },
+            {
+              "text": "for",
+              "start": 5.447647059,
+              "end": 5.558235294
+            },
+            {
+              "text": "Trial",
+              "start": 5.558235294,
+              "end": 5.668823529
+            },
+            {
+              "text": "during",
+              "start": 5.668823529,
+              "end": 5.779411765
+            },
+            {
+              "text": "Today.",
+              "start": 5.779411765,
+              "end": 5.89
+            },
+            {
+              "text": "Vendor",
+              "start": 5.89,
+              "end": 5.988947368
+            },
+            {
+              "text": "describes",
+              "start": 5.988947368,
+              "end": 6.087894737
+            },
+            {
+              "text": "external",
+              "start": 6.087894737,
+              "end": 6.186842105
+            },
+            {
+              "text": "effect",
+              "start": 6.186842105,
+              "end": 6.285789474
+            },
+            {
+              "text": "noise",
+              "start": 6.285789474,
+              "end": 6.384736842
+            },
+            {
+              "text": "toward",
+              "start": 6.384736842,
+              "end": 6.483684211
+            },
+            {
+              "text": "Resident",
+              "start": 6.483684211,
+              "end": 6.582631579
+            },
+            {
+              "text": "at",
+              "start": 6.582631579,
+              "end": 6.681578947
+            },
+            {
+              "text": "stage",
+              "start": 6.681578947,
+              "end": 6.780526316
+            },
+            {
+              "text": "neighborhood",
+              "start": 6.780526316,
+              "end": 6.879473684
+            },
+            {
+              "text": "as",
+              "start": 6.879473684,
+              "end": 6.978421053
+            },
+            {
+              "text": "audible",
+              "start": 6.978421053,
+              "end": 7.077368421
+            },
+            {
+              "text": "with",
+              "start": 7.077368421,
+              "end": 7.176315789
+            },
+            {
+              "text": "stated",
+              "start": 7.176315789,
+              "end": 7.275263158
+            },
+            {
+              "text": "state",
+              "start": 7.275263158,
+              "end": 7.374210526
+            },
+            {
+              "text": "for",
+              "start": 7.374210526,
+              "end": 7.473157895
+            },
+            {
+              "text": "Trial",
+              "start": 7.473157895,
+              "end": 7.572105263
+            },
+            {
+              "text": "during",
+              "start": 7.572105263,
+              "end": 7.671052632
+            },
+            {
+              "text": "Today.",
+              "start": 7.671052632,
+              "end": 7.77
+            },
+            {
+              "text": "Resident",
+              "start": 7.77,
+              "end": 7.880588235
+            },
+            {
+              "text": "describes",
+              "start": 7.880588235,
+              "end": 7.991176471
+            },
+            {
+              "text": "status",
+              "start": 7.991176471,
+              "end": 8.101764706
+            },
+            {
+              "text": "toward",
+              "start": 8.101764706,
+              "end": 8.212352941
+            },
+            {
+              "text": "Client",
+              "start": 8.212352941,
+              "end": 8.322941176
+            },
+            {
+              "text": "at",
+              "start": 8.322941176,
+              "end": 8.433529412
+            },
+            {
+              "text": "stage",
+              "start": 8.433529412,
+              "end": 8.544117647
+            },
+            {
+              "text": "review",
+              "start": 8.544117647,
+              "end": 8.654705882
+            },
+            {
+              "text": "as",
+              "start": 8.654705882,
+              "end": 8.765294118
+            },
+            {
+              "text": "unresolved",
+              "start": 8.765294118,
+              "end": 8.875882353
+            },
+            {
+              "text": "with",
+              "start": 8.875882353,
+              "end": 8.986470588
+            },
+            {
+              "text": "stated",
+              "start": 8.986470588,
+              "end": 9.097058824
+            },
+            {
+              "text": "state",
+              "start": 9.097058824,
+              "end": 9.207647059
+            },
+            {
+              "text": "for",
+              "start": 9.207647059,
+              "end": 9.318235294
+            },
+            {
+              "text": "Trial",
+              "start": 9.318235294,
+              "end": 9.428823529
+            },
+            {
+              "text": "during",
+              "start": 9.428823529,
+              "end": 9.539411765
+            },
+            {
+              "text": "Today.",
+              "start": 9.539411765,
+              "end": 9.65
+            }
+          ],
+          "window": {
+            "startWord": 0,
+            "endWord": 87,
+            "startTime": 0,
+            "endTime": 10
+          },
+          "proposal": {
+            "kind": "market-exchange",
+            "preset": "incentive-externality",
+            "template": "incentive-board",
+            "visualMode": "diagram",
+            "evidence": "source-stated",
+            "label": "trade",
+            "subject": "agreement",
+            "outcome": "unresolved",
+            "scope": "Trial",
+            "period": "Today",
+            "entities": [
+              {
+                "label": "Client",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 17
+                }
+              },
+              {
+                "label": "Vendor",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 17
+                }
+              },
+              {
+                "label": "Resident",
+                "evidence": {
+                  "fromWord": 52,
+                  "toWord": 70
+                }
+              }
+            ],
+            "records": [
+              {
+                "actor": "Client",
+                "target": "Vendor",
+                "stage": "agreement",
+                "role": "exchange",
+                "claim": "trade",
+                "value": "agreed",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 17
+                }
+              },
+              {
+                "actor": "Client",
+                "target": "Vendor",
+                "stage": "payment",
+                "role": "payment",
+                "claim": "fee",
+                "value": "charged",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 18,
+                  "toWord": 34
+                }
+              },
+              {
+                "actor": "Vendor",
+                "target": "Client",
+                "stage": "receipt",
+                "role": "benefit",
+                "claim": "proceeds",
+                "value": "received",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 35,
+                  "toWord": 51
+                }
+              },
+              {
+                "actor": "Vendor",
+                "target": "Resident",
+                "stage": "neighborhood",
+                "role": "external-effect",
+                "claim": "noise",
+                "value": "audible",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 52,
+                  "toWord": 70
+                }
+              },
+              {
+                "actor": "Resident",
+                "target": "Client",
+                "stage": "review",
+                "role": "result",
+                "claim": "status",
+                "value": "unresolved",
+                "state": "stated",
+                "scope": "Trial",
+                "period": "Today",
+                "evidence": {
+                  "fromWord": 71,
+                  "toWord": 87
+                }
+              }
+            ],
+            "relations": [
+              {
+                "from": "Client",
+                "to": "Vendor",
+                "role": "exchange",
+                "evidence": {
+                  "fromWord": 0,
+                  "toWord": 17
+                }
+              },
+              {
+                "from": "Client",
+                "to": "Vendor",
+                "role": "payment",
+                "evidence": {
+                  "fromWord": 18,
+                  "toWord": 34
+                }
+              },
+              {
+                "from": "Vendor",
+                "to": "Client",
+                "role": "benefit",
+                "evidence": {
+                  "fromWord": 35,
+                  "toWord": 51
+                }
+              },
+              {
+                "from": "Vendor",
+                "to": "Resident",
+                "role": "external-effect",
+                "evidence": {
+                  "fromWord": 52,
+                  "toWord": 70
+                }
+              },
+              {
+                "from": "Resident",
+                "to": "Client",
+                "role": "result",
+                "evidence": {
+                  "fromWord": 71,
+                  "toWord": 87
+                }
+              }
+            ],
+            "quantities": [],
+            "setupWord": 0,
+            "actionWord": 18,
+            "responseWord": 35,
+            "checkWord": 52,
+            "resolveWord": 71
+          },
+          "negatives": [
+            {
+              "name": "wrong actor",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "actor"
+                  ],
+                  "value": "Resident"
+                }
+              ]
+            },
+            {
+              "name": "wrong scope",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "scope"
+                  ],
+                  "value": "Other"
+                }
+              ]
+            },
+            {
+              "name": "wrong period",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "period"
+                  ],
+                  "value": "Tomorrow"
+                }
+              ]
+            },
+            {
+              "name": "wrong value",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "value"
+                  ],
+                  "value": "invented"
+                }
+              ]
+            },
+            {
+              "name": "wrong relation",
+              "edits": [
+                {
+                  "path": [
+                    "relations",
+                    2,
+                    "to"
+                  ],
+                  "value": "Resident"
+                }
+              ]
+            },
+            {
+              "name": "wrong unit",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    1,
+                    "unit"
+                  ],
+                  "value": "kilogram"
+                }
+              ]
+            },
+            {
+              "name": "wrong basis",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    1,
+                    "basis"
+                  ],
+                  "value": {
+                    "population": "Other"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "missing condition",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    3,
+                    "state"
+                  ],
+                  "value": "conditional"
+                }
+              ]
+            },
+            {
+              "name": "wrong result",
+              "edits": [
+                {
+                  "path": [
+                    "outcome"
+                  ],
+                  "value": "winner"
+                }
+              ]
+            },
+            {
+              "name": "wrong template",
+              "edits": [
+                {
+                  "path": [
+                    "template"
+                  ],
+                  "value": "authored-field"
+                }
+              ]
+            },
+            {
+              "name": "actor caps",
+              "edits": [
+                {
+                  "path": [
+                    "entities"
+                  ],
+                  "value": [
+                    {
+                      "label": "Client",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "label": "Vendor",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "label": "Resident",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    },
+                    {
+                      "label": "Client",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "label": "Vendor",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "label": "Resident",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    },
+                    {
+                      "label": "Client",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "label": "Vendor",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "label": "Resident",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "record caps",
+              "edits": [
+                {
+                  "path": [
+                    "records"
+                  ],
+                  "value": [
+                    {
+                      "actor": "Client",
+                      "target": "Vendor",
+                      "stage": "agreement",
+                      "role": "exchange",
+                      "claim": "trade",
+                      "value": "agreed",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "actor": "Client",
+                      "target": "Vendor",
+                      "stage": "payment",
+                      "role": "payment",
+                      "claim": "fee",
+                      "value": "charged",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 18,
+                        "toWord": 34
+                      }
+                    },
+                    {
+                      "actor": "Vendor",
+                      "target": "Client",
+                      "stage": "receipt",
+                      "role": "benefit",
+                      "claim": "proceeds",
+                      "value": "received",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 35,
+                        "toWord": 51
+                      }
+                    },
+                    {
+                      "actor": "Vendor",
+                      "target": "Resident",
+                      "stage": "neighborhood",
+                      "role": "external-effect",
+                      "claim": "noise",
+                      "value": "audible",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    },
+                    {
+                      "actor": "Resident",
+                      "target": "Client",
+                      "stage": "review",
+                      "role": "result",
+                      "claim": "status",
+                      "value": "unresolved",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 71,
+                        "toWord": 87
+                      }
+                    },
+                    {
+                      "actor": "Client",
+                      "target": "Vendor",
+                      "stage": "agreement",
+                      "role": "exchange",
+                      "claim": "trade",
+                      "value": "agreed",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "actor": "Client",
+                      "target": "Vendor",
+                      "stage": "payment",
+                      "role": "payment",
+                      "claim": "fee",
+                      "value": "charged",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 18,
+                        "toWord": 34
+                      }
+                    },
+                    {
+                      "actor": "Vendor",
+                      "target": "Client",
+                      "stage": "receipt",
+                      "role": "benefit",
+                      "claim": "proceeds",
+                      "value": "received",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 35,
+                        "toWord": 51
+                      }
+                    },
+                    {
+                      "actor": "Vendor",
+                      "target": "Resident",
+                      "stage": "neighborhood",
+                      "role": "external-effect",
+                      "claim": "noise",
+                      "value": "audible",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    },
+                    {
+                      "actor": "Resident",
+                      "target": "Client",
+                      "stage": "review",
+                      "role": "result",
+                      "claim": "status",
+                      "value": "unresolved",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 71,
+                        "toWord": 87
+                      }
+                    },
+                    {
+                      "actor": "Client",
+                      "target": "Vendor",
+                      "stage": "agreement",
+                      "role": "exchange",
+                      "claim": "trade",
+                      "value": "agreed",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "actor": "Client",
+                      "target": "Vendor",
+                      "stage": "payment",
+                      "role": "payment",
+                      "claim": "fee",
+                      "value": "charged",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 18,
+                        "toWord": 34
+                      }
+                    },
+                    {
+                      "actor": "Vendor",
+                      "target": "Client",
+                      "stage": "receipt",
+                      "role": "benefit",
+                      "claim": "proceeds",
+                      "value": "received",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 35,
+                        "toWord": 51
+                      }
+                    },
+                    {
+                      "actor": "Vendor",
+                      "target": "Resident",
+                      "stage": "neighborhood",
+                      "role": "external-effect",
+                      "claim": "noise",
+                      "value": "audible",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    },
+                    {
+                      "actor": "Resident",
+                      "target": "Client",
+                      "stage": "review",
+                      "role": "result",
+                      "claim": "status",
+                      "value": "unresolved",
+                      "state": "stated",
+                      "scope": "Trial",
+                      "period": "Today",
+                      "evidence": {
+                        "fromWord": 71,
+                        "toWord": 87
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "relation caps",
+              "edits": [
+                {
+                  "path": [
+                    "relations"
+                  ],
+                  "value": [
+                    {
+                      "from": "Client",
+                      "to": "Vendor",
+                      "role": "exchange",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "from": "Client",
+                      "to": "Vendor",
+                      "role": "payment",
+                      "evidence": {
+                        "fromWord": 18,
+                        "toWord": 34
+                      }
+                    },
+                    {
+                      "from": "Vendor",
+                      "to": "Client",
+                      "role": "benefit",
+                      "evidence": {
+                        "fromWord": 35,
+                        "toWord": 51
+                      }
+                    },
+                    {
+                      "from": "Vendor",
+                      "to": "Resident",
+                      "role": "external-effect",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    },
+                    {
+                      "from": "Resident",
+                      "to": "Client",
+                      "role": "result",
+                      "evidence": {
+                        "fromWord": 71,
+                        "toWord": 87
+                      }
+                    },
+                    {
+                      "from": "Client",
+                      "to": "Vendor",
+                      "role": "exchange",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "from": "Client",
+                      "to": "Vendor",
+                      "role": "payment",
+                      "evidence": {
+                        "fromWord": 18,
+                        "toWord": 34
+                      }
+                    },
+                    {
+                      "from": "Vendor",
+                      "to": "Client",
+                      "role": "benefit",
+                      "evidence": {
+                        "fromWord": 35,
+                        "toWord": 51
+                      }
+                    },
+                    {
+                      "from": "Vendor",
+                      "to": "Resident",
+                      "role": "external-effect",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    },
+                    {
+                      "from": "Resident",
+                      "to": "Client",
+                      "role": "result",
+                      "evidence": {
+                        "fromWord": 71,
+                        "toWord": 87
+                      }
+                    },
+                    {
+                      "from": "Client",
+                      "to": "Vendor",
+                      "role": "exchange",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "from": "Client",
+                      "to": "Vendor",
+                      "role": "payment",
+                      "evidence": {
+                        "fromWord": 18,
+                        "toWord": 34
+                      }
+                    },
+                    {
+                      "from": "Vendor",
+                      "to": "Client",
+                      "role": "benefit",
+                      "evidence": {
+                        "fromWord": 35,
+                        "toWord": 51
+                      }
+                    },
+                    {
+                      "from": "Vendor",
+                      "to": "Resident",
+                      "role": "external-effect",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    },
+                    {
+                      "from": "Resident",
+                      "to": "Client",
+                      "role": "result",
+                      "evidence": {
+                        "fromWord": 71,
+                        "toWord": 87
+                      }
+                    },
+                    {
+                      "from": "Client",
+                      "to": "Vendor",
+                      "role": "exchange",
+                      "evidence": {
+                        "fromWord": 0,
+                        "toWord": 17
+                      }
+                    },
+                    {
+                      "from": "Client",
+                      "to": "Vendor",
+                      "role": "payment",
+                      "evidence": {
+                        "fromWord": 18,
+                        "toWord": 34
+                      }
+                    },
+                    {
+                      "from": "Vendor",
+                      "to": "Client",
+                      "role": "benefit",
+                      "evidence": {
+                        "fromWord": 35,
+                        "toWord": 51
+                      }
+                    },
+                    {
+                      "from": "Vendor",
+                      "to": "Resident",
+                      "role": "external-effect",
+                      "evidence": {
+                        "fromWord": 52,
+                        "toWord": 70
+                      }
+                    },
+                    {
+                      "from": "Resident",
+                      "to": "Client",
+                      "role": "result",
+                      "evidence": {
+                        "fromWord": 71,
+                        "toWord": 87
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "quantity caps",
+              "edits": [
+                {
+                  "path": [
+                    "quantities"
+                  ],
+                  "value": [
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "wrong preset",
+              "edits": [
+                {
+                  "path": [
+                    "preset"
+                  ],
+                  "value": "other"
+                }
+              ]
+            },
+            {
+              "name": "wrong mode",
+              "edits": [
+                {
+                  "path": [
+                    "visualMode"
+                  ],
+                  "value": "3d"
+                }
+              ]
+            },
+            {
+              "name": "wrong beats",
+              "edits": [
+                {
+                  "path": [
+                    "responseWord"
+                  ],
+                  "value": 18
+                }
+              ]
+            },
+            {
+              "name": "caller ID",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    0,
+                    "id"
+                  ],
+                  "value": "custom"
+                }
+              ]
+            },
+            {
+              "name": "coordinates",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    0,
+                    "x"
+                  ],
+                  "value": 10
+                }
+              ]
+            },
+            {
+              "name": "domain time",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    0,
+                    "at"
+                  ],
+                  "value": 2
+                }
+              ]
+            },
+            {
+              "name": "simulation",
+              "edits": [
+                {
+                  "path": [
+                    "simulation"
+                  ],
+                  "value": true
+                }
+              ]
+            },
+            {
+              "name": "zero promotion",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "value"
+                  ],
+                  "value": "0"
+                }
+              ]
+            },
+            {
+              "name": "stage mismatch",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "stage"
+                  ],
+                  "value": "payment"
+                }
+              ]
+            },
+            {
+              "name": "known promotion",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "state"
+                  ],
+                  "value": "known"
+                }
+              ]
+            },
+            {
+              "name": "partial evidence",
+              "edits": [
+                {
+                  "path": [
+                    "records",
+                    2,
+                    "evidence"
+                  ],
+                  "value": {
+                    "fromWord": 36,
+                    "toWord": 51
+                  }
+                }
+              ]
+            },
+            {
+              "name": "source missing condition",
+              "edits": [],
+              "clauses": {
+                "3": "Vendor describes external effect noise toward Resident at stage neighborhood as audible with stated state for Trial during Today if inspected."
+              }
+            },
+            {
+              "name": "source wrong actor",
+              "edits": [],
+              "clauses": {
+                "2": "Resident obtains proceeds toward Client at stage receipt as received with stated state for Trial during Today."
+              }
+            },
+            {
+              "name": "source wrong relation",
+              "edits": [],
+              "clauses": {
+                "2": "Vendor contradicts proceeds toward Client at stage receipt as received with stated state for Trial during Today."
+              }
+            },
+            {
+              "name": "source negation",
+              "edits": [],
+              "clauses": {
+                "2": "Not Vendor obtains proceeds toward Client at stage receipt as received with stated state for Trial during Today."
+              }
+            },
+            {
+              "name": "unsafe source",
+              "edits": [],
+              "clauses": {
+                "2": "Vendor obtains proceeds toward Client at stage receipt as <svg> with stated state for Trial during Today."
+              }
+            },
+            {
+              "name": "nonpositive word",
+              "edits": [],
+              "intervals": [
+                [
+                  0.25,
+                  0.25
+                ],
+                [
+                  2.13,
+                  4.01
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  7.77,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "overlap",
+              "edits": [],
+              "intervals": [
+                [
+                  0.25,
+                  2.13
+                ],
+                [
+                  2.03,
+                  4.01
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  7.77,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "missing lead padding",
+              "edits": [],
+              "intervals": [
+                [
+                  0.24,
+                  2.13
+                ],
+                [
+                  2.13,
+                  4.01
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  7.77,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "missing explicit external effect",
+              "edits": [],
+              "clauses": {
+                "3": "Vendor describes noise toward Resident at stage neighborhood as audible with stated state for Trial during Today."
+              }
+            },
+            {
+              "name": "subsecond beat gap",
+              "edits": [],
+              "intervals": [
+                [
+                  0.25,
+                  1
+                ],
+                [
+                  1.1,
+                  3
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  7.77,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "short final hold",
+              "edits": [],
+              "intervals": [
+                [
+                  0.25,
+                  2.13
+                ],
+                [
+                  2.13,
+                  4.01
+                ],
+                [
+                  4.01,
+                  5.89
+                ],
+                [
+                  5.89,
+                  7.77
+                ],
+                [
+                  9.3,
+                  9.65
+                ]
+              ]
+            },
+            {
+              "name": "nonfinite source word",
+              "edits": [
+                {
+                  "path": [
+                    "words",
+                    0,
+                    "start"
+                  ],
+                  "value": null
+                }
+              ]
+            },
+            {
+              "name": "short window",
+              "edits": [
+                {
+                  "path": [
+                    "window",
+                    "endTime"
+                  ],
+                  "value": 4.9
+                }
+              ]
+            },
+            {
+              "name": "long window",
+              "edits": [
+                {
+                  "path": [
+                    "window",
+                    "endTime"
+                  ],
+                  "value": 12.1
+                }
+              ]
+            },
+            {
+              "name": "boundary cuts final clause",
+              "edits": [
+                {
+                  "path": [
+                    "window",
+                    "endWord"
+                  ],
+                  "value": 86
+                }
+              ]
+            },
+            {
+              "name": "caller URL",
+              "edits": [
+                {
+                  "path": [
+                    "url"
+                  ],
+                  "value": "https://example.test"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

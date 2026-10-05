@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "pack": "temporal",
+  "sourceFiles": [
+    { "stories": ["41", "42"], "file": "temporal/lanes-critical.source.json" },
+    { "stories": ["43", "44"], "file": "temporal/reversible-expiry.source.json" },
+    { "stories": ["45", "46"], "file": "temporal/delay-phase.source.json" },
+    { "stories": ["47", "48"], "file": "temporal/history-twin.source.json" }
+  ]
+}

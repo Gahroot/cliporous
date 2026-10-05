@@ -1,0 +1,113 @@
+{
+  "version":1,"pack":"geometry","negativeFormat":"explicit-path-edits-and-complete-clause-replacements",
+  "stories":[
+    {
+      "id":"63","sourceText":"Ada Board tracks Member and regions Inner and Outer for lab during lesson. Ada places Member inside Inner for lab during lesson. Ada restricts Outer to staff access for lab during lesson. Ada states Inner overlaps Outer for lab during lesson. Ada region summary retains supplied facts for lab during lesson.",
+      "window":{"startWord":0,"endWord":50,"startTime":0,"endTime":10},
+      "words":[
+        {"text":"Ada","start":0.25,"end":0.3},{"text":"Board","start":0.3,"end":0.35},{"text":"tracks","start":0.35,"end":0.4},{"text":"Member","start":0.4,"end":0.45},{"text":"and","start":0.45,"end":0.5},{"text":"regions","start":0.5,"end":0.55},{"text":"Inner","start":0.55,"end":0.6},{"text":"and","start":0.6,"end":0.65},{"text":"Outer","start":0.65,"end":0.7},{"text":"for","start":0.7,"end":0.75},{"text":"lab","start":0.75,"end":0.8},{"text":"during","start":0.8,"end":0.85},{"text":"lesson.","start":0.85,"end":0.9},
+        {"text":"Ada","start":2,"end":2.05},{"text":"places","start":2.05,"end":2.1},{"text":"Member","start":2.1,"end":2.15},{"text":"inside","start":2.15,"end":2.2},{"text":"Inner","start":2.2,"end":2.25},{"text":"for","start":2.25,"end":2.3},{"text":"lab","start":2.3,"end":2.35},{"text":"during","start":2.35,"end":2.4},{"text":"lesson.","start":2.4,"end":2.45},
+        {"text":"Ada","start":4,"end":4.05},{"text":"restricts","start":4.05,"end":4.1},{"text":"Outer","start":4.1,"end":4.15},{"text":"to","start":4.15,"end":4.2},{"text":"staff","start":4.2,"end":4.25},{"text":"access","start":4.25,"end":4.3},{"text":"for","start":4.3,"end":4.35},{"text":"lab","start":4.35,"end":4.4},{"text":"during","start":4.4,"end":4.45},{"text":"lesson.","start":4.45,"end":4.5},
+        {"text":"Ada","start":6,"end":6.05},{"text":"states","start":6.05,"end":6.1},{"text":"Inner","start":6.1,"end":6.15},{"text":"overlaps","start":6.15,"end":6.2},{"text":"Outer","start":6.2,"end":6.25},{"text":"for","start":6.25,"end":6.3},{"text":"lab","start":6.3,"end":6.35},{"text":"during","start":6.35,"end":6.4},{"text":"lesson.","start":6.4,"end":6.45},
+        {"text":"Ada","start":8,"end":8.05},{"text":"region","start":8.05,"end":8.1},{"text":"summary","start":8.1,"end":8.15},{"text":"retains","start":8.15,"end":8.2},{"text":"supplied","start":8.2,"end":8.25},{"text":"facts","start":8.25,"end":8.3},{"text":"for","start":8.3,"end":8.35},{"text":"lab","start":8.35,"end":8.4},{"text":"during","start":8.4,"end":8.45},{"text":"lesson.","start":8.45,"end":8.5}
+      ],
+      "proposal":{"kind":"region-relation","preset":"overlap","template":"two-authored-regions","visualMode":"diagram","evidence":"source-stated","label":"Board","subject":"Ada","outcome":"retains supplied facts","actor":"Ada","member":"Member","regions":["Inner","Outer"],"scope":"lab","period":"lesson","startWord":0,"endWord":50,"setupWord":0,"actionWord":13,"responseWord":22,"checkWord":32,"resolveWord":41,
+        "entities":[{"label":"Ada","evidence":{"fromWord":0,"toWord":12}},{"label":"Member","evidence":{"fromWord":0,"toWord":12}},{"label":"Inner","evidence":{"fromWord":0,"toWord":12}},{"label":"Outer","evidence":{"fromWord":0,"toWord":12}}],
+        "membership":{"actor":"Ada","member":"Member","region":"Inner","state":"known","value":"inside","evidence":{"fromWord":13,"toWord":21}},"restriction":{"actor":"Ada","region":"Outer","state":"known","value":"staff access","evidence":{"fromWord":22,"toWord":31}},"overlap":{"actor":"Ada","left":"Inner","right":"Outer","state":"known","value":"overlap","evidence":{"fromWord":32,"toWord":40}},"result":{"actor":"Ada","claim":"region summary","evidence":{"fromWord":41,"toWord":50}}},
+      "negatives":[
+        {"name":"wrong actor","edits":[{"path":["membership","actor"],"value":"Member"}]},
+        {"name":"wrong scope","edits":[{"path":["scope"],"value":"other lab"}]},
+        {"name":"wrong period","edits":[{"path":["period"],"value":"later lesson"}]},
+        {"name":"membership inferred from overlap","edits":[{"path":["membership","region"],"value":"Outer"}]},
+        {"name":"wrong member","edits":[{"path":["membership","member"],"value":"Outer"}]},
+        {"name":"membership status inverted","edits":[{"path":["membership","value"],"value":"outside"}]},
+        {"name":"restriction invented","edits":[{"path":["restriction","value"],"value":"public access"}]},
+        {"name":"restriction moved to wrong region","edits":[{"path":["restriction","region"],"value":"Inner"}]},
+        {"name":"overlap inferred","edits":[{"path":["overlap","value"],"value":"disjoint"}]},
+        {"name":"rights inferred","edits":[{"path":["result","rights"],"value":"entry granted"}]},
+        {"name":"area derived forbidden","edits":[{"path":["area"],"value":4}]},
+        {"name":"unknown retains known value","edits":[{"path":["membership","state"],"value":"unknown"},{"path":["membership","qualifier"],"value":"unknown"}]},
+        {"name":"missing condition","edits":[{"path":["membership","state"],"value":"conditional"}]},
+        {"name":"invented condition","edits":[{"path":["condition"],"value":"if registration is valid"}]},
+        {"name":"caller polygons","edits":[{"path":["polygons"],"value":[[0,0],[1,1]]}]},
+        {"name":"real map","edits":[{"path":["map"],"value":"Detroit"}]},
+        {"name":"region cap","edits":[{"path":["regions"],"value":["Inner","Outer","Third"]}]},
+        {"name":"actor cap","edits":[{"path":["entities"],"value":[{},{},{},{},{},{},{},{},{}]}]},
+        {"name":"wrong template","edits":[{"path":["template"],"value":"free-polygon"}]},
+        {"name":"wrong preset","edits":[{"path":["preset"],"value":"containment"}]},
+        {"name":"wrong mode","edits":[{"path":["visualMode"],"value":"webgl"}]},
+        {"name":"keyword beat","edits":[{"path":["actionWord"],"value":15}]},
+        {"name":"duplicate beat","edits":[{"path":["checkWord"],"value":22}]},
+        {"name":"caller ID","edits":[{"path":["entities",0,"id"],"value":"given-id"}]}
+      ]
+    },
+    {
+      "id":"64","sourceText":"Ada Board scales a square area for lab during lesson. Ada scale factor is 2 ratio during lesson for lab with denominator 1. Ada original area is 3 square-metre during lesson for lab. Ada requests a worked square scaling using scale factor and original area for lab during lesson. Ada reports worked scaling for lab during lesson.",
+      "window":{"startWord":0,"endWord":56,"startTime":0,"endTime":10},
+      "words":[
+        {"text":"Ada","start":0.25,"end":0.3},{"text":"Board","start":0.3,"end":0.35},{"text":"scales","start":0.35,"end":0.4},{"text":"a","start":0.4,"end":0.45},{"text":"square","start":0.45,"end":0.5},{"text":"area","start":0.5,"end":0.55},{"text":"for","start":0.55,"end":0.6},{"text":"lab","start":0.6,"end":0.65},{"text":"during","start":0.65,"end":0.7},{"text":"lesson.","start":0.7,"end":0.75},
+        {"text":"Ada","start":2,"end":2.05},{"text":"scale","start":2.05,"end":2.1},{"text":"factor","start":2.1,"end":2.15},{"text":"is","start":2.15,"end":2.2},{"text":"2","start":2.2,"end":2.25},{"text":"ratio","start":2.25,"end":2.3},{"text":"during","start":2.3,"end":2.35},{"text":"lesson","start":2.35,"end":2.4},{"text":"for","start":2.4,"end":2.45},{"text":"lab","start":2.45,"end":2.5},{"text":"with","start":2.5,"end":2.55},{"text":"denominator","start":2.55,"end":2.6},{"text":"1.","start":2.6,"end":2.65},
+        {"text":"Ada","start":4,"end":4.05},{"text":"original","start":4.05,"end":4.1},{"text":"area","start":4.1,"end":4.15},{"text":"is","start":4.15,"end":4.2},{"text":"3","start":4.2,"end":4.25},{"text":"square-metre","start":4.25,"end":4.3},{"text":"during","start":4.3,"end":4.35},{"text":"lesson","start":4.35,"end":4.4},{"text":"for","start":4.4,"end":4.45},{"text":"lab.","start":4.45,"end":4.5},
+        {"text":"Ada","start":6,"end":6.05},{"text":"requests","start":6.05,"end":6.1},{"text":"a","start":6.1,"end":6.15},{"text":"worked","start":6.15,"end":6.2},{"text":"square","start":6.2,"end":6.25},{"text":"scaling","start":6.25,"end":6.3},{"text":"using","start":6.3,"end":6.35},{"text":"scale","start":6.35,"end":6.4},{"text":"factor","start":6.4,"end":6.45},{"text":"and","start":6.45,"end":6.5},{"text":"original","start":6.5,"end":6.55},{"text":"area","start":6.55,"end":6.6},{"text":"for","start":6.6,"end":6.65},{"text":"lab","start":6.65,"end":6.7},{"text":"during","start":6.7,"end":6.75},{"text":"lesson.","start":6.75,"end":6.8},
+        {"text":"Ada","start":8.0,"end":8.20625},{"text":"reports","start":8.20625,"end":8.4125},{"text":"worked","start":8.4125,"end":8.61875},{"text":"scaling","start":8.61875,"end":8.825},{"text":"for","start":8.825,"end":9.03125},{"text":"lab","start":9.03125,"end":9.2375},{"text":"during","start":9.2375,"end":9.44375},{"text":"lesson.","start":9.44375,"end":9.65}
+      ],
+      "proposal":{"kind":"geometry-projection","preset":"dimensional-scaling","template":"square-area","operation":"dimensional-scaling","visualMode":"diagram","evidence":"source-stated","label":"Board","subject":"Ada","outcome":"worked scaling","actor":"Ada","scope":"lab","period":"lesson","startWord":0,"endWord":56,"setupWord":0,"actionWord":10,"responseWord":23,"checkWord":33,"resolveWord":49,"entities":[{"label":"Ada","evidence":{"fromWord":0,"toWord":9}}],
+        "scale":{"actor":"Ada","claim":"scale factor","state":"known","basis":{"unit":"ratio","population":"lab","period":"lesson","denominator":{"numerator":1,"denominator":1}},"amount":{"kind":"rational","value":{"numerator":2,"denominator":1}},"evidence":{"fromWord":10,"toWord":22}},
+        "original":{"actor":"Ada","claim":"original area","state":"known","basis":{"unit":"square-metre","population":"lab","period":"lesson"},"amount":{"kind":"rational","value":{"numerator":3,"denominator":1}},"evidence":{"fromWord":23,"toWord":32}},"request":{"actor":"Ada","operation":"dimensional-scaling","evidence":{"fromWord":33,"toWord":48}},"result":{"actor":"Ada","state":"known","evidence":{"fromWord":49,"toWord":56}}},
+      "negatives":[
+        {"name":"wrong actor","edits":[{"path":["scale","actor"],"value":"Board"}]},
+        {"name":"wrong scope","edits":[{"path":["original","basis","population"],"value":"other lab"}]},
+        {"name":"wrong period","edits":[{"path":["scale","basis","period"],"value":"later lesson"}]},
+        {"name":"scale sign substituted","edits":[{"path":["scale","amount","value","numerator"],"value":-2}]},
+        {"name":"original sign substituted","edits":[{"path":["original","amount","value","numerator"],"value":-3}]},
+        {"name":"zero substituted for supplied scale","edits":[{"path":["scale","amount","value","numerator"],"value":0}]},
+        {"name":"scale substituted","edits":[{"path":["scale","amount","value","numerator"],"value":3}]},
+        {"name":"unit substituted","edits":[{"path":["original","basis","unit"],"value":"metre"}]},
+        {"name":"scale unit substituted","edits":[{"path":["scale","basis","unit"],"value":"percent"}]},
+        {"name":"denominator zero","edits":[{"path":["scale","amount","value","denominator"],"value":0}]},
+        {"name":"reference denominator changed","edits":[{"path":["scale","basis","denominator","numerator"],"value":2}]},
+        {"name":"original denominator invented","edits":[{"path":["original","basis","denominator"],"value":{"numerator":1,"denominator":1}}]},
+        {"name":"overflow","edits":[{"path":["scale","amount","value","numerator"],"value":1000000001}]},
+        {"name":"worked request erased","edits":[{"path":["request"],"remove":true}]},
+        {"name":"worked request negated","clauses":{"3":"Ada never requests a worked square scaling using scale factor and original area for lab during lesson."},"edits":[]},
+        {"name":"unknown retains amount","edits":[{"path":["scale","state"],"value":"unknown"},{"path":["scale","qualifier"],"value":"unknown"}]},
+        {"name":"invented condition","edits":[{"path":["condition"],"value":"if scale is uniform"}]},
+        {"name":"numeric result supplied instead of derived","edits":[{"path":["result","value"],"value":12}]},
+        {"name":"wrong operation","edits":[{"path":["operation"],"value":"unit-conversion"}]},
+        {"name":"wrong template","edits":[{"path":["template"],"value":"arbitrary-solid"}]},
+        {"name":"wrong preset","edits":[{"path":["preset"],"value":"perspective"}]},
+        {"name":"wrong mode","edits":[{"path":["visualMode"],"value":"webgl"}]},
+        {"name":"actor cap","edits":[{"path":["entities"],"value":[{},{},{},{},{},{},{},{},{}]}]},
+        {"name":"keyword beat","edits":[{"path":["actionWord"],"value":12}]},
+        {"name":"duplicate beat","edits":[{"path":["checkWord"],"value":23}]},
+        {"name":"raw evaluator","edits":[{"path":["formula"],"value":"s**2*a"}]}
+      ]
+    }
+  ],
+  "paraphrases":[
+    {
+      "id":"63","sourceText":"Bo Sketch records Guest and regions Near and Far for rig during pass. Bo membership for Guest in Near remains unknown for rig during pass. Bo limits Far to visitor access for rig during pass. Bo reports Near is disjoint from Far for rig during pass. Bo region summary retains supplied facts for rig during pass.","window":{"startWord":0,"endWord":55,"startTime":0,"endTime":10},
+      "words":[
+        {"text":"Bo","start":0.25,"end":0.3},{"text":"Sketch","start":0.3,"end":0.35},{"text":"records","start":0.35,"end":0.4},{"text":"Guest","start":0.4,"end":0.45},{"text":"and","start":0.45,"end":0.5},{"text":"regions","start":0.5,"end":0.55},{"text":"Near","start":0.55,"end":0.6},{"text":"and","start":0.6,"end":0.65},{"text":"Far","start":0.65,"end":0.7},{"text":"for","start":0.7,"end":0.75},{"text":"rig","start":0.75,"end":0.8},{"text":"during","start":0.8,"end":0.85},{"text":"pass.","start":0.85,"end":0.9},
+        {"text":"Bo","start":2,"end":2.05},{"text":"membership","start":2.05,"end":2.1},{"text":"for","start":2.1,"end":2.15},{"text":"Guest","start":2.15,"end":2.2},{"text":"in","start":2.2,"end":2.25},{"text":"Near","start":2.25,"end":2.3},{"text":"remains","start":2.3,"end":2.35},{"text":"unknown","start":2.35,"end":2.4},{"text":"for","start":2.4,"end":2.45},{"text":"rig","start":2.45,"end":2.5},{"text":"during","start":2.5,"end":2.55},{"text":"pass.","start":2.55,"end":2.6},
+        {"text":"Bo","start":4,"end":4.05},{"text":"limits","start":4.05,"end":4.1},{"text":"Far","start":4.1,"end":4.15},{"text":"to","start":4.15,"end":4.2},{"text":"visitor","start":4.2,"end":4.25},{"text":"access","start":4.25,"end":4.3},{"text":"for","start":4.3,"end":4.35},{"text":"rig","start":4.35,"end":4.4},{"text":"during","start":4.4,"end":4.45},{"text":"pass.","start":4.45,"end":4.5},
+        {"text":"Bo","start":6,"end":6.05},{"text":"reports","start":6.05,"end":6.1},{"text":"Near","start":6.1,"end":6.15},{"text":"is","start":6.15,"end":6.2},{"text":"disjoint","start":6.2,"end":6.25},{"text":"from","start":6.25,"end":6.3},{"text":"Far","start":6.3,"end":6.35},{"text":"for","start":6.35,"end":6.4},{"text":"rig","start":6.4,"end":6.45},{"text":"during","start":6.45,"end":6.5},{"text":"pass.","start":6.5,"end":6.55},
+        {"text":"Bo","start":8,"end":8.05},{"text":"region","start":8.05,"end":8.1},{"text":"summary","start":8.1,"end":8.15},{"text":"retains","start":8.15,"end":8.2},{"text":"supplied","start":8.2,"end":8.25},{"text":"facts","start":8.25,"end":8.3},{"text":"for","start":8.3,"end":8.35},{"text":"rig","start":8.35,"end":8.4},{"text":"during","start":8.4,"end":8.45},{"text":"pass.","start":8.45,"end":8.5}
+      ],
+      "proposal":{"kind":"region-relation","preset":"overlap","template":"two-authored-regions","visualMode":"hybrid","evidence":"source-stated","label":"Sketch","subject":"Bo","outcome":"retains supplied facts","actor":"Bo","member":"Guest","regions":["Near","Far"],"scope":"rig","period":"pass","startWord":0,"endWord":55,"setupWord":0,"actionWord":13,"responseWord":25,"checkWord":35,"resolveWord":46,"entities":[{"label":"Bo","evidence":{"fromWord":0,"toWord":12}},{"label":"Guest","evidence":{"fromWord":0,"toWord":12}},{"label":"Near","evidence":{"fromWord":0,"toWord":12}},{"label":"Far","evidence":{"fromWord":0,"toWord":12}}],"membership":{"actor":"Bo","member":"Guest","region":"Near","state":"unknown","qualifier":"unknown","evidence":{"fromWord":13,"toWord":24}},"restriction":{"actor":"Bo","region":"Far","state":"known","value":"visitor access","evidence":{"fromWord":25,"toWord":34}},"overlap":{"actor":"Bo","left":"Near","right":"Far","state":"known","value":"disjoint","evidence":{"fromWord":35,"toWord":45}},"result":{"actor":"Bo","claim":"region summary","evidence":{"fromWord":46,"toWord":55}}},
+      "negatives":[{"name":"unknown becomes inside","edits":[{"path":["membership","value"],"value":"inside"}]},{"name":"unknown becomes zero","edits":[{"path":["membership","value"],"value":0}]},{"name":"disjoint promoted to overlap","edits":[{"path":["overlap","value"],"value":"overlap"}]}]
+    },
+    {
+      "id":"64","sourceText":"Bo Sketch resizes a cube volume for rig during pass. Bo scale factor is 0.5 ratio during pass for rig with denominator 1. Bo original volume is 8 cubic-metre during pass for rig. Bo asks for a worked cube scaling using scale factor and original volume for rig during pass. Bo reports worked scaling for rig during pass.","window":{"startWord":0,"endWord":57,"startTime":0,"endTime":10},
+      "words":[
+        {"text":"Bo","start":0.25,"end":0.3},{"text":"Sketch","start":0.3,"end":0.35},{"text":"resizes","start":0.35,"end":0.4},{"text":"a","start":0.4,"end":0.45},{"text":"cube","start":0.45,"end":0.5},{"text":"volume","start":0.5,"end":0.55},{"text":"for","start":0.55,"end":0.6},{"text":"rig","start":0.6,"end":0.65},{"text":"during","start":0.65,"end":0.7},{"text":"pass.","start":0.7,"end":0.75},
+        {"text":"Bo","start":2,"end":2.05},{"text":"scale","start":2.05,"end":2.1},{"text":"factor","start":2.1,"end":2.15},{"text":"is","start":2.15,"end":2.2},{"text":"0.5","start":2.2,"end":2.25},{"text":"ratio","start":2.25,"end":2.3},{"text":"during","start":2.3,"end":2.35},{"text":"pass","start":2.35,"end":2.4},{"text":"for","start":2.4,"end":2.45},{"text":"rig","start":2.45,"end":2.5},{"text":"with","start":2.5,"end":2.55},{"text":"denominator","start":2.55,"end":2.6},{"text":"1.","start":2.6,"end":2.65},
+        {"text":"Bo","start":4,"end":4.05},{"text":"original","start":4.05,"end":4.1},{"text":"volume","start":4.1,"end":4.15},{"text":"is","start":4.15,"end":4.2},{"text":"8","start":4.2,"end":4.25},{"text":"cubic-metre","start":4.25,"end":4.3},{"text":"during","start":4.3,"end":4.35},{"text":"pass","start":4.35,"end":4.4},{"text":"for","start":4.4,"end":4.45},{"text":"rig.","start":4.45,"end":4.5},
+        {"text":"Bo","start":6,"end":6.05},{"text":"asks","start":6.05,"end":6.1},{"text":"for","start":6.1,"end":6.15},{"text":"a","start":6.15,"end":6.2},{"text":"worked","start":6.2,"end":6.25},{"text":"cube","start":6.25,"end":6.3},{"text":"scaling","start":6.3,"end":6.35},{"text":"using","start":6.35,"end":6.4},{"text":"scale","start":6.4,"end":6.45},{"text":"factor","start":6.45,"end":6.5},{"text":"and","start":6.5,"end":6.55},{"text":"original","start":6.55,"end":6.6},{"text":"volume","start":6.6,"end":6.65},{"text":"for","start":6.65,"end":6.7},{"text":"rig","start":6.7,"end":6.75},{"text":"during","start":6.75,"end":6.8},{"text":"pass.","start":6.8,"end":6.85},
+        {"text":"Bo","start":8,"end":8.05},{"text":"reports","start":8.05,"end":8.1},{"text":"worked","start":8.1,"end":8.15},{"text":"scaling","start":8.15,"end":8.2},{"text":"for","start":8.2,"end":8.25},{"text":"rig","start":8.25,"end":8.3},{"text":"during","start":8.3,"end":8.35},{"text":"pass.","start":8.35,"end":8.4}
+      ],
+      "proposal":{"kind":"geometry-projection","preset":"dimensional-scaling","template":"cube-volume","operation":"dimensional-scaling","visualMode":"hybrid","evidence":"source-stated","label":"Sketch","subject":"Bo","outcome":"worked scaling","actor":"Bo","scope":"rig","period":"pass","startWord":0,"endWord":57,"setupWord":0,"actionWord":10,"responseWord":23,"checkWord":33,"resolveWord":50,"entities":[{"label":"Bo","evidence":{"fromWord":0,"toWord":9}}],"scale":{"actor":"Bo","claim":"scale factor","state":"known","basis":{"unit":"ratio","population":"rig","period":"pass","denominator":{"numerator":1,"denominator":1}},"amount":{"kind":"rational","value":{"numerator":1,"denominator":2}},"evidence":{"fromWord":10,"toWord":22}},"original":{"actor":"Bo","claim":"original volume","state":"known","basis":{"unit":"cubic-metre","population":"rig","period":"pass"},"amount":{"kind":"rational","value":{"numerator":8,"denominator":1}},"evidence":{"fromWord":23,"toWord":32}},"request":{"actor":"Bo","operation":"dimensional-scaling","evidence":{"fromWord":33,"toWord":49}},"result":{"actor":"Bo","state":"known","evidence":{"fromWord":50,"toWord":57}}},
+      "negatives":[{"name":"fractional scale rounded","edits":[{"path":["scale","amount","value"],"value":{"numerator":1,"denominator":1}}]},{"name":"cube treated as square","edits":[{"path":["template"],"value":"square-area"}]},{"name":"disputed operand promoted","edits":[{"path":["original","state"],"value":"disputed"},{"path":["original","qualifier"],"value":"disputed"}]}]
+    }
+  ]
+}
