@@ -30,6 +30,8 @@
     "src/main/remotion/compositions/storyboard/camera.ts",
     "src/main/remotion/compositions/storyboard/prop-state.ts",
     "src/main/remotion/compositions/storyboard/text-layout.ts",
+    "src/main/remotion/compositions/scene-canvas/types.ts",
+    "src/main/remotion/compositions/scene-canvas/geometry.ts",
     "src/main/remotion/compositions/explainer/types.ts",
     "src/main/remotion/compositions/explainer/mechanisms/composed-types.ts",
     "src/main/remotion/compositions/explainer/technology/types.ts",

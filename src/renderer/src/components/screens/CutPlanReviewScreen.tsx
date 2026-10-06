@@ -50,6 +50,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { MISSING_GEMINI_KEY_MESSAGE, resolveGeminiKey } from '@/lib/gemini-key';
 import {
   buildLongformPhraseItems,
@@ -315,6 +317,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
   const setPreservedItems = useStore((state) => state.setLongformPreservedItems);
   const setPlanStyle = useStore((state) => state.setLongformPlanStyle);
   const setPlanStoryboardStyle = useStore((state) => state.setLongformPlanStoryboardStyle);
+  const setPlanSceneCanvas = useStore((state) => state.setLongformPlanSceneCanvas);
   const reviewFocus = useStore((state) => state.longformReviewFocus);
   const setReviewFocus = useStore((state) => state.setLongformReviewFocus);
 
@@ -1114,7 +1117,27 @@ export function CutPlanReviewScreen(): React.JSX.Element {
                     Change style and palette
                   </summary>
                   {scenePlan?.parserVersion === 2 || scenePlan?.parserVersion === 3 ? (
-                    <div className="mt-3 border-t border-border pt-4">
+                    <div className="mt-3 grid gap-4 border-t border-border pt-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0 space-y-1">
+                          <Label htmlFor="scene-canvas-switch">Scene canvas</Label>
+                          <p
+                            id="scene-canvas-description"
+                            className="text-xs leading-5 text-muted-foreground"
+                          >
+                            Back-to-back scenes are drawn onto one whiteboard. The camera moves from
+                            scene to scene as you speak.
+                          </p>
+                        </div>
+                        <Switch
+                          id="scene-canvas-switch"
+                          checked={scenePlan.sceneCanvas !== false}
+                          disabled={regenerating}
+                          aria-describedby="scene-canvas-description"
+                          onCheckedChange={(enabled) => setPlanSceneCanvas(activeSourceId, enabled)}
+                          className="mt-0.5 shrink-0"
+                        />
+                      </div>
                       <LongformAppearancePicker
                         style={scenePlan.storyboardStyle}
                         paletteId={record.paletteId}

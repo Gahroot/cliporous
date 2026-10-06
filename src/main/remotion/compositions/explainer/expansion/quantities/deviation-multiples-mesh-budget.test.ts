@@ -7,7 +7,7 @@ import { DiagramSurface } from '../../diagrams/DiagramStage';
 import { DeviationMultiplesDiagram } from './deviation-multiples-Diagram';
 import { DeviationMultiplesModels } from './deviation-multiples-models';
 import { deviationMultiplesPose } from './deviation-multiples-poses';
-import { deviationMultiplesCases } from './deviation-multiples-poses.test';
+import { deviationMultiplesCases } from './deviation-multiples-poses.fixtures';
 
 const colors = { surface: '#fff', text: '#111', accent: '#999', muted: '#555' };
 const tags = (s: string, name: string) => [...s.matchAll(new RegExp(`<${name}\\b`, 'g'))].length;

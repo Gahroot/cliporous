@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { ArgumentDiagram } from './argument-Diagram';
 import { ArgumentModels } from './argument-models';
 import { argumentLines, argumentPose, argumentTextRuns } from './argument-poses';
-import { argumentScenes, argumentStressScenes } from './argument-poses.test';
+import { argumentScenes, argumentStressScenes } from './argument-poses.fixtures';
 
 const colors = { surface: '#f6ecd9', text: '#23100c', accent: '#9f75ff', muted: '#81706a' };
 describe('real argument assemblies (CPU SSR, not GPU/RSS)', () => {

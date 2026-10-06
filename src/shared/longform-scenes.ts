@@ -54,6 +54,11 @@ export interface LongformScenePlanFields {
   parserVersion: 1 | 2 | 3;
   /** Required for parsers 2/3; never inserted into historical parser-1 plans. */
   storyboardStyle?: StoryboardStyle;
+  /**
+   * Export arranges runs of consecutive approved scenes on one moving scene canvas.
+   * Absent means on, so existing plans gain it without a migration; `false` keeps separate cuts.
+   */
+  sceneCanvas?: boolean;
   sourceFingerprint: string;
   sourceDuration: number;
   scenes: LongformScenePlacement[];
@@ -331,6 +336,8 @@ export function sceneFirstPlanProblem(value: unknown): string | null {
     !isStoryboardStyle(value.storyboardStyle)
   )
     return 'Invalid storyboard style. Review a new draft; the saved version is preserved.';
+  if (value.sceneCanvas !== undefined && typeof value.sceneCanvas !== 'boolean')
+    return 'Invalid scene canvas setting. Review a new draft; the saved version is preserved.';
   if (
     typeof value.sourceDuration !== 'number' ||
     !Number.isFinite(value.sourceDuration) ||

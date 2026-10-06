@@ -20,7 +20,7 @@ import {
   conditioningSamplingPose,
   conditioningSamplingView,
 } from './conditioning-sampling-poses';
-import { conditioningSamplingScenes } from './conditioning-sampling-poses.test';
+import { conditioningSamplingScenes } from './conditioning-sampling-poses.fixtures';
 
 const colors = { surface: '#f6ecd9', text: '#23100c', accent: '#9f75ff', muted: '#81706a' };
 const decode = (text: string) =>

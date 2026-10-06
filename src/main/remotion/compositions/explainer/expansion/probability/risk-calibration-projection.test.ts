@@ -13,7 +13,7 @@ import {
   riskQuantityDomain,
   riskQuantityPositions,
 } from './risk-calibration-poses';
-import { acceptedCalibrationStates, riskCalibrationCases } from './risk-calibration-poses.test';
+import { acceptedCalibrationStates, riskCalibrationCases } from './risk-calibration-poses.fixtures';
 
 // Shipped Inter's real cmap, advances and glyph boxes. CPU bounds, not native shaping or GPU proof.
 const font = readFileSync('resources/fonts/Inter.ttf');

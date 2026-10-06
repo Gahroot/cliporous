@@ -8,7 +8,7 @@ import { UI_FONT } from '../../stage';
 import { SCOPE_LAYOUT, ScopeDiagram } from './scope-Diagram';
 import { SCOPE_CAMERA, scopeModelPlacement } from './scope-models';
 import { scopeDetails, scopePose } from './scope-poses';
-import { maximumFactsScene, maximumScopeScene, scopeTestScenes } from './scope-poses.test';
+import { maximumFactsScene, maximumScopeScene, scopeTestScenes } from './scope-poses.fixtures';
 import type { ExpansionReasoningScopeScene } from './scope-types';
 
 const scenes = () => [
@@ -27,7 +27,7 @@ const decode = (s: string) =>
   );
 
 /** Actual emitted nodes and inherited opacity; no fabricated page override. */
-export function scopeSvgNodes(svg: string) {
+function scopeSvgNodes(svg: string) {
   const stack: { tag: string; opacity: number }[] = [];
   const nodes: { tag: string; opacity: number; attrs: Record<string, string>; text: string }[] = [];
   for (const match of svg.matchAll(/<(\/)?([\w-]+)([^>]*?)(\/?)>/g)) {
@@ -50,7 +50,7 @@ export function scopeSvgNodes(svg: string) {
   return nodes;
 }
 
-export function scopeMarkup(scene: ExpansionReasoningScopeScene, t: number) {
+function scopeMarkup(scene: ExpansionReasoningScopeScene, t: number) {
   return renderToStaticMarkup(
     createElement(
       DiagramSurface,

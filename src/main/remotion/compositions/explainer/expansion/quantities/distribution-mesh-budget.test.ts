@@ -8,7 +8,7 @@ import { ExplainerProvider } from '../../stage';
 import { DistributionDiagram } from './distribution-Diagram';
 import { DistributionModels } from './distribution-models';
 import { distributionPose } from './distribution-poses';
-import { distributionCases } from './distribution-poses.test';
+import { distributionCases } from './distribution-poses.fixtures';
 
 const colors = { surface: '#fff', text: '#111', accent: '#999', muted: '#555' };
 const tags = (s: string, name: string) => [...s.matchAll(new RegExp(`<${name}\\b`, 'g'))].length;

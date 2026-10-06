@@ -15,7 +15,7 @@ import {
   argumentPose,
   argumentTextRuns,
 } from './argument-poses';
-import { argumentScenes, argumentStressScenes } from './argument-poses.test';
+import { argumentScenes, argumentStressScenes } from './argument-poses.fixtures';
 import { ReasoningArgumentView } from './argument-Scene';
 import type { ExpansionReasoningArgumentScene } from './argument-types';
 
@@ -34,7 +34,7 @@ vi.mock('../../Stage3D', () => ({
     createElement('div', { 'data-stage3d-owner': 'true' }, children),
 }));
 
-export function argumentSvg(scene: ExpansionReasoningArgumentScene, t: number): string {
+function argumentSvg(scene: ExpansionReasoningArgumentScene, t: number): string {
   return renderToStaticMarkup(
     createElement(
       DiagramSurface,

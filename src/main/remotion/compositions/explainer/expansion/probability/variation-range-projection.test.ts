@@ -13,10 +13,10 @@ import {
   variationRangePose,
   variationRangeRecords,
 } from './variation-range-poses';
-import { variationRangeTestScenes, variationRangeTimes } from './variation-range-poses.test';
+import { variationRangeTestScenes, variationRangeTimes } from './variation-range-poses.fixtures';
 import type { ExpansionProbabilityVariationRangeScene } from './variation-range-types';
 
-export function variationRangeSvgNodes(svg: string) {
+function variationRangeSvgNodes(svg: string) {
   const stack: { opacity: number; attributes: Record<string, string> }[] = [];
   const nodes: {
     tag: string;
@@ -43,7 +43,7 @@ export function variationRangeSvgNodes(svg: string) {
   }
   return nodes;
 }
-export function variationRangeMarkup(
+function variationRangeMarkup(
   scene: ExpansionProbabilityVariationRangeScene,
   t: number,
   aspect: '9:16' | '16:9' = '9:16',

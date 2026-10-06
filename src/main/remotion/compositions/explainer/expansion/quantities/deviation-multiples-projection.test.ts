@@ -17,7 +17,7 @@ import {
   deviationRecords,
   deviationWrap,
 } from './deviation-multiples-poses';
-import { deviationMultiplesCases } from './deviation-multiples-poses.test';
+import { deviationMultiplesCases } from './deviation-multiples-poses.fixtures';
 
 // Shipped Inter's real cmap, advances and glyph boxes. CPU bounds, not native shaping or GPU proof.
 const font = readFileSync('resources/fonts/Inter.ttf');

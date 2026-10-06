@@ -92,9 +92,10 @@ describe('every completed expansion preset reaches the real source planner', () 
 
     for (const [storyId, storyRows] of byStory) {
       // Every story identity is authored in BOTH modes, exactly once each.
-      expect(storyRows.map((r) => r.plannerInput.visualMode).sort(), `story ${storyId} modes`).toEqual(
-        ['diagram', 'hybrid'],
-      );
+      expect(
+        storyRows.map((r) => r.plannerInput.visualMode).sort(),
+        `story ${storyId} modes`,
+      ).toEqual(['diagram', 'hybrid']);
       for (const row of storyRows) {
         // Parse in the exact mode.
         const planned = parseLongformSceneSpec(row.plannerInput, row.sourceWords, {

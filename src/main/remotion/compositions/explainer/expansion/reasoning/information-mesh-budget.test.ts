@@ -9,7 +9,7 @@ import { makeParseContext } from '../../../../../ai/explainer/kind-spec';
 import { InformationDiagram } from './information-Diagram';
 import { InformationModelOverlay, InformationModels } from './information-models';
 import { informationPose } from './information-poses';
-import { informationSourceScenes } from './information-poses.test';
+import { informationSourceScenes } from './information-poses.fixtures';
 import type { ExpansionReasoningInformationScene } from './information-types';
 
 // Raw, locally grounded fixtures: the helper's 10 known + 2 absent records is not

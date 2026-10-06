@@ -90,6 +90,7 @@ export interface LongformSlice {
   acceptLongformPlan: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
   setLongformPlanStyle: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
   setLongformPlanStoryboardStyle: AppState['setLongformPlanStoryboardStyle'];
+  setLongformPlanSceneCanvas: AppState['setLongformPlanSceneCanvas'];
   rejectLongformPlan: (sourceId: string) => void;
   addLongformPlanFeedback: (
     sourceId: string,
@@ -197,6 +198,41 @@ function currentPlanProblem(
     state.transcriptions[sourceId]?.words ?? [],
     source?.duration ?? 0,
   );
+}
+
+/** Appearance edits (storyboard style, scene canvas) become a new draft version to re-approve. */
+function pushAppearanceVersion(
+  state: AppState,
+  sourceId: string,
+  record: LongformPlanRecord,
+  plan: LongformEditPlan,
+  note: string,
+): void {
+  ensureRecord(record);
+  const problem =
+    currentPlanProblem(state, sourceId, plan) ||
+    record.validationProblem ||
+    (!snapshotPalette(record.paletteId, [], record.palette) ? LONGFORM_PALETTE_PROBLEM : null);
+  const version: LongformPlanVersion = {
+    id: makeId('cut-plan'),
+    plan,
+    origin: 'user-edited',
+    createdAt: Date.now(),
+    note,
+    skin: record.skin,
+    paletteId: record.paletteId,
+    ...(record.palette ? { palette: { ...record.palette } } : {}),
+    preservedItems: clonePreservedItems(record.preservedItems ?? []),
+    ...(problem ? { validationProblem: problem } : {}),
+  };
+  record.versions?.push(version);
+  record.plan = cloneLongformPlan(plan);
+  record.activeVersionId = version.id;
+  record.status = 'draft';
+  record.approvedVersionId = null;
+  record.reconciliation = null;
+  if (problem) record.validationProblem = problem;
+  else delete record.validationProblem;
 }
 
 function hasReviewScene(state: AppState, target: LongformReviewFocus): boolean {
@@ -434,33 +470,31 @@ export const createLongformSlice: StateCreator<
         record.plan.storyboardStyle === style
       )
         return;
-      ensureRecord(record);
       const plan = cloneLongformPlan(record.plan);
       plan.storyboardStyle = style;
-      const problem =
-        currentPlanProblem(state, sourceId, plan) ||
-        record.validationProblem ||
-        (!snapshotPalette(record.paletteId, [], record.palette) ? LONGFORM_PALETTE_PROBLEM : null);
-      const version: LongformPlanVersion = {
-        id: makeId('cut-plan'),
+      pushAppearanceVersion(state, sourceId, record, plan, 'Changed storyboard style');
+    }),
+
+  setLongformPlanSceneCanvas: (sourceId, enabled) =>
+    set((state) => {
+      const record = state.longformPlans[sourceId];
+      if (
+        !record ||
+        typeof enabled !== 'boolean' ||
+        !isSceneFirstPlanEnvelope(record.plan) ||
+        (record.plan.parserVersion !== 2 && record.plan.parserVersion !== 3) ||
+        (record.plan.sceneCanvas !== false) === enabled
+      )
+        return;
+      const plan = cloneLongformPlan(record.plan);
+      plan.sceneCanvas = enabled;
+      pushAppearanceVersion(
+        state,
+        sourceId,
+        record,
         plan,
-        origin: 'user-edited',
-        createdAt: Date.now(),
-        note: 'Changed storyboard style',
-        skin: record.skin,
-        paletteId: record.paletteId,
-        ...(record.palette ? { palette: { ...record.palette } } : {}),
-        preservedItems: clonePreservedItems(record.preservedItems ?? []),
-        ...(problem ? { validationProblem: problem } : {}),
-      };
-      record.versions?.push(version);
-      record.plan = cloneLongformPlan(plan);
-      record.activeVersionId = version.id;
-      record.status = 'draft';
-      record.approvedVersionId = null;
-      record.reconciliation = null;
-      if (problem) record.validationProblem = problem;
-      else delete record.validationProblem;
+        enabled ? 'Turned on the scene canvas' : 'Turned off the scene canvas',
+      );
     }),
 
   rejectLongformPlan: (sourceId) =>

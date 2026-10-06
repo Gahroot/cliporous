@@ -14,7 +14,7 @@ import {
   variationRangePose,
   variationRangeRecords,
 } from './variation-range-poses';
-import { variationRangeTestScenes } from './variation-range-poses.test';
+import { variationRangeTestScenes } from './variation-range-poses.fixtures';
 
 const tags = (source: string, tag: string) =>
   [...source.matchAll(new RegExp(`<${tag}(?:[ >])`, 'g'))].length;

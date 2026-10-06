@@ -94,6 +94,8 @@ import {
   type FullscreenQuotePlusBrollProps,
 } from './compositions/FullscreenQuotePlusBroll';
 import { PhraseOverlay, type PhraseOverlayProps } from './compositions/PhraseOverlay';
+import { SceneCanvas } from './compositions/scene-canvas/SceneCanvas';
+import type { SceneCanvasProps } from './compositions/scene-canvas/types';
 import { StoryBoard } from './compositions/storyboard/StoryBoard';
 import type { ProductionStoryBoardProps } from './compositions/storyboard/types';
 import { SKINS, type SkinId } from './shared/skins';
@@ -152,6 +154,33 @@ export const RemotionRoot: React.FC = () => {
         }
         calculateMetadata={({ props }) => ({
           durationInFrames: Math.max(1, Math.ceil(props.spec.durationSec * FPS - 1e-6)),
+        })}
+      />
+      {/* Long-form scene canvas: consecutive approved scenes on one moving whiteboard. */}
+      <Composition
+        id="SceneCanvas"
+        component={SceneCanvas}
+        durationInFrames={1}
+        fps={FPS}
+        width={LANDSCAPE_WIDTH}
+        height={LANDSCAPE_HEIGHT}
+        defaultProps={
+          {
+            style: 'ink',
+            palette: BUILTIN_PALETTES[0],
+            durationSec: 1 / FPS,
+            panels: [
+              {
+                id: 'default',
+                startSec: 0,
+                endSec: 1 / FPS,
+                scene: { kind: 'statement', words: [{ text: 'Scene canvas', at: 0 }] },
+              },
+            ],
+          } satisfies SceneCanvasProps
+        }
+        calculateMetadata={({ props }) => ({
+          durationInFrames: Math.max(1, Math.ceil(props.durationSec * FPS - 1e-6)),
         })}
       />
       {/* Explainer stage: top half of a split short. Opaque, 1080×960. */}

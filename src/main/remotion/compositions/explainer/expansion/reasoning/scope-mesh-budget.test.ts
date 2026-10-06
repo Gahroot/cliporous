@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { ScopeDiagram } from './scope-Diagram';
 import { ScopeModels } from './scope-models';
 import { scopePose } from './scope-poses';
-import { maximumFactsScene, maximumScopeScene, scopeTestScenes } from './scope-poses.test';
+import { maximumFactsScene, maximumScopeScene, scopeTestScenes } from './scope-poses.fixtures';
 
 const tags = (html: string, name: string) =>
   [...html.matchAll(new RegExp(`<${name}\\b`, 'g'))].length;

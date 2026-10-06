@@ -10,7 +10,7 @@ import {
 } from '@shared/longform-scenes';
 import { getPaletteById, type Palette } from '@shared/palettes';
 import { resolveStoryboardPalette } from '@shared/storyboard-palette';
-import type { StoryboardStyle } from '@shared/storyboards';
+import { normalizeStoryboardStyle, type StoryboardStyle } from '@shared/storyboards';
 import type { LongformRenderReconciliation, WordTimestamp } from '@shared/types';
 import { validateSceneFirstLongformPlan } from '../ai/longform-scene-contract';
 import { LANDSCAPE_FPS, LANDSCAPE_HEIGHT, LANDSCAPE_WIDTH } from '../aspect-ratios';
@@ -28,6 +28,12 @@ import {
   cleanupPhraseOverlayTempFiles,
 } from './features/phrase-emphasis.feature';
 import { concatLongformSceneSegments, encodeLongformSceneSegment } from './longform-encode';
+import {
+  buildSceneCanvasPanels,
+  groupSceneCanvases,
+  type SceneCanvasGroup,
+  sceneCanvasEnabled,
+} from './longform-scene-canvas';
 import { buildLongformSceneTimeline, type LongformSceneSegment } from './longform-scene-timeline';
 import { buildLongformStoryboardProps } from './longform-storyboard-props';
 import { mixSceneSfx } from './scene-sfx';
@@ -73,6 +79,67 @@ export function buildLongformSceneProps(
     exit: true,
     visibleSec: segment.endTime - segment.startTime,
   };
+}
+
+/** One canvas alpha render composited full-frame over the source; members share its fate. */
+async function renderSceneCanvasSegment(
+  opts: Source & {
+    group: SceneCanvasGroup;
+    outputPath: string;
+    workDirectory: string;
+    qualityParams?: QualityParams | undefined;
+    onProgress?: ((fraction: number) => void) | undefined;
+  },
+): Promise<void> {
+  const { group, signal } = opts;
+  if (!opts.storyboardPalette) throw new Error('Scene canvas palette is missing.');
+  // Plans saved before storyboard styles existed carry none; use the shared default.
+  const style = normalizeStoryboardStyle(opts.storyboardStyle);
+  const visualPath = join(opts.workDirectory, 'canvas.mov');
+  const frameCount = group.endFrame - group.startFrame;
+  try {
+    const { renderRemotionSegment } = await import('../remotion/render');
+    signal?.throwIfAborted();
+    await renderRemotionSegment({
+      compositionId: 'SceneCanvas',
+      inputProps: {
+        style,
+        palette: opts.storyboardPalette,
+        durationSec: frameCount / LANDSCAPE_FPS,
+        panels: buildSceneCanvasPanels(group),
+      },
+      durationSec: frameCount / LANDSCAPE_FPS,
+      fps: LANDSCAPE_FPS,
+      width: LANDSCAPE_WIDTH,
+      height: LANDSCAPE_HEIGHT,
+      transparent: true,
+      outputPath: visualPath,
+      signal,
+      concurrency: 1,
+      onProgress: (fraction: number) => {
+        if (!signal?.aborted) opts.onProgress?.(fraction * 0.8);
+      },
+    });
+    signal?.throwIfAborted();
+    await encodeLongformSceneSegment({
+      sourceVideoPath: opts.sourceVideoPath,
+      outputPath: opts.outputPath,
+      sourceWidth: opts.sourceWidth,
+      sourceHeight: opts.sourceHeight,
+      background: resolveStoryboardPalette(style, opts.storyboardPalette).canvas,
+      startTime: group.startTime,
+      frameCount,
+      visualPath,
+      presentation: 'full-frame',
+      sourceUnderlay: true,
+      signal,
+      qualityParams: opts.qualityParams,
+      onProgress: (percent) => opts.onProgress?.(0.8 + percent / 500),
+    });
+    signal?.throwIfAborted();
+  } finally {
+    rmSync(visualPath, { force: true });
+  }
 }
 
 /** Actual scene-segment path shared by export and preview; errors are never hidden here. */
@@ -189,40 +256,107 @@ export async function renderSceneFirstLongform(
     storyboardStyle: validated.value.plan.storyboardStyle,
     signal: opts.signal,
   };
+  // Canvas grouping is export-only and derived from the approved plan; old plans default on.
+  const canvasOn =
+    sceneCanvasEnabled(validated.value.plan) && isLongformPalette(opts.storyboardPalette);
+  const entries = canvasOn
+    ? groupSceneCanvases(timeline.segments, timeline.totalFrames)
+    : timeline.segments.map((segment) => ({ kind: 'segment' as const, segment }));
+  const renderOrdinary = async (
+    segment: LongformSceneSegment,
+    outputPath: string,
+  ): Promise<void> => {
+    const onProgress = (fraction: number): void =>
+      opts.onProgress?.(
+        segment.kind === 'scene'
+          ? `Rendering approved scene ${segment.compiled.placement.label}…`
+          : 'Encoding source speaker…',
+        ((segment.startFrame + fraction * (segment.endFrame - segment.startFrame)) /
+          timeline.totalFrames) *
+          0.9,
+      );
+    const common = { ...source, segment, outputPath, workDirectory, onProgress };
+    try {
+      await renderSceneSegment(common);
+      if (segment.kind === 'scene') {
+        sceneResults.push(sceneResult(segment, 'rendered'));
+        // Full-source output: validated cue times are already absolute. Never rebase here.
+        if (opts.sceneSfxEnabled !== false) cues.push(...compiledCues(segment));
+      }
+    } catch (error) {
+      opts.signal?.throwIfAborted();
+      if (segment.kind !== 'scene') throw error;
+      const reason = (error instanceof Error ? error.message : String(error)).slice(0, 1000);
+      // Delete any partial scene encode before reusing its exact output interval.
+      rmSync(outputPath, { force: true });
+      await renderSceneSegment({ ...common, segment: { ...segment, kind: 'speaker' } });
+      sceneResults.push({
+        ...sceneResult(segment, 'failed'),
+        reason: `Speaker fallback: ${reason}`,
+      });
+    }
+    segments.push({ path: outputPath, frameCount: segment.endFrame - segment.startFrame });
+  };
   try {
-    for (const [index, segment] of timeline.segments.entries()) {
+    for (const [index, entry] of entries.entries()) {
       opts.signal?.throwIfAborted();
       const outputPath = join(workDirectory, `segment-${index}.mp4`);
-      const onProgress = (fraction: number): void =>
-        opts.onProgress?.(
-          segment.kind === 'scene'
-            ? `Rendering approved scene ${segment.compiled.placement.label}…`
-            : 'Encoding source speaker…',
-          ((segment.startFrame + fraction * (segment.endFrame - segment.startFrame)) /
-            timeline.totalFrames) *
-            0.9,
-        );
-      const common = { ...source, segment, outputPath, workDirectory, onProgress };
-      try {
-        await renderSceneSegment(common);
-        if (segment.kind === 'scene') {
-          sceneResults.push(sceneResult(segment, 'rendered'));
-          // Full-source output: validated cue times are already absolute. Never rebase here.
-          if (opts.sceneSfxEnabled !== false) cues.push(...compiledCues(segment));
+      if (entry.kind === 'canvas') {
+        const { group } = entry;
+        const span = group.endFrame - group.startFrame;
+        const progress = (fraction: number): void =>
+          opts.onProgress?.(
+            `Drawing the scene canvas (${group.members.length} scenes)…`,
+            ((group.startFrame + fraction * span) / timeline.totalFrames) * 0.9,
+          );
+        try {
+          await renderSceneCanvasSegment({
+            ...source,
+            group,
+            outputPath,
+            workDirectory,
+            qualityParams: opts.qualityParams,
+            onProgress: progress,
+          });
+          segments.push({ path: outputPath, frameCount: span });
+          for (const member of group.members) {
+            sceneResults.push(sceneResult(member, 'rendered'));
+            if (opts.sceneSfxEnabled !== false) cues.push(...compiledCues(member));
+          }
+          log('info', 'longform-scene-canvas', 'canvas rendered', {
+            scenes: group.members.map((m) => m.compiled.placement.id),
+            startTime: group.startTime,
+            endTime: group.endTime,
+          });
+        } catch (error) {
+          opts.signal?.throwIfAborted();
+          const reason = (error instanceof Error ? error.message : String(error)).slice(0, 1000);
+          log('warn', 'longform-scene-canvas', 'canvas failed; rendering its scenes separately', {
+            reason,
+          });
+          rmSync(outputPath, { force: true });
+          // Fall back to the exact ordinary segments this canvas replaced, including the tail.
+          const parts = timeline.segments.filter(
+            (s) => s.startFrame >= group.startFrame && s.endFrame <= group.endFrame,
+          );
+          const covered = parts.reduce((n, s) => n + s.endFrame - s.startFrame, 0);
+          const lastPart = parts[parts.length - 1];
+          if (lastPart && covered < span)
+            parts.push({
+              kind: 'speaker',
+              startFrame: lastPart.endFrame,
+              endFrame: group.endFrame,
+              startTime: lastPart.endFrame / LANDSCAPE_FPS,
+              endTime: group.endTime,
+            });
+          for (const [partIndex, part] of parts.entries()) {
+            const partPath = join(workDirectory, `segment-${index}-${partIndex}.mp4`);
+            await renderOrdinary(part, partPath);
+          }
         }
-      } catch (error) {
-        opts.signal?.throwIfAborted();
-        if (segment.kind !== 'scene') throw error;
-        const reason = (error instanceof Error ? error.message : String(error)).slice(0, 1000);
-        // Delete any partial scene encode before reusing its exact output interval.
-        rmSync(outputPath, { force: true });
-        await renderSceneSegment({ ...common, segment: { ...segment, kind: 'speaker' } });
-        sceneResults.push({
-          ...sceneResult(segment, 'failed'),
-          reason: `Speaker fallback: ${reason}`,
-        });
+        continue;
       }
-      segments.push({ path: outputPath, frameCount: segment.endFrame - segment.startFrame });
+      await renderOrdinary(entry.segment, outputPath);
     }
     opts.signal?.throwIfAborted();
     await concatLongformSceneSegments({

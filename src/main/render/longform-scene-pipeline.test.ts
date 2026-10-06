@@ -392,6 +392,8 @@ describe('scene-first saved SFX', () => {
       { ...saved.scenes[0], id: 'failed', startTime: 8, endTime: 12 },
       { ...saved.scenes[0], id: 'omitted', startTime: 14, endTime: 18, omitted: true },
     );
+    // Separate cuts: this case covers per-scene fallback, not the scene canvas.
+    saved.sceneCanvas = false;
     opts.longformEditPlan = saved;
     mocks.encode.mockImplementation(async (args) => {
       writeFileSync(args.outputPath, 'segment');
@@ -417,6 +419,46 @@ describe('scene-first saved SFX', () => {
     request.plan.scenes[0].omitted = true;
     await expect(renderLongformScenePreview(request)).rejects.toThrow(/omitted/);
     expect(mocks.mix).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    false,
+    true,
+  ])('draws consecutive scenes as one canvas (canvas fails: %s)', async (failCanvas) => {
+    const saved = structuredClone(plan);
+    saved.scenes.push({ ...saved.scenes[0], id: 'second', startTime: 8, endTime: 12 });
+    mocks.render.mockImplementation(async (args) => {
+      if (failCanvas && args.compositionId === 'SceneCanvas')
+        throw new Error('Canvas graphics failed');
+      writeFileSync(args.outputPath, 'scene');
+      return args.outputPath;
+    });
+    const opts = options();
+    opts.longformEditPlan = saved;
+    const { send, window } = windowStub();
+    await renderLongformVideo(opts, window);
+    const compositions = mocks.render.mock.calls.map((c) => c[0].compositionId);
+    expect(compositions[0]).toBe('SceneCanvas');
+    if (failCanvas) {
+      // Falls back to the exact separate scenes it replaced.
+      expect(compositions.slice(1)).toHaveLength(2);
+      expect(compositions.slice(1)).not.toContain('SceneCanvas');
+    } else {
+      expect(compositions).toHaveLength(1);
+      expect(mocks.render.mock.calls[0][0].inputProps.panels).toHaveLength(2);
+    }
+    expect(mocks.mix.mock.calls[0][1]).toHaveLength(2);
+    expect(send).toHaveBeenCalledWith(
+      Ch.Send.RENDER_CLIP_DONE,
+      expect.objectContaining({
+        reconciliation: expect.objectContaining({
+          sceneResults: [
+            expect.objectContaining({ id: 'approved-statement', status: 'rendered' }),
+            expect.objectContaining({ id: 'second', status: 'rendered' }),
+          ],
+        }),
+      }),
+    );
   });
 
   it('fails rather than mixing or publishing when speaker fallback encoding fails', async () => {

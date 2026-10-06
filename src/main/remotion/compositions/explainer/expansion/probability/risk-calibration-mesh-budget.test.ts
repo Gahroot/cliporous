@@ -7,7 +7,7 @@ import { DiagramSurface } from '../../diagrams/DiagramStage';
 import { RiskCalibrationDiagram } from './risk-calibration-Diagram';
 import { RiskCalibrationModels } from './risk-calibration-models';
 import { riskCalibrationPose } from './risk-calibration-poses';
-import { riskCalibrationCases } from './risk-calibration-poses.test';
+import { riskCalibrationCases } from './risk-calibration-poses.fixtures';
 
 const colors = { surface: '#fff', text: '#111', accent: '#999', muted: '#555' };
 const tags = (s: string, name: string) => [...s.matchAll(new RegExp(`<${name}\\b`, 'g'))].length;

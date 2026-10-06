@@ -64,7 +64,8 @@ export function resolveStoryboardPalette(
     throw new Error('Storyboard palette requires six-digit hex colors.');
   const canvas =
     style === 'ink'
-      ? mixStoryboardColor('#ffffff', palette.background, 0.055)
+      ? // Warm sketchbook paper (not flat white/grey), lightly tinted toward the palette.
+        mixStoryboardColor('#faf5ea', palette.background, 0.03)
       : palette.background.toLowerCase();
   const light = relativeLuminance(canvas) > 0.179;
   const surfaceEndpoint = light ? '#ffffff' : '#000000';

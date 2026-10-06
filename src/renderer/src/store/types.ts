@@ -749,6 +749,8 @@ export interface AppState {
   acceptLongformPlan: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
   setLongformPlanStyle: (sourceId: string, skin: LongformSkinId, paletteId: string) => void;
   setLongformPlanStoryboardStyle: (sourceId: string, style: StoryboardStyle) => void;
+  /** Arrange runs of approved scenes on one moving canvas at export (default on). */
+  setLongformPlanSceneCanvas: (sourceId: string, enabled: boolean) => void;
   rejectLongformPlan: (sourceId: string) => void;
   addLongformPlanFeedback: (
     sourceId: string,

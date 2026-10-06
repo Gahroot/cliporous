@@ -6,7 +6,7 @@ import { DiagramChrome, DiagramSurface } from '../../diagrams/DiagramStage';
 import { InformationDiagram } from './information-Diagram';
 import { InformationModelOverlay } from './information-models';
 import { informationModelProjection, informationPose } from './information-poses';
-import { informationSourceScenes } from './information-poses.test';
+import { informationSourceScenes } from './information-poses.fixtures';
 
 const escaped = (text: string) =>
   text
@@ -17,7 +17,7 @@ const escaped = (text: string) =>
     .replace(/'/g, '&#x27;');
 
 /** Inspect inherited opacity, not just strings retained on invisible detail pages. */
-export function informationSvgNodes(svg: string) {
+function informationSvgNodes(svg: string) {
   const stack: { tag: string; opacity: number; attributes: Record<string, string> }[] = [];
   const nodes: {
     tag: string;
@@ -45,7 +45,7 @@ export function informationSvgNodes(svg: string) {
   return nodes;
 }
 
-export function informationDiagramMarkup(
+function informationDiagramMarkup(
   scene: ReturnType<typeof informationSourceScenes>[number],
   t: number,
 ) {

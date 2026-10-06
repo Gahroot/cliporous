@@ -8,7 +8,7 @@ import { ExplainerProvider, UI_FONT } from '../../stage';
 import { DistributionDiagram } from './distribution-Diagram';
 import { DISTRIBUTION_CAMERA, distributionModelPlacement } from './distribution-models';
 import { distributionHistogram, distributionPose, distributionTable } from './distribution-poses';
-import { distributionCases, zeroBinScene } from './distribution-poses.test';
+import { distributionCases, zeroBinScene } from './distribution-poses.fixtures';
 
 // Shipped Inter's real cmap, advances and glyph boxes. CPU bounds, not native shaping or GPU proof.
 const font = readFileSync('resources/fonts/Inter.ttf');
