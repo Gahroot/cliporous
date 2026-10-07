@@ -9,6 +9,7 @@
 // caption track, hook title, and rehook overlay are burned post-concat.
 // ---------------------------------------------------------------------------
 
+import { randomUUID } from 'node:crypto';
 import { existsSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -562,7 +563,7 @@ async function concatWithDemuxer(
   outputPath: string,
   onProgress: (percent: number) => void,
 ): Promise<void> {
-  const listFile = join(tmpdir(), `batchcontent-seg-list-${Date.now()}.txt`);
+  const listFile = join(tmpdir(), `batchcontent-seg-list-${randomUUID()}.txt`);
   const listContent = segmentFiles.map((p) => `file '${p.replace(/'/g, "'\\''")}'`).join('\n');
   writeFileSync(listFile, listContent, 'utf-8');
 
@@ -1203,7 +1204,7 @@ export async function renderSegmentedClip(
     for (let i = 0; i < balancedSegments.length; i++) {
       const seg = balancedSegments[i];
       const segDuration = encodeDurations[i] ?? seg.endTime - seg.startTime;
-      const tempPath = join(tempDir, `batchcontent-seg-${Date.now()}-${i}.mp4`);
+      const tempPath = join(tempDir, `batchcontent-seg-${randomUUID()}-${i}.mp4`);
       tempFiles.push(tempPath);
       segmentOutputFiles.push(tempPath);
 
@@ -1220,7 +1221,7 @@ export async function renderSegmentedClip(
     onProgress(concatBase);
 
     // ── Phase 2: Concatenate ────────────────────────────────────────────
-    const concatOutputPath = join(tempDir, `batchcontent-seg-concat-${Date.now()}.mp4`);
+    const concatOutputPath = join(tempDir, `batchcontent-seg-concat-${randomUUID()}.mp4`);
     tempFiles.push(concatOutputPath);
 
     if (needsXfade) {
@@ -1383,7 +1384,7 @@ export async function renderSegmentedClip(
         `[SegmentRender] Applying ${assFilters.length} overlay(s) in one pass: ` +
           overlayLabels.join(', '),
       );
-      const overlayTempPath = join(tempDir, `batchcontent-seg-overlays-${Date.now()}.mp4`);
+      const overlayTempPath = join(tempDir, `batchcontent-seg-overlays-${randomUUID()}.mp4`);
       tempFiles.push(overlayTempPath);
       try {
         await applyFilterPass(
@@ -1403,7 +1404,7 @@ export async function renderSegmentedClip(
     if (config.sceneSfxEnabled !== false && config.sceneCues && config.sceneCues.length > 0) {
       const clipCues = mapCuesToClipTime(config.sceneCues, balancedSegments, timelineSteps);
       const clipDuration = balancedSegments.reduce((sum, s) => sum + (s.endTime - s.startTime), 0);
-      const sfxPath = join(tempDir, `batchcontent-seg-sfx-${Date.now()}.mp4`);
+      const sfxPath = join(tempDir, `batchcontent-seg-sfx-${randomUUID()}.mp4`);
       const mixed = await mixSceneSfx(currentPath, clipCues, {
         clipDuration,
         outputPath: sfxPath,

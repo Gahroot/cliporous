@@ -281,7 +281,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   renderQuality: DEFAULT_RENDER_QUALITY,
   outputAspectRatio: '9:16',
   filenameTemplate: DEFAULT_FILENAME_TEMPLATE,
-  renderConcurrency: 1,
+  renderConcurrency: 2,
   templateLayout: DEFAULT_TEMPLATE_LAYOUT,
   targetPlatform: DEFAULT_TARGET_PLATFORM,
   outputMode: 'short',
