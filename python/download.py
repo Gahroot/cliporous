@@ -228,7 +228,12 @@ def main() -> None:
         # (H.264) stream for the same pixel dimensions, so picking AV1/VP9 at
         # ≥1080p gives us the cleanest source to crop + re-encode from.
         #
-        # The format chain walks down in priority:
+        # Try the entire quality chain with English audio first, then fall back
+        # to any language only when no English format is available. `en` also
+        # matches regional tags (en-US/en-GB) and the three-letter `eng` tag.
+        # Use video-only `bv` for English branches so a combined video stream
+        # cannot bring along a different-language audio track.
+        # Within each language tier, the format chain walks down in priority:
         #   1. AV1 @ ≥1080p   — best quality, smallest file
         #   2. VP9 @ ≥1080p   — nearly as good
         #   3. Any codec @ ≥1080p
@@ -237,6 +242,15 @@ def main() -> None:
         #   6. Any codec @ ≥720p
         #   7. Best available  — last resort, may be 480p or worse
         "format": (
+            "bv[height>=1080][vcodec^=av01]+ba[language^=en]/"
+            "bv[height>=1080][vcodec^=vp9]+ba[language^=en]/"
+            "bv[height>=1080][vcodec^=vp09]+ba[language^=en]/"
+            "bv[height>=1080]+ba[language^=en]/"
+            "bv[height>=720][vcodec^=av01]+ba[language^=en]/"
+            "bv[height>=720][vcodec^=vp9]+ba[language^=en]/"
+            "bv[height>=720][vcodec^=vp09]+ba[language^=en]/"
+            "bv[height>=720]+ba[language^=en]/"
+            "bv+ba[language^=en]/b[language^=en]/"
             "bv*[height>=1080][vcodec^=av01]+ba/"
             "bv*[height>=1080][vcodec^=vp9]+ba/"
             "bv*[height>=1080][vcodec^=vp09]+ba/"
@@ -247,7 +261,11 @@ def main() -> None:
             "bv*[height>=720]+ba/"
             "bv*+ba/b"
         ),
-        "format_sort": ["res", "vcodec:av01", "vcodec:vp9", "vcodec:vp09", "vcodec:h264", "br"],
+        # Preserve YouTube's original/default audio preference before bitrate;
+        # otherwise a higher-bitrate auto-dub can outrank the original track.
+        "format_sort": [
+            "lang", "res", "vcodec:av01", "vcodec:vp9", "vcodec:vp09", "vcodec:h264", "br"
+        ],
         # Merge into mkv — a permissive container that doesn't trigger a codec
         # re-encode for VP9/AV1 streams. (mp4 used to be the merge target, but
         # combined with the FFmpegVideoConvertor postprocessor it forced a
