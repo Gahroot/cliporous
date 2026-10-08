@@ -63,8 +63,28 @@ describe.each(STORYBOARD_STYLES)('%s storyboard material', (style) => {
       expect(contrastRatio(color, tokens.canvas)).toBeGreaterThanOrEqual(3);
     expect(palette).toEqual(before);
     if (style === 'ink') expect(relativeLuminance(tokens.canvas)).toBeGreaterThan(0.8);
-    else expect(tokens.canvas).toBe(palette.background.toLowerCase());
+    else if (relativeLuminance(palette.background) > 0.179)
+      expect(tokens.canvas).toBe(palette.background.toLowerCase());
+    else {
+      // Dark boards never render blacker than the saved background, and cards lift off them.
+      expect(relativeLuminance(tokens.canvas)).toBeGreaterThanOrEqual(
+        relativeLuminance(palette.background),
+      );
+      expect(relativeLuminance(tokens.cardRaised)).toBeGreaterThanOrEqual(
+        relativeLuminance(tokens.canvas),
+      );
+    }
   });
+});
+it('tints a dark blue-accent board navy with lighter raised cards', () => {
+  const ezcoder = BUILTIN_PALETTES.find((palette) => palette.id === 'ezcoder');
+  if (!ezcoder) throw new Error('ezcoder palette missing');
+  const tokens = resolveStoryboardPalette('polish', ezcoder);
+  const [r, g, b] = [1, 3, 5].map((i) => Number.parseInt(tokens.cardRaised.slice(i, i + 2), 16));
+  expect(b).toBeGreaterThan(r as number);
+  expect(b).toBeGreaterThan(g as number);
+  expect(relativeLuminance(tokens.canvas)).toBeGreaterThan(relativeLuminance(ezcoder.background));
+  expect(relativeLuminance(tokens.cardRaised)).toBeGreaterThan(relativeLuminance(tokens.canvas));
 });
 it('rejects CSS at the color boundary', () => {
   expect(() =>

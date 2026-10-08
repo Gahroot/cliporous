@@ -48,6 +48,9 @@ function readable(seed: string, surfaces: readonly string[], minimum: number): s
   throw new Error('Storyboard surfaces cannot meet the required contrast.');
 }
 
+const DARK_CANVAS_TINT = 0.14;
+const DARK_RAISE_SCALE = 0.7;
+
 /** One React-free source of export and picker colors. Never mutates saved palette seeds. */
 export function resolveStoryboardPalette(
   style: StoryboardStyle,
@@ -62,16 +65,22 @@ export function resolveStoryboardPalette(
   ];
   if (seeds.some((seed) => typeof seed !== 'string' || !/^#[0-9a-f]{6}$/i.test(seed)))
     throw new Error('Storyboard palette requires six-digit hex colors.');
-  const canvas =
+  const base =
     style === 'ink'
       ? // Warm sketchbook paper (not flat white/grey), lightly tinted toward the palette.
         mixStoryboardColor('#faf5ea', palette.background, 0.03)
       : palette.background.toLowerCase();
-  const light = relativeLuminance(canvas) > 0.179;
-  const surfaceEndpoint = light ? '#ffffff' : '#000000';
-  const paper = mixStoryboardColor(canvas, surfaceEndpoint, 0.18);
-  const card = mixStoryboardColor(canvas, surfaceEndpoint, 0.1);
-  const cardRaised = mixStoryboardColor(canvas, surfaceEndpoint, 0.25);
+  const light = relativeLuminance(base) > 0.179;
+  // Dark boards read as near-black on screen: tint them toward the accent (navy for a blue
+  // accent) and raise cards toward it too, so surfaces lift off the board instead of sinking.
+  const canvas = light ? base : mixStoryboardColor(base, palette.accent, DARK_CANVAS_TINT);
+  const raise = (amount: number): string =>
+    light
+      ? mixStoryboardColor(canvas, '#ffffff', amount)
+      : mixStoryboardColor(canvas, palette.accent, amount * DARK_RAISE_SCALE);
+  const paper = raise(0.18);
+  const card = raise(0.1);
+  const cardRaised = raise(0.25);
   const surfaces = [canvas, paper, card, cardRaised];
   const ink = readable(style === 'ink' ? '#000000' : palette.foreground, surfaces, 4.5);
   const muted = readable(mixStoryboardColor(ink, canvas, 0.4), surfaces, 4.5);

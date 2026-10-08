@@ -16,7 +16,7 @@ import { ContactShadows } from '@react-three/drei/core/ContactShadows';
 import { useThree } from '@react-three/fiber';
 import { ThreeCanvas } from '@remotion/three';
 import type React from 'react';
-import { useLayoutEffect } from 'react';
+import { createContext, useContext, useLayoutEffect } from 'react';
 import { mixHex } from './palette';
 import { StudioEnvironment } from './StudioEnvironment';
 import { StageSpace, useSceneTime, useStage, useWideStage } from './stage';
@@ -48,13 +48,20 @@ export interface Stage3DProps {
   children: React.ReactNode;
 }
 
+/**
+ * Extra camera azimuth (degrees) supplied by a host that keeps a finished scene alive, such as
+ * the long-form scene canvas. Zero everywhere else, so ordinary scenes are unchanged.
+ */
+export const SceneOrbitContext = createContext(0);
+
 /** Hook for HTML overlays that must track the same camera as the 3D scene. */
 export function useRigCamera(
   camera: CameraSpec,
   opts: Pick<Stage3DProps, 'focusAt' | 'driftDeg' | 'pushAmount' | 'bobAmount'> = {},
 ): CameraSpec {
   const { t } = useSceneTime();
-  return cameraRig(camera, t, opts);
+  const orbitDeg = useContext(SceneOrbitContext);
+  return cameraRig(camera, t, orbitDeg === 0 ? opts : { ...opts, orbitDeg });
 }
 
 export const Stage3D: React.FC<Stage3DProps> = ({

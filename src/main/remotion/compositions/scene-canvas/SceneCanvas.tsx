@@ -1,16 +1,19 @@
 /**
  * Production alpha overlay: consecutive approved scenes as panels on one moving whiteboard.
- * Each panel mounts the real scene body on its classic 1080×960 stage, starts on its own beat
- * and then holds its final pose, so the camera can travel back across the accumulated story.
+ * Each panel mounts the real scene body on its classic 1080×960 stage and starts on its own beat;
+ * after its animation settles it keeps a gentle frame-driven idle motion (see `idle.ts`), so the
+ * camera travels across a living story rather than frozen frames.
  */
 import type React from 'react';
 import { useMemo } from 'react';
-import { AbsoluteFill, Freeze, Sequence, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Sequence, useCurrentFrame, useVideoConfig } from 'remotion';
+import { Glow } from '../explainer/motion';
 import { SceneBody } from '../explainer/SceneBody';
+import { SceneOrbitContext } from '../explainer/Stage3D';
 import { ExplainerFonts, ExplainerProvider } from '../explainer/stage';
 import { BoardFonts } from '../storyboard/BoardFonts';
 import { worldTransform } from '../storyboard/camera';
-import { BoardElementView } from '../storyboard/elements';
+import { BoardElementView, writeDur } from '../storyboard/elements';
 import { boardLook } from '../storyboard/look';
 import { WorldTexture } from '../storyboard/StoryBoard';
 import type { BoardElement } from '../storyboard/types';
@@ -20,19 +23,29 @@ import {
   canvasOpacity,
   PANEL_PAD,
   type PanelBox,
+  type PlacedNote,
   panelInView,
 } from './geometry';
+import { idleTransform, panelIdleAt, panelSettleSec } from './idle';
 import type { SceneCanvasPanel, SceneCanvasProps } from './types';
 
+/**
+ * One panel: the real scene body keeps running past its own window (scene motion is purely
+ * frame-driven and has no exit of its own), and once settled it gains a gentle float, tilt,
+ * 3D turntable and periodic pulse so a finished panel never sits still on the board.
+ */
 const PanelStage: React.FC<{
   panel: SceneCanvasPanel;
   box: PanelBox;
   fps: number;
+  frame: number;
   totalFrames: number;
-}> = ({ panel, box, fps, totalFrames }) => {
+  accent: string;
+}> = ({ panel, box, fps, frame, totalFrames, accent }) => {
   const from = Math.round(panel.startSec * fps);
-  const ownFrames = Math.max(1, Math.round((panel.endSec - panel.startSec) * fps));
-  const last = ownFrames - 1;
+  const ownSec = panel.endSec - panel.startSec;
+  const settle = panelSettleSec(panel.scene, ownSec);
+  const idle = panelIdleAt((frame - from) / fps, settle, fps, panel.id);
   return (
     <Sequence from={from} durationInFrames={Math.max(1, totalFrames - from)} layout="none">
       <div
@@ -43,27 +56,95 @@ const PanelStage: React.FC<{
           top: box.y,
           width: box.width,
           height: box.height,
+          transform: idleTransform(idle),
+          transformOrigin: '50% 55%',
         }}
       >
-        <Freeze frame={last} active={(f) => f >= last}>
+        <Glow color={accent} intensity={idle.glow} radius={260} />
+        <SceneOrbitContext.Provider value={idle.orbitDeg}>
           <SceneBody scene={panel.scene} />
-        </Freeze>
+        </SceneOrbitContext.Provider>
       </div>
     </Sequence>
   );
 };
+
+/**
+ * A board note as existing storyboard marks: handwriting with a marker swipe, ringed accent
+ * handwriting, or a taped sticky note, each followed by a short arrow back to its panel.
+ */
+function noteElements(n: PlacedNote, ink: boolean): BoardElement[] {
+  // Marks follow the handwriting, so the reader sees words first.
+  const written = n.at + (ink ? writeDur(n.text) : 0.42);
+  const arrow: BoardElement = {
+    id: `${n.id}-arrow`,
+    kind: 'arrow',
+    at: written + 0.1,
+    dur: 0.4,
+    from: n.arrow.from,
+    to: n.arrow.to,
+    bend: 0.22,
+    tone: 'muted',
+  };
+  if (n.style === 'sticky') {
+    const rot = n.anchor % 2 === 0 ? -3 : 3;
+    const note: BoardElement = {
+      id: n.id,
+      kind: 'note',
+      at: n.at,
+      x: n.x,
+      y: n.y,
+      rot,
+      title: n.text,
+      width: n.w,
+      height: n.h,
+      size: n.size,
+    };
+    return [note, arrow];
+  }
+  const text: BoardElement = {
+    id: n.id,
+    kind: 'text',
+    at: n.at,
+    // Ringed text sits centred in its ring whatever the font's real width.
+    x: n.style === 'circled' ? n.x + n.w / 2 : n.x,
+    y: n.y,
+    text: n.text,
+    size: n.size,
+    width: n.w + 4,
+    tone: n.style === 'circled' ? 'accent' : 'ink',
+    align: n.style === 'circled' ? 'center' : 'left',
+    ...(n.style === 'write' ? { highlightAt: written + 0.05 } : {}),
+  };
+  if (n.style === 'write') return [text, arrow];
+  const ring: BoardElement = {
+    id: `${n.id}-ring`,
+    kind: 'ring',
+    at: written + 0.05,
+    cx: n.x + n.w / 2,
+    cy: n.y + n.h / 2,
+    rx: n.w / 2 + 34,
+    ry: n.h / 2 + 30,
+  };
+  return [text, ring, { ...arrow, at: written + 0.55 }];
+}
 
 export const SceneCanvas: React.FC<SceneCanvasProps> = ({
   style,
   palette,
   durationSec,
   panels,
+  notes = [],
+  closeBySec,
 }) => {
   const frame = useCurrentFrame();
   const { fps, width, height, durationInFrames } = useVideoConfig();
   const t = frame / fps;
   const look = useMemo(() => boardLook(style, palette), [style, palette]);
-  const layout = useMemo(() => buildCanvasLayout(panels, durationSec), [panels, durationSec]);
+  const layout = useMemo(
+    () => buildCanvasLayout(panels, durationSec, notes, closeBySec ?? durationSec),
+    [panels, durationSec, notes, closeBySec],
+  );
   const seed = useMemo(() => panels.map((p) => p.id).join('|'), [panels]);
   const chrome = useMemo<BoardElement[]>(
     () => [
@@ -90,8 +171,9 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
           tone: 'muted',
         }),
       ),
+      ...layout.notes.flatMap((n) => noteElements(n, look.skin === 'ink')),
     ],
-    [layout],
+    [layout, look],
   );
   const provider = useMemo(
     () => ({
@@ -143,7 +225,9 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
                     panel={panel}
                     box={box}
                     fps={fps}
+                    frame={frame}
                     totalFrames={durationInFrames}
+                    accent={look.accent}
                   />
                 );
               })}

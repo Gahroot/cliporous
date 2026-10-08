@@ -81,11 +81,14 @@ export const SCENE_CANVAS_LIMITS = {
   /** Largest speaker gap between two scenes that still continues the same canvas. */
   maxGapSec: 24,
   maxSpanSec: 90,
-  /** Gaps at least this long pull back to show the accumulated board before moving on. */
-  overviewGapSec: 5,
   /** Closing pull-back borrowed from the following speaker window when it is long enough. */
   tailSec: 1.5,
   minSpeakerAfterTailSec: 2.5,
+  /**
+   * A phrase becomes a board note only if it starts this long before the canvas ends; a later
+   * one stays a speaker overlay and the board closes before it starts.
+   */
+  noteEndMarginSec: 1.2,
 } as const;
 
 /** One approved scene placed on the canvas. Times are canvas-local seconds. */
@@ -97,6 +100,17 @@ export interface SceneCanvasPanel {
   endSec: number;
 }
 
+/**
+ * A short approved source phrase drawn on the board while it is spoken, so the canvas keeps
+ * moving between panel animations. Times are canvas-local seconds.
+ */
+export interface SceneCanvasNote {
+  id: string;
+  text: string;
+  startSec: number;
+  endSec: number;
+}
+
 // A type alias (not an interface) so Remotion's Record<string, unknown> props constraint holds.
 export type SceneCanvasProps = {
   style: BoardSkin;
@@ -104,4 +118,8 @@ export type SceneCanvasProps = {
   palette: Palette;
   durationSec: number;
   panels: SceneCanvasPanel[];
+  /** Absent on older callers: a canvas with no notes. */
+  notes?: SceneCanvasNote[];
+  /** Canvas-local time the board must be gone by (a speaker overlay starts there). */
+  closeBySec?: number;
 };

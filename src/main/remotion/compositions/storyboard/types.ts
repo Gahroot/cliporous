@@ -103,6 +103,8 @@ export type BoardElement =
       title: string;
       width?: number;
       height?: number;
+      /** Paper text size; defaults to the skin's small label size. */
+      size?: number;
     })
   | (ElementBase & {
       kind: 'counter';

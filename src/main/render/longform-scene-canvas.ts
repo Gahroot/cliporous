@@ -3,12 +3,15 @@
  * scenes in one planning section become one canvas segment that replaces their scene segments
  * and the short speaker windows between them. Approved plans are never rewritten.
  */
+
+import type { PhraseEmphasis } from '@shared/types';
 import { LANDSCAPE_FPS } from '../aspect-ratios';
 import { mapSceneTimes } from '../remotion/compositions/explainer/types';
 import {
   isSceneCanvasKind,
   SCENE_CANVAS_LIMITS,
   SCENE_CANVAS_WEBGL_KINDS,
+  type SceneCanvasNote,
   type SceneCanvasPanel,
 } from '../remotion/compositions/scene-canvas/types';
 import type { LongformSceneSegment } from './longform-scene-timeline';
@@ -149,6 +152,46 @@ export function buildSceneCanvasPanels(group: SceneCanvasGroup): SceneCanvasPane
       endSec: (member.endFrame - group.startFrame) / LANDSCAPE_FPS,
     };
   });
+}
+
+/** Shouted phrases read as handwriting in sentence case; mixed-case phrases are kept as written. */
+function boardCase(text: string): string {
+  const trimmed = text.trim().replace(/\s+/gu, ' ');
+  if (trimmed !== trimmed.toUpperCase() || trimmed === trimmed.toLowerCase()) return trimmed;
+  const lower = trimmed.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
+
+/**
+ * The plan's approved phrases that fall entirely inside a canvas become board notes there
+ * (canvas-local times). The caller removes the same phrases from the speaker overlay pass.
+ */
+export function buildSceneCanvasNotes(
+  group: SceneCanvasGroup,
+  phrases: readonly PhraseEmphasis[],
+): { notes: SceneCanvasNote[]; absorbed: PhraseEmphasis[]; closeBySec?: number } {
+  const duration = group.endTime - group.startTime;
+  const spoken = phrases.filter((p) => p.text.trim().length > 0);
+  const absorbed = spoken
+    .filter(
+      (p) =>
+        p.startTime >= group.startTime &&
+        p.startTime <= group.endTime - SCENE_CANVAS_LIMITS.noteEndMarginSec,
+    )
+    .sort((a, b) => a.startTime - b.startTime || a.text.localeCompare(b.text));
+  const notes = absorbed.map((p, i) => ({
+    id: `note-${i}`,
+    text: boardCase(p.text),
+    startSec: p.startTime - group.startTime,
+    endSec: Math.min(duration, p.endTime - group.startTime),
+  }));
+  // A phrase starting in the canvas tail stays a speaker overlay; the board must be gone by then.
+  const tailStarts = spoken
+    .filter((p) => !absorbed.includes(p) && p.startTime > group.startTime)
+    .filter((p) => p.startTime < group.endTime)
+    .map((p) => p.startTime - group.startTime);
+  if (tailStarts.length === 0) return { notes, absorbed };
+  return { notes, absorbed, closeBySec: Math.min(...tailStarts) };
 }
 
 /** `sceneCanvas` is absent on older plans; absent means enabled. */

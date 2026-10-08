@@ -10,9 +10,17 @@ import {
   panelInView,
   placePanels,
 } from '../remotion/compositions/scene-canvas/geometry';
+import {
+  idleTransform,
+  NO_IDLE,
+  PANEL_IDLE,
+  panelIdleAt,
+  panelSettleSec,
+} from '../remotion/compositions/scene-canvas/idle';
 import { SCENE_CANVAS_LIMITS } from '../remotion/compositions/scene-canvas/types';
 import { cameraAt } from '../remotion/compositions/storyboard/camera';
 import {
+  buildSceneCanvasNotes,
   buildSceneCanvasPanels,
   type CanvasTimelineEntry,
   groupSceneCanvases,
@@ -265,19 +273,125 @@ describe('scene canvas geometry', () => {
         panel.endSec - 0.31,
       ]) {
         const pose = cameraAt(layout.shots, t);
-        expect(pose.x).toBeCloseTo(focus.x, 3);
+        // Framed on the panel, allowing the slow push-in that keeps a rest alive.
+        expect(Math.abs(pose.x - focus.x)).toBeLessThan(50);
         expect(pose.y).toBeCloseTo(focus.y, 3);
-        expect(pose.zoom).toBeCloseTo(focus.zoom, 5);
+        expect(pose.zoom).toBeGreaterThanOrEqual(focus.zoom - 1e-9);
+        expect(pose.zoom).toBeLessThanOrEqual(focus.zoom * 1.11);
       }
     }
   });
 
   it('pulls back to the accumulated story on long gaps and at the end', () => {
-    const mid = cameraAt(layout.shots, 17);
+    const settled = cameraAt(layout.shots, 14.6);
     const before = overviewPose(layout.panels.slice(0, 2));
-    expect(mid.zoom).toBeCloseTo(before.zoom, 5);
+    expect(settled.zoom / before.zoom).toBeGreaterThan(0.999);
+    expect(settled.zoom / before.zoom).toBeLessThan(1.05);
     const end = cameraAt(layout.shots, 30);
     expect(end.zoom).toBeCloseTo(overviewPose(layout.panels).zoom, 5);
+  });
+
+  it('pushes in slowly during a long rest instead of holding still', () => {
+    const early = cameraAt(layout.shots, 0.5);
+    const late = cameraAt(layout.shots, 5.5);
+    expect(late.zoom / early.zoom).toBeGreaterThan(1.05);
+  });
+
+  it('re-frames on each spaced-out beat, alternating sides and tightening', () => {
+    const beats = buildCanvasLayout(
+      [
+        {
+          id: 'a',
+          startSec: 0,
+          endSec: 12,
+          scene: {
+            kind: 'statement',
+            words: [
+              { text: 'One', at: 2 },
+              { text: 'Two', at: 5 },
+              { text: 'Three', at: 8 },
+            ],
+          },
+        },
+      ],
+      12,
+    );
+    const a = beats.panels[0];
+    if (!a) throw new Error('missing box');
+    const focus = focusPose(a);
+    const after = [2, 5, 8].map((beat) => cameraAt(beats.shots, beat + 1));
+    const sides = after.map((p) => Math.sign(p.x - focus.x));
+    expect(sides[0]).not.toBe(0);
+    expect(sides[1]).toBe(-(sides[0] ?? 0));
+    expect(sides[2]).toBe(sides[0]);
+    for (let i = 1; i < after.length; i++)
+      expect(after[i]?.zoom ?? 0).toBeGreaterThan(after[i - 1]?.zoom ?? 0);
+    // Every move stays inside the panel's own window.
+    expect(cameraAt(beats.shots, 11.9).zoom).toBeLessThanOrEqual(focus.zoom * 1.11);
+  });
+
+  it('hands long talking gaps back to the speaker, then returns to the board', () => {
+    expect(layout.breaks).toHaveLength(1);
+    expect(canvasOpacity(layout, 14.9)).toBe(1);
+    expect(canvasOpacity(layout, 18)).toBe(0);
+    expect(canvasOpacity(layout, 21.5)).toBe(1);
+  });
+
+  it('hands a finished board back to the speaker and opens on it late', () => {
+    // Like the real stairs scene: two quick beats, then the speaker keeps talking.
+    const board = buildCanvasLayout(
+      [
+        {
+          id: 'a',
+          startSec: 0,
+          endSec: 8.7,
+          scene: {
+            kind: 'statement',
+            words: [
+              { text: 'Beginner', at: 2 },
+              { text: 'Pro', at: 3.7 },
+            ],
+          },
+        },
+        {
+          id: 'b',
+          startSec: 15,
+          endSec: 21,
+          scene: { kind: 'statement', words: [{ text: 'Next', at: 1 }] },
+        },
+      ],
+      25,
+    );
+    // Speaker until just before the first drawing.
+    expect(canvasOpacity(board, 0.5)).toBe(0);
+    expect(canvasOpacity(board, 1.6)).toBe(1);
+    // Done at 3.7 + 2.2 s: overview, then the speaker instead of a static board.
+    expect(canvasOpacity(board, 7)).toBe(1);
+    expect(canvasOpacity(board, 10)).toBe(0);
+    expect(canvasOpacity(board, 15.5)).toBe(1);
+    // The last panel is done at 18.2 s: close on the story, then stay on the speaker.
+    expect(canvasOpacity(board, 19.5)).toBe(1);
+    expect(canvasOpacity(board, 21.5)).toBe(0);
+  });
+
+  it('waits on the previous panel instead of arriving at an empty frame', () => {
+    const late = buildCanvasLayout(
+      [
+        { id: 'a', startSec: 0, endSec: 6, scene: { kind: 'statement', words: [] } },
+        {
+          id: 'b',
+          startSec: 6.5,
+          endSec: 14,
+          scene: { kind: 'statement', words: [{ text: 'Late', at: 3 }] },
+        },
+      ],
+      14,
+    );
+    const b = late.panels[1];
+    if (!b) throw new Error('missing box');
+    // First drawing at 6.5 + 3 s: arrive about half a second before it, not at 6.15.
+    expect(Math.abs(cameraAt(late.shots, 7.5).x - focusPose(b).x)).toBeGreaterThan(100);
+    expect(Math.abs(cameraAt(late.shots, 9.2).x - focusPose(b).x)).toBeLessThan(40);
   });
 
   it('keeps the camera continuous on screen (fast whips, never a cut)', () => {
@@ -318,5 +432,297 @@ describe('scene canvas geometry', () => {
         10,
       ),
     ).toThrow(/invalid timing/);
+  });
+});
+
+describe('scene canvas board notes', () => {
+  const group = {
+    startFrame: 300,
+    endFrame: 900,
+    startTime: 10,
+    endTime: 30,
+    members: [],
+  };
+
+  it('turns phrases spoken inside the canvas into canvas-local notes', () => {
+    const phrases = [
+      { text: 'SUCH A NOISY PHRASE', startTime: 14, endTime: 15.5 },
+      { text: 'Before the canvas', startTime: 8, endTime: 9 },
+      { text: 'Runs past the end', startTime: 29, endTime: 31 },
+      { text: 'iPhone users', startTime: 12, endTime: 13 },
+    ];
+    const { notes, absorbed } = buildSceneCanvasNotes(group, phrases);
+    expect(notes).toEqual([
+      { id: 'note-0', text: 'iPhone users', startSec: 2, endSec: 3 },
+      { id: 'note-1', text: 'Such a noisy phrase', startSec: 4, endSec: 5.5 },
+    ]);
+    // The exact phrase objects, so the speaker overlay pass can skip them.
+    expect(absorbed).toEqual([phrases[3], phrases[0]]);
+  });
+
+  it('keeps a phrase that starts in the canvas tail on the speaker and closes the board first', () => {
+    const tooLate = { text: 'Last word', startTime: 29, endTime: 29.8 };
+    const { notes, closeBySec } = buildSceneCanvasNotes(group, [tooLate]);
+    expect(notes).toEqual([]);
+    expect(closeBySec).toBe(19);
+    expect(buildSceneCanvasNotes(group, []).closeBySec).toBeUndefined();
+  });
+
+  it('writes a phrase that runs past the canvas end, clamped to the canvas', () => {
+    const late = { text: 'Capable assistant', startTime: 27, endTime: 31 };
+    const { notes, closeBySec } = buildSceneCanvasNotes(group, [late]);
+    expect(notes).toEqual([{ id: 'note-0', text: 'Capable assistant', startSec: 17, endSec: 20 }]);
+    expect(closeBySec).toBeUndefined();
+  });
+
+  it('fades the board out before a tail overlay starts', () => {
+    const board = buildCanvasLayout(
+      [
+        { id: 'a', startSec: 0, endSec: 6, scene: { kind: 'statement', words: [] } },
+        { id: 'b', startSec: 6, endSec: 12, scene: { kind: 'statement', words: [] } },
+      ],
+      12,
+      [],
+      11,
+    );
+    expect(canvasOpacity(board, 10.5)).toBe(1);
+    expect(canvasOpacity(board, 11)).toBe(0);
+  });
+});
+
+describe('scene canvas note layout', () => {
+  const panels = [
+    { id: 'a', startSec: 0, endSec: 6, scene: { kind: 'statement' as const, words: [] } },
+    { id: 'b', startSec: 9, endSec: 15, scene: { kind: 'statement' as const, words: [] } },
+  ];
+  const notes = [
+    { id: 'n0', text: 'Noob to pro', startSec: 2, endSec: 3 },
+    { id: 'n1', text: 'Such a noisy phrase', startSec: 4, endSec: 5 },
+    { id: 'n2', text: 'Hire more', startSec: 7.8, endSec: 8.5 },
+  ];
+  const layout = buildCanvasLayout(panels, 15, notes);
+
+  it('anchors each note beside the panel it is spoken with, never inside a panel', () => {
+    expect(layout.notes.map((n) => n.anchor)).toEqual([0, 0, 1]);
+    for (const n of layout.notes)
+      for (const box of layout.panels) {
+        const overlapX = n.x < box.x + box.width && n.x + n.w > box.x;
+        const overlapY = n.y < box.y + box.height && n.y + n.h > box.y;
+        expect(overlapX && overlapY).toBe(false);
+      }
+  });
+
+  it('cycles through write, circled and sticky looks', () => {
+    expect(layout.notes.map((n) => n.style)).toEqual(['write', 'circled', 'sticky']);
+  });
+
+  it('moves the camera to take in each note as it is written', () => {
+    for (const n of layout.notes.filter((x) => x.anchor === 0)) {
+      const pose = canvasCameraAt(layout, n.at + 1, 'seed');
+      const halfW = 1920 / 2 / pose.zoom;
+      const halfH = 1080 / 2 / pose.zoom;
+      expect(n.x).toBeGreaterThan(pose.x - halfW);
+      expect(n.x + n.w).toBeLessThan(pose.x + halfW);
+      expect(n.y).toBeGreaterThan(pose.y - halfH);
+      expect(n.y + n.h).toBeLessThan(pose.y + halfH);
+    }
+  });
+
+  it('keeps the board up while notes are still being written', () => {
+    // Panel a has no beats, but its notes run to 4 s + read time: no speaker break before then.
+    expect(canvasOpacity(layout, 5.5)).toBe(1);
+  });
+
+  it('never lets a later note cover an earlier one, even with long phrases', () => {
+    const crowded = buildCanvasLayout(
+      [{ id: 'a', startSec: 0, endSec: 40, scene: { kind: 'statement', words: [] } }],
+      40,
+      [
+        'Why this even matters',
+        'Such a noisy phrase',
+        'Actual problem',
+        "What they're actually building toward",
+        'Margin does not move',
+        'Hire a salesperson',
+        'The ceiling is still real',
+        'Copy and paste tier',
+      ].map((text, i) => ({ id: `n${i}`, text, startSec: 1 + i * 4, endSec: 2 + i * 4 })),
+    );
+    const pad = (n: (typeof crowded.notes)[number]) => (n.style === 'circled' ? 40 : 16);
+    for (const [i, a] of crowded.notes.entries())
+      for (const b of crowded.notes.slice(i + 1)) {
+        const pa = pad(a);
+        const pb = pad(b);
+        const overlapX = a.x - pa < b.x + b.w + pb && b.x - pb < a.x + a.w + pa;
+        const overlapY = a.y - pa < b.y + b.h + pb && b.y - pb < a.y + a.h + pa;
+        expect(overlapX && overlapY, `${a.text} / ${b.text}`).toBe(false);
+      }
+  });
+
+  it('finds free space after more than six tiers are occupied', () => {
+    const crowded = buildCanvasLayout(
+      [{ id: 'a', startSec: 0, endSec: 90, scene: { kind: 'statement', words: [] } }],
+      90,
+      Array.from({ length: 40 }, (_, i) => ({
+        id: `crowded-${i}`,
+        text: 'A long phrase that needs space on the board',
+        startSec: 1 + i * 2,
+        endSec: 2 + i * 2,
+      })),
+    );
+    expect(crowded.notes).toHaveLength(40);
+    for (const [i, a] of crowded.notes.entries())
+      for (const b of crowded.notes.slice(i + 1)) {
+        const pa = a.style === 'circled' ? 40 : 16;
+        const pb = b.style === 'circled' ? 40 : 16;
+        const overlapX = a.x - pa < b.x + b.w + pb && b.x - pb < a.x + a.w + pa;
+        const overlapY = a.y - pa < b.y + b.h + pb && b.y - pb < a.y + a.h + pa;
+        expect(overlapX && overlapY, `${a.id} / ${b.id}`).toBe(false);
+      }
+  });
+
+  it('sizes sticky notes to hold their text at a readable size', () => {
+    const sticky = layout.notes.find((n) => n.style === 'sticky');
+    expect(sticky?.size).toBeGreaterThanOrEqual(40);
+    expect(sticky?.h).toBeGreaterThanOrEqual(260);
+  });
+});
+
+describe('speaker breaks inside a panel', () => {
+  const panels = [
+    {
+      id: 'a',
+      startSec: 0,
+      endSec: 20,
+      scene: {
+        kind: 'statement' as const,
+        words: [
+          { text: 'Human', at: 1 },
+          { text: 'bandwidth', at: 1.6 },
+          { text: 'Ceiling', at: 14 },
+        ],
+      },
+    },
+    { id: 'b', startSec: 20, endSec: 26, scene: { kind: 'statement' as const, words: [] } },
+  ];
+
+  it('goes back to the speaker while a finished drawing waits, then returns before the next', () => {
+    const board = buildCanvasLayout(panels, 26);
+    expect(canvasOpacity(board, 2.5)).toBe(1);
+    expect(canvasOpacity(board, 8)).toBe(0);
+    // Back on the board half a second before the next drawing appears.
+    expect(canvasOpacity(board, 13.5)).toBe(1);
+  });
+
+  it('returns for a note written during the wait', () => {
+    const board = buildCanvasLayout(panels, 26, [
+      { id: 'n0', text: 'Hire a salesperson', startSec: 8, endSec: 9 },
+    ]);
+    expect(canvasOpacity(board, 5.5)).toBe(0);
+    expect(canvasOpacity(board, 7.8)).toBe(1);
+    expect(canvasOpacity(board, 9.5)).toBe(1);
+    expect(canvasOpacity(board, 12)).toBe(0);
+  });
+
+  it('returns for an anchored note before the next panel starts drawing', () => {
+    const board = buildCanvasLayout(
+      [
+        {
+          id: 'a',
+          startSec: 0,
+          endSec: 6,
+          scene: { kind: 'statement', words: [{ text: 'First', at: 1 }] },
+        },
+        {
+          id: 'b',
+          startSec: 20,
+          endSec: 30,
+          scene: { kind: 'statement', words: [{ text: 'Later', at: 5 }] },
+        },
+      ],
+      30,
+      [{ id: 'early', text: 'An early note', startSec: 19, endSec: 20 }],
+    );
+    expect(board.notes[0]?.anchor).toBe(1);
+    expect(canvasOpacity(board, 12)).toBe(0);
+    expect(canvasOpacity(board, 18.65)).toBe(1);
+    expect(canvasOpacity(board, 19)).toBe(1);
+  });
+
+  it('keeps the board up when drawings follow each other closely', () => {
+    const busy = buildCanvasLayout(
+      [
+        {
+          id: 'a',
+          startSec: 0,
+          endSec: 8,
+          scene: {
+            kind: 'statement',
+            words: [1, 2.5, 4, 5.5, 7].map((at) => ({ text: 'x', at })),
+          },
+        },
+      ],
+      8,
+    );
+    for (let t = 0.6; t < 7.5; t += 0.1) expect(canvasOpacity(busy, t)).toBe(1);
+  });
+});
+
+describe('settled panel motion', () => {
+  const fps = 30;
+  const scene = {
+    kind: 'statement' as const,
+    words: [
+      { text: 'One', at: 1 },
+      { text: 'Two', at: 3 },
+    ],
+  };
+  const ownSec = 12;
+  const settle = panelSettleSec(scene, ownSec);
+  const last = Math.round(ownSec * fps) - 1;
+  const at = (frame: number) => panelIdleAt(frame / fps, settle, fps, 'panel-a');
+
+  it('settles after the last beat, never past the panel window', () => {
+    expect(settle).toBeCloseTo(3 + PANEL_IDLE.settleAfterLastBeatSec, 6);
+    expect(panelSettleSec({ kind: 'statement', words: [{ text: 'Late', at: 11.5 }] }, 12)).toBe(12);
+  });
+
+  it('is not frozen past the panel end frame, and a repeated frame is identical', () => {
+    const a = at(last + 10);
+    const b = at(last + 25);
+    expect(a).not.toEqual(b);
+    expect(Math.abs(a.y - b.y) + Math.abs(a.rotateY - b.rotateY)).toBeGreaterThan(0.05);
+    expect(at(last + 10)).toEqual(a);
+    expect(idleTransform(at(last + 10))).toBe(idleTransform(a));
+  });
+
+  it('eases in from rest at the settle point with no jump', () => {
+    const settleFrame = Math.ceil(settle * fps);
+    expect(panelIdleAt(settle - 0.5, settle, fps, 'panel-a')).toEqual(NO_IDLE);
+    expect(panelIdleAt(settle, settle, fps, 'panel-a')).toEqual(NO_IDLE);
+    const first = at(settleFrame + 1);
+    expect(Math.abs(first.x) + Math.abs(first.y)).toBeLessThan(0.2);
+    expect(Math.abs(first.rotateY)).toBeLessThan(0.05);
+  });
+
+  it('stays restrained: small float, tilt, orbit and pulse at every frame', () => {
+    for (let frame = 0; frame < 120 * fps; frame += 7) {
+      const idle = at(frame);
+      expect(Math.abs(idle.x)).toBeLessThanOrEqual(PANEL_IDLE.floatPx * 1.2 + 1e-9);
+      expect(Math.abs(idle.y)).toBeLessThanOrEqual(PANEL_IDLE.floatPx * 2 + 1e-9);
+      expect(Math.abs(idle.rotateY)).toBeLessThanOrEqual(PANEL_IDLE.tiltDeg * 2 + 1e-9);
+      expect(Math.abs(idle.orbitDeg)).toBeLessThanOrEqual(PANEL_IDLE.orbitDeg + 1e-9);
+      expect(idle.scale).toBeGreaterThanOrEqual(1);
+      expect(idle.scale).toBeLessThanOrEqual(1 + PANEL_IDLE.pulseScale + 1e-9);
+    }
+  });
+
+  it('pulses once per cadence after settling', () => {
+    const pulseAt = settle + PANEL_IDLE.pulseEverySec;
+    const peak = Math.max(
+      ...Array.from({ length: 20 }, (_, i) => at(Math.round(pulseAt * fps) + i).scale),
+    );
+    expect(peak).toBeGreaterThan(1.005);
+    expect(at(Math.round((pulseAt - 1) * fps)).scale).toBe(1);
   });
 });

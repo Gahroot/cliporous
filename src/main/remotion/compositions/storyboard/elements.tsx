@@ -719,7 +719,7 @@ const NoteEl: React.FC<DrawProps & { el: Extract<BoardElement, { kind: 'note' }>
   const ink = look.skin === 'ink';
   const width = el.width ?? 190;
   const height = el.height ?? 230;
-  const size = ink ? 32 : 24;
+  const size = el.size ?? (ink ? 32 : 24);
   const lines = wrapBoardText(el.title, size, width - 40, !ink);
   return (
     <div

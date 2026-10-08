@@ -56,14 +56,21 @@ export function worldUnitsPerPixel(
 export function cameraRig(
   base: CameraSpec,
   t: number,
-  opts: { focusAt?: number; driftDeg?: number; pushAmount?: number; bobAmount?: number } = {},
+  opts: {
+    focusAt?: number;
+    driftDeg?: number;
+    pushAmount?: number;
+    bobAmount?: number;
+    /** Extra azimuth in degrees (scene-canvas settled turntable); 0 when absent. */
+    orbitDeg?: number;
+  } = {},
 ): CameraSpec {
   const driftDeg = opts.driftDeg ?? 6;
   const pushAmount = opts.pushAmount ?? 0.08;
   const [x, y, z] = base.position;
   const radius = Math.hypot(x, z);
   const baseAz = Math.atan2(x, z);
-  const az = baseAz + ((Math.sin(t * 0.6) * driftDeg) / 180) * Math.PI;
+  const az = baseAz + ((Math.sin(t * 0.6) * driftDeg + (opts.orbitDeg ?? 0)) / 180) * Math.PI;
   let push = 0;
   if (opts.focusAt !== undefined) {
     const d = t - opts.focusAt;

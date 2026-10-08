@@ -41,6 +41,16 @@ vi.mock('electron', () => ({
     isPackaged: true,
     getAppPath: () => process.cwd(),
     getPath: () => env.out,
+    // The shared Remotion browser registers a quit hook.
+    on: () => undefined,
+  },
+}));
+// The logger has no file outside Electron: keep canvas warnings so a silent fallback fails.
+const warnings = vi.hoisted((): string[] => []);
+vi.mock('../../src/main/logger', () => ({
+  log: (level: string, source: string, message: string, data?: unknown): void => {
+    if (level === 'warn' || level === 'error')
+      warnings.push(`${source}: ${message} ${JSON.stringify(data ?? {})}`);
   },
 }));
 
@@ -115,9 +125,11 @@ function slice(
     ...full.plan,
     sourceDuration: duration,
     sourceFingerprint: longformSourceFingerprint(words, duration),
-    // Scene-only proof: phrase/block/card overlays are a separate existing feature.
+    // Phrases stay: inside a canvas they become board notes. Blocks/cards are a separate feature.
     blocks: [],
-    phrases: [],
+    phrases: full.plan.phrases
+      .filter((p) => p.startTime >= start && p.endTime <= end)
+      .map((p) => ({ ...p, startTime: p.startTime - start, endTime: p.endTime - start })),
     cards: [],
     scenes,
     sections,
@@ -239,6 +251,8 @@ it('renders a real saved section as one scene canvas through the production expo
     )}\n`,
   );
   assert.ok(existsSync(outputPath));
+  const canvasFailures = warnings.filter((w) => w.includes('canvas failed'));
+  assert.deepEqual(canvasFailures, []);
   const failed = (reconciliation.sceneResults ?? []).filter((s) => s.status === 'failed');
   assert.equal(failed.length, 0, JSON.stringify(failed));
 });

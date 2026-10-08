@@ -11,7 +11,7 @@ import {
 import { getPaletteById, type Palette } from '@shared/palettes';
 import { resolveStoryboardPalette } from '@shared/storyboard-palette';
 import { normalizeStoryboardStyle, type StoryboardStyle } from '@shared/storyboards';
-import type { LongformRenderReconciliation, WordTimestamp } from '@shared/types';
+import type { LongformRenderReconciliation, PhraseEmphasis, WordTimestamp } from '@shared/types';
 import { validateSceneFirstLongformPlan } from '../ai/longform-scene-contract';
 import { LANDSCAPE_FPS, LANDSCAPE_HEIGHT, LANDSCAPE_WIDTH } from '../aspect-ratios';
 import { getVideoMetadata, type QualityParams } from '../ffmpeg';
@@ -23,12 +23,14 @@ import {
   mapSceneTimes,
   type SceneCue,
 } from '../remotion/compositions/explainer/types';
+import type { SceneCanvasNote } from '../remotion/compositions/scene-canvas/types';
 import {
   applyPhraseOverlays,
   cleanupPhraseOverlayTempFiles,
 } from './features/phrase-emphasis.feature';
 import { concatLongformSceneSegments, encodeLongformSceneSegment } from './longform-encode';
 import {
+  buildSceneCanvasNotes,
   buildSceneCanvasPanels,
   groupSceneCanvases,
   type SceneCanvasGroup,
@@ -85,6 +87,8 @@ export function buildLongformSceneProps(
 async function renderSceneCanvasSegment(
   opts: Source & {
     group: SceneCanvasGroup;
+    notes: SceneCanvasNote[];
+    closeBySec?: number | undefined;
     outputPath: string;
     workDirectory: string;
     qualityParams?: QualityParams | undefined;
@@ -107,6 +111,8 @@ async function renderSceneCanvasSegment(
         palette: opts.storyboardPalette,
         durationSec: frameCount / LANDSCAPE_FPS,
         panels: buildSceneCanvasPanels(group),
+        notes: opts.notes,
+        ...(opts.closeBySec === undefined ? {} : { closeBySec: opts.closeBySec }),
       },
       durationSec: frameCount / LANDSCAPE_FPS,
       fps: LANDSCAPE_FPS,
@@ -247,6 +253,7 @@ export async function renderSceneFirstLongform(
   const sceneResults: LongformSceneRenderResult[] = [...timeline.omitted];
   const cues: SceneCue[] = [];
   const segments: { path: string; frameCount: number }[] = [];
+  const phrasesOnCanvas = new Set<PhraseEmphasis>();
   const source: Source = {
     sourceVideoPath: opts.sourceVideoPath,
     sourceWidth: meta.width,
@@ -309,16 +316,24 @@ export async function renderSceneFirstLongform(
             `Drawing the scene canvas (${group.members.length} scenes)…`,
             ((group.startFrame + fraction * span) / timeline.totalFrames) * 0.9,
           );
+        // Approved phrases spoken inside the canvas are drawn on the board instead of overlaid.
+        const { notes, absorbed, closeBySec } = buildSceneCanvasNotes(
+          group,
+          validated.value.plan.phrases,
+        );
         try {
           await renderSceneCanvasSegment({
             ...source,
             group,
+            notes,
+            closeBySec,
             outputPath,
             workDirectory,
             qualityParams: opts.qualityParams,
             onProgress: progress,
           });
           segments.push({ path: outputPath, frameCount: span });
+          for (const phrase of absorbed) phrasesOnCanvas.add(phrase);
           for (const member of group.members) {
             sceneResults.push(sceneResult(member, 'rendered'));
             if (opts.sceneSfxEnabled !== false) cues.push(...compiledCues(member));
@@ -327,6 +342,7 @@ export async function renderSceneFirstLongform(
             scenes: group.members.map((m) => m.compiled.placement.id),
             startTime: group.startTime,
             endTime: group.endTime,
+            notes: notes.length,
           });
         } catch (error) {
           opts.signal?.throwIfAborted();
@@ -380,11 +396,16 @@ export async function renderSceneFirstLongform(
     opts.signal?.throwIfAborted();
     // Phrase text over the full-screen speaker only. A scene that fell back to the speaker
     // keeps its window phrase-free: the approved plan never placed text there.
-    const phrasePartition = partitionLongformPhrases(
+    // Phrases already written on a rendered canvas are not overlaid a second time.
+    const fullPartition = partitionLongformPhrases(
       validated.value.plan.phrases,
       validated.value.plan.scenes,
       meta.duration,
     );
+    const phrasePartition = {
+      kept: fullPartition.kept.filter((phrase) => !phrasesOnCanvas.has(phrase)),
+      dropped: fullPartition.dropped.filter(({ phrase }) => !phrasesOnCanvas.has(phrase)),
+    };
     for (const { phrase, reason } of phrasePartition.dropped)
       log('warn', 'longform-phrases', 'phrase overlay skipped at export', {
         text: phrase.text.slice(0, 80),
@@ -393,7 +414,10 @@ export async function renderSceneFirstLongform(
         reason,
       });
     let visualPath = finalPath;
-    let phraseStats = { rendered: 0, dropped: phrasePartition.dropped.length };
+    let phraseStats = {
+      rendered: phrasesOnCanvas.size,
+      dropped: phrasePartition.dropped.length,
+    };
     if (phrasePartition.kept.length > 0) {
       opts.onProgress?.('Adding phrase overlays…', 0.95);
       const phraseTarget = join(workDirectory, 'phrases.mp4');
@@ -410,7 +434,7 @@ export async function renderSceneFirstLongform(
       cleanupPhraseOverlayTempFiles(result.tempFiles);
       visualPath = result.outputPath;
       phraseStats = {
-        rendered: result.stats.rendered,
+        rendered: phrasesOnCanvas.size + result.stats.rendered,
         dropped: phraseStats.dropped + result.stats.dropped,
       };
       opts.signal?.throwIfAborted();
@@ -441,7 +465,7 @@ export async function renderSceneFirstLongform(
       outputPath: opts.outputPath,
       phrases: {
         planned: validated.value.plan.phrases.length,
-        eligible: phrasePartition.kept.length,
+        eligible: phrasePartition.kept.length + phrasesOnCanvas.size,
         rendered: phraseStats.rendered,
         dropped: phraseStats.dropped,
       },
