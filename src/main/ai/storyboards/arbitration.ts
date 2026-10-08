@@ -1,3 +1,8 @@
+import {
+  EDIT_CADENCE_PRESETS,
+  type EditCadence,
+  resolveEditCadence,
+} from '../../../shared/edit-cadence';
 import type { LongformScenePlacement } from '../../../shared/longform-scenes';
 import { STORYBOARD_LIMITS as L, type StoryboardDiagnostic } from '../../../shared/storyboards';
 
@@ -17,18 +22,22 @@ const durationSec = (s: LongformScenePlacement) => (lastFrame(s) - firstFrame(s)
 export function storyboardPolicyProblem(
   scenes: readonly LongformScenePlacement[],
   duration: number,
+  editCadence?: EditCadence,
 ): string | null {
+  const policy = EDIT_CADENCE_PRESETS[resolveEditCadence(editCadence)];
   const boards = scenes.filter((s) => s.kind === 'storyboard' && !s.omitted).sort(order);
-  if (boards.length > (duration <= L.longSourceSec ? 1 : L.maxBoards))
+  if (boards.length > (duration <= L.longSourceSec ? policy.shortBoards : L.maxBoards))
     return 'Storyboard count budget exceeded.';
   if (
     duration > L.longSourceSec &&
-    boards.reduce((n, s) => n + durationSec(s), 0) > duration * L.maxCoverage + 1e-6
+    boards.reduce((n, s) => n + durationSec(s), 0) > duration * policy.coverage + 1e-6
   )
     return 'Storyboard source coverage budget exceeded.';
   for (let i = 1; i < boards.length; i++) {
-    if (firstFrame(boards[i]) - lastFrame(boards[i - 1]) < L.minSeparationSec * 30)
-      return 'Storyboards require ten seconds of separation.';
+    if (firstFrame(boards[i]) - lastFrame(boards[i - 1]) < policy.separation * 30)
+      return policy.separation === 10
+        ? 'Storyboards require ten seconds of separation.'
+        : `Storyboards require ${policy.separation} seconds of separation.`;
   }
   return null;
 }
@@ -46,6 +55,7 @@ export function arbitrateStoryboards(input: {
   proposals: readonly LongformScenePlacement[];
   protectedScenes: readonly LongformScenePlacement[];
   duration: number;
+  editCadence?: EditCadence;
 }): StoryboardArbitration {
   let ordinary = [...input.ordinary];
   const accepted = [...input.protectedScenes];
@@ -78,7 +88,11 @@ export function arbitrateStoryboards(input: {
       reject(board, 'Partial overlap with a complete explanation; ordinary plan retained.');
       continue;
     }
-    const problem = storyboardPolicyProblem([...accepted, board], input.duration);
+    const problem = storyboardPolicyProblem(
+      [...accepted, board],
+      input.duration,
+      input.editCadence,
+    );
     if (problem) {
       reject(board, problem);
       continue;

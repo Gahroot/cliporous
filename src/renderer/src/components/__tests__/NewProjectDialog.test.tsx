@@ -50,7 +50,10 @@ describe('NewProjectDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: /choose video/i }));
     await screen.findByText('/source.mp4');
     fireEvent.change(screen.getByLabelText('Project name'), { target: { value: 'My draft' } });
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument();
     await chooseMode('Long-form edit (16:9)');
+    expect(screen.getByRole('radio', { name: /Selective/ })).toBeChecked();
+    fireEvent.click(screen.getByRole('radio', { name: /Continuous/ }));
     fireEvent.click(screen.getByRole('button', { name: /^cancel$/i }));
     expect(callbacks.onOpenChange).toHaveBeenCalledWith(false);
     expect(callbacks.onCreate).not.toHaveBeenCalled();
@@ -64,6 +67,7 @@ describe('NewProjectDialog', () => {
     expect(callbacks.onCreate).toHaveBeenCalledWith(
       expect.objectContaining({
         name: 'My draft',
+        editCadence: 'continuous',
         source: { kind: 'file', value: '/source.mp4' },
         outputMode: 'longform',
       }),

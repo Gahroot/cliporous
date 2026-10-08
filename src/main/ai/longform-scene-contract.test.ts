@@ -74,6 +74,22 @@ function fixture(): {
 }
 
 describe('saved scene plan trust boundary', () => {
+  it.each([
+    'selective',
+    'balanced',
+    'continuous',
+  ] as const)('accepts additive %s metadata without changing approved windows', (editCadence) => {
+    const { plan, words, duration } = fixture();
+    plan.editCadence = editCadence;
+    const result = validateSceneFirstLongformPlan(plan, words, duration);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.value.plan.scenes).toEqual(plan.scenes);
+  });
+  it('rejects unknown applied cadence rather than silently defaulting', () => {
+    const { plan, words, duration } = fixture();
+    Reflect.set(plan, 'editCadence', 'unknown');
+    expect(validateSceneFirstLongformPlan(plan, words, duration).ok).toBe(false);
+  });
   it('reconstructs a serialized approved story without shortening its full window', () => {
     const { plan, words, duration } = fixture();
     const result = validateSceneFirstLongformPlan(

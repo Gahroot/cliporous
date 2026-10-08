@@ -137,6 +137,29 @@ beforeEach(() => {
 });
 
 describe('scene-first long-form coordinator at the model boundary', () => {
+  it.each([
+    'balanced',
+    'continuous',
+  ] as const)('snapshots %s across all existing requests, including review, without extra calls', async (editCadence) => {
+    const input = request();
+    const plan = await generateSceneFirstLongformPlan({ ...input, editCadence });
+    expect(plan.editCadence).toBe(editCadence);
+    expect(generateContent).toHaveBeenCalledTimes(6);
+    expect(generateBoardContent).toHaveBeenCalledTimes(3);
+    expect(generatePhraseContent).toHaveBeenCalledTimes(1);
+    for (const mock of [generateContent, generateBoardContent, generatePhraseContent]) {
+      for (const [call] of mock.mock.calls)
+        expect(call.contents).toContain(`Long-form edit cadence: ${editCadence}`);
+    }
+    verifyReconstruction(plan, input);
+  });
+  it('rejects unknown direct-planner cadence before any provider work', async () => {
+    const input = request();
+    Reflect.set(input, 'editCadence', 'unknown');
+    await expect(generateSceneFirstLongformPlan(input)).rejects.toThrow('Invalid edit cadence');
+    expect(generateContent).not.toHaveBeenCalled();
+    expect(generatePhraseContent).not.toHaveBeenCalled();
+  });
   it('stores reviewed raw GLOBAL indices, extras and full windows, never cooked scenes or legacy fillers', async () => {
     const input = request();
     generateContent.mockImplementation(async ({ contents }) => {

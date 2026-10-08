@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { rmdir, stat, unlink } from 'node:fs/promises';
 import { dirname, isAbsolute } from 'node:path';
+import { isEditCadence } from '@shared/edit-cadence';
 import { Ch } from '@shared/ipc-channels';
 import { findLongformPalette, validLongformPalettes } from '@shared/longform-palette';
 import {
@@ -43,7 +44,13 @@ interface LongformOwner {
 
 type GenerationOptions = Pick<
   LongformGenerationRequest,
-  'requestId' | 'mode' | 'storyboardStyle' | 'previousPlan' | 'preservedSceneIds' | 'sectionIds'
+  | 'requestId'
+  | 'mode'
+  | 'storyboardStyle'
+  | 'editCadence'
+  | 'previousPlan'
+  | 'preservedSceneIds'
+  | 'sectionIds'
 >;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -136,6 +143,7 @@ export function registerLongformHandlers(): void {
           (options.mode !== undefined &&
             options.mode !== 'legacy' &&
             options.mode !== 'scene-first') ||
+          (options.editCadence !== undefined && !isEditCadence(options.editCadence)) ||
           (options.storyboardStyle !== undefined && !isStoryboardStyle(options.storyboardStyle)) ||
           (options.requestId !== undefined && !validRequestId(options.requestId)) ||
           (options.preservedSceneIds !== undefined &&
@@ -198,6 +206,7 @@ export function registerLongformHandlers(): void {
                   requestId: request.id,
                   mode: 'scene-first',
                   storyboardStyle: options.storyboardStyle,
+                  editCadence: options.editCadence,
                   previousPlan,
                   preservedSceneIds: options.preservedSceneIds,
                   sectionIds: options.sectionIds,

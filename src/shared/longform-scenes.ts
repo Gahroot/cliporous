@@ -1,3 +1,4 @@
+import { type EditCadence, isEditCadence } from './edit-cadence';
 import type { Palette } from './palettes';
 import { isStoryboardStyle, STORYBOARD_LIMITS, type StoryboardStyle } from './storyboards';
 import type { LongformEditPlan, PhraseEmphasis, WordTimestamp } from './types';
@@ -54,6 +55,7 @@ export interface LongformScenePlanFields {
   parserVersion: 1 | 2 | 3;
   /** Required for parsers 2/3; never inserted into historical parser-1 plans. */
   storyboardStyle?: StoryboardStyle;
+  editCadence?: EditCadence;
   /**
    * Export arranges runs of consecutive approved scenes on one moving scene canvas.
    * Absent means on, so existing plans gain it without a migration; `false` keeps separate cuts.
@@ -75,6 +77,7 @@ export interface LongformGenerationRequest {
   feedback?: string[];
   mode?: 'scene-first' | 'legacy';
   storyboardStyle?: StoryboardStyle;
+  editCadence?: EditCadence;
   previousPlan?: LongformEditPlan;
   preservedSceneIds?: string[];
   sectionIds?: string[];
@@ -336,6 +339,8 @@ export function sceneFirstPlanProblem(value: unknown): string | null {
     !isStoryboardStyle(value.storyboardStyle)
   )
     return 'Invalid storyboard style. Review a new draft; the saved version is preserved.';
+  if (value.editCadence !== undefined && !isEditCadence(value.editCadence))
+    return 'Invalid edit cadence. Regenerate a new draft; the saved version is preserved.';
   if (value.sceneCanvas !== undefined && typeof value.sceneCanvas !== 'boolean')
     return 'Invalid scene canvas setting. Review a new draft; the saved version is preserved.';
   if (

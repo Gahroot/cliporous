@@ -1,4 +1,5 @@
 import { stripCredentialFields } from '@shared/credential-safety';
+import { DEFAULT_EDIT_CADENCE, isEditCadence } from '@shared/edit-cadence';
 import { createStructuredError, isStructuredError } from '@shared/errors';
 import type { CreatorJob } from '@shared/jobs';
 import {
@@ -463,6 +464,9 @@ export function restoreProject(
   const project = migrateProjectData(JSON.parse(data) as unknown, filePath);
   const sources = project.sources.map((source) => ({
     ...source,
+    longformEditCadence: isEditCadence(source.longformEditCadence)
+      ? source.longformEditCadence
+      : DEFAULT_EDIT_CADENCE,
     mediaStatus:
       source.origin === 'file' && source.path ? ('checking' as const) : ('online' as const),
   }));

@@ -64,7 +64,7 @@ export function validateSceneFirstLongformPlan(
       };
     }
   }
-  const boardProblem = storyboardPolicyProblem(input.scenes, duration);
+  const boardProblem = storyboardPolicyProblem(input.scenes, duration, input.editCadence);
   if (boardProblem) return { ok: false, error: boardProblem };
   const schedule = scheduleLongformScenes(input.scenes, duration);
   if (schedule.rejected.length > 0) {

@@ -79,6 +79,28 @@ afterEach(() => {
 });
 
 describe('long-form request ownership and appearance', () => {
+  it('snapshots source cadence and rejects a mismatched result', async () => {
+    const selected: SourceVideo = { ...source, longformEditCadence: 'continuous' };
+    useStore.setState({ sources: [selected] });
+    const pending = deferred<LongformEditPlan>();
+    window.api.generateLongformEditPlan = vi.fn(() => pending.promise);
+    const { result } = renderHook(useLongformPipeline);
+    let done: Promise<void> = Promise.resolve();
+    act(() => {
+      done = result.current.processLongform(selected);
+    });
+    await waitFor(() => expect(window.api.generateLongformEditPlan).toHaveBeenCalled());
+    act(() => useStore.getState().updateSource(source.id, { longformEditCadence: 'balanced' }));
+    expect(vi.mocked(window.api.generateLongformEditPlan).mock.calls[0]?.[4]?.editCadence).toBe(
+      'continuous',
+    );
+    await act(async () => {
+      pending.resolve(plan());
+      await done;
+    });
+    expect(useStore.getState().longformPlans[source.id]).toBeUndefined();
+    expect(useStore.getState().pipeline.stage).toBe('error');
+  });
   it.each([
     'file',
     'youtube',

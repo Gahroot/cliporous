@@ -14,7 +14,12 @@
 
 import { GoogleGenAI } from '@google/genai';
 import {
-  longformRangesOverlap,
+  EDIT_CADENCE_PRESETS,
+  type EditCadence,
+  editCadenceGuidance,
+  resolveEditCadence,
+} from '@shared/edit-cadence';
+import {
   MAX_LONGFORM_BLOCK_SECONDS,
   resolveLongformPlanOverlaps,
 } from '@shared/longform-plan-timing';
@@ -760,10 +765,6 @@ export function diversifyBlocks(blocks: BlockPlacement[]): BlockPlacement[] {
 // Deterministic pacing + opening variety
 // ---------------------------------------------------------------------------
 
-/** Maximum speaker-only gap in the first minute before a transcript phrase is added. */
-const INTRO_MAX_UNEDITED_SECONDS = 8;
-/** Maximum speaker-only gap after the first minute. */
-const BODY_MAX_UNEDITED_SECONDS = 14;
 /** Evidence remains one ingredient, never a long uninterrupted sequence. */
 export const MAX_CONSECUTIVE_EVIDENCE_CARDS = 2;
 
@@ -778,10 +779,16 @@ function buildTranscriptPhrase(
   rangeEnd: number,
 ): PhraseEmphasis | null {
   if (rangeEnd <= rangeStart) return null;
-  const anchorIndex = words.findIndex(
-    (word) => word.start >= rangeStart && word.start < rangeEnd && word.end > word.start,
-  );
-  if (anchorIndex < 0) return null;
+  let low = 0;
+  let high = words.length;
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2);
+    if (words[middle].start < rangeStart) low = middle + 1;
+    else high = middle;
+  }
+  while (low < words.length && words[low].end <= words[low].start) low++;
+  const anchorIndex = low;
+  if (!words[anchorIndex] || words[anchorIndex].start >= rangeEnd) return null;
 
   const phraseWords: WordTimestamp[] = [];
   for (let index = anchorIndex; index < words.length && phraseWords.length < 5; index++) {
@@ -817,23 +824,28 @@ export function addPacingPhraseFallbacks(
   blocks: readonly TimedBeat[],
   words: readonly WordTimestamp[],
   videoDuration: number,
+  editCadence?: EditCadence,
 ): PhraseEmphasis[] {
+  const policy = EDIT_CADENCE_PRESETS[resolveEditCadence(editCadence)];
   const fallbackPhrases: PhraseEmphasis[] = [];
   const occupied: TimedBeat[] = [...blocks, ...phrases].sort(
     (left, right) => left.startTime - right.startTime || left.endTime - right.endTime,
   );
   let cursor = 0;
+  let occupiedIndex = 0;
 
-  while (cursor < videoDuration) {
-    const covering = occupied.find((beat) => beat.startTime <= cursor && beat.endTime > cursor);
+  while (cursor < videoDuration && phrases.length + fallbackPhrases.length < 2_000) {
+    while (occupiedIndex < occupied.length && occupied[occupiedIndex].endTime <= cursor)
+      occupiedIndex++;
+    const current = occupied[occupiedIndex];
+    const covering = current && current.startTime <= cursor ? current : undefined;
     if (covering) {
       cursor = covering.endTime;
       continue;
     }
 
-    const next = occupied.find((beat) => beat.startTime > cursor);
-    const maxGap =
-      cursor < INTRO_PHRASE_SECONDS ? INTRO_MAX_UNEDITED_SECONDS : BODY_MAX_UNEDITED_SECONDS;
+    const next = occupied[occupiedIndex];
+    const maxGap = cursor < INTRO_PHRASE_SECONDS ? policy.openingGap : policy.bodyGap;
     if (next && next.startTime - cursor <= maxGap) {
       cursor = Math.max(cursor + 0.05, next.endTime);
       continue;
@@ -842,12 +854,12 @@ export function addPacingPhraseFallbacks(
     const target = cursor + maxGap;
     const searchEnd = Math.min(videoDuration, target + 4, next?.startTime ?? videoDuration);
     const candidate = buildTranscriptPhrase(words, Math.max(cursor, target - 1), searchEnd);
-    if (candidate && !occupied.some((beat) => longformRangesOverlap(beat, candidate))) {
+    if (
+      candidate &&
+      (!next || Math.ceil(candidate.endTime * 30 - 1e-6) <= Math.floor(next.startTime * 30 + 1e-6))
+    ) {
       fallbackPhrases.push(candidate);
-      occupied.push(candidate);
-      occupied.sort(
-        (left, right) => left.startTime - right.startTime || left.endTime - right.endTime,
-      );
+      // Candidates are chronological; moving the cursor replaces inserting/sorting each one.
       cursor = candidate.endTime;
     } else {
       cursor = target;
@@ -1058,6 +1070,7 @@ export interface GenerateLongformEditPlanOptions {
 }
 
 export interface LongformPhraseGenerationOptions {
+  editCadence?: EditCadence;
   apiKey: string;
   words: readonly WordTimestamp[];
   videoDuration: number;
@@ -1107,7 +1120,7 @@ export async function generateLongformPhrases(
     );
     if (windowWords.length === 0) continue;
     attemptedWindows += 1;
-    const prompt = `${LONGFORM_PHRASES_PROMPT_MARKER}\nOnly PHRASE EMPHASIS is needed for this pass. Return "blocks": [] — animated graphics for this video are planned separately.\n${buildLongformPrompt(
+    const prompt = `${LONGFORM_PHRASES_PROMPT_MARKER}\n${editCadenceGuidance(options.editCadence)}\nOnly PHRASE EMPHASIS is needed for this pass. Return "blocks": [] — animated graphics for this video are planned separately.\n${buildLongformPrompt(
       formatWindow(windowWords),
       windowEnd - windowStart,
       windowStart,

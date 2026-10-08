@@ -16,6 +16,7 @@
  * guessed at.
  */
 
+import { type EditCadence, editCadenceGuidance } from '@shared/edit-cadence';
 import { log } from '../logger';
 import { STAMP_CONTACT_SECONDS } from '../remotion/compositions/explainer/editorial/types';
 import { isCausalHeroProp } from '../remotion/compositions/explainer/hero-catalog';
@@ -115,6 +116,7 @@ export interface PlanBounds {
 
 /** Prompt-only context; all indices, including nested beats, remain source-global. */
 export interface LongformSectionContext {
+  editCadence?: EditCadence;
   startWord: number;
   endWord: number;
   contextStartWord: number;
@@ -260,6 +262,7 @@ ${kinds}
 ${editorialPrompt(shortlist.kinds.map((kind) => kind.kind))}
 Layouts (pick the best one per scene from that scene's allowed list):
 ${layoutGuide(aspect, contentLed, longform)}
+${longform ? editCadenceGuidance(section?.editCadence) : ''}
 ${
   longform
     ? `Long-form scene-first contract: include "presentation":"speaker-side"|"speaker-pip"|"full-frame". Speaker video is the backbone; personal passages or unsupported claims can have no scenes. No legacy blocks, cards, phrases or quote fillers.${

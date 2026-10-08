@@ -26,10 +26,32 @@ vi.mock('@google/genai', () => ({
 import { longformLayersMayOverlap, longformRangesOverlap } from '@shared/longform-plan-timing';
 import type { BlockPlacement } from '@shared/types';
 import {
+  addPacingPhraseFallbacks,
   diversifyBlocks,
   generateLongformEditPlan,
   MAX_CONSECUTIVE_EVIDENCE_CARDS,
 } from './longform-edit-plan';
+
+it('fills continuous speech progressively, defaults exactly to Selective, and respects caps/silence', () => {
+  const words = Array.from({ length: 600 }, (_, i) => ({
+    text: `word${i}`,
+    start: i * 0.3,
+    end: i * 0.3 + 0.25,
+  }));
+  const selective = addPacingPhraseFallbacks([], [], words, 180, 'selective');
+  const balanced = addPacingPhraseFallbacks([], [], words, 180, 'balanced');
+  const continuous = addPacingPhraseFallbacks([], [], words, 180, 'continuous');
+  expect(addPacingPhraseFallbacks([], [], words, 180)).toEqual(selective);
+  expect(balanced.length).toBeGreaterThan(selective.length);
+  expect(continuous.length).toBeGreaterThan(balanced.length);
+  expect(addPacingPhraseFallbacks([], [], [], 180, 'continuous')).toEqual([]);
+  const authored = Array.from({ length: 2000 }, (_, i) => ({
+    text: 'spoken phrase',
+    startTime: i,
+    endTime: i + 0.5,
+  }));
+  expect(addPacingPhraseFallbacks(authored, [], words, 3600, 'continuous')).toHaveLength(2000);
+});
 
 /** Minimal valid bar-chart block for variety-pass tests. */
 function bar(startTime: number): BlockPlacement {

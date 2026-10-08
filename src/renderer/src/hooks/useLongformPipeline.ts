@@ -1,3 +1,4 @@
+import { resolveEditCadence } from '@shared/edit-cadence';
 import { isSceneFirstLongformPlan, sceneFirstPlanProblem } from '@shared/longform-scenes';
 import { useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
@@ -57,6 +58,7 @@ export function useLongformPipeline(): {
       if (requestIdRef.current) return;
       const initial = useStore.getState();
       const projectId = initial.currentProject.id;
+      const editCadence = resolveEditCadence(source.longformEditCadence);
       cancelledRef.current = false;
       const requestId = crypto.randomUUID();
       requestIdRef.current = requestId;
@@ -245,7 +247,12 @@ export function useLongformPipeline(): {
             transcription.words,
             duration,
             undefined,
-            { requestId, mode: 'scene-first', storyboardStyle: appearance.storyboardStyle },
+            {
+              requestId,
+              mode: 'scene-first',
+              storyboardStyle: appearance.storyboardStyle,
+              editCadence,
+            },
           );
         } finally {
           unsubE();
@@ -258,6 +265,13 @@ export function useLongformPipeline(): {
         if (isScenePlanForReview(plan)) {
           const problem = sceneFirstPlanProblem(plan);
           if (problem) throw new Error(problem);
+          if (
+            isSceneFirstLongformPlan(plan) &&
+            resolveEditCadence(plan.editCadence) !== editCadence
+          )
+            throw new Error(
+              'The generated edit cadence does not match this request. Generate a new draft.',
+            );
           if (
             isSceneFirstLongformPlan(plan) &&
             (plan.parserVersion === 2 || plan.parserVersion === 3) &&

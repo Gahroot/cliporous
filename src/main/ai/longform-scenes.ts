@@ -1,3 +1,4 @@
+import { type EditCadence, isEditCadence, resolveEditCadence } from '@shared/edit-cadence';
 import {
   isLongformPresentation,
   isLongformSourceSpec,
@@ -58,6 +59,7 @@ function logDroppedStoryboard(board: LongformScenePlacement, code: string, reaso
 }
 
 interface PhraseOverlayInput {
+  editCadence?: EditCadence;
   words: readonly WordTimestamp[];
   duration: number;
   scenes: readonly LongformScenePlacement[];
@@ -82,9 +84,13 @@ export function buildLongformPhraseOverlays(input: PhraseOverlayInput): PhraseEm
     input.duration,
   ).kept;
   const sceneBeats = input.scenes.filter((scene) => !scene.omitted);
-  const paced = addPacingPhraseFallbacks(authored, sceneBeats, input.words, input.duration).filter(
-    (phrase) => authored.includes(phrase) || inAttempted(phrase),
-  );
+  const paced = addPacingPhraseFallbacks(
+    authored,
+    sceneBeats,
+    input.words,
+    input.duration,
+    input.editCadence,
+  ).filter((phrase) => authored.includes(phrase) || inAttempted(phrase));
   return partitionLongformPhrases(paced, input.scenes, input.duration).kept;
 }
 
@@ -114,6 +120,9 @@ export async function generateSceneFirstLongformPlan(
   if (options.mode === 'legacy') throw new Error('Use the legacy generator for legacy plans.');
   if (options.storyboardStyle !== undefined && !isStoryboardStyle(options.storyboardStyle))
     throw new Error('Invalid storyboard style.');
+  if (options.editCadence !== undefined && !isEditCadence(options.editCadence))
+    throw new Error('Invalid edit cadence.');
+  const editCadence = resolveEditCadence(options.editCadence);
   const sourceFingerprint = longformSourceFingerprint(words, videoDuration);
   const windows = partitionLongformSections(words);
   if (windows.length > LONGFORM_SCENE_LIMITS.maxSections)
@@ -204,6 +213,7 @@ export async function generateSceneFirstLongformPlan(
         ranges: attemptedRanges,
         feedback: options.feedback,
         signal: phraseSignal,
+        editCadence,
       });
     } catch (error) {
       if (!phraseSignal.aborted)
@@ -231,7 +241,7 @@ export async function generateSceneFirstLongformPlan(
           {
             profile: LONGFORM_PLANNER_PROFILE,
             aspect: '16:9',
-            longformSection: { ...section, feedback: options.feedback },
+            longformSection: { ...section, feedback: options.feedback, editCadence },
             signal,
             recentUse: recent,
             onDiagnostic: (event) => {
@@ -308,6 +318,7 @@ export async function generateSceneFirstLongformPlan(
           duration: videoDuration,
           section,
           style: storyboardStyle,
+          editCadence,
           feedback: options.feedback,
           occupied: placements.map(({ startWord, endWord }) => ({ startWord, endWord })),
           signal,
@@ -444,8 +455,11 @@ export async function generateSceneFirstLongformPlan(
       occupiedIds.add(scene.id);
       candidates.push(scene);
     }
-    const protectedProblem = storyboardPolicyProblem(retained, videoDuration);
-    if (protectedProblem) throw new Error(protectedProblem);
+    const protectedProblem = storyboardPolicyProblem(retained, videoDuration, editCadence);
+    if (protectedProblem)
+      throw new Error(
+        `${protectedProblem} Preserved storyboards exceed the ${editCadence} cadence budget. Keep the previous cadence or explicitly unlock those scenes before regenerating. Your saved plan has not changed.`,
+      );
     const scheduled = scheduleLongformScenes(
       candidates.filter((s) => s.kind !== 'storyboard'),
       videoDuration,
@@ -460,6 +474,7 @@ export async function generateSceneFirstLongformPlan(
       proposals: candidates.filter((s) => s.kind === 'storyboard'),
       protectedScenes: retained,
       duration: videoDuration,
+      editCadence,
     });
     for (const diagnostic of arbitration.diagnostics) {
       const candidate = candidates.find((s) => s.id === diagnostic.sourceId);
@@ -497,6 +512,7 @@ export async function generateSceneFirstLongformPlan(
       attemptedRanges,
       previous: previous?.phrases ?? [],
       generated: phraseResult.phrases,
+      editCadence,
     });
     const phraseNote = phraseResult.failedWindows
       ? ` ${phraseResult.failedWindows} of ${phraseResult.attemptedWindows} phrase windows failed.`
@@ -506,6 +522,7 @@ export async function generateSceneFirstLongformPlan(
       mode: 'scene-first',
       parserVersion: 3,
       storyboardStyle,
+      editCadence,
       sourceFingerprint,
       sourceDuration: videoDuration,
       scenes,

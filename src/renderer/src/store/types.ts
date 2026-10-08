@@ -1,4 +1,5 @@
 import type { TokenUsageAggregate, TokenUsageEvent } from '@shared/ai-usage';
+import type { EditCadence } from '@shared/edit-cadence';
 import type { StructuredError, StructuredErrorInput } from '@shared/errors';
 import type { CreatorJob } from '@shared/jobs';
 import type { Palette } from '@shared/palettes';
@@ -104,6 +105,8 @@ export interface TemplateLayout {
 export type MediaAvailability = 'checking' | 'online' | 'offline';
 
 export interface SourceVideo {
+  /** Requested cadence for the next long-form generation, not the accepted plan. */
+  longformEditCadence?: EditCadence;
   id: string;
   path: string;
   name: string;

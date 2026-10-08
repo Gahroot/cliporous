@@ -67,6 +67,87 @@ function savedBoard(): {
 
 describe('raw storyboard to approved production props', () => {
   it.each([
+    'balanced',
+    'continuous',
+  ] as const)('exports multiple short-source boards only under applied %s budgets', (editCadence) => {
+    const { fixture, plan } = savedBoard();
+    const originalWords = fixture.words;
+    const count = editCadence === 'balanced' ? 2 : 3;
+    const words = Array.from({ length: count }, (_, i) =>
+      originalWords.map((word) => ({
+        ...word,
+        start: word.start + i * 20,
+        end: word.end + i * 20,
+      })),
+    ).flat();
+    const duration = count * 20;
+    plan.sections = [];
+    plan.scenes = [];
+    for (let i = 0; i < count; i++) {
+      const offset = i * originalWords.length;
+      const spec = {
+        ...fixture.spec,
+        startWord: offset,
+        endWord: offset + originalWords.length - 1,
+        subject: { text: 'storyboard', startWord: offset + 1, endWord: offset + 1 },
+        panels: [
+          {
+            id: 'definition',
+            kind: 'statement',
+            startWord: offset,
+            endWord: offset + originalWords.length - 1,
+            title: { text: 'A storyboard', startWord: offset, endWord: offset + 1 },
+            body: {
+              text: 'keeps related ideas on one canvas',
+              startWord: offset + 2,
+              endWord: offset + 7,
+            },
+            revealWord: offset,
+            moveWord: offset,
+          },
+        ],
+      };
+      const compiled = compileStoryboardSpec(spec, words, { clipStart: 0, clipEnd: duration });
+      if (!compiled.ok) throw new Error(JSON.stringify(compiled.diagnostics));
+      const sectionId = `section-${i}`;
+      plan.sections.push({
+        id: sectionId,
+        startWord: spec.startWord,
+        endWord: spec.endWord,
+        startTime: i * 20,
+        endTime: (i + 1) * 20,
+        status: 'planned',
+        diagnostics: [],
+      });
+      plan.scenes.push({
+        id: longformSceneId('storyboard', spec.startWord, spec.endWord),
+        kind: 'storyboard',
+        sourceSpec: JSON.parse(JSON.stringify(compiled.value.sourceSpec)),
+        startWord: spec.startWord,
+        endWord: spec.endWord,
+        startTime: compiled.value.startTime,
+        endTime: compiled.value.endTime,
+        label: 'A storyboard',
+        purpose: 'Source definition',
+        sectionId,
+        presentation: 'full-frame',
+      });
+    }
+    plan.sourceDuration = duration;
+    plan.sourceFingerprint = longformSourceFingerprint(words, duration);
+    plan.editCadence = editCadence;
+    const validated = validateSceneFirstLongformPlan(plan, words, duration);
+    if (!validated.ok) throw new Error(validated.error);
+    expect(
+      buildLongformSceneTimeline(plan, validated.value.scenes).segments.filter(
+        (segment) => segment.kind === 'scene',
+      ),
+    ).toHaveLength(count);
+    delete plan.editCadence;
+    const legacy = validateSceneFirstLongformPlan(plan, words, duration);
+    expect(legacy).toEqual({ ok: false, error: 'Storyboard count budget exceeded.' });
+  });
+  it.each([
     2, 3,
   ] as const)('reconstructs parser-%i saved raw JSON with exact bookends and both styles', (parserVersion) => {
     const { fixture, plan } = savedBoard();

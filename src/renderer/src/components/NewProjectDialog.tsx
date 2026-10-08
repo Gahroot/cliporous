@@ -1,7 +1,9 @@
+import { DEFAULT_EDIT_CADENCE, type EditCadence } from '@shared/edit-cadence';
 import { findLongformPalette } from '@shared/longform-palette';
 import { DEFAULT_STORYBOARD_STYLE, type StoryboardStyle } from '@shared/storyboards';
 import { FileVideo, FolderOpen } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { EditCadencePicker } from '@/components/EditCadencePicker';
 import { type EntrySource, isYouTubeUrl } from '@/components/entry-source';
 import { LongformAppearancePicker } from '@/components/LongformAppearancePicker';
 import { PythonSetupCard } from '@/components/PythonSetupCard';
@@ -28,6 +30,7 @@ import { useStore } from '@/store';
 
 export interface NewProjectDraft {
   name: string;
+  editCadence?: EditCadence;
   outputMode: 'short' | 'longform';
   source: EntrySource;
   appearance: { storyboardStyle: StoryboardStyle; paletteId: string };
@@ -78,6 +81,7 @@ export function NewProjectDialog({
   const returnFocusTo = useRef<HTMLElement | null>(null);
   const [name, setName] = useState('');
   const [outputMode, setOutputMode] = useState<'short' | 'longform'>('short');
+  const [editCadence, setEditCadence] = useState<EditCadence>(DEFAULT_EDIT_CADENCE);
   const [filePath, setFilePath] = useState('');
   const [url, setUrl] = useState('');
   const [profileId, setProfileId] = useState('none');
@@ -151,6 +155,7 @@ export function NewProjectDialog({
     onCreate({
       name: intent === 'new' ? trimmedName : projectName,
       outputMode,
+      ...(outputMode === 'longform' ? { editCadence } : {}),
       appearance: { storyboardStyle, paletteId },
       source: filePath ? { kind: 'file', value: filePath } : { kind: 'url', value: trimmedUrl },
       ...(profileId !== 'none' ? { profileId } : {}),
@@ -306,6 +311,9 @@ export function NewProjectDialog({
             )}
           </div>
 
+          {outputMode === 'longform' && (
+            <EditCadencePicker value={editCadence} onChange={setEditCadence} disabled={busy} />
+          )}
           {outputMode === 'longform' && (
             <LongformAppearancePicker
               style={storyboardStyle}

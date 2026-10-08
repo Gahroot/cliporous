@@ -89,6 +89,19 @@ function seedCutPlan(): void {
 }
 
 describe('CutPlanReviewScreen', () => {
+  it('does not offer unsupported cadence for legacy regeneration', () => {
+    render(<CutPlanReviewScreen />);
+    expect(screen.queryByRole('radio', { name: /Selective/ })).not.toBeInTheDocument();
+  });
+  it('changes next-generation cadence without rewriting the saved version', () => {
+    seedScenes();
+    const before = structuredClone(useStore.getState().longformPlans[SOURCE.id]);
+    render(<CutPlanReviewScreen />);
+    fireEvent.click(screen.getByRole('radio', { name: /Continuous/ }));
+    expect(useStore.getState().sources[0]?.longformEditCadence).toBe('continuous');
+    expect(useStore.getState().longformPlans[SOURCE.id]).toEqual(before);
+    expect(screen.getByText(/Applies when you regenerate/)).toBeInTheDocument();
+  });
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => {});
@@ -583,6 +596,40 @@ describe('CutPlanReviewScreen', () => {
     expect(window.api.startBatchRender).not.toHaveBeenCalled();
   });
 
+  it('rejects a cadence mismatch without replacing saved work', async () => {
+    const plan = makeScenePlan();
+    useStore.getState().setLongformPlan(SOURCE.id, { plan, skin: 'editorial', paletteId: 'brand' });
+    const before = structuredClone(useStore.getState().longformPlans[SOURCE.id]);
+    window.api.generateLongformEditPlan = vi.fn(async () => plan);
+    render(<CutPlanReviewScreen />);
+    fireEvent.click(screen.getByRole('radio', { name: /Continuous/ }));
+    openPlanDetails();
+    fireEvent.click(screen.getByRole('button', { name: 'Regenerate plan' }));
+    await waitFor(() => expect(toast.error).toHaveBeenCalled());
+    expect(useStore.getState().longformPlans[SOURCE.id]).toEqual(before);
+    expect(window.api.startBatchRender).not.toHaveBeenCalled();
+  });
+
+  it('restores applied cadence per version while keeping the next-generation preference', () => {
+    const plan = { ...makeScenePlan(), editCadence: 'balanced' as const };
+    useStore.getState().setLongformPlan(SOURCE.id, { plan, skin: 'editorial', paletteId: 'brand' });
+    const original = useStore.getState().longformPlans[SOURCE.id]?.activeVersionId;
+    if (!original) throw new Error('missing original version');
+    useStore
+      .getState()
+      .addLongformPlanVersion(
+        SOURCE.id,
+        { ...plan, editCadence: 'continuous' as const },
+        'regenerated',
+      );
+    useStore.getState().updateSource(SOURCE.id, { longformEditCadence: 'selective' });
+    render(<CutPlanReviewScreen />);
+    expect(screen.getByText('Applied cadence: Continuous')).toBeInTheDocument();
+    act(() => useStore.getState().restoreLongformPlanVersion(SOURCE.id, original));
+    expect(screen.getByText('Applied cadence: Balanced')).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /Selective/ })).toBeChecked();
+  });
+
   it('retains unknown future saved versions and payload while blocking approval, preview and style editing', () => {
     const plan = {
       ...makeStoryboardPlan(),
@@ -633,6 +680,7 @@ describe('CutPlanReviewScreen', () => {
     render(<CutPlanReviewScreen />);
     expect(screen.getByRole('button', { name: 'Approve plan and prepare export' })).toBeEnabled();
     fireEvent.click(screen.getByRole('button', { name: 'Preserve' }));
+    fireEvent.click(screen.getByRole('radio', { name: /Balanced/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Retry failed sections' }));
     await waitFor(() => {
       expect(vi.mocked(toast.error).mock.calls).toEqual([]);
@@ -646,6 +694,7 @@ describe('CutPlanReviewScreen', () => {
       previousPlan: plan,
       preservedSceneIds: ['scene-statement-0-3'],
       sectionIds: ['section-evidence'],
+      editCadence: 'balanced',
     });
     act(() => progress({ stage: 'ai-editing', requestId: 'other-request', window: 99, total: 99 }));
     expect(screen.queryByText(/window 99/)).not.toBeInTheDocument();
@@ -653,8 +702,12 @@ describe('CutPlanReviewScreen', () => {
       progress({ stage: 'ai-editing', requestId: args?.[4]?.requestId ?? '', window: 2, total: 3 }),
     );
     expect(screen.getByText(/window 2 of 3/)).toBeInTheDocument();
-    await act(async () => pending.resolve(makeScenePlan()));
+    expect(screen.getByRole('radio', { name: /Balanced/ })).toBeDisabled();
+    await act(async () =>
+      pending.resolve({ ...makeScenePlan(), editCadence: 'balanced' as const }),
+    );
     expect(useStore.getState().longformPlans[SOURCE.id]?.versions).toHaveLength(2);
+    expect(screen.getByText('Applied cadence: Balanced')).toBeInTheDocument();
     expect(off).toHaveBeenCalledOnce();
   });
 

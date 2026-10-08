@@ -116,6 +116,50 @@ afterEach(async () => {
   await rm(root, { recursive: true, force: true });
 });
 it.each([
+  'selective',
+  'balanced',
+  'continuous',
+])('forwards edit cadence %s', async (editCadence) => {
+  const input = preview();
+  await invoke(
+    Ch.Invoke.AI_GENERATE_LONGFORM_EDIT_PLAN,
+    windowEvent(1),
+    'offline-key',
+    input.wordTimestamps,
+    15,
+    [],
+    { editCadence },
+  );
+  expect(m.plan).toHaveBeenCalledWith(expect.objectContaining({ editCadence }));
+});
+it.each([
+  'unknown',
+  null,
+  {},
+])('rejects invalid edit cadence %s before planning', async (editCadence) => {
+  const input = preview();
+  await expect(
+    invoke(
+      Ch.Invoke.AI_GENERATE_LONGFORM_EDIT_PLAN,
+      windowEvent(1),
+      'offline-key',
+      input.wordTimestamps,
+      15,
+      [],
+      { editCadence },
+    ),
+  ).rejects.toThrow('generation options');
+  expect(m.plan).not.toHaveBeenCalled();
+});
+it('rejects invalid saved cadence before preview', async () => {
+  const input = preview();
+  Reflect.set(input.plan, 'editCadence', 'unknown');
+  await expect(
+    invoke(Ch.Invoke.RENDER_LONGFORM_SCENE_PREVIEW, windowEvent(1), input),
+  ).rejects.toThrow('Invalid long-form preview request');
+  expect(m.render).not.toHaveBeenCalled();
+});
+it.each([
   'ink',
   'polish',
 ])('forwards the bounded storyboard style %s before generation', async (storyboardStyle) => {

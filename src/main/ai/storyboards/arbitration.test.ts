@@ -34,6 +34,38 @@ function arbitrate(
 }
 
 describe('global source-order storyboard arbitration', () => {
+  it.each([
+    ['selective', 1, 0.3, 10],
+    ['balanced', 2, 0.45, 6],
+    ['continuous', 3, 0.6, 3],
+  ] as const)('enforces shared %s count, coverage and frame-safe separation', (editCadence, count, coverage, separation) => {
+    const short = Array.from({ length: count }, (_, i) => scene(`s${i}`, i * 20, i * 20 + 4));
+    expect(storyboardPolicyProblem(short, 90, editCadence)).toBeNull();
+    expect(storyboardPolicyProblem([...short, scene('extra', 80, 84)], 90, editCadence)).toContain(
+      'count',
+    );
+    expect(
+      storyboardPolicyProblem([scene('coverage', 0, coverage * 100)], 100, editCadence),
+    ).toBeNull();
+    expect(
+      storyboardPolicyProblem([scene('coverage', 0, coverage * 100 + 0.001)], 100, editCadence),
+    ).toContain('coverage');
+    const a = scene('a', 0, 4);
+    const b = scene('b', 4 + separation, 8 + separation);
+    expect(storyboardPolicyProblem([a, b], 100, editCadence)).toBeNull();
+    expect(
+      storyboardPolicyProblem([a, { ...b, startTime: b.startTime - 0.001 }], 100, editCadence),
+    ).toContain('separation');
+    expect(
+      arbitrateStoryboards({
+        ordinary: [],
+        proposals: [b, a],
+        protectedScenes: [],
+        duration: 100,
+        editCadence,
+      }).scenes,
+    ).toEqual([a, b]);
+  });
   it('fully replaces a contained ordinary story with an explicit diagnostic record', () => {
     const board = scene('board', 0, 20);
     const ordinary = scene('story', 2, 12, 'hero');

@@ -82,6 +82,23 @@ const PROJECT_IDENTITY: ProjectIdentity = {
 };
 vi.spyOn(Date, 'now').mockReturnValue(PROJECT_IDENTITY.modifiedAt);
 
+it('saves per-source cadence without leaking between sources or projects', async () => {
+  useStore.setState({ sources: [SOURCE_A, SOURCE_B] });
+  useStore.getState().updateSource(SOURCE_A.id, { longformEditCadence: 'continuous' });
+  expect(useStore.getState().sources[1]?.longformEditCadence).toBeUndefined();
+  await saveProject();
+  createNewProject();
+  await loadProjectFromPath(SAVE_PATH);
+  expect(useStore.getState().sources.map((source) => source.longformEditCadence)).toEqual([
+    'continuous',
+    'selective',
+  ]);
+  const json = JSON.parse(vfs.saved.get(SAVE_PATH) ?? '{}');
+  json.sources[0].longformEditCadence = 'unknown';
+  restoreProject(JSON.stringify(json));
+  expect(useStore.getState().sources[0]?.longformEditCadence).toBe('selective');
+});
+
 function resetVfs(): void {
   vfs.saved.clear();
   vfs.recovery = null;
@@ -502,9 +519,9 @@ describe('project-service · saveProject ↔ loadProjectFromPath round-trip', ()
     // ── Deep-equality on every persisted field ───────────────────────────
     const state = useStore.getState();
     expect(state.sources).toEqual([
-      { ...SOURCE_A, mediaStatus: 'checking' },
-      { ...SOURCE_B, mediaStatus: 'checking' },
-      { ...SOURCE_C, mediaStatus: 'online' },
+      { ...SOURCE_A, longformEditCadence: 'selective', mediaStatus: 'checking' },
+      { ...SOURCE_B, longformEditCadence: 'selective', mediaStatus: 'checking' },
+      { ...SOURCE_C, longformEditCadence: 'selective', mediaStatus: 'online' },
     ]);
     expect(state.transcriptions).toEqual({
       [SOURCE_A.id]: TRANSCRIPTION_A,
@@ -735,9 +752,9 @@ describe('project-service · autoSaveProject ↔ loadRecovery round-trip', () =>
     // ── Deep-equality on every persisted field ───────────────────────────
     const state = useStore.getState();
     expect(state.sources).toEqual([
-      { ...SOURCE_A, mediaStatus: 'checking' },
-      { ...SOURCE_B, mediaStatus: 'checking' },
-      { ...SOURCE_C, mediaStatus: 'online' },
+      { ...SOURCE_A, longformEditCadence: 'selective', mediaStatus: 'checking' },
+      { ...SOURCE_B, longformEditCadence: 'selective', mediaStatus: 'checking' },
+      { ...SOURCE_C, longformEditCadence: 'selective', mediaStatus: 'online' },
     ]);
     expect(state.transcriptions).toEqual({
       [SOURCE_A.id]: TRANSCRIPTION_A,

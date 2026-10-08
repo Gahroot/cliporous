@@ -1,3 +1,4 @@
+import { resolveEditCadence } from '@shared/edit-cadence';
 import { findLongformPalette } from '@shared/longform-palette';
 import type { RecentProjectEntry } from '@shared/recent-projects';
 import { DEFAULT_STORYBOARD_STYLE } from '@shared/storyboards';
@@ -462,6 +463,8 @@ export function DropScreen({
           }
         }
         setOutputMode(draft.outputMode);
+        if (draft.outputMode === 'longform')
+          source.longformEditCadence = resolveEditCadence(draft.editCadence);
         addSource(source);
         setActiveSource(source.id);
         setImportOpen(false);

@@ -1,3 +1,4 @@
+import { resolveEditCadence } from '@shared/edit-cadence';
 import { findLongformPalette } from '@shared/longform-palette';
 import { isSceneFirstPlanEnvelope, LONGFORM_PRESENTATION_LABELS } from '@shared/longform-scenes';
 import type { LongformPlanItemType } from '@shared/types';
@@ -25,6 +26,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { CutPlanItemEditor } from '@/components/CutPlanItemEditor';
 import { CutPlanVersionDialog } from '@/components/CutPlanVersionDialog';
+import { EDIT_CADENCE_LABELS, EditCadencePicker } from '@/components/EditCadencePicker';
 import { LongformAppearancePicker } from '@/components/LongformAppearancePicker';
 import { LongformScenePreview } from '@/components/LongformScenePreview';
 import { LongformSceneWorkspace } from '@/components/LongformSceneWorkspace';
@@ -309,6 +311,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
   const settings = useStore((state) => state.settings);
   const projectId = useStore((state) => state.currentProject.id);
   const addVersion = useStore((state) => state.addLongformPlanVersion);
+  const updateSource = useStore((state) => state.updateSource);
   const restoreVersion = useStore((state) => state.restoreLongformPlanVersion);
   const acceptPlan = useStore((state) => state.acceptLongformPlan);
   const rejectPlan = useStore((state) => state.rejectLongformPlan);
@@ -559,6 +562,7 @@ export function CutPlanReviewScreen(): React.JSX.Element {
       return;
     }
     const initial = useStore.getState();
+    const editCadence = resolveEditCadence(source.longformEditCadence);
     let appearance: ReturnType<typeof captureLongformAppearance>;
     try {
       appearance = captureLongformAppearance(
@@ -635,7 +639,9 @@ export function CutPlanReviewScreen(): React.JSX.Element {
         {
           requestId,
           mode,
-          ...(mode === 'scene-first' ? { storyboardStyle: appearance.storyboardStyle } : {}),
+          ...(mode === 'scene-first'
+            ? { storyboardStyle: appearance.storyboardStyle, editCadence }
+            : {}),
           ...(canReuse
             ? {
                 previousPlan: scenePlan,
@@ -659,6 +665,13 @@ export function CutPlanReviewScreen(): React.JSX.Element {
       )
         throw new Error(
           'The generated storyboard style does not match this request. Your saved draft is unchanged.',
+        );
+      if (
+        isSceneFirstPlanEnvelope(generated) &&
+        resolveEditCadence(generated.editCadence) !== editCadence
+      )
+        throw new Error(
+          'The generated edit cadence does not match this request. Your saved draft is unchanged.',
         );
       // Scene preservation belongs to the source-aware planner, not the legacy overlap merger.
       const merged =
@@ -1271,6 +1284,34 @@ export function CutPlanReviewScreen(): React.JSX.Element {
               aria-label="Revision scope"
             >
               <h2 className="text-sm font-semibold">Revise this plan</h2>
+              {sceneReview && (
+                <div className="my-3 grid gap-2">
+                  {scenePlan && (
+                    <p className="text-xs text-muted-foreground">
+                      Applied cadence:{' '}
+                      {EDIT_CADENCE_LABELS[resolveEditCadence(scenePlan.editCadence)]}
+                    </p>
+                  )}
+                  <EditCadencePicker
+                    value={resolveEditCadence(source.longformEditCadence)}
+                    onChange={(longformEditCadence) =>
+                      updateSource(source.id, { longformEditCadence })
+                    }
+                    disabled={regenerating}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Next generation. Applies when you regenerate.
+                  </p>
+                  {scenePlan &&
+                    resolveEditCadence(scenePlan.editCadence) !==
+                      resolveEditCadence(source.longformEditCadence) && (
+                      <p className="text-xs text-muted-foreground">
+                        Requested cadence differs from this saved plan. Export keeps the applied
+                        cadence.
+                      </p>
+                    )}
+                </div>
+              )}
               <p className="mt-1 text-xs text-muted-foreground">
                 {validationProblem
                   ? 'Scope: create a fresh scene-first draft from the current transcript. Invalid preserved decisions cannot be reused; all saved versions remain available.'

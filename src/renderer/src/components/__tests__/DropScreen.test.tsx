@@ -401,9 +401,14 @@ describe('DropScreen', () => {
     expect(screen.getByText(/not used for initial scene planning/)).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: /output mode/i })).toHaveTextContent('Long-form');
     expect(processLongformMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('radio', { name: /Balanced/ }));
     fireEvent.click(screen.getByRole('button', { name: /add source and process/i }));
     await waitFor(() => expect(processLongformMock).toHaveBeenCalledTimes(1));
     expect(processVideoMock).not.toHaveBeenCalled();
+    expect(processLongformMock).toHaveBeenCalledWith(
+      expect.objectContaining({ longformEditCadence: 'balanced' }),
+    );
+    expect(useStore.getState().sources[0]?.longformEditCadence).toBe('balanced');
     expect(useStore.getState().creativeBrief).toEqual(brief);
   });
 
